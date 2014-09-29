@@ -39,8 +39,12 @@ struct clap_host
   const char *manufacturer;
   const char *version;
 
+  /* gui */
   uint32_t (*gui_opened)(struct clap_host *host, struct clap_plugin *plugin);
   uint32_t (*gui_closed)(struct clap_host *host, struct clap_plugin *plugin);
+
+  /* future features */
+  void *(*extention)(struct clap_plugin *plugin, const char *extention_id);
 };
 
 enum clap_param_type
