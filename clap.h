@@ -176,6 +176,7 @@ struct clap_plugin
   const char *version;
   const char *url;
   const char *license;
+  const char *support; // a link to the support, mailto:support@XXX.com or http://XXX.com/support
   uint32_t plugin_type;
   uint32_t inputs_count;
   uint32_t outputs_count;
