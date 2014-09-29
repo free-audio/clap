@@ -174,6 +174,8 @@ struct clap_plugin
   const char *description;
   const char *manufacturer;
   const char *version;
+  const char *url;
+  const char *license;
   uint32_t plugin_type;
   uint32_t inputs_count;
   uint32_t outputs_count;
@@ -196,6 +198,9 @@ struct clap_plugin
   /* gui */
   void (*open_gui)(struct clap_plugin *plugin);
   void (*close_gui)(struct clap_plugin *plugin);
+
+  /* future features */
+  void *(*extention)(struct clap_plugin *plugin, const char *extention_id);
 };
 
 struct clap_plugin *
