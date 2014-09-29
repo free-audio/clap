@@ -74,8 +74,9 @@ union clap_param_value
 struct clap_preset_info
 {
   const char *id;
-  const char *name;
-  const char *desc;
+  const char *name; // display name
+  const char *desc; // desc and how to use it
+  const char *author;
   const char **tags; // null terminated array of tags
 };
 
