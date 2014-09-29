@@ -54,7 +54,8 @@ enum clap_param_type
 struct clap_param_info
 {
   enum clap_param_type  type;
-  const char           *name;
+  const char           *id;   // a string which identify the param
+  const char           *name; // the display name
   const char           *desc;
   bool                  is_per_note;
 
@@ -68,6 +69,14 @@ union clap_param_value
   float               f;
   int32_t             i;
   const char         *s;
+};
+
+struct clap_preset_info
+{
+  const char *id;
+  const char *name;
+  const char *desc;
+  const char **tags; // null terminated array of tags
 };
 
 struct clap_event_note
@@ -90,6 +99,11 @@ struct clap_event_diapason
   float freq_hz; // usually 440Hz
 };
 
+struct clap_event_preset
+{
+  const char *id;
+};
+
 enum clap_event_type
 {
   CLAP_EVENT_NOTE_ON,
@@ -97,6 +111,7 @@ enum clap_event_type
   CLAP_EVENT_NOTE_OFF,
 
   CLAP_EVENT_PARAM_SET,
+  CLAP_EVENT_PRESET_SET,
 };
 
 struct clap_event
@@ -109,6 +124,7 @@ struct clap_event
     struct clap_event_note     note;
     struct clap_event_param    param;
     struct clap_event_diapason diapason;
+    struct clap_event_preset   preset;
   };
 };
 
