@@ -84,7 +84,7 @@ struct clap_event_note
 {
   uint16_t division; // 12 for a standard octave
   uint16_t note;     // starts from 0
-  uint16_t velocity; // 0 .. UINT16_MAX
+  float    velocity; // 0 .. 1.0f
 
   struct clap_event *events; // events specific to this note
 };
@@ -107,12 +107,13 @@ struct clap_event_preset
 
 enum clap_event_type
 {
-  CLAP_EVENT_NOTE_ON,
-  CLAP_EVENT_NOTE_PRESSURE,
-  CLAP_EVENT_NOTE_OFF,
+  CLAP_EVENT_NOTE_ON,         // note attribute
+  CLAP_EVENT_NOTE_MODULATION, // note attribute
+  CLAP_EVENT_NOTE_OFF,        // note attribute
 
-  CLAP_EVENT_PARAM_SET,
-  CLAP_EVENT_PRESET_SET,
+  CLAP_EVENT_PARAM_SET,       // param attribute
+  CLAP_EVENT_DIAPASON_SET,    // diapason attribute
+  CLAP_EVENT_PRESET_SET,      // preset attribute
 };
 
 struct clap_event
