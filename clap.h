@@ -196,7 +196,7 @@ struct clap_plugin
   void (*close_gui)(struct clap_plugin *plugin);
 };
 
-const struct clap_plugin *
+struct clap_plugin *
 clap_create(uint32_t plugin_index, struct clap_host *host, uint32_t sample_rate);
 
 #endif /* !CLAP_H */
