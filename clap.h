@@ -26,6 +26,10 @@
 #ifndef CLAP_H
 # define CLAP_H
 
+# ifdef __cplusplus
+extern "C" {
+# endif
+
 # include <stdint.h>
 
 # define CLAP_VERSION_MAKE(Major, Minor, Revision) (((Major) << 16) | ((Minor) << 8) | (Revision))
@@ -174,6 +178,7 @@ struct clap_plugin
   void (*destroy)(struct clap_plugin *plugin);
 
   /* plugin info */
+  const char *id;
   const char *name;
   const char *description;
   const char *manufacturer;
@@ -205,11 +210,21 @@ struct clap_plugin
   void (*open_gui)(struct clap_plugin *plugin);
   void (*close_gui)(struct clap_plugin *plugin);
 
+  /* state */
+  void (*save)(struct clap_plugin *plugin, void **buffer, size_t *size);
+  void (*restore)(struct clap_plugin *plugin, const void *buffer, size_t size);
+
   /* future features */
   void *(*extention)(struct clap_plugin *plugin, const char *extention_id);
 };
 
+typedef struct clap_plugin *(clap_create_f)(uint32_t plugin_index, struct clap_host *host, uint32_t sample_rate);
+
 struct clap_plugin *
 clap_create(uint32_t plugin_index, struct clap_host *host, uint32_t sample_rate);
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif /* !CLAP_H */
