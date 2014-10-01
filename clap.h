@@ -35,22 +35,6 @@ extern "C" {
 # define CLAP_VERSION_MAKE(Major, Minor, Revision) (((Major) << 16) | ((Minor) << 8) | (Revision))
 # define CLAP_VERSION CLAP_VERSION_MAKE(1, 0, 0)
 
-struct clap_host
-{
-  uint32_t clap_version; // initialized to CALP_VERSION
-
-  const char *name;
-  const char *manufacturer;
-  const char *version;
-
-  /* gui */
-  uint32_t (*gui_opened)(struct clap_host *host, struct clap_plugin *plugin);
-  uint32_t (*gui_closed)(struct clap_host *host, struct clap_plugin *plugin);
-
-  /* future features */
-  void *(*extention)(struct clap_plugin *plugin, const char *extention_id);
-};
-
 enum clap_param_type
 {
   CLAP_PARAM_BOOL,
@@ -138,6 +122,24 @@ struct clap_event
   };
 };
 
+struct clap_host
+{
+  uint32_t clap_version; // initialized to CALP_VERSION
+
+  const char *name;
+  const char *manufacturer;
+  const char *version;
+
+  /* for events generated outside of process, like from the network
+   * or the GUI. */
+  void (*events)(struct clap_host   *host,
+                 struct clap_plugin *plugin,
+                 struct clap_event  *events);
+
+  /* future features */
+  void *(*extention)(struct clap_plugin *plugin, const char *extention_id);
+};
+
 struct clap_process
 {
   /* audio buffers, they must be aligned on the machine's best vector instructions requirement */
@@ -167,12 +169,19 @@ enum clap_plugin_type
   CLAP_PLUGIN_ANALYZER    = (1 << 3),
 };
 
+struct clap_preset_iterator
+{
+  struct clap_preset_info info;
+  void *plugin_ptr; // reserved data for the plugin
+  void (*destroy)(struct clap_preset_iterator *iter);
+};
+
 struct clap_plugin
 {
   uint32_t clap_version; // initialized to CALP_VERSION
 
-  void *host_data;
-  void *plugin_data;
+  void *host_data;   // reserved pointer for the host
+  void *plugin_data; // reserved pointer for the plugin
 
   /* free plugin's resources */
   void (*destroy)(struct clap_plugin *plugin);
@@ -196,11 +205,11 @@ struct clap_plugin
   void (*get_param_info)(struct clap_plugin *plugin, uint32_t index, struct clap_param_info *param);
 
   /* presets */
-  uint32_t (*get_preset_count)(struct clap_plugin *plugin);
-  void (*get_preset_info)(struct clap_plugin *plugin, uint32_t index, struct clap_preset_info *preset);
+  struct clap_preset_iterator *(*presets_begin)(struct clap_plugin *plugin);
+  bool (*presets_next)(struct clap_plugin *plugin, struct clap_preset_iterator *iter);
 
   /* activation */
-  void (*activate)(struct clap_plugin *plugin);
+  bool (*activate)(struct clap_plugin *plugin);
   void (*deactivate)(struct clap_plugin *plugin);
 
   /* work */
