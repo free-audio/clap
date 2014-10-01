@@ -68,8 +68,8 @@ Plugin instanciation can be done in a few steps:
 Precautions
 ~~~~~~~~~~~
 
-- The function ``clap_create`` has to be thread-safe.
-- It should not throw exceptions.
+- The function ``clap_create`` must be thread-safe.
+- It must not throw exceptions.
 - It can return ``NULL``.
 
 Shell plugins
@@ -188,17 +188,32 @@ Audio buffers
 The audio buffers are allocated by the host. They must be aligned by the
 maximum requirement of the vector instructions currently avalaible.
 
-- TBD: static buffer?
-- TBD: in place processing?
+In-place processing is not supported.
 
 Events
 ~~~~~~
 
+Events are relative to ``process->time_in_samples``.
+Their time must be positive, and included into ``[0..process->nb_samples[``.
+
 Parameters
 ``````````
 
+Parameters can be automated by the host using ``CLAP_EVENT_PARAM_SET`` or
+``CLAP_EVENT_PARAM_RAMP``.
+
 Notes
 `````
+
+Notes are reprensented as a pair ``note, division``.
+Division is the number of intervals between one note and an other note with
+half or the double frequency.
+
+Pitch
+`````
+
+The pitch is the frequency of the note A. Its default value is 440Hz.
+The pitch can be changed by the host using the ``CLAP_EVENT_PITCH_SET`` event.
 
 Parameters
 ----------
