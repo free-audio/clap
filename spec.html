@@ -1,0 +1,733 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.12: http://docutils.sourceforge.net/" />
+<title>CLAP (CLever Audio Plugin)</title>
+<style type="text/css">
+
+
+</style>
+<style type="text/css">
+
+.code .hll { background-color: #49483e }
+.code  { background: #272822; color: #f8f8f2 }
+.code .c { color: #75715e } /* Comment */
+.code .err { color: #960050; background-color: #1e0010 } /* Error */
+.code .k { color: #66d9ef } /* Keyword */
+.code .l { color: #ae81ff } /* Literal */
+.code .n { color: #f8f8f2 } /* Name */
+.code .o { color: #f92672 } /* Operator */
+.code .p { color: #f8f8f2 } /* Punctuation */
+.code .cm { color: #75715e } /* Comment.Multiline */
+.code .cp { color: #75715e } /* Comment.Preproc */
+.code .c1 { color: #75715e } /* Comment.Single */
+.code .cs { color: #75715e } /* Comment.Special */
+.code .ge { font-style: italic } /* Generic.Emph */
+.code .gs { font-weight: bold } /* Generic.Strong */
+.code .kc { color: #66d9ef } /* Keyword.Constant */
+.code .kd { color: #66d9ef } /* Keyword.Declaration */
+.code .kn { color: #f92672 } /* Keyword.Namespace */
+.code .kp { color: #66d9ef } /* Keyword.Pseudo */
+.code .kr { color: #66d9ef } /* Keyword.Reserved */
+.code .kt { color: #66d9ef } /* Keyword.Type */
+.code .ld { color: #e6db74 } /* Literal.Date */
+.code .m { color: #ae81ff } /* Literal.Number */
+.code .s { color: #e6db74 } /* Literal.String */
+.code .na { color: #a6e22e } /* Name.Attribute */
+.code .nb { color: #f8f8f2 } /* Name.Builtin */
+.code .nc { color: #a6e22e } /* Name.Class */
+.code .no { color: #66d9ef } /* Name.Constant */
+.code .nd { color: #a6e22e } /* Name.Decorator */
+.code .ni { color: #f8f8f2 } /* Name.Entity */
+.code .ne { color: #a6e22e } /* Name.Exception */
+.code .nf { color: #a6e22e } /* Name.Function */
+.code .nl { color: #f8f8f2 } /* Name.Label */
+.code .nn { color: #f8f8f2 } /* Name.Namespace */
+.code .nx { color: #a6e22e } /* Name.Other */
+.code .py { color: #f8f8f2 } /* Name.Property */
+.code .nt { color: #f92672 } /* Name.Tag */
+.code .nv { color: #f8f8f2 } /* Name.Variable */
+.code .ow { color: #f92672 } /* Operator.Word */
+.code .w { color: #f8f8f2 } /* Text.Whitespace */
+.code .mf { color: #ae81ff } /* Literal.Number.Float */
+.code .mh { color: #ae81ff } /* Literal.Number.Hex */
+.code .mi { color: #ae81ff } /* Literal.Number.Integer */
+.code .mo { color: #ae81ff } /* Literal.Number.Oct */
+.code .sb { color: #e6db74 } /* Literal.String.Backtick */
+.code .sc { color: #e6db74 } /* Literal.String.Char */
+.code .sd { color: #e6db74 } /* Literal.String.Doc */
+.code .s2 { color: #e6db74 } /* Literal.String.Double */
+.code .se { color: #ae81ff } /* Literal.String.Escape */
+.code .sh { color: #e6db74 } /* Literal.String.Heredoc */
+.code .si { color: #e6db74 } /* Literal.String.Interpol */
+.code .sx { color: #e6db74 } /* Literal.String.Other */
+.code .sr { color: #e6db74 } /* Literal.String.Regex */
+.code .s1 { color: #e6db74 } /* Literal.String.Single */
+.code .ss { color: #e6db74 } /* Literal.String.Symbol */
+.code .bp { color: #f8f8f2 } /* Name.Builtin.Pseudo */
+.code .vc { color: #f8f8f2 } /* Name.Variable.Class */
+.code .vg { color: #f8f8f2 } /* Name.Variable.Global */
+.code .vi { color: #f8f8f2 } /* Name.Variable.Instance */
+.code .il { color: #ae81ff } /* Literal.Number.Integer.Long */
+
+</style>
+</head>
+<body>
+<div class="document" id="clap-clever-audio-plugin">
+<h1 class="title">CLAP (CLever Audio Plugin)</h1>
+<h2 class="subtitle" id="a-free-audio-plugin-format">A free audio plugin format</h2>
+
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#goals" id="id2">Goals</a></li>
+<li><a class="reference internal" href="#specification" id="id3">Specification</a><ul>
+<li><a class="reference internal" href="#encoding" id="id4">Encoding</a></li>
+<li><a class="reference internal" href="#locate-the-plugins" id="id5">Locate the plugins</a><ul>
+<li><a class="reference internal" href="#common" id="id6">Common</a></li>
+<li><a class="reference internal" href="#linux" id="id7">Linux</a></li>
+<li><a class="reference internal" href="#windows" id="id8">Windows</a></li>
+<li><a class="reference internal" href="#mac" id="id9">Mac</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#instantiate-a-plugin" id="id10">Instantiate a plugin</a><ul>
+<li><a class="reference internal" href="#precautions" id="id11">Precautions</a></li>
+<li><a class="reference internal" href="#shell-plugins" id="id12">Shell plugins</a></li>
+<li><a class="reference internal" href="#sample" id="id13">Sample</a></li>
+<li><a class="reference internal" href="#description" id="id14">Description</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#threading" id="id15">Threading</a></li>
+<li><a class="reference internal" href="#activation" id="id16">Activation</a></li>
+<li><a class="reference internal" href="#processing" id="id17">Processing</a><ul>
+<li><a class="reference internal" href="#audio-buffers" id="id18">Audio buffers</a></li>
+<li><a class="reference internal" href="#events" id="id19">Events</a><ul>
+<li><a class="reference internal" href="#parameters" id="id20">Parameters</a></li>
+<li><a class="reference internal" href="#notes" id="id21">Notes</a></li>
+<li><a class="reference internal" href="#pitch" id="id22">Pitch</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id1" id="id23">Parameters</a></li>
+<li><a class="reference internal" href="#graphical-user-interface" id="id24">Graphical User Interface</a></li>
+<li><a class="reference internal" href="#presets" id="id25">Presets</a></li>
+<li><a class="reference internal" href="#save-and-restore-plugin-s-state" id="id26">Save and restore plugin's state</a></li>
+<li><a class="reference internal" href="#extension-system" id="id27">Extension system</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#examples" id="id28">Examples</a></li>
+<li><a class="reference internal" href="#references" id="id29">References</a></li>
+</ul>
+</div>
+<div class="section" id="goals">
+<h1><a class="toc-backref" href="#id2">Goals</a></h1>
+<ul class="simple">
+<li>Make a free audio plugin format</li>
+<li>Be easy to understand and implement</li>
+<li>Bring new features missed in VST 2.4</li>
+<li>Replace old concepts by modern design</li>
+<li>Designed to work on any operating system</li>
+<li>Be event oriented</li>
+<li>Provide a reference host</li>
+<li>Provide some reference plugins</li>
+<li>Provide a validation plugin, which should signal anything wrong the host does</li>
+<li>Provide a validation host, which should give hard time to the plugin and
+ensure that basic functionnality are working</li>
+</ul>
+</div>
+<div class="section" id="specification">
+<h1><a class="toc-backref" href="#id3">Specification</a></h1>
+<div class="section" id="encoding">
+<h2><a class="toc-backref" href="#id4">Encoding</a></h2>
+<p>All the strings exchanged through the CLAP interface must be encoded in UTF-8
+and must be valid.</p>
+</div>
+<div class="section" id="locate-the-plugins">
+<h2><a class="toc-backref" href="#id5">Locate the plugins</a></h2>
+<div class="section" id="common">
+<h3><a class="toc-backref" href="#id6">Common</a></h3>
+<ul class="simple">
+<li>Directories should be scanned recursively</li>
+</ul>
+</div>
+<div class="section" id="linux">
+<h3><a class="toc-backref" href="#id7">Linux</a></h3>
+<ul class="simple">
+<li>Plugins distrubuted with packages should be installed to: <tt class="docutils literal">/usr/lib/clap/</tt></li>
+<li>Plugins installed in the user's home should be installed to: <tt class="docutils literal"><span class="pre">${HOME}/.clap/</span></tt></li>
+</ul>
+</div>
+<div class="section" id="windows">
+<h3><a class="toc-backref" href="#id8">Windows</a></h3>
+<p>TBD</p>
+</div>
+<div class="section" id="mac">
+<h3><a class="toc-backref" href="#id9">Mac</a></h3>
+<p>TBD</p>
+</div>
+</div>
+<div class="section" id="instantiate-a-plugin">
+<h2><a class="toc-backref" href="#id10">Instantiate a plugin</a></h2>
+<p>Plugin instanciation can be done in a few steps:</p>
+<ul class="simple">
+<li>load the plugin library</li>
+<li>find the symbol <tt class="docutils literal">clap_create</tt></li>
+<li>instantiate the plugin by calling <tt class="docutils literal">clap_create</tt></li>
+</ul>
+<div class="section" id="precautions">
+<h3><a class="toc-backref" href="#id11">Precautions</a></h3>
+<ul class="simple">
+<li>The function <tt class="docutils literal">clap_create</tt> must be thread-safe.</li>
+<li>It must not throw exceptions.</li>
+<li>It can return <tt class="docutils literal">NULL</tt>.</li>
+</ul>
+</div>
+<div class="section" id="shell-plugins">
+<h3><a class="toc-backref" href="#id12">Shell plugins</a></h3>
+<p>A single dynamic library can contains multiple plugins.
+To list them, you have to call <tt class="docutils literal">clap_create</tt> with an index of 0 and increment
+the index until <tt class="docutils literal">clap_create</tt> returns <tt class="docutils literal">NULL</tt>.</p>
+</div>
+<div class="section" id="sample">
+<h3><a class="toc-backref" href="#id13">Sample</a></h3>
+<pre class="code c literal-block">
+<span class="cp">#include &lt;stdio.h&gt;
+#include &lt;dlfcn.h&gt;
+</span>
+<span class="cp">#include &lt;clap.h&gt;
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">struct</span> <span class="n">clap_host</span> <span class="n">host</span><span class="p">;</span> <span class="c1">// XXX initialize host
+</span>
+  <span class="kt">void</span> <span class="o">*</span> <span class="n">handle</span> <span class="o">=</span> <span class="n">dlopen</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">RTLD_NOW</span> <span class="o">|</span> <span class="n">RTLD_LOCAL</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">handle</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;failed to load %s: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dlerror</span><span class="p">());</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">union</span> <span class="p">{</span>
+    <span class="kt">void</span>          <span class="o">*</span><span class="n">ptr</span><span class="p">;</span>
+    <span class="n">clap_create_f</span>  <span class="n">clap_create</span><span class="p">;</span>
+  <span class="p">}</span> <span class="n">symbol</span><span class="p">;</span>
+
+  <span class="n">symbol</span><span class="p">.</span><span class="n">ptr</span> <span class="o">=</span> <span class="n">dlsym</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="s">&quot;clap_create&quot;</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">symbol</span><span class="p">.</span><span class="n">ptr</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;symbol not found: clap_create</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="kt">uint32_t</span> <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="p">(</span><span class="kt">uint32_t</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="o">++</span><span class="n">index</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span> <span class="o">=</span> <span class="n">symbold</span><span class="p">.</span><span class="n">clap_create</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="mi">48000</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">plugin</span><span class="p">)</span>
+      <span class="k">break</span><span class="p">;</span>
+
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdio</span><span class="p">,</span>
+            <span class="s">&quot;found plugin:</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot; id:       %s</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot; name:     %s</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot; description: %s</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot; manufacturer: %s</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot; version: %s</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot; url: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
+            <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">id</span><span class="p">,</span>
+            <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">description</span><span class="p">,</span>
+            <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">manufacturer</span><span class="p">,</span>
+            <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">version</span><span class="p">,</span>
+            <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">url</span><span class="p">);</span>
+
+    <span class="c1">// destroy the plugin
+</span>    <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">destroy</span><span class="p">(</span><span class="n">plugin</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre>
+</div>
+<div class="section" id="description">
+<h3><a class="toc-backref" href="#id14">Description</a></h3>
+<p>Both the plugin and host have a few attribute giving general plugin description.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="82%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Attribute</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>clap_version</td>
+<td>Described the plugin format version implemented. Should be
+initialized with CLAP_PLUGIN_VERSION,
+or CLAP_VERSION_MAKE(1, 0, 0) if you want to only support
+version 1.0.0</td>
+</tr>
+<tr><td>id</td>
+<td>Unique identifier of the plugin. It should never change. It
+should be the same on 32bits or 64bits or whatever.</td>
+</tr>
+<tr><td>name</td>
+<td>The name of the product.</td>
+</tr>
+<tr><td>description</td>
+<td>A brief description of the product.</td>
+</tr>
+<tr><td>manufacturer</td>
+<td>Which company made the plugin.</td>
+</tr>
+<tr><td>version</td>
+<td>A string describing the product version.</td>
+</tr>
+<tr><td>url</td>
+<td>An URL to the product homepage.</td>
+</tr>
+<tr><td>license</td>
+<td>The plugin license type, Custom, GPLv3, MIT, ...</td>
+</tr>
+<tr><td>support</td>
+<td>A link to the support, it can be
+<tt class="docutils literal">mailto:support&#64;company.com</tt> or
+<tt class="docutils literal"><span class="pre">http://company.com/support</span></tt>.</td>
+</tr>
+<tr><td>categories</td>
+<td>An array of categories, the plugins fits into. Eg: analogue,
+digital, fm, delay, reverb, compressor, ...</td>
+</tr>
+<tr><td>plugin_type</td>
+<td>Bitfield describing what the plugin does. See enum
+clap_plugin_type.</td>
+</tr>
+<tr><td>inputs_count</td>
+<td>The number of input buffers.</td>
+</tr>
+<tr><td>outputs_count</td>
+<td>The number of output buffers.</td>
+</tr>
+<tr><td>host_data</td>
+<td>Reserved pointer for the host.</td>
+</tr>
+<tr><td>plugin_data</td>
+<td>Reserved pointer for the plugin.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="threading">
+<h2><a class="toc-backref" href="#id15">Threading</a></h2>
+<p>The plugin is not thread safe, and must not be called concurrently.</p>
+<p>Yet, show_gui() and hide_gui() have to be called from an other thread,
+and can be called concurrently.</p>
+<p>Rational: starting the GUI requires to load resources which may be done
+synchronously and can take time. So to avoid blocking the audio
+processing, we choose to start the GUI from a different thread that the
+audio processing thread.</p>
+</div>
+<div class="section" id="activation">
+<h2><a class="toc-backref" href="#id16">Activation</a></h2>
+<p>Before doing any processing, the plugin must be activated by calling
+<tt class="docutils literal">bool succeed = <span class="pre">plugin-&gt;activate(plugin);</span></tt>.</p>
+<p>If <tt class="docutils literal">succeed == true</tt> then the activation succeed. If the activation failed,
+then the plugin is unusable.</p>
+<p>The host must not call <tt class="docutils literal">activate()</tt> if the plugin is already activated.
+Yet the plugin should handle correctly double calls to <tt class="docutils literal">activate()</tt>.</p>
+<p>The plugin activation could be nothing, or could be a task which takes time,
+like connecting a remote server. So the host should not activate plugins in
+the audio processing thread.</p>
+<p>To deactivate the plugin, just call <tt class="docutils literal"><span class="pre">plugin-&gt;deactivate(plugin)</span></tt>. Like
+<tt class="docutils literal">activate()</tt>, <tt class="docutils literal">deactivate()</tt> should not be called from the audio processing
+thread as it may take time.</p>
+<p>Also <tt class="docutils literal">deactivate()</tt> should not be called if the plugin is not activated.
+Yet the plugin should handle a call to <tt class="docutils literal">deactivate()</tt> even if it is
+not activated.</p>
+<p>It is preferable to de-activate the plugin before destroying it.</p>
+</div>
+<div class="section" id="processing">
+<h2><a class="toc-backref" href="#id17">Processing</a></h2>
+<p>The processing is done in one call: <tt class="docutils literal"><span class="pre">plugin-&gt;process(plugin,</span> process);</tt>.
+The data structure process regroup everything needed by the plugin:</p>
+<ul class="simple">
+<li>audio buffers (in, out)</li>
+<li>events (in, out)</li>
+<li>tempo, time, is offline? (in)</li>
+<li>more processing needed (out)</li>
+</ul>
+<div class="section" id="audio-buffers">
+<h3><a class="toc-backref" href="#id18">Audio buffers</a></h3>
+<p>The audio buffers are allocated by the host. They must be aligned by the
+maximum requirement of the vector instructions currently avalaible.</p>
+<p>In-place processing is not supported.</p>
+</div>
+<div class="section" id="events">
+<h3><a class="toc-backref" href="#id19">Events</a></h3>
+<p>Events are relative to <tt class="docutils literal"><span class="pre">process-&gt;time_in_samples</span></tt>.
+Their time must be positive, and included into <tt class="docutils literal"><span class="pre">[0..process-&gt;nb_samples[</span></tt>.</p>
+<div class="section" id="parameters">
+<h4><a class="toc-backref" href="#id20">Parameters</a></h4>
+<p>Parameters can be automated by the host using <tt class="docutils literal">CLAP_EVENT_PARAM_SET</tt> or
+<tt class="docutils literal">CLAP_EVENT_PARAM_RAMP</tt>.</p>
+</div>
+<div class="section" id="notes">
+<h4><a class="toc-backref" href="#id21">Notes</a></h4>
+<p>Notes are reprensented as a pair <tt class="docutils literal">note, division</tt>.
+Division is the number of intervals between one note and an other note with
+half or the double frequency.</p>
+</div>
+<div class="section" id="pitch">
+<h4><a class="toc-backref" href="#id22">Pitch</a></h4>
+<p>The pitch is the frequency of the note A. Its default value is 440Hz.
+The pitch can be changed by the host using the <tt class="docutils literal">CLAP_EVENT_PITCH_SET</tt> event.</p>
+</div>
+</div>
+</div>
+<div class="section" id="id1">
+<h2><a class="toc-backref" href="#id23">Parameters</a></h2>
+</div>
+<div class="section" id="graphical-user-interface">
+<h2><a class="toc-backref" href="#id24">Graphical User Interface</a></h2>
+</div>
+<div class="section" id="presets">
+<h2><a class="toc-backref" href="#id25">Presets</a></h2>
+</div>
+<div class="section" id="save-and-restore-plugin-s-state">
+<h2><a class="toc-backref" href="#id26">Save and restore plugin's state</a></h2>
+<p>Saving the plugin's state is done by:</p>
+<pre class="code c literal-block">
+<span class="kt">void</span> <span class="o">*</span><span class="n">buffer</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="kt">size_t</span> <span class="n">size</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">plugin</span><span class="o">-&gt;</span><span class="n">save</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">buffer</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">size</span><span class="p">);</span>
+<span class="c1">// do what you want
+</span><span class="n">free</span><span class="p">(</span><span class="n">buffer</span><span class="p">);</span>
+</pre>
+<p>Restoring the plugin's state is done by:</p>
+<pre class="code c literal-block">
+<span class="n">plugin</span><span class="o">-&gt;</span><span class="n">restore</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">size</span><span class="p">);</span>
+</pre>
+<p>The state of the plugin should be indepentant of the machine: you can save a
+plugin state on a little endian machine and send it through the network to a
+big endian machine, it should load again successfully.</p>
+</div>
+<div class="section" id="extension-system">
+<h2><a class="toc-backref" href="#id27">Extension system</a></h2>
+</div>
+</div>
+<div class="section" id="examples">
+<h1><a class="toc-backref" href="#id28">Examples</a></h1>
+</div>
+<div class="section" id="references">
+<h1><a class="toc-backref" href="#id29">References</a></h1>
+<pre class="code c literal-block">
+<span class="cm">/**
+ * CLAP - CLever Audio Plugin (&lt;--- needs to find a marketing ok name)
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *
+ * Copyright (c) 2014 Alexandre BIQUE &lt;bique.alexandre&#64;gmail.com&gt;
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the &quot;Software&quot;), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */</span>
+
+<span class="cp">#ifndef CLAP_H
+# define CLAP_H
+</span>
+<span class="cp"># ifdef __cplusplus
+</span><span class="k">extern</span> <span class="s">&quot;C&quot;</span> <span class="p">{</span>
+<span class="cp"># endif
+</span>
+<span class="cp"># include &lt;stdint.h&gt;
+</span>
+<span class="cp"># define CLAP_VERSION_MAKE(Major, Minor, Revision) (((Major) &lt;&lt; 16) | ((Minor) &lt;&lt; 8) | (Revision))
+# define CLAP_VERSION CLAP_VERSION_MAKE(1, 0, 0)
+</span>
+<span class="c1">//////////////
+// CHANNELS //
+//////////////
+</span>
+<span class="k">enum</span> <span class="n">clap_channel_type</span>
+<span class="p">{</span>
+  <span class="n">CLAP_CHANNEL_MONO</span><span class="p">,</span>
+  <span class="n">CLAP_CHANNEL_STEREO</span><span class="p">,</span>
+  <span class="n">CLAP_CHANNEL_SURROUND</span><span class="p">,</span>
+<span class="p">};</span>
+
+<span class="k">enum</span> <span class="n">clap_channel_role</span>
+<span class="p">{</span>
+  <span class="n">CLAP_CHANNEL_INOUT</span><span class="p">,</span>
+  <span class="n">CLAP_CHANNEL_SIDECHAIN</span><span class="p">,</span>
+  <span class="n">CLAP_CHANNEL_FEEDBACK</span><span class="p">,</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">clap_channel</span>
+<span class="p">{</span>
+  <span class="cm">/* linked list */</span>
+  <span class="k">struct</span> <span class="n">clap_channel</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>
+
+  <span class="cm">/* channel info */</span>
+  <span class="k">enum</span> <span class="n">clap_channel_type</span>  <span class="n">type</span><span class="p">;</span>
+  <span class="k">enum</span> <span class="n">clap_channel_role</span>  <span class="n">role</span><span class="p">;</span>
+  <span class="k">const</span> <span class="kt">char</span>             <span class="o">*</span><span class="n">name</span><span class="p">;</span>
+  <span class="kt">uint32_t</span>                <span class="n">stream_id</span><span class="p">;</span> <span class="c1">// used to connect feedback loops
+</span><span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">clap_channels_config</span>
+<span class="p">{</span>
+  <span class="cm">/* linked list */</span>
+  <span class="k">const</span> <span class="k">struct</span> <span class="n">clap_channel_configs</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>
+
+  <span class="cm">/* config */</span>
+  <span class="k">const</span> <span class="k">struct</span> <span class="n">clap_channel</span> <span class="o">*</span><span class="n">inputs</span><span class="p">;</span>
+  <span class="k">const</span> <span class="k">struct</span> <span class="n">clap_channel</span> <span class="o">*</span><span class="n">output</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="c1">////////////////
+// PARAMETERS //
+////////////////
+</span>
+<span class="k">enum</span> <span class="n">clap_param_type</span>
+<span class="p">{</span>
+  <span class="n">CLAP_PARAM_BOOL</span><span class="p">,</span>
+  <span class="n">CLAP_PARAM_FLOAT</span><span class="p">,</span>
+  <span class="n">CLAP_PARAM_INT</span><span class="p">,</span>
+<span class="p">};</span>
+
+<span class="k">union</span> <span class="n">clap_param_value</span>
+<span class="p">{</span>
+  <span class="kt">bool</span>                <span class="n">b</span><span class="p">;</span>
+  <span class="kt">float</span>               <span class="n">f</span><span class="p">;</span>
+  <span class="kt">int32_t</span>             <span class="n">i</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">clap_param</span>
+<span class="p">{</span>
+  <span class="cm">/* tree field */</span>
+  <span class="k">struct</span> <span class="n">clap_param</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>
+  <span class="k">struct</span> <span class="n">clap_param</span> <span class="o">*</span><span class="n">childs</span><span class="p">;</span>
+
+  <span class="cm">/* param info */</span>
+  <span class="k">enum</span> <span class="n">clap_param_type</span>    <span class="n">type</span><span class="p">;</span>
+  <span class="kt">char</span>                   <span class="o">*</span><span class="n">id</span><span class="p">;</span>   <span class="c1">// a string which identify the param
+</span>  <span class="kt">char</span>                   <span class="o">*</span><span class="n">name</span><span class="p">;</span> <span class="c1">// the display name
+</span>  <span class="kt">char</span>                   <span class="o">*</span><span class="n">desc</span><span class="p">;</span>
+  <span class="kt">bool</span>                    <span class="n">is_per_note</span><span class="p">;</span>
+  <span class="k">union</span> <span class="n">clap_param_value</span>  <span class="n">value</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="c1">/////////////
+// PRESETS //
+/////////////
+</span>
+<span class="k">struct</span> <span class="n">clap_preset</span>
+<span class="p">{</span>
+  <span class="k">struct</span> <span class="n">clap_preset</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>
+
+  <span class="kt">char</span> <span class="o">*</span><span class="n">id</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">;</span> <span class="c1">// display name
+</span>  <span class="kt">char</span> <span class="o">*</span><span class="n">desc</span><span class="p">;</span> <span class="c1">// desc and how to use it
+</span>  <span class="kt">char</span> <span class="o">*</span><span class="n">author</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="o">**</span><span class="n">tags</span><span class="p">;</span> <span class="c1">// null terminated array of tags
+</span><span class="p">};</span>
+
+<span class="c1">////////////
+// EVENTS //
+////////////
+</span>
+<span class="k">struct</span> <span class="n">clap_event_note</span>
+<span class="p">{</span>
+  <span class="kt">uint16_t</span> <span class="n">division</span><span class="p">;</span> <span class="c1">// 12 for a standard octave
+</span>  <span class="kt">uint16_t</span> <span class="n">note</span><span class="p">;</span>     <span class="c1">// starts from 0
+</span>  <span class="kt">float</span>    <span class="n">velocity</span><span class="p">;</span> <span class="c1">// 0 .. 1.0f
+</span>
+  <span class="k">struct</span> <span class="n">clap_event</span> <span class="o">*</span><span class="n">events</span><span class="p">;</span> <span class="c1">// events specific to this note
+</span><span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">clap_event_param</span>
+<span class="p">{</span>
+  <span class="kt">uint32_t</span>               <span class="n">index</span><span class="p">;</span>
+  <span class="k">union</span> <span class="n">clap_param_value</span> <span class="n">value</span><span class="p">;</span>
+  <span class="kt">float</span>                  <span class="n">increment</span><span class="p">;</span> <span class="c1">// for param ramp
+</span><span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">clap_event_pitch</span>
+<span class="p">{</span>
+  <span class="kt">float</span> <span class="n">freq_hz</span><span class="p">;</span> <span class="c1">// usually 440Hz
+</span><span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">clap_event_preset</span>
+<span class="p">{</span>
+  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">id</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">enum</span> <span class="n">clap_event_type</span>
+<span class="p">{</span>
+  <span class="n">CLAP_EVENT_NOTE_ON</span><span class="p">,</span>            <span class="c1">// note attribute
+</span>  <span class="n">CLAP_EVENT_NOTE_MODULATION</span><span class="p">,</span>    <span class="c1">// note attribute
+</span>  <span class="n">CLAP_EVENT_NOTE_OFF</span><span class="p">,</span>           <span class="c1">// note attribute
+</span>
+  <span class="n">CLAP_EVENT_PARAM_SET</span><span class="p">,</span>          <span class="c1">// param attribute
+</span>  <span class="n">CLAP_EVENT_PARAM_RAMP</span><span class="p">,</span>         <span class="c1">// param attribute
+</span>  <span class="n">CLAP_EVENT_PITCH_SET</span><span class="p">,</span>          <span class="c1">// diapason attribute
+</span>  <span class="n">CLAP_EVENT_PRESET_SET</span><span class="p">,</span>         <span class="c1">// preset attribute
+</span><span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">clap_event</span>
+<span class="p">{</span>
+  <span class="k">struct</span> <span class="n">clap_event</span>    <span class="o">*</span><span class="n">next</span><span class="p">;</span> <span class="c1">// linked list, NULL on end
+</span>  <span class="k">enum</span> <span class="n">clap_event_type</span>  <span class="n">type</span><span class="p">;</span>
+  <span class="kt">uint32_t</span>              <span class="n">sample_offset</span><span class="p">;</span> <span class="c1">// offset from the parent event or current time in samples
+</span>
+  <span class="k">union</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">clap_event_note</span>     <span class="n">note</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">clap_event_param</span>    <span class="n">param</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">clap_event_pitch</span>    <span class="n">pitch</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">clap_event_preset</span>   <span class="n">preset</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">};</span>
+
+<span class="c1">/////////////
+// PROCESS //
+/////////////
+</span>
+<span class="k">struct</span> <span class="n">clap_process</span>
+<span class="p">{</span>
+  <span class="cm">/* audio buffers */</span>
+  <span class="kt">float</span>    <span class="o">**</span><span class="n">input</span><span class="p">;</span>
+  <span class="kt">float</span>    <span class="o">**</span><span class="n">output</span><span class="p">;</span>
+  <span class="kt">uint32_t</span>   <span class="n">nb_samples</span><span class="p">;</span>
+
+  <span class="cm">/* process info */</span>
+  <span class="kt">bool</span>     <span class="n">is_offline</span><span class="p">;</span>
+  <span class="kt">uint32_t</span> <span class="n">tempo_in_samples</span><span class="p">;</span>
+  <span class="kt">uint32_t</span> <span class="n">time_in_samples</span><span class="p">;</span>
+
+  <span class="cm">/* events */</span>
+  <span class="k">struct</span> <span class="n">clap_event</span> <span class="o">*</span><span class="n">in_events</span><span class="p">;</span>
+  <span class="k">struct</span> <span class="n">clap_event</span> <span class="o">*</span><span class="n">out_events</span><span class="p">;</span>
+
+  <span class="cm">/* output values */</span>
+  <span class="kt">bool</span> <span class="n">need_processing</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="c1">//////////
+// HOST //
+//////////
+</span>
+<span class="k">struct</span> <span class="n">clap_host</span>
+<span class="p">{</span>
+  <span class="kt">uint32_t</span> <span class="n">clap_version</span><span class="p">;</span> <span class="c1">// initialized to CALP_VERSION
+</span>
+  <span class="cm">/* host info */</span>
+  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">;</span>
+  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">manufacturer</span><span class="p">;</span>
+  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">version</span><span class="p">;</span>
+
+  <span class="cm">/* for events generated outside of process, like from the GUI. */</span>
+  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">events</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span>   <span class="o">*</span><span class="n">host</span><span class="p">,</span>
+                 <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
+                 <span class="k">struct</span> <span class="n">clap_event</span>  <span class="o">*</span><span class="n">events</span><span class="p">);</span>
+
+  <span class="cm">/* future features */</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">extention</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">extention_id</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="c1">////////////
+// PLUGIN //
+////////////
+</span>
+<span class="c1">// bitfield
+</span><span class="cp"># define CLAP_PLUGIN_INSTRUMENT  (1 &lt;&lt; 0)
+# define CLAP_PLUGIN_EFFECT      (1 &lt;&lt; 1)
+# define CLAP_PLUGIN_MIDI_EFFECT (1 &lt;&lt; 2)
+# define CLAP_PLUGIN_ANALYZER    (1 &lt;&lt; 3)
+</span>
+<span class="k">struct</span> <span class="n">clap_plugin</span>
+<span class="p">{</span>
+  <span class="kt">uint32_t</span> <span class="n">clap_version</span><span class="p">;</span> <span class="c1">// initialized to CALP_VERSION
+</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">host_data</span><span class="p">;</span>   <span class="c1">// reserved pointer for the host
+</span>  <span class="kt">void</span> <span class="o">*</span><span class="n">plugin_data</span><span class="p">;</span> <span class="c1">// reserved pointer for the plugin
+</span>
+  <span class="cm">/* free plugin's resources */</span>
+  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">destroy</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
+
+  <span class="cm">/* plugin info */</span>
+  <span class="k">const</span> <span class="kt">char</span>  <span class="o">*</span><span class="n">id</span><span class="p">;</span>
+  <span class="k">const</span> <span class="kt">char</span>  <span class="o">*</span><span class="n">name</span><span class="p">;</span>
+  <span class="k">const</span> <span class="kt">char</span>  <span class="o">*</span><span class="n">description</span><span class="p">;</span>
+  <span class="k">const</span> <span class="kt">char</span>  <span class="o">*</span><span class="n">manufacturer</span><span class="p">;</span>
+  <span class="k">const</span> <span class="kt">char</span>  <span class="o">*</span><span class="n">version</span><span class="p">;</span>
+  <span class="k">const</span> <span class="kt">char</span>  <span class="o">*</span><span class="n">url</span><span class="p">;</span>
+  <span class="k">const</span> <span class="kt">char</span>  <span class="o">*</span><span class="n">license</span><span class="p">;</span>
+  <span class="k">const</span> <span class="kt">char</span>  <span class="o">*</span><span class="n">support</span><span class="p">;</span>         <span class="c1">// a link to the support
+</span>  <span class="k">const</span> <span class="kt">char</span> <span class="o">**</span><span class="n">caterogries</span><span class="p">;</span>     <span class="c1">// fm, analogue, delay, reverb, ...
+</span>  <span class="kt">uint32_t</span>     <span class="n">plugin_type</span><span class="p">;</span>
+
+  <span class="cm">/* audio channels */</span>
+  <span class="k">const</span> <span class="k">struct</span> <span class="n">clap_channels_config</span> <span class="o">*</span><span class="n">channel_configs</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">set_channels_config</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>                <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
+                              <span class="k">const</span> <span class="k">struct</span> <span class="n">clap_channels_config</span> <span class="o">*</span><span class="n">config</span><span class="p">);</span>
+
+  <span class="cm">/* parameters */</span>
+  <span class="k">struct</span> <span class="n">clap_param</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">get_params</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
+
+  <span class="cm">/* params */</span>
+  <span class="k">struct</span> <span class="n">clap_preset</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">get_presets</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
+
+  <span class="cm">/* activation */</span>
+  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">activate</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
+  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">deactivate</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
+
+  <span class="cm">/* work */</span>
+  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">process</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="k">struct</span> <span class="n">clap_process</span> <span class="o">*</span><span class="n">process</span><span class="p">);</span>
+
+  <span class="cm">/* gui */</span>
+  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">open_gui</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
+  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">close_gui</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
+
+  <span class="cm">/* state */</span>
+  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">save</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="kt">void</span> <span class="o">**</span><span class="n">buffer</span><span class="p">,</span> <span class="kt">size_t</span> <span class="o">*</span><span class="n">size</span><span class="p">);</span>
+  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">restore</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buffer</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">size</span><span class="p">);</span>
+
+  <span class="cm">/* future features */</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">extention</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">extention_id</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="cm">/* typedef for dlsym() cast */</span>
+<span class="k">typedef</span> <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="p">(</span><span class="n">clap_create_f</span><span class="p">)(</span><span class="kt">uint32_t</span>          <span class="n">plugin_index</span><span class="p">,</span>
+                                            <span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span>
+                                            <span class="kt">uint32_t</span>          <span class="n">sample_rate</span><span class="p">);</span>
+
+<span class="cm">/* plugin entry point */</span>
+<span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span>
+<span class="nf">clap_create</span><span class="p">(</span><span class="kt">uint32_t</span> <span class="n">plugin_index</span><span class="p">,</span> <span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">sample_rate</span><span class="p">);</span>
+
+<span class="cp"># ifdef __cplusplus
+</span><span class="p">}</span>
+<span class="cp"># endif
+</span>
+<span class="cp">#endif </span><span class="cm">/* !CLAP_H */</span>
+</pre>
+</div>
+</div>
+</body>
+</html>

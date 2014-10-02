@@ -258,4 +258,3 @@ References
 
 .. include:: clap.h
    :code: c
-

@@ -185,12 +185,12 @@ struct clap_event
 
 struct clap_process
 {
-  /* audio buffers, they must be aligned on the machine's best vector instructions requirement */
+  /* audio buffers */
   float    **input;
   float    **output;
   uint32_t   nb_samples;
 
-  /* host info */
+  /* process info */
   bool     is_offline;
   uint32_t tempo_in_samples;
   uint32_t time_in_samples;

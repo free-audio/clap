@@ -1,4 +1,7 @@
 all: spec.html
 
-spec.html: spec.rst
-	rst2html $< >$@
+syntax.css:
+	pygmentize -S monokai -f html -a .code >$@
+
+spec.html: spec.rst syntax.css style.css
+	rst2html --syntax-highlight=short --stylesheet=style.css,syntax.css $< >$@
