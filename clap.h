@@ -2,7 +2,7 @@
  * CLAP - CLever Audio Plugin (<--- needs to find a marketing ok name)
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~
  *
- * Copyright (c) 2014 Alexandre BIQUE
+ * Copyright (c) 2014 Alexandre BIQUE <bique.alexandre@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,25 +35,54 @@ extern "C" {
 # define CLAP_VERSION_MAKE(Major, Minor, Revision) (((Major) << 16) | ((Minor) << 8) | (Revision))
 # define CLAP_VERSION CLAP_VERSION_MAKE(1, 0, 0)
 
+//////////////
+// CHANNELS //
+//////////////
+
+enum clap_audio_stream_type
+{
+  CLAP_AUDIO_STREAM_MONO,
+  CLAP_AUDIO_STREAM_STEREO,
+  CLAP_AUDIO_STREAM_SURROUND,
+};
+
+enum clap_audio_stream_role
+{
+  CLAP_AUDIO_STREAM_INOUT,
+  CLAP_AUDIO_STREAM_SIDECHAIN,
+  CLAP_AUDIO_STREAM_FEEDBACK,
+};
+
+struct clap_channel
+{
+  /* linked list */
+  struct clap_channel *next;
+
+  /* channel info */
+  enum clap_channel_type  type;
+  const char             *name;
+  uint32_t                stream_id; // used to connect feedback loops
+};
+
+struct clap_channels_config
+{
+  /* linked list */
+  const struct clap_channel_configs *next;
+
+  /* config */
+  const struct clap_channel *inputs;
+  const struct clap_channel *output;
+};
+
+////////////////
+// PARAMETERS //
+////////////////
+
 enum clap_param_type
 {
   CLAP_PARAM_BOOL,
   CLAP_PARAM_FLOAT,
-  CLAP_PARAM_STRING,
-  CLAP_PARAM_GROUP,
-};
-
-struct clap_param_info
-{
-  uint32_t              index;
-  enum clap_param_type  type;
-  const char           *id;   // a string which identify the param
-  const char           *name; // the display name
-  const char           *desc;
-  bool                  is_per_note;
-
-  uint32_t              group_begin; // index of the first child of the group
-  uint32_t              group_end;   // index of the last child of the group
+  CLAP_PARAM_INT,
 };
 
 union clap_param_value
@@ -61,17 +90,41 @@ union clap_param_value
   bool                b;
   float               f;
   int32_t             i;
-  const char         *s;
 };
 
-struct clap_preset_info
+struct clap_param
 {
-  const char *id;
-  const char *name; // display name
-  const char *desc; // desc and how to use it
-  const char *author;
-  const char **tags; // null terminated array of tags
+  /* tree field */
+  struct clap_param *next;
+  struct clap_param *childs;
+
+  /* param info */
+  enum clap_param_type    type;
+  char                   *id;   // a string which identify the param
+  char                   *name; // the display name
+  char                   *desc;
+  bool                    is_per_note;
+  union clap_param_value  value;
 };
+
+/////////////
+// PRESETS //
+/////////////
+
+struct clap_preset
+{
+  struct clap_preset *next;
+
+  char *id;
+  char *name; // display name
+  char *desc; // desc and how to use it
+  char *author;
+  char **tags; // null terminated array of tags
+};
+
+////////////
+// EVENTS //
+////////////
 
 struct clap_event_note
 {
@@ -125,23 +178,9 @@ struct clap_event
   };
 };
 
-struct clap_host
-{
-  uint32_t clap_version; // initialized to CALP_VERSION
-
-  const char *name;
-  const char *manufacturer;
-  const char *version;
-
-  /* for events generated outside of process, like from the network
-   * or the GUI. */
-  void (*events)(struct clap_host   *host,
-                 struct clap_plugin *plugin,
-                 struct clap_event  *events);
-
-  /* future features */
-  void *(*extention)(struct clap_plugin *plugin, const char *extention_id);
-};
+/////////////
+// PROCESS //
+/////////////
 
 struct clap_process
 {
@@ -163,21 +202,37 @@ struct clap_process
   bool need_processing;
 };
 
-// bitfield
-enum clap_plugin_type
+//////////
+// HOST //
+//////////
+
+struct clap_host
 {
-  CLAP_PLUGIN_INSTRUMENT  = (1 << 0),
-  CLAP_PLUGIN_EFFECT      = (1 << 1),
-  CLAP_PLUGIN_MIDI_EFFECT = (1 << 2),
-  CLAP_PLUGIN_ANALYZER    = (1 << 3),
+  uint32_t clap_version; // initialized to CALP_VERSION
+
+  /* host info */
+  const char *name;
+  const char *manufacturer;
+  const char *version;
+
+  /* for events generated outside of process, like from the GUI. */
+  void (*events)(struct clap_host   *host,
+                 struct clap_plugin *plugin,
+                 struct clap_event  *events);
+
+  /* future features */
+  void *(*extention)(struct clap_plugin *plugin, const char *extention_id);
 };
 
-struct clap_preset_iterator
-{
-  struct clap_preset_info info;
-  void *plugin_ptr; // reserved data for the plugin
-  void (*destroy)(struct clap_preset_iterator *iter);
-};
+////////////
+// PLUGIN //
+////////////
+
+// bitfield
+# define CLAP_PLUGIN_INSTRUMENT  (1 << 0)
+# define CLAP_PLUGIN_EFFECT      (1 << 1)
+# define CLAP_PLUGIN_MIDI_EFFECT (1 << 2)
+# define CLAP_PLUGIN_ANALYZER    (1 << 3)
 
 struct clap_plugin
 {
@@ -190,26 +245,27 @@ struct clap_plugin
   void (*destroy)(struct clap_plugin *plugin);
 
   /* plugin info */
-  const char *id;
-  const char *name;
-  const char *description;
-  const char *manufacturer;
-  const char *version;
-  const char *url;
-  const char *license;
-  const char *support; // a link to the support, mailto:support@XXX.com or http://XXX.com/support
-  const char ** caterogries; // fm, analogue, delay, reverb, ...
-  uint32_t plugin_type;
-  uint32_t inputs_count;
-  uint32_t outputs_count;
+  const char  *id;
+  const char  *name;
+  const char  *description;
+  const char  *manufacturer;
+  const char  *version;
+  const char  *url;
+  const char  *license;
+  const char  *support;         // a link to the support
+  const char **caterogries;     // fm, analogue, delay, reverb, ...
+  uint32_t     plugin_type;
+
+  /* audio channels */
+  const struct clap_channels_config *channel_configs;
+  void (*set_channels_config)(struct clap_plugin                *plugin,
+                              const struct clap_channels_config *config);
 
   /* parameters */
-  uint32_t (*get_param_count)(struct clap_plugin *plugin);
-  void (*get_param_info)(struct clap_plugin *plugin, uint32_t index, struct clap_param_info *param);
+  struct clap_param *(*get_params)(struct clap_plugin *plugin);
 
-  /* presets */
-  struct clap_preset_iterator *(*presets_begin)(struct clap_plugin *plugin);
-  bool (*presets_next)(struct clap_plugin *plugin, struct clap_preset_iterator *iter);
+  /* params */
+  struct clap_preset *(*get_presets)(struct clap_plugin *plugin);
 
   /* activation */
   bool (*activate)(struct clap_plugin *plugin);
@@ -230,8 +286,12 @@ struct clap_plugin
   void *(*extention)(struct clap_plugin *plugin, const char *extention_id);
 };
 
-typedef struct clap_plugin *(clap_create_f)(uint32_t plugin_index, struct clap_host *host, uint32_t sample_rate);
+/* typedef for dlsym() cast */
+typedef struct clap_plugin *(clap_create_f)(uint32_t          plugin_index,
+                                            struct clap_host *host,
+                                            uint32_t          sample_rate);
 
+/* plugin entry point */
 struct clap_plugin *
 clap_create(uint32_t plugin_index, struct clap_host *host, uint32_t sample_rate);
 
