@@ -39,18 +39,18 @@ extern "C" {
 // CHANNELS //
 //////////////
 
-enum clap_audio_stream_type
+enum clap_channel_type
 {
-  CLAP_AUDIO_STREAM_MONO,
-  CLAP_AUDIO_STREAM_STEREO,
-  CLAP_AUDIO_STREAM_SURROUND,
+  CLAP_CHANNEL_MONO,
+  CLAP_CHANNEL_STEREO,
+  CLAP_CHANNEL_SURROUND,
 };
 
-enum clap_audio_stream_role
+enum clap_channel_role
 {
-  CLAP_AUDIO_STREAM_INOUT,
-  CLAP_AUDIO_STREAM_SIDECHAIN,
-  CLAP_AUDIO_STREAM_FEEDBACK,
+  CLAP_CHANNEL_INOUT,
+  CLAP_CHANNEL_SIDECHAIN,
+  CLAP_CHANNEL_FEEDBACK,
 };
 
 struct clap_channel
@@ -60,6 +60,7 @@ struct clap_channel
 
   /* channel info */
   enum clap_channel_type  type;
+  enum clap_channel_role  role;
   const char             *name;
   uint32_t                stream_id; // used to connect feedback loops
 };
