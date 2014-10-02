@@ -1,5 +1,7 @@
 all: spec.html
 
+.PHONY: spec.html
+
 syntax.css:
 	pygmentize -S monokai -f html -a .code >$@
 
