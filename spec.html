@@ -7,7 +7,26 @@
 <title>CLAP (CLever Audio Plugin)</title>
 <style type="text/css">
 
+.document {
+    width: 700px;
+}
 
+.title {
+    text-align: center;
+}
+
+.subtitle {
+    text-align: center;
+}
+
+.reference, .toc-backref {
+    text-decoration: none;
+    color: #942;
+}
+
+.reference:hover, .toc-backref:hover {
+    color: #294;
+}
 </style>
 <style type="text/css">
 
@@ -197,7 +216,7 @@ the index until <tt class="docutils literal">clap_create</tt> returns <tt class=
 <span class="cp">#include &lt;stdio.h&gt;
 #include &lt;dlfcn.h&gt;
 </span>
-<span class="cp">#include &lt;clap.h&gt;
+<span class="cp">#include &lt;clap/clap.h&gt;
 </span>
 <span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
 <span class="p">{</span>

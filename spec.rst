@@ -82,7 +82,7 @@ the index until ``clap_create`` returns ``NULL``.
 Sample
 ~~~~~~
 
-.. include:: samples/load-plugins.c
+.. include:: samples/clap-info.c
    :code: c
 
 Description
@@ -256,5 +256,5 @@ Examples
 References
 ==========
 
-.. include:: clap.h
+.. include:: include/clap/clap.h
    :code: c

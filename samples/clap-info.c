@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <dlfcn.h>
 
-#include <clap.h>
+#include <clap/clap.h>
 
 int main(int argc, char **argv)
 {

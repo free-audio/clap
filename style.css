@@ -1,0 +1,20 @@
+.document {
+    width: 700px;
+}
+
+.title {
+    text-align: center;
+}
+
+.subtitle {
+    text-align: center;
+}
+
+.reference, .toc-backref {
+    text-decoration: none;
+    color: #942;
+}
+
+.reference:hover, .toc-backref:hover {
+    color: #294;
+}
