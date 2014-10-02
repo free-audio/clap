@@ -32,8 +32,12 @@ extern "C" {
 
 # include <stdint.h>
 
-# define CLAP_VERSION_MAKE(Major, Minor, Revision) (((Major) << 16) | ((Minor) << 8) | (Revision))
+# define CLAP_VERSION_MAKE(Major, Minor, Revision) \
+  ((((Major) & 0xff) << 16) | (((Minor) & 0xff) << 8) | ((Revision) & 0xff))
 # define CLAP_VERSION CLAP_VERSION_MAKE(1, 0, 0)
+# define CLAP_VERSION_MAJ(Version) (((Version) >> 16) & 0xff)
+# define CLAP_VERSION_MIN(Version) (((Version) >> 8) & 0xff)
+# define CLAP_VERSION_REV(Version) ((Version) & 0xff)
 
 //////////////
 // CHANNELS //
@@ -84,6 +88,13 @@ enum clap_param_type
   CLAP_PARAM_BOOL,
   CLAP_PARAM_FLOAT,
   CLAP_PARAM_INT,
+  CLAP_PARAM_ENUM, // uses int
+};
+
+enum clap_param_scale
+{
+  CLAP_PARAM_LINEAR,
+  CLAP_PARAM_LOG,
 };
 
 union clap_param_value
@@ -106,6 +117,9 @@ struct clap_param
   char                   *desc;
   bool                    is_per_note;
   union clap_param_value  value;
+  union clap_param_value  min;
+  union clap_param_value  max;
+  enum clap_param_scale   scale;
 };
 
 /////////////
