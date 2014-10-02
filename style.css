@@ -18,3 +18,8 @@
 .reference:hover, .toc-backref:hover {
     color: #294;
 }
+
+tt.docutils {
+    color: #237;
+    font-size: 100%;
+}

@@ -27,6 +27,12 @@
 .reference:hover, .toc-backref:hover {
     color: #294;
 }
+
+tt.docutils {
+    color: #237;
+    font-size: 100%;
+}
+
 </style>
 <style type="text/css">
 
@@ -476,8 +482,12 @@ big endian machine, it should load again successfully.</p>
 </span>
 <span class="cp"># include &lt;stdint.h&gt;
 </span>
-<span class="cp"># define CLAP_VERSION_MAKE(Major, Minor, Revision) (((Major) &lt;&lt; 16) | ((Minor) &lt;&lt; 8) | (Revision))
+<span class="cp"># define CLAP_VERSION_MAKE(Major, Minor, Revision) \
+  ((((Major) &amp; 0xff) &lt;&lt; 16) | (((Minor) &amp; 0xff) &lt;&lt; 8) | ((Revision) &amp; 0xff))
 # define CLAP_VERSION CLAP_VERSION_MAKE(1, 0, 0)
+# define CLAP_VERSION_MAJ(Version) (((Version) &gt;&gt; 16) &amp; 0xff)
+# define CLAP_VERSION_MIN(Version) (((Version) &gt;&gt; 8) &amp; 0xff)
+# define CLAP_VERSION_REV(Version) ((Version) &amp; 0xff)
 </span>
 <span class="c1">//////////////
 // CHANNELS //
@@ -528,6 +538,13 @@ big endian machine, it should load again successfully.</p>
   <span class="n">CLAP_PARAM_BOOL</span><span class="p">,</span>
   <span class="n">CLAP_PARAM_FLOAT</span><span class="p">,</span>
   <span class="n">CLAP_PARAM_INT</span><span class="p">,</span>
+  <span class="n">CLAP_PARAM_ENUM</span><span class="p">,</span> <span class="c1">// uses int
+</span><span class="p">};</span>
+
+<span class="k">enum</span> <span class="n">clap_param_scale</span>
+<span class="p">{</span>
+  <span class="n">CLAP_PARAM_LINEAR</span><span class="p">,</span>
+  <span class="n">CLAP_PARAM_LOG</span><span class="p">,</span>
 <span class="p">};</span>
 
 <span class="k">union</span> <span class="n">clap_param_value</span>
@@ -550,6 +567,9 @@ big endian machine, it should load again successfully.</p>
 </span>  <span class="kt">char</span>                   <span class="o">*</span><span class="n">desc</span><span class="p">;</span>
   <span class="kt">bool</span>                    <span class="n">is_per_note</span><span class="p">;</span>
   <span class="k">union</span> <span class="n">clap_param_value</span>  <span class="n">value</span><span class="p">;</span>
+  <span class="k">union</span> <span class="n">clap_param_value</span>  <span class="n">min</span><span class="p">;</span>
+  <span class="k">union</span> <span class="n">clap_param_value</span>  <span class="n">max</span><span class="p">;</span>
+  <span class="k">enum</span> <span class="n">clap_param_scale</span>   <span class="n">scale</span><span class="p">;</span>
 <span class="p">};</span>
 
 <span class="c1">/////////////
