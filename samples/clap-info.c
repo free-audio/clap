@@ -24,10 +24,15 @@ int main(int argc, char **argv)
     return 1;
   }
 
-  for (uint32_t index = 0; index < (uint32_t)-1; ++index) {
-    struct clap_plugin *plugin = symbold.clap_create(index, host, 48000);
-    if (!plugin)
-      break;
+  uint32_t plugin_count = -1;
+  for (uint32_t index = 0; index < plugin_count; ++index) {
+    struct clap_plugin *plugin = symbold.clap_create(
+      index, host, 48000, &plugin_count);
+
+    if (!plugin) {
+      fprintf(stderr, "failed to create plugin index %d\n", index);
+      continue;
+    }
 
     fprintf(stdio,
             "found plugin:\n"

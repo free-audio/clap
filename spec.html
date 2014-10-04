@@ -246,7 +246,9 @@ and must be valid.</p>
 <h3><a class="toc-backref" href="#id13">Shell plugins</a></h3>
 <p>A single dynamic library can contains multiple plugins.
 To list them, you have to call <tt class="docutils literal">clap_create</tt> with an index of 0 and increment
-the index until <tt class="docutils literal">clap_create</tt> returns <tt class="docutils literal">NULL</tt>.</p>
+the index until you reach <tt class="docutils literal">plugin_count</tt>.
+<tt class="docutils literal">clap_create</tt> returns <tt class="docutils literal">NULL</tt> if the plugin creation failed or if
+<tt class="docutils literal">plugin_index &gt;= plugin_count</tt>.</p>
 <div class="section" id="sample-plugin-loader">
 <h4><a class="toc-backref" href="#id14">Sample plugin loader</a></h4>
 <p>See <a class="reference internal" href="#samples-clap-info-c">samples/clap-info.c</a></p>
@@ -513,9 +515,16 @@ maximum requirement of the vector instructions currently avalaible.</p>
 </div>
 <div class="section" id="events">
 <h3><a class="toc-backref" href="#id25">Events</a></h3>
-<p>Events are relative to <tt class="docutils literal"><span class="pre">process-&gt;time_in_samples</span></tt>.
-Their time must be positive, and included into <tt class="docutils literal"><span class="pre">[0..process-&gt;nb_samples[</span></tt>
-or equal to <tt class="docutils literal">0</tt>.</p>
+<ul class="simple">
+<li>Events are relative to <tt class="docutils literal"><span class="pre">process-&gt;time_in_samples</span></tt>.</li>
+<li>Their time must be within the process duration: positive and included
+into <tt class="docutils literal"><span class="pre">[0..process-&gt;nb_samples[</span></tt> or equal to <tt class="docutils literal">0</tt>.</li>
+<li>The host is responsible to allocate to allocate input events (<tt class="docutils literal">in_events</tt>).</li>
+<li>The plugin must not modify the input events (<tt class="docutils literal">in_events</tt>).</li>
+<li>The plugin is responsible to allocate the output events (<tt class="docutils literal">out_events</tt>).</li>
+<li>The host is responsible to free both input and output events
+(<tt class="docutils literal">in_events</tt> and <tt class="docutils literal">out_events</tt>).</li>
+</ul>
 <div class="section" id="notes">
 <h4><a class="toc-backref" href="#id26">Notes</a></h4>
 <p>Notes are reprensented as a pair <tt class="docutils literal">note, division</tt>.
@@ -805,7 +814,7 @@ big endian machine, it should load again successfully.</p>
 <span class="p">{</span>
   <span class="k">struct</span> <span class="n">clap_event</span>    <span class="o">*</span><span class="n">next</span><span class="p">;</span> <span class="c1">// linked list, NULL on end
 </span>  <span class="k">enum</span> <span class="n">clap_event_type</span>  <span class="n">type</span><span class="p">;</span>
-  <span class="kt">uint32_t</span>              <span class="n">sample_offset</span><span class="p">;</span> <span class="c1">// offset from the parent event or current time in samples
+  <span class="kt">uint64_t</span>              <span class="n">sample_offset</span><span class="p">;</span> <span class="c1">// offset from the parent event or current time in samples
 </span>
   <span class="k">union</span> <span class="p">{</span>
     <span class="k">struct</span> <span class="n">clap_event_note</span>     <span class="n">note</span><span class="p">;</span>
@@ -833,7 +842,7 @@ big endian machine, it should load again successfully.</p>
   <span class="cm">/* process info */</span>
   <span class="kt">bool</span>     <span class="n">is_offline</span><span class="p">;</span>
   <span class="kt">uint32_t</span> <span class="n">tempo_in_samples</span><span class="p">;</span>
-  <span class="kt">uint32_t</span> <span class="n">time_in_samples</span><span class="p">;</span>
+  <span class="kt">uint64_t</span> <span class="n">time_in_samples</span><span class="p">;</span>
 
   <span class="cm">/* events */</span>
   <span class="k">struct</span> <span class="n">clap_event</span> <span class="o">*</span><span class="n">in_events</span><span class="p">;</span>
@@ -930,11 +939,15 @@ big endian machine, it should load again successfully.</p>
 <span class="cm">/* typedef for dlsym() cast */</span>
 <span class="k">typedef</span> <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="p">(</span><span class="n">clap_create_f</span><span class="p">)(</span><span class="kt">uint32_t</span>          <span class="n">plugin_index</span><span class="p">,</span>
                                             <span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span>
-                                            <span class="kt">uint32_t</span>          <span class="n">sample_rate</span><span class="p">);</span>
+                                            <span class="kt">uint32_t</span>          <span class="n">sample_rate</span><span class="p">,</span>
+                                            <span class="kt">uint32_t</span>         <span class="o">*</span><span class="n">plugin_count</span><span class="p">);</span>
 
 <span class="cm">/* plugin entry point */</span>
 <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span>
-<span class="nf">clap_create</span><span class="p">(</span><span class="kt">uint32_t</span> <span class="n">plugin_index</span><span class="p">,</span> <span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">sample_rate</span><span class="p">);</span>
+<span class="nf">clap_create</span><span class="p">(</span><span class="kt">uint32_t</span>          <span class="n">plugin_index</span><span class="p">,</span>
+            <span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span>
+            <span class="kt">uint32_t</span>          <span class="n">sample_rate</span><span class="p">,</span>
+            <span class="kt">uint32_t</span>         <span class="o">*</span><span class="n">plugin_count</span><span class="p">);</span>
 
 <span class="cp"># ifdef __cplusplus
 </span><span class="p">}</span>
@@ -972,10 +985,15 @@ big endian machine, it should load again successfully.</p>
     <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
   <span class="p">}</span>
 
-  <span class="k">for</span> <span class="p">(</span><span class="kt">uint32_t</span> <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="p">(</span><span class="kt">uint32_t</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="o">++</span><span class="n">index</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span> <span class="o">=</span> <span class="n">symbold</span><span class="p">.</span><span class="n">clap_create</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="mi">48000</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">plugin</span><span class="p">)</span>
-      <span class="k">break</span><span class="p">;</span>
+  <span class="kt">uint32_t</span> <span class="n">plugin_count</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">uint32_t</span> <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">plugin_count</span><span class="p">;</span> <span class="o">++</span><span class="n">index</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span> <span class="o">=</span> <span class="n">symbold</span><span class="p">.</span><span class="n">clap_create</span><span class="p">(</span>
+      <span class="n">index</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="mi">48000</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">plugin_count</span><span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">plugin</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;failed to create plugin index %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">index</span><span class="p">);</span>
+      <span class="k">continue</span><span class="p">;</span>
+    <span class="p">}</span>
 
     <span class="n">fprintf</span><span class="p">(</span><span class="n">stdio</span><span class="p">,</span>
             <span class="s">&quot;found plugin:</span><span class="se">\n</span><span class="s">&quot;</span>

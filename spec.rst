@@ -83,7 +83,9 @@ Shell plugins
 
 A single dynamic library can contains multiple plugins.
 To list them, you have to call ``clap_create`` with an index of 0 and increment
-the index until ``clap_create`` returns ``NULL``.
+the index until you reach ``plugin_count``.
+``clap_create`` returns ``NULL`` if the plugin creation failed or if
+``plugin_index >= plugin_count``.
 
 Sample plugin loader
 ````````````````````
@@ -283,9 +285,14 @@ See `Pin layout`_.
 Events
 ~~~~~~
 
-Events are relative to ``process->time_in_samples``.
-Their time must be positive, and included into ``[0..process->nb_samples[``
-or equal to ``0``.
+- Events are relative to ``process->time_in_samples``.
+- Their time must be within the process duration: positive and included
+  into ``[0..process->nb_samples[`` or equal to ``0``.
+- The host is responsible to allocate to allocate input events (``in_events``).
+- The plugin must not modify the input events (``in_events``).
+- The plugin is responsible to allocate the output events (``out_events``).
+- The host is responsible to free both input and output events
+  (``in_events`` and ``out_events``).
 
 Notes
 `````

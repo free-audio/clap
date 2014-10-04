@@ -187,7 +187,7 @@ struct clap_event
 {
   struct clap_event    *next; // linked list, NULL on end
   enum clap_event_type  type;
-  uint32_t              sample_offset; // offset from the parent event or current time in samples
+  uint64_t              sample_offset; // offset from the parent event or current time in samples
 
   union {
     struct clap_event_note     note;
@@ -215,7 +215,7 @@ struct clap_process
   /* process info */
   bool     is_offline;
   uint32_t tempo_in_samples;
-  uint32_t time_in_samples;
+  uint64_t time_in_samples;
 
   /* events */
   struct clap_event *in_events;
@@ -312,11 +312,15 @@ struct clap_plugin
 /* typedef for dlsym() cast */
 typedef struct clap_plugin *(clap_create_f)(uint32_t          plugin_index,
                                             struct clap_host *host,
-                                            uint32_t          sample_rate);
+                                            uint32_t          sample_rate,
+                                            uint32_t         *plugin_count);
 
 /* plugin entry point */
 struct clap_plugin *
-clap_create(uint32_t plugin_index, struct clap_host *host, uint32_t sample_rate);
+clap_create(uint32_t          plugin_index,
+            struct clap_host *host,
+            uint32_t          sample_rate,
+            uint32_t         *plugin_count);
 
 # ifdef __cplusplus
 }
