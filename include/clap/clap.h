@@ -65,18 +65,19 @@ struct clap_channel
   /* channel info */
   enum clap_channel_type  type;
   enum clap_channel_role  role;
-  const char             *name;
+  char                   *name;
   uint32_t                stream_id; // used to connect feedback loops
+  bool                    repeatable;
 };
 
 struct clap_channels_config
 {
   /* linked list */
-  const struct clap_channel_configs *next;
+  struct clap_channel_configs *next;
 
   /* config */
-  const struct clap_channel *inputs;
-  const struct clap_channel *output;
+  struct clap_channel *inputs;
+  struct clap_channel *output;
 };
 
 ////////////////
@@ -141,6 +142,21 @@ struct clap_preset
 // EVENTS //
 ////////////
 
+enum clap_event_type
+{
+  CLAP_EVENT_NOTE_ON,            // note attribute
+  CLAP_EVENT_NOTE_MODULATION,    // note attribute
+  CLAP_EVENT_NOTE_OFF,           // note attribute
+
+  CLAP_EVENT_PARAM_SET,          // param attribute
+  CLAP_EVENT_PARAM_RAMP,         // param attribute
+  CLAP_EVENT_PITCH_SET,          // diapason attribute
+  CLAP_EVENT_PRESET_SET,         // preset attribute
+
+  CLAP_EVENT_GUI_OPENED,         // plugin to host
+  CLAP_EVENT_GUI_CLOSED,         // plugin to host
+};
+
 struct clap_event_note
 {
   uint16_t division; // 12 for a standard octave
@@ -167,18 +183,6 @@ struct clap_event_preset
   const char *id;
 };
 
-enum clap_event_type
-{
-  CLAP_EVENT_NOTE_ON,            // note attribute
-  CLAP_EVENT_NOTE_MODULATION,    // note attribute
-  CLAP_EVENT_NOTE_OFF,           // note attribute
-
-  CLAP_EVENT_PARAM_SET,          // param attribute
-  CLAP_EVENT_PARAM_RAMP,         // param attribute
-  CLAP_EVENT_PITCH_SET,          // diapason attribute
-  CLAP_EVENT_PRESET_SET,         // preset attribute
-};
-
 struct clap_event
 {
   struct clap_event    *next; // linked list, NULL on end
@@ -203,6 +207,10 @@ struct clap_process
   float    **input;
   float    **output;
   uint32_t   nb_samples;
+
+  /* feedback loops */
+  void (*feedback)(void *feedback_ctx, uint32_t stream_id, uint32_t nb_samples);
+  void *feedback_ctx;
 
   /* process info */
   bool     is_offline;
@@ -236,7 +244,7 @@ struct clap_host
                  struct clap_event  *events);
 
   /* future features */
-  void *(*extention)(struct clap_plugin *plugin, const char *extention_id);
+  void *(*extension)(struct clap_plugin *plugin, const char *extention_id);
 };
 
 ////////////
@@ -272,9 +280,9 @@ struct clap_plugin
   uint32_t     plugin_type;
 
   /* audio channels */
-  const struct clap_channels_config *channel_configs;
-  void (*set_channels_config)(struct clap_plugin                *plugin,
-                              const struct clap_channels_config *config);
+  struct clap_channels_config *(*get_channels_configs)(struct clap_plugin *plugin);
+  bool (*set_channels_config)(struct clap_plugin          *plugin,
+                              struct clap_channels_config *config);
 
   /* parameters */
   struct clap_param *(*get_params)(struct clap_plugin *plugin);
@@ -290,7 +298,7 @@ struct clap_plugin
   void (*process)(struct clap_plugin *plugin, struct clap_process *process);
 
   /* gui */
-  void (*open_gui)(struct clap_plugin *plugin);
+  bool (*open_gui)(struct clap_plugin *plugin);
   void (*close_gui)(struct clap_plugin *plugin);
 
   /* state */
@@ -298,7 +306,7 @@ struct clap_plugin
   void (*restore)(struct clap_plugin *plugin, const void *buffer, size_t size);
 
   /* future features */
-  void *(*extention)(struct clap_plugin *plugin, const char *extention_id);
+  void *(*extension)(struct clap_plugin *plugin, const char *extention_id);
 };
 
 /* typedef for dlsym() cast */

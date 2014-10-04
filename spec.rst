@@ -14,9 +14,15 @@ Goals
 - Make a free audio plugin format
 - Be easy to understand and implement
 - Bring new features missed in VST 2.4
-- Replace old concepts by modern design
+- Replace old concepts by modern one
 - Designed to work on any operating system
 - Be event oriented
+- Be extensible without breaking existing plugins
+- Be easy to bridge
+
+Later goals
+-----------
+
 - Provide a reference host
 - Provide some reference plugins
 - Provide a validation plugin, which should signal anything wrong the host does
@@ -32,8 +38,8 @@ Encoding
 All the strings exchanged through the CLAP interface must be encoded in UTF-8
 and must be valid.
 
-Locate the plugins
-------------------
+Plugins location
+----------------
 
 Common
 ~~~~~~
@@ -79,11 +85,10 @@ A single dynamic library can contains multiple plugins.
 To list them, you have to call ``clap_create`` with an index of 0 and increment
 the index until ``clap_create`` returns ``NULL``.
 
-Sample
-~~~~~~
+Sample plugin loader
+````````````````````
 
-.. include:: samples/clap-info.c
-   :code: c
+See `samples/clap-info.c`_
 
 Description
 ~~~~~~~~~~~
@@ -123,27 +128,107 @@ Both the plugin and host have a few attribute giving general plugin description.
 | plugin_type  | Bitfield describing what the plugin does. See enum            |
 |              | clap_plugin_type.                                             |
 +--------------+---------------------------------------------------------------+
-| inputs_count | The number of input buffers.                                  |
-+--------------+---------------------------------------------------------------+
-| outputs_count| The number of output buffers.                                 |
-+--------------+---------------------------------------------------------------+
 | host_data    | Reserved pointer for the host.                                |
 +--------------+---------------------------------------------------------------+
 | plugin_data  | Reserved pointer for the plugin.                              |
 +--------------+---------------------------------------------------------------+
 
+Audio channel configuration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A plugin may have multiple audio channels, and so multiple audio channels
+layout or configurations.
+
+An audio channel has a type: mono, stereo, surround and a role: main
+input/output, sidechain, feedback.
+
+Pin layout
+``````````
+
++----------+-----+---------------------+
+| type     | pin | description         |
++==========+=====+=====================+
+| mono     | 0   | mono                |
++----------+-----+---------------------+
+| stereo   | 0   | left                |
+|          +-----+---------------------+
+|          | 1   | right               |
++----------+-----+---------------------+
+| surround | 0   | front left          |
+|          +-----+---------------------+
+|          | 1   | front right         |
+|          +-----+---------------------+
+|          | 2   | center              |
+|          +-----+---------------------+
+|          | 3   | low frequency       |
+|          +-----+---------------------+
+|          | 4   | surround left       |
+|          +-----+---------------------+
+|          | 5   | surround right      |
+|          +-----+---------------------+
+|          | 6   | surround back left  |
+|          +-----+---------------------+
+|          | 7   | surround back right |
++----------+-----+---------------------+
+
+So for the following configuration:
+
++--------+----------+------------+---------------------+-----------------+
+| in/out | type     | role       | buffer              | desc            |
++========+==========+============+=====================+=================+
+| input  | stereo   | inout      | process->inputs[0]  | left input      |
+| input  |          |            | process->inputs[1]  | right input     |
++--------+----------+------------+---------------------+-----------------+
+| input  | stereo   | sidechain  | process->inputs[2]  | left sidechain  |
+| input  |          |            | process->inputs[3]  | right sidechain |
++--------+----------+------------+---------------------+-----------------+
+| input  | stereo   | feedback   | process->inputs[4]  | left feedback   |
+| input  |          |            | process->inputs[5]  | right feedback  |
++--------+----------+------------+---------------------+-----------------+
+| output | stereo   | inout      | process->outputs[0] | left input      |
+| output |          |            | process->outputs[1] | right input     |
++--------+----------+------------+---------------------+-----------------+
+| output | stereo   | feedback   | process->outputs[2] | left feedback   |
+| output |          |            | process->outputs[3] | right feedback  |
++--------+----------+------------+---------------------+-----------------+
+
+Available configurations
+````````````````````````
+
+It is possible to discover a plugin's by calling
+``plugin->get_channels_configs(plugin);``. It returns a newly allocated linked
+list of configurations. It is the responsability of the host to free the list.
+
+Selecting a configuration
+`````````````````````````
+
+Selecting an audio configuration has to be done when the plugin is deactivated.
+It is done by calling ``plugin->set_channels_config(plugin, config)``.
+
+The host should duplicate the config before passing it to the plugin, and the
+plugin is responsible to free the given config.
+
+``plugin->set_channels_config(plugin, config)`` returns ``true`` if the
+confiugration is successful, ``false`` otherwise.
+
+Repeatable channels
+```````````````````
+
+Repeatable channels are a special case. A channel can be identified as
+repeatable if ``channel->is_repeatable == true``.
+
+A usefull case is for an analyzer. Imagine a spectroscope, to which you want to
+plug any number of inputs. Each of those inputs can be named and displayed in
+the spectrograph, so it is a convinient way analyze many tracks in the same
+spectroscope.
+
+To repeat a channel, just duplicate it and insert it between the original and
+its next channel. Then call ``plugin->set_channels_config(plugin, config);``.
+
 Threading
 ---------
 
-The plugin is not thread safe, and must not be called concurrently.
-
-Yet, show_gui() and hide_gui() have to be called from an other thread,
-and can be called concurrently.
-
-Rational: starting the GUI requires to load resources which may be done
-synchronously and can take time. So to avoid blocking the audio
-processing, we choose to start the GUI from a different thread that the
-audio processing thread.
+The plugin must be thread safe.
 
 Activation
 ----------
@@ -178,6 +263,7 @@ The processing is done in one call: ``plugin->process(plugin, process);``.
 The data structure process regroup everything needed by the plugin:
 
 - audio buffers (in, out)
+- feedback process callback
 - events (in, out)
 - tempo, time, is offline? (in)
 - more processing needed (out)
@@ -190,17 +276,16 @@ maximum requirement of the vector instructions currently avalaible.
 
 In-place processing is not supported.
 
+There is no minimum number of samples.
+
+See `Pin layout`_.
+
 Events
 ~~~~~~
 
 Events are relative to ``process->time_in_samples``.
-Their time must be positive, and included into ``[0..process->nb_samples[``.
-
-Parameters
-``````````
-
-Parameters can be automated by the host using ``CLAP_EVENT_PARAM_SET`` or
-``CLAP_EVENT_PARAM_RAMP``.
+Their time must be positive, and included into ``[0..process->nb_samples[``
+or equal to ``0``.
 
 Notes
 `````
@@ -209,10 +294,20 @@ Notes are reprensented as a pair ``note, division``.
 Division is the number of intervals between one note and an other note with
 half or the double frequency.
 
+Parameters
+``````````
+
+Parameters can be automated by the host using ``CLAP_EVENT_PARAM_SET`` or
+``CLAP_EVENT_PARAM_RAMP``.
+
+When using ``CLAP_EVENT_PARAM_RAMP``, the value of the parameter has to be
+incremented by ``event->param.increment`` each steps until an other event
+occur on this parameter.
+
 Pitch
 `````
 
-The pitch is the frequency of the note A. Its default value is 440Hz.
+The pitch is the frequency of the note A4. Its default value is 440Hz.
 The pitch can be changed by the host using the ``CLAP_EVENT_PITCH_SET`` event.
 
 Parameters
@@ -221,8 +316,49 @@ Parameters
 Graphical User Interface
 ------------------------
 
+Showing the GUI
+~~~~~~~~~~~~~~~
+
+The plugin should show the GUI after a call to ``plugin->show_gui(plugin)``.
+If the plugin could successfully show the GUI, it returns ``true``, ``false``
+otherwise.
+
+Sending events to the host
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The plugin can notify the host of parameter changes by sending events to:
+``host->events(host, plugin, events);``.
+
+Hiding the GUI
+~~~~~~~~~~~~~~
+
+The plugin should hide the GUI after a call to ``plugin->hide_gui(plugin)``.
+If the plugin window has been closed by the user, then the plugin should
+send an event ``CLAP_EVENT_GUI_CLOSED`` to the host.
+
+.. code:: c
+
+  struct clap event ev;
+  ev.next = NULL;
+  ev.type = CLAP_EVENT_GUI_CLOSED;
+  host->events(host, plugin, &ev);
+
+
 Presets
 -------
+
+List plugin's presets
+~~~~~~~~~~~~~~~~~~~~~
+
+The host can browse the plugin's preset by callign ``plugin->get_presets(plugin);``.
+This function returns a newly allocated preset linked list.
+It is the responsibility of the host to free the linked list.
+
+Load a preset
+~~~~~~~~~~~~~
+
+To load a preset, the host should send an event ``CLAP_EVENT_PRESET_SET`` to
+the plugin.
 
 Save and restore plugin's state
 -------------------------------
@@ -250,11 +386,29 @@ big endian machine, it should load again successfully.
 Extension system
 ----------------
 
+To extend clap's functionnality, there is a pretty simple mechanism:
+
+.. code:: c
+
+  void *plug_ext = plugin->extension(plug, "company/ext-name");
+  void *host_ext = host->extension(host, "company/ext-name");
+
+If the extension is not supported, the plugin should return ``NULL``.
+
 Examples
 ========
 
 References
 ==========
 
+clap.c
+------
+
 .. include:: include/clap/clap.h
+   :code: c
+
+samples/clap-info.c
+-------------------
+
+.. include:: samples/clap-info.c
    :code: c
