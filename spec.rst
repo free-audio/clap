@@ -81,7 +81,7 @@ Precautions
 Shell plugins
 ~~~~~~~~~~~~~
 
-A single dynamic library can contains multiple plugins.
+A single dynamic library can contains multiple clap plugins.
 To list them, you have to call ``clap_create`` with an index of 0 and increment
 the index until you reach ``plugin_count``.
 ``clap_create`` returns ``NULL`` if the plugin creation failed or if
@@ -97,43 +97,49 @@ Description
 
 Both the plugin and host have a few attribute giving general plugin description.
 
-+--------------+---------------------------------------------------------------+
-| Attribute    | Description                                                   |
-+==============+===============================================================+
-| clap_version | Described the plugin format version implemented. Should be    |
-|              | initialized with CLAP_PLUGIN_VERSION,                         |
-|              | or CLAP_VERSION_MAKE(1, 0, 0) if you want to only support     |
-|              | version 1.0.0                                                 |
-+--------------+---------------------------------------------------------------+
-| id           | Unique identifier of the plugin. It should never change. It   |
-|              | should be the same on 32bits or 64bits or whatever.           |
-+--------------+---------------------------------------------------------------+
-| name         | The name of the product.                                      |
-+--------------+---------------------------------------------------------------+
-| description  | A brief description of the product.                           |
-+--------------+---------------------------------------------------------------+
-| manufacturer | Which company made the plugin.                                |
-+--------------+---------------------------------------------------------------+
-| version      | A string describing the product version.                      |
-+--------------+---------------------------------------------------------------+
-| url          | An URL to the product homepage.                               |
-+--------------+---------------------------------------------------------------+
-| license      | The plugin license type, Custom, GPLv3, MIT, ...              |
-+--------------+---------------------------------------------------------------+
-| support      | A link to the support, it can be                              |
-|              | ``mailto:support@company.com`` or                             |
-|              | ``http://company.com/support``.                               |
-+--------------+---------------------------------------------------------------+
-| categories   | An array of categories, the plugins fits into. Eg: analogue,  |
-|              | digital, fm, delay, reverb, compressor, ...                   |
-+--------------+---------------------------------------------------------------+
-| plugin_type  | Bitfield describing what the plugin does. See enum            |
-|              | clap_plugin_type.                                             |
-+--------------+---------------------------------------------------------------+
-| host_data    | Reserved pointer for the host.                                |
-+--------------+---------------------------------------------------------------+
-| plugin_data  | Reserved pointer for the plugin.                              |
-+--------------+---------------------------------------------------------------+
++---------------------+---------------------------------------------------------------+
+| Attribute           | Description                                                   |
++=====================+===============================================================+
+| clap_version        | Described the plugin format version implemented. Should be    |
+|                     | initialized with CLAP_PLUGIN_VERSION,                         |
+|                     | or CLAP_VERSION_MAKE(1, 0, 0) if you want to only support     |
+|                     | version 1.0.0                                                 |
++---------------------+---------------------------------------------------------------+
+| id                  | Unique identifier of the plugin. It should never change. It   |
+|                     | should be the same on 32bits or 64bits or whatever.           |
++---------------------+---------------------------------------------------------------+
+| name                | The name of the product.                                      |
++---------------------+---------------------------------------------------------------+
+| description         | A brief description of the product.                           |
++---------------------+---------------------------------------------------------------+
+| manufacturer        | Which company made the plugin.                                |
++---------------------+---------------------------------------------------------------+
+| version             | A string describing the product version.                      |
++---------------------+---------------------------------------------------------------+
+| url                 | An URL to the product homepage.                               |
++---------------------+---------------------------------------------------------------+
+| license             | The plugin license type, Custom, GPLv3, MIT, ...              |
++---------------------+---------------------------------------------------------------+
+| support             | A link to the support, it can be                              |
+|                     | ``mailto:support@company.com`` or                             |
+|                     | ``http://company.com/support``.                               |
++---------------------+---------------------------------------------------------------+
+| categories          | An array of categories, the plugins fits into. Eg: analogue,  |
+|                     | digital, fm, delay, reverb, compressor, ...                   |
++---------------------+---------------------------------------------------------------+
+| plugin_type         | Bitfield describing what the plugin does. See                 |
+|                     | ``enum clap_plugin_type``.                                    |
++---------------------+---------------------------------------------------------------+
+| has_gui             | True if the plugin can show a graphical user interface        |
++---------------------+---------------------------------------------------------------+
+| supports_tunning    | True if the plugin supports tunning                           |
++---------------------+---------------------------------------------------------------+
+| supports_microtones | True if the plugin supports micro tones                       |
++---------------------+---------------------------------------------------------------+
+| host_data           | Reserved pointer for the host.                                |
++---------------------+---------------------------------------------------------------+
+| plugin_data         | Reserved pointer for the plugin.                              |
++---------------------+---------------------------------------------------------------+
 
 Audio channel configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -197,7 +203,7 @@ So for the following configuration:
 Available configurations
 ````````````````````````
 
-It is possible to discover a plugin's by calling
+It is possible to discover a plugin's channel configurations by calling
 ``plugin->get_channels_configs(plugin);``. It returns a newly allocated linked
 list of configurations. It is the responsability of the host to free the list.
 
@@ -207,8 +213,9 @@ Selecting a configuration
 Selecting an audio configuration has to be done when the plugin is deactivated.
 It is done by calling ``plugin->set_channels_config(plugin, config)``.
 
-The host should duplicate the config before passing it to the plugin, and the
-plugin is responsible to free the given config.
+The host should make sure that the config stays allocated/available until
+an other call to ``plugin->set_channel_config()`` or
+``plugin->destroy(plugin)``.
 
 ``plugin->set_channels_config(plugin, config)`` returns ``true`` if the
 confiugration is successful, ``false`` otherwise.
@@ -226,6 +233,44 @@ spectroscope.
 
 To repeat a channel, just duplicate it and insert it between the original and
 its next channel. Then call ``plugin->set_channels_config(plugin, config);``.
+
+Feedback stream
+```````````````
+
+Feedback stream are used to plug external audio processing into one
+of the plugin feedback loop.
+
+A practical usage is to put an effect in a delay feedback loop.
+
+A feedback loop has it's both ends identified by ``clap_channel->stream_id``.
+
+During the audio processing, ``struct clap_process`` contains a callback which
+is used to process the feeback stream:
+
+.. code:: c
+
+  void my_plugin_process(struct clap_plugin *plugin, struct clap_process *process)
+  {
+    uint32_t fb_in;     // index to the stereo feedback input buffer
+    uint32_t fb_out;    // index to the stereo feedback output buffer
+    uint32_t stream_id; // the feedback stream id
+
+    // one sample process loop
+    for (uint32_t i = 0; i < process->nb_samples; ++i) {
+      // audio processing
+
+      // prepare feedback output buffer
+      process->output[fb_out][i]     = XXX;
+      process->output[fb_out + 1][i] = XXX;
+
+      // process one sample feedback
+      process->feedback(process, stream_id, 1);
+
+      // audio processing of the feedback values:
+      //   process->input[fb_in][i]
+      //   process->input[fb_in + 1][i]
+    }
+  }
 
 Threading
 ---------
@@ -299,7 +344,13 @@ Notes
 
 Notes are reprensented as a pair ``note, division``.
 Division is the number of intervals between one note and an other note with
-half or the double frequency.
+half or the double frequency. A division by 12 must be supported.
+
+If a plugin plugin does not support micro tones, it should ignore
+micro-tunned notes.
+
+The host should not send micro tones to the plugin if
+``plugin->supports_microtones == false``.
 
 Parameters
 ``````````

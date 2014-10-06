@@ -59,10 +59,6 @@ enum clap_channel_role
 
 struct clap_channel
 {
-  /* linked list */
-  struct clap_channel *next;
-
-  /* channel info */
   enum clap_channel_type  type;
   enum clap_channel_role  role;
   char                   *name;
@@ -72,10 +68,9 @@ struct clap_channel
 
 struct clap_channels_config
 {
-  /* linked list */
-  struct clap_channel_configs *next;
+  uint32_t input_count;
+  uint32_t output_count;
 
-  /* config */
   struct clap_channel *inputs;
   struct clap_channel *output;
 };
@@ -203,14 +198,16 @@ struct clap_event
 
 struct clap_process
 {
+  /* host custom ptr */
+  void *host_data;
+
   /* audio buffers */
   float    **input;
   float    **output;
   uint32_t   nb_samples;
 
   /* feedback loops */
-  void (*feedback)(void *feedback_ctx, uint32_t stream_id, uint32_t nb_samples);
-  void *feedback_ctx;
+  void (*feedback)(struct clap_process *process, uint32_t stream_id, uint32_t nb_samples);
 
   /* process info */
   bool     is_offline;
@@ -279,8 +276,13 @@ struct clap_plugin
   const char **caterogries;     // fm, analogue, delay, reverb, ...
   uint32_t     plugin_type;
 
+  bool has_gui;
+  bool supports_tunning;
+  bool supports_microtones;
+
   /* audio channels */
-  struct clap_channels_config *(*get_channels_configs)(struct clap_plugin *plugin);
+  uint32_t                     channels_configs_count;
+  struct clap_channels_config *channels_configs;
   bool (*set_channels_config)(struct clap_plugin          *plugin,
                               struct clap_channels_config *config);
 
