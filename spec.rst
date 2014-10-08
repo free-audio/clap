@@ -371,6 +371,52 @@ The pitch can be changed by the host using the ``CLAP_EVENT_PITCH_SET`` event.
 Parameters
 ----------
 
+The host can get the plugin's parameters tree by calling
+``plugin->get_params(plugin)``. The host is responsible to free the return
+value.
+
+Types
+~~~~~
+
+There are a few parameter types:
+
++-------+-----------------+------------------------------------------------------+
+| type  | value attribute | description                                          |
++=======+=================+======================================================+
+| group | none            | not a value, but the only parameter which can have   |
+|       |                 | childs. It should be used to organise parameters in  |
+|       |                 | the host GUI.                                        |
++-------+-----------------+------------------------------------------------------+
+| bool  | ``value.b``     | a boolean value, can be true or false                |
++-------+-----------------+------------------------------------------------------+
+| float | ``value.f``     | a float value                                        |
++-------+-----------------+------------------------------------------------------+
+| int   | ``value.i``     | an integer value                                     |
++-------+-----------------+------------------------------------------------------+
+| enum  | ``value.i``     | an enumeration, it uses integer values, and the host |
+|       |                 | should rely on ``display_text`` to show its value.   |
++-------+-----------------+------------------------------------------------------+
+
+Scales
+~~~~~~
+
+The plugin can inform the host, which scale to use for the parameter's UI
+(knob, slider, ...). ``clap_param->scale`` can be set to ``CLAP_PARAM_LINEAR``
+or ``CLAP_PARAM_LOG``. A logarithmic scale is convinient for a frequency
+parameter.
+
+Automations
+~~~~~~~~~~~
+
+When a parameter is modified by the GUI, the plugin should send a
+``CLAP_EVENT_SET`` event must be sent to the host, using
+``host->events(host, plugin, events);`` so the host can record the automation.
+
+When a parameter is modified by an other parameter, for exemple imagine you
+have a parameter modulating "absolutely" an other one through an XY mapping.
+The host should record the modulation source but not the modulation target.
+To do that the plugin uses ``clap_event_param->is_recordable``.
+
 Graphical User Interface
 ------------------------
 

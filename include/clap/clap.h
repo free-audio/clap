@@ -81,6 +81,7 @@ struct clap_channels_config
 
 enum clap_param_type
 {
+  CLAP_PARAM_GROUP,
   CLAP_PARAM_BOOL,
   CLAP_PARAM_FLOAT,
   CLAP_PARAM_INT,
@@ -112,6 +113,7 @@ struct clap_param
   char                   *name; // the display name
   char                   *desc;
   bool                    is_per_note;
+  char                   *display_text; // use this for display if not NULL.
   union clap_param_value  value;
   union clap_param_value  min;
   union clap_param_value  max;
@@ -154,8 +156,8 @@ enum clap_event_type
 
 struct clap_event_note
 {
-  uint16_t division; // 12 for a standard octave
-  uint16_t note;     // starts from 0
+  uint32_t division; // 12 for a standard octave
+  uint32_t note;     // starts from 0
   float    velocity; // 0 .. 1.0f
 
   struct clap_event *events; // events specific to this note
@@ -163,9 +165,12 @@ struct clap_event_note
 
 struct clap_event_param
 {
-  uint32_t               index;
-  union clap_param_value value;
-  float                  increment; // for param ramp
+  uint32_t                index;
+  union clap_param_value  value;
+  float                   increment;     // for param ramp
+  char                   *display_text;  // use this for display if not NULL.
+  bool                    is_recordable; // used to tell the host if this event
+                                         // can be recorded
 };
 
 struct clap_event_pitch
@@ -286,10 +291,10 @@ struct clap_plugin
   bool (*set_channels_config)(struct clap_plugin          *plugin,
                               struct clap_channels_config *config);
 
-  /* parameters */
+  /* Returns a newly allocated parameters tree. The caller has to free it. */
   struct clap_param *(*get_params)(struct clap_plugin *plugin);
 
-  /* params */
+  /* Returns a newly allocated preset list. The caller has to free it. */
   struct clap_preset *(*get_presets)(struct clap_plugin *plugin);
 
   /* activation */
@@ -303,7 +308,8 @@ struct clap_plugin
   bool (*open_gui)(struct clap_plugin *plugin);
   void (*close_gui)(struct clap_plugin *plugin);
 
-  /* state */
+  /* The plugin has to allocate and save its state into *buffer.
+   * The host has to free *buffer after that. */
   void (*save)(struct clap_plugin *plugin, void **buffer, size_t *size);
   void (*restore)(struct clap_plugin *plugin, const void *buffer, size_t size);
 
