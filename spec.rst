@@ -515,6 +515,12 @@ If the extension is not supported, the plugin should return ``NULL``.
 Examples
 ========
 
+samples/clap-info.c
+-------------------
+
+.. include:: samples/clap-info.c
+   :code: c
+
 References
 ==========
 
@@ -522,10 +528,4 @@ clap.c
 ------
 
 .. include:: include/clap/clap.h
-   :code: c
-
-samples/clap-info.c
--------------------
-
-.. include:: samples/clap-info.c
    :code: c
