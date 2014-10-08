@@ -245,8 +245,11 @@ struct clap_host
                  struct clap_plugin *plugin,
                  struct clap_event  *events);
 
+  /* used for timing events */
+  uint64_t (*steady_time)(struct clap_host *host);
+
   /* future features */
-  void *(*extension)(struct clap_plugin *plugin, const char *extention_id);
+  void *(*extension)(struct clap_host *host, const char *extention_id);
 };
 
 ////////////

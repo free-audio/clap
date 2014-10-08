@@ -676,6 +676,13 @@ otherwise.</p>
 <h3><a class="toc-backref" href="#id36">Sending events to the host</a></h3>
 <p>The plugin can notify the host of parameter changes by sending events to:
 <tt class="docutils literal"><span class="pre">host-&gt;events(host,</span> plugin, events);</tt>.</p>
+<p>Events sent to the host should be stamped:</p>
+<pre class="code c literal-block">
+<span class="k">struct</span> <span class="n">clap_event</span> <span class="n">ev</span><span class="p">;</span>
+<span class="c1">// ...
+</span><span class="n">ev</span><span class="p">.</span><span class="n">sample_offset</span> <span class="o">=</span> <span class="n">host</span><span class="o">-&gt;</span><span class="n">steady_time</span><span class="p">(</span><span class="n">host</span><span class="p">);</span>
+<span class="n">host</span><span class="o">-&gt;</span><span class="n">events</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">plugin</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ev</span><span class="p">);</span>
+</pre>
 </div>
 <div class="section" id="hiding-the-gui">
 <h3><a class="toc-backref" href="#id37">Hiding the GUI</a></h3>
@@ -683,9 +690,10 @@ otherwise.</p>
 If the plugin window has been closed by the user, then the plugin should
 send an event <tt class="docutils literal">CLAP_EVENT_GUI_CLOSED</tt> to the host.</p>
 <pre class="code c literal-block">
-<span class="k">struct</span> <span class="n">clap</span> <span class="n">event</span> <span class="n">ev</span><span class="p">;</span>
+<span class="k">struct</span> <span class="n">clap_event</span> <span class="n">ev</span><span class="p">;</span>
 <span class="n">ev</span><span class="p">.</span><span class="n">next</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
 <span class="n">ev</span><span class="p">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">CLAP_EVENT_GUI_CLOSED</span><span class="p">;</span>
+<span class="n">ev</span><span class="p">.</span><span class="n">sample_offset</span> <span class="o">=</span> <span class="n">host</span><span class="o">-&gt;</span><span class="n">steady_time</span><span class="p">(</span><span class="n">host</span><span class="p">);</span>
 <span class="n">host</span><span class="o">-&gt;</span><span class="n">events</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">plugin</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ev</span><span class="p">);</span>
 </pre>
 </div>
@@ -702,6 +710,8 @@ It is the responsibility of the host to free the linked list.</p>
 <h3><a class="toc-backref" href="#id40">Load a preset</a></h3>
 <p>To load a preset, the host should send an event <tt class="docutils literal">CLAP_EVENT_PRESET_SET</tt> to
 the plugin.</p>
+<p>When a preset is loaded from the plugin's GUI, the plugin must send a
+<tt class="docutils literal">CLAP_EVENT_PRESET_SET</tt> to the host.</p>
 </div>
 </div>
 <div class="section" id="save-and-restore-plugin-s-state">
@@ -987,8 +997,11 @@ big endian machine, it should load again successfully.</p>
                  <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
                  <span class="k">struct</span> <span class="n">clap_event</span>  <span class="o">*</span><span class="n">events</span><span class="p">);</span>
 
+  <span class="cm">/* used for timing events */</span>
+  <span class="kt">uint64_t</span> <span class="p">(</span><span class="o">*</span><span class="n">steady_time</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">);</span>
+
   <span class="cm">/* future features */</span>
-  <span class="kt">void</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">extension</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">extention_id</span><span class="p">);</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">extension</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">extention_id</span><span class="p">);</span>
 <span class="p">};</span>
 
 <span class="c1">////////////

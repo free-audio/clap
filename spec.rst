@@ -433,6 +433,15 @@ Sending events to the host
 The plugin can notify the host of parameter changes by sending events to:
 ``host->events(host, plugin, events);``.
 
+Events sent to the host should be stamped:
+
+.. code:: c
+
+  struct clap_event ev;
+  // ...
+  ev.sample_offset = host->steady_time(host);
+  host->events(host, plugin, &ev);
+
 Hiding the GUI
 ~~~~~~~~~~~~~~
 
@@ -442,9 +451,10 @@ send an event ``CLAP_EVENT_GUI_CLOSED`` to the host.
 
 .. code:: c
 
-  struct clap event ev;
+  struct clap_event ev;
   ev.next = NULL;
   ev.type = CLAP_EVENT_GUI_CLOSED;
+  ev.sample_offset = host->steady_time(host);
   host->events(host, plugin, &ev);
 
 
@@ -463,6 +473,9 @@ Load a preset
 
 To load a preset, the host should send an event ``CLAP_EVENT_PRESET_SET`` to
 the plugin.
+
+When a preset is loaded from the plugin's GUI, the plugin must send a
+``CLAP_EVENT_PRESET_SET`` to the host.
 
 Save and restore plugin's state
 -------------------------------
