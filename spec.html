@@ -966,6 +966,8 @@ big endian machine, it should load again successfully.</p>
 </span>  <span class="n">CLAP_EVENT_PITCH_SET</span><span class="p">,</span>          <span class="c1">// diapason attribute
 </span>  <span class="n">CLAP_EVENT_PRESET_SET</span><span class="p">,</span>         <span class="c1">// preset attribute
 </span>
+  <span class="n">CLAP_EVENT_MIDI</span><span class="p">,</span>               <span class="c1">// midi attribute
+</span>
   <span class="n">CLAP_EVENT_GUI_OPENED</span><span class="p">,</span>         <span class="c1">// plugin to host
 </span>  <span class="n">CLAP_EVENT_GUI_CLOSED</span><span class="p">,</span>         <span class="c1">// plugin to host
 </span><span class="p">};</span>
@@ -999,6 +1001,12 @@ big endian machine, it should load again successfully.</p>
   <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">id</span><span class="p">;</span>
 <span class="p">};</span>
 
+<span class="k">struct</span> <span class="n">clap_event_midi</span>
+<span class="p">{</span>
+  <span class="kt">uint32_t</span>  <span class="n">size</span><span class="p">;</span>
+  <span class="kt">uint8_t</span>  <span class="o">*</span><span class="n">buffer</span><span class="p">;</span>
+<span class="p">};</span>
+
 <span class="k">struct</span> <span class="n">clap_event</span>
 <span class="p">{</span>
   <span class="k">struct</span> <span class="n">clap_event</span>    <span class="o">*</span><span class="n">next</span><span class="p">;</span> <span class="c1">// linked list, NULL on end
@@ -1010,6 +1018,7 @@ big endian machine, it should load again successfully.</p>
     <span class="k">struct</span> <span class="n">clap_event_param</span>    <span class="n">param</span><span class="p">;</span>
     <span class="k">struct</span> <span class="n">clap_event_pitch</span>    <span class="n">pitch</span><span class="p">;</span>
     <span class="k">struct</span> <span class="n">clap_event_preset</span>   <span class="n">preset</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">clap_event_midi</span>     <span class="n">midi</span><span class="p">;</span>
   <span class="p">};</span>
 <span class="p">};</span>
 

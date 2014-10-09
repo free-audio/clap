@@ -158,6 +158,8 @@ enum clap_event_type
   CLAP_EVENT_PITCH_SET,          // diapason attribute
   CLAP_EVENT_PRESET_SET,         // preset attribute
 
+  CLAP_EVENT_MIDI,               // midi attribute
+
   CLAP_EVENT_GUI_OPENED,         // plugin to host
   CLAP_EVENT_GUI_CLOSED,         // plugin to host
 };
@@ -191,6 +193,12 @@ struct clap_event_preset
   const char *id;
 };
 
+struct clap_event_midi
+{
+  uint32_t  size;
+  uint8_t  *buffer;
+};
+
 struct clap_event
 {
   struct clap_event    *next; // linked list, NULL on end
@@ -202,6 +210,7 @@ struct clap_event
     struct clap_event_param    param;
     struct clap_event_pitch    pitch;
     struct clap_event_preset   preset;
+    struct clap_event_midi     midi;
   };
 };
 
