@@ -1029,6 +1029,7 @@ big endian machine, it should load again successfully.</p>
 
   <span class="cm">/* feedback loops */</span>
   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">feedback</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_process</span> <span class="o">*</span><span class="n">process</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">stream_id</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">nb_samples</span><span class="p">);</span>
+  <span class="kt">uint32_t</span> <span class="n">feedback_chunk_size</span><span class="p">;</span>
 
   <span class="cm">/* process info */</span>
   <span class="kt">bool</span>     <span class="n">is_offline</span><span class="p">;</span>
@@ -1099,6 +1100,7 @@ big endian machine, it should load again successfully.</p>
   <span class="k">const</span> <span class="kt">char</span>  <span class="o">*</span><span class="n">support</span><span class="p">;</span>         <span class="c1">// a link to the support
 </span>  <span class="k">const</span> <span class="kt">char</span> <span class="o">**</span><span class="n">caterogries</span><span class="p">;</span>     <span class="c1">// fm, analogue, delay, reverb, ...
 </span>  <span class="kt">uint32_t</span>     <span class="n">plugin_type</span><span class="p">;</span>
+  <span class="kt">uint32_t</span>     <span class="n">chunk_size</span><span class="p">;</span>
 
   <span class="kt">bool</span> <span class="n">has_gui</span><span class="p">;</span>
   <span class="kt">bool</span> <span class="n">supports_tunning</span><span class="p">;</span>

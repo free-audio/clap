@@ -213,6 +213,7 @@ struct clap_process
 
   /* feedback loops */
   void (*feedback)(struct clap_process *process, uint32_t stream_id, uint32_t nb_samples);
+  uint32_t feedback_chunk_size;
 
   /* process info */
   bool     is_offline;
@@ -283,6 +284,7 @@ struct clap_plugin
   const char  *support;         // a link to the support
   const char **caterogries;     // fm, analogue, delay, reverb, ...
   uint32_t     plugin_type;
+  uint32_t     chunk_size;
 
   bool has_gui;
   bool supports_tunning;
