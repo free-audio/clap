@@ -30,6 +30,7 @@
 extern "C" {
 # endif
 
+# include <stdbool.h>
 # include <stdint.h>
 
 # define CLAP_VERSION_MAKE(Major, Minor, Revision) \
@@ -38,6 +39,13 @@ extern "C" {
 # define CLAP_VERSION_MAJ(Version) (((Version) >> 16) & 0xff)
 # define CLAP_VERSION_MIN(Version) (((Version) >> 8) & 0xff)
 # define CLAP_VERSION_REV(Version) ((Version) & 0xff)
+
+///////////////////////////
+// FORWARD DELCLARATIONS //
+///////////////////////////
+
+struct clap_plugin;
+struct clap_host;
 
 //////////////
 // CHANNELS //
@@ -323,10 +331,10 @@ struct clap_plugin
 };
 
 /* typedef for dlsym() cast */
-typedef struct clap_plugin *(clap_create_f)(uint32_t          plugin_index,
-                                            struct clap_host *host,
-                                            uint32_t          sample_rate,
-                                            uint32_t         *plugin_count);
+typedef struct clap_plugin *(*clap_create_f)(uint32_t          plugin_index,
+			                     struct clap_host *host,
+                                             uint32_t          sample_rate,
+                                             uint32_t         *plugin_count);
 
 /* plugin entry point */
 struct clap_plugin *
