@@ -47,39 +47,48 @@ extern "C" {
 struct clap_plugin;
 struct clap_host;
 
+enum clap_string_size
+{
+  CLAP_ID_SIZE         = 32,
+  CLAP_NAME_SIZE       = 32,
+  CLAP_DESC_SIZE       = 256,
+  CLAP_DISPLAY_SIZE    = 32,
+  CLAP_TAGS_SIZE       = 64,
+  CLAP_URL_SIZE        = 256,
+};
+
 ///////////
 // PORTS //
 ///////////
 
 enum clap_port_type
 {
-  CLAP_PORT_MONO,
+  CLAP_PORT_MONO = 0,
   CLAP_PORT_STEREO,
   CLAP_PORT_SURROUND,
 };
 
 enum clap_port_role
 {
-  CLAP_PORT_INOUT,
+  CLAP_PORT_INOUT = 0,
   CLAP_PORT_SIDECHAIN,
   CLAP_PORT_FEEDBACK,
 };
 
-struct clap_port
+struct clap_port_info
 {
-  struct clap_port    *next;
-
   enum clap_port_type  type;
   enum clap_port_role  role;
-  char                 name[32];
+  char                 name[CLAP_NAME_SIZE];
   uint32_t             stream_id; // used to connect feedback loops
   bool                 repeatable;
 };
 
 struct clap_ports_config
 {
-  struct clap_port *inputs;  // linked list
-  struct clap_port *outputs; // linked list
+  char     name[CLAP_NAME_SIZE];
+  uint32_t inputs_count;
+  uint32_t outputs_count;
 };
 
 ////////////////
@@ -88,7 +97,7 @@ struct clap_ports_config
 
 enum clap_param_type
 {
-  CLAP_PARAM_GROUP,
+  CLAP_PARAM_GROUP = 0,
   CLAP_PARAM_BOOL,
   CLAP_PARAM_FLOAT,
   CLAP_PARAM_INT,
@@ -97,7 +106,7 @@ enum clap_param_type
 
 enum clap_param_scale
 {
-  CLAP_PARAM_LINEAR,
+  CLAP_PARAM_LINEAR = 0,
   CLAP_PARAM_LOG,
 };
 
@@ -117,10 +126,10 @@ struct clap_param
   /* param info */
   enum clap_param_type    type;
   char                    id[32];   // a string which identify the param
-  char                    name[32]; // the display name
-  char                    desc[64];
+  char                    name[CLAP_NAME_SIZE]; // the display name
+  char                    desc[CLAP_DESC_SIZE];
   bool                    is_per_note;
-  const char              display_text[32]; // use this for display if not NULL.
+  const char              display_text[CLAP_DISPLAY_SIZE]; // use this for display if not NULL.
   union clap_param_value  value;
   union clap_param_value  min;
   union clap_param_value  max;
@@ -133,11 +142,11 @@ struct clap_param
 
 struct clap_preset
 {
-  uint32_t id;         // preset id
-  char     name[32];   // display name
-  char     desc[256];  // desc and how to use it
-  char     author[32];
-  char     tags[64];   // "tag1;tag2;tag3;...
+  uint32_t id;                     // preset id
+  char     name[CLAP_NAME_SIZE];   // display name
+  char     desc[CLAP_DESC_SIZE];   // desc and how to use it
+  char     author[CLAP_NAME_SIZE];
+  char     tags[CLAP_TAGS_SIZE];   // "tag1;tag2;tag3;...
 };
 
 ////////////
@@ -146,7 +155,7 @@ struct clap_preset
 
 enum clap_event_type
 {
-  CLAP_EVENT_NOTE_ON,            // note attribute
+  CLAP_EVENT_NOTE_ON = 0,        // note attribute
   CLAP_EVENT_NOTE_MODULATION,    // note attribute
   CLAP_EVENT_NOTE_OFF,           // note attribute
 
@@ -176,7 +185,7 @@ struct clap_event_param
   uint32_t                index;
   union clap_param_value  value;
   float                   increment;        // for param ramp
-  char                    display_text[32]; // use this for display if not NULL.
+  char                    display_text[CLAP_DISPLAY_SIZE]; // use this for display if not NULL.
   bool                    is_recordable;    // used to tell the host if this event
                                             // can be recorded
 };
@@ -279,10 +288,13 @@ struct clap_host
 ////////////
 
 // bitfield
-# define CLAP_PLUGIN_INSTRUMENT  (1 << 0)
-# define CLAP_PLUGIN_EFFECT      (1 << 1)
-# define CLAP_PLUGIN_MIDI_EFFECT (1 << 2)
-# define CLAP_PLUGIN_ANALYZER    (1 << 3)
+enum clap_plugin_type
+{
+  CLAP_PLUGIN_INSTRUMENT  = (1 << 0),
+  CLAP_PLUGIN_EFFECT      = (1 << 1),
+  CLAP_PLUGIN_MIDI_EFFECT = (1 << 2),
+  CLAP_PLUGIN_ANALYZER    = (1 << 3)
+};
 
 struct clap_plugin
 {
@@ -295,34 +307,40 @@ struct clap_plugin
   void (*destroy)(struct clap_plugin *plugin);
 
   /* plugin info */
-  const char  *id;
-  const char  *name;
-  const char  *description;
-  const char  *manufacturer;
-  const char  *version;
-  const char  *url;
-  const char  *license;
-  const char  *support;         // a link to the support
-  const char **caterogries;     // fm, analogue, delay, reverb, ...
-  uint32_t     plugin_type;
-  uint32_t     chunk_size;
+  char id[CLAP_ID_SIZE];
+  char name[CLAP_NAME_SIZE];
+  char description[CLAP_DESC_SIZE];
+  char manufacturer[CLAP_NAME_SIZE];
+  char version[CLAP_NAME_SIZE];
+  char url[CLAP_URL_SIZE];
+  char license[CLAP_NAME_SIZE];
+  char support[CLAP_URL_SIZE];  // a link to the support
+  char caterogries[CLAP_TAGS_SIZE]; // fm;analogue;delay;...
+
+  uint32_t plugin_type;
+  uint32_t chunk_size;
 
   bool has_gui;
   bool supports_tunning;
   bool supports_microtones;
 
   /* audio ports */
-  struct clap_ports_config *(*get_ports_configs)(struct clap_plugin *plugin);
-  bool (*set_ports_config)(struct clap_plugin       *plugin,
-                           struct clap_ports_config *config);
+  uint32_t (*get_ports_configs_count)(struct clap_plugin *plugin);
+  bool (*get_ports_config)(struct clap_plugin       *plugin,
+                           uint32_t                  index,
+                           struct clap_ports_config *config,);
+  bool (*get_port_info)(struct clap_plugin    *plugin,
+                        uint32_t               config_index,
+                        uint32_t               port_index,
+                        struct clap_port_info *port);
 
   /* Returns a newly allocated parameters tree. The caller has to free it. */
   uint32_t (*get_params_count)(struct clap_plugin *plugin);
-  bool (*get_param)(struct clap_plugin *plugin, struct clap_param *param, uint32_t index);
+  bool (*get_param)(struct clap_plugin *plugin, uint32_t index, struct clap_param *param);
 
   /* Returns a newly allocated preset list. The caller has to free it. */
   uint32_t (*get_presets_count)(struct clap_plugin *plugin);
-  bool (*get_presets)(struct clap_plugin *plugin, struct clap_preset *preset, uint32_t index);
+  bool (*get_presets)(struct clap_plugin *plugin, uint32_t index, struct clap_preset *preset);
 
   /* activation */
   bool (*activate)(struct clap_plugin *plugin);
