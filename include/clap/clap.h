@@ -47,39 +47,39 @@ extern "C" {
 struct clap_plugin;
 struct clap_host;
 
-//////////////
-// CHANNELS //
-//////////////
+///////////
+// PORTS //
+///////////
 
-enum clap_channel_type
+enum clap_port_type
 {
-  CLAP_CHANNEL_MONO,
-  CLAP_CHANNEL_STEREO,
-  CLAP_CHANNEL_SURROUND,
+  CLAP_PORT_MONO,
+  CLAP_PORT_STEREO,
+  CLAP_PORT_SURROUND,
 };
 
-enum clap_channel_role
+enum clap_port_role
 {
-  CLAP_CHANNEL_INOUT,
-  CLAP_CHANNEL_SIDECHAIN,
-  CLAP_CHANNEL_FEEDBACK,
+  CLAP_PORT_INOUT,
+  CLAP_PORT_SIDECHAIN,
+  CLAP_PORT_FEEDBACK,
 };
 
-struct clap_channel
+struct clap_port
 {
-  struct clap_channel    *next;
+  struct clap_port    *next;
 
-  enum clap_channel_type  type;
-  enum clap_channel_role  role;
-  char                   *name;
-  uint32_t                stream_id; // used to connect feedback loops
-  bool                    repeatable;
+  enum clap_port_type  type;
+  enum clap_port_role  role;
+  char                 name[32];
+  uint32_t             stream_id; // used to connect feedback loops
+  bool                 repeatable;
 };
 
-struct clap_channels_config
+struct clap_ports_config
 {
-  struct clap_channel *inputs;  // linked list
-  struct clap_channel *outputs; // linked list
+  struct clap_port *inputs;  // linked list
+  struct clap_port *outputs; // linked list
 };
 
 ////////////////
@@ -110,17 +110,17 @@ union clap_param_value
 
 struct clap_param
 {
-  /* tree field */
-  struct clap_param *next;
-  struct clap_param *childs;
+  /* tree fields */
+  uint32_t index;  // parameter's index
+  uint32_t parent; // parent index
 
   /* param info */
   enum clap_param_type    type;
-  char                   *id;   // a string which identify the param
-  char                   *name; // the display name
-  char                   *desc;
+  char                    id[32];   // a string which identify the param
+  char                    name[32]; // the display name
+  char                    desc[64];
   bool                    is_per_note;
-  char                   *display_text; // use this for display if not NULL.
+  const char              display_text[32]; // use this for display if not NULL.
   union clap_param_value  value;
   union clap_param_value  min;
   union clap_param_value  max;
@@ -133,13 +133,11 @@ struct clap_param
 
 struct clap_preset
 {
-  struct clap_preset *next;
-
-  char *id;
-  char *name; // display name
-  char *desc; // desc and how to use it
-  char *author;
-  char **tags; // null terminated array of tags
+  uint32_t id;         // preset id
+  char     name[32];   // display name
+  char     desc[256];  // desc and how to use it
+  char     author[32];
+  char     tags[64];   // "tag1;tag2;tag3;...
 };
 
 ////////////
@@ -177,10 +175,10 @@ struct clap_event_param
 {
   uint32_t                index;
   union clap_param_value  value;
-  float                   increment;     // for param ramp
-  char                   *display_text;  // use this for display if not NULL.
-  bool                    is_recordable; // used to tell the host if this event
-                                         // can be recorded
+  float                   increment;        // for param ramp
+  char                    display_text[32]; // use this for display if not NULL.
+  bool                    is_recordable;    // used to tell the host if this event
+                                            // can be recorded
 };
 
 struct clap_event_control
@@ -196,7 +194,7 @@ struct clap_event_pitch
 
 struct clap_event_preset
 {
-  const char *id;
+  uint32_t id;
 };
 
 struct clap_event_midi
@@ -212,11 +210,11 @@ struct clap_event
   uint64_t              sample_offset; // offset from the parent event or current time in samples
 
   union {
-    struct clap_event_note     note;
-    struct clap_event_param    param;
-    struct clap_event_pitch    pitch;
-    struct clap_event_preset   preset;
-    struct clap_event_midi     midi;
+    struct clap_event_note   note;
+    struct clap_event_param  param;
+    struct clap_event_pitch  pitch;
+    struct clap_event_preset preset;
+    struct clap_event_midi   midi;
   };
 };
 
@@ -313,16 +311,18 @@ struct clap_plugin
   bool supports_tunning;
   bool supports_microtones;
 
-  /* audio channels */
-  struct clap_channels_config *(*get_channels_configs)(struct clap_plugin *plugin);
-  bool (*set_channels_config)(struct clap_plugin          *plugin,
-                              struct clap_channels_config *config);
+  /* audio ports */
+  struct clap_ports_config *(*get_ports_configs)(struct clap_plugin *plugin);
+  bool (*set_ports_config)(struct clap_plugin       *plugin,
+                           struct clap_ports_config *config);
 
   /* Returns a newly allocated parameters tree. The caller has to free it. */
-  struct clap_param *(*get_params)(struct clap_plugin *plugin);
+  uint32_t (*get_params_count)(struct clap_plugin *plugin);
+  bool (*get_param)(struct clap_plugin *plugin, struct clap_param *param, uint32_t index);
 
   /* Returns a newly allocated preset list. The caller has to free it. */
-  struct clap_preset *(*get_presets)(struct clap_plugin *plugin);
+  uint32_t (*get_presets_count)(struct clap_plugin *plugin);
+  bool (*get_presets)(struct clap_plugin *plugin, struct clap_preset *preset, uint32_t index);
 
   /* activation */
   bool (*activate)(struct clap_plugin *plugin);
