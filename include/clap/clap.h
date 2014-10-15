@@ -129,7 +129,7 @@ struct clap_param
   char                    name[CLAP_NAME_SIZE]; // the display name
   char                    desc[CLAP_DESC_SIZE];
   bool                    is_per_note;
-  const char              display_text[CLAP_DISPLAY_SIZE]; // use this for display if not NULL.
+  char                    display_text[CLAP_DISPLAY_SIZE];
   union clap_param_value  value;
   union clap_param_value  min;
   union clap_param_value  max;
@@ -327,12 +327,17 @@ struct clap_plugin
   /* audio ports */
   uint32_t (*get_ports_configs_count)(struct clap_plugin *plugin);
   bool (*get_ports_config)(struct clap_plugin       *plugin,
-                           uint32_t                  index,
-                           struct clap_ports_config *config,);
+                           uint32_t                  config_index,
+                           struct clap_ports_config *config);
   bool (*get_port_info)(struct clap_plugin    *plugin,
                         uint32_t               config_index,
                         uint32_t               port_index,
                         struct clap_port_info *port);
+  bool (*set_ports_config)(struct clap_plugin *plugin,
+                           uint32_t            config_index);
+  bool (*set_port_repeat)(struct clap_plugin  *plugin,
+                          uint32_t             port_index,
+                          uint32_t             count);
 
   /* Returns a newly allocated parameters tree. The caller has to free it. */
   uint32_t (*get_params_count)(struct clap_plugin *plugin);
