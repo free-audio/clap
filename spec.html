@@ -777,15 +777,15 @@ big endian machine, it should load again successfully.</p>
 
   <span class="kt">uint32_t</span> <span class="n">plugin_count</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
   <span class="k">for</span> <span class="p">(</span><span class="kt">uint32_t</span> <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">plugin_count</span><span class="p">;</span> <span class="o">++</span><span class="n">index</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span> <span class="o">=</span> <span class="n">symbold</span><span class="p">.</span><span class="n">clap_create</span><span class="p">(</span>
-      <span class="n">index</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="mi">48000</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">plugin_count</span><span class="p">);</span>
+    <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span> <span class="o">=</span> <span class="n">symbol</span><span class="p">.</span><span class="n">clap_create</span><span class="p">(</span>
+      <span class="n">index</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">host</span><span class="p">,</span> <span class="mi">48000</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">plugin_count</span><span class="p">);</span>
 
     <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">plugin</span><span class="p">)</span> <span class="p">{</span>
       <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;failed to create plugin index %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">index</span><span class="p">);</span>
       <span class="k">continue</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdio</span><span class="p">,</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span>
             <span class="s">&quot;found plugin:</span><span class="se">\n</span><span class="s">&quot;</span>
             <span class="s">&quot; id:       %s</span><span class="se">\n</span><span class="s">&quot;</span>
             <span class="s">&quot; name:     %s</span><span class="se">\n</span><span class="s">&quot;</span>
@@ -846,7 +846,8 @@ big endian machine, it should load again successfully.</p>
 </span><span class="k">extern</span> <span class="s">&quot;C&quot;</span> <span class="p">{</span>
 <span class="cp"># endif
 </span>
-<span class="cp"># include &lt;stdint.h&gt;
+<span class="cp"># include &lt;stdbool.h&gt;
+# include &lt;stdint.h&gt;
 </span>
 <span class="cp"># define CLAP_VERSION_MAKE(Major, Minor, Revision) \
   ((((Major) &amp; 0xff) &lt;&lt; 16) | (((Minor) &amp; 0xff) &lt;&lt; 8) | ((Revision) &amp; 0xff))
@@ -855,6 +856,13 @@ big endian machine, it should load again successfully.</p>
 # define CLAP_VERSION_MIN(Version) (((Version) &gt;&gt; 8) &amp; 0xff)
 # define CLAP_VERSION_REV(Version) ((Version) &amp; 0xff)
 </span>
+<span class="c1">///////////////////////////
+// FORWARD DELCLARATIONS //
+///////////////////////////
+</span>
+<span class="k">struct</span> <span class="n">clap_plugin</span><span class="p">;</span>
+<span class="k">struct</span> <span class="n">clap_host</span><span class="p">;</span>
+
 <span class="c1">//////////////
 // CHANNELS //
 //////////////
@@ -875,6 +883,8 @@ big endian machine, it should load again successfully.</p>
 
 <span class="k">struct</span> <span class="n">clap_channel</span>
 <span class="p">{</span>
+  <span class="k">struct</span> <span class="n">clap_channel</span>    <span class="o">*</span><span class="n">next</span><span class="p">;</span>
+
   <span class="k">enum</span> <span class="n">clap_channel_type</span>  <span class="n">type</span><span class="p">;</span>
   <span class="k">enum</span> <span class="n">clap_channel_role</span>  <span class="n">role</span><span class="p">;</span>
   <span class="kt">char</span>                   <span class="o">*</span><span class="n">name</span><span class="p">;</span>
@@ -884,12 +894,9 @@ big endian machine, it should load again successfully.</p>
 
 <span class="k">struct</span> <span class="n">clap_channels_config</span>
 <span class="p">{</span>
-  <span class="kt">uint32_t</span> <span class="n">input_count</span><span class="p">;</span>
-  <span class="kt">uint32_t</span> <span class="n">output_count</span><span class="p">;</span>
-
-  <span class="k">struct</span> <span class="n">clap_channel</span> <span class="o">*</span><span class="n">inputs</span><span class="p">;</span>
-  <span class="k">struct</span> <span class="n">clap_channel</span> <span class="o">*</span><span class="n">output</span><span class="p">;</span>
-<span class="p">};</span>
+  <span class="k">struct</span> <span class="n">clap_channel</span> <span class="o">*</span><span class="n">inputs</span><span class="p">;</span>  <span class="c1">// linked list
+</span>  <span class="k">struct</span> <span class="n">clap_channel</span> <span class="o">*</span><span class="n">outputs</span><span class="p">;</span> <span class="c1">// linked list
+</span><span class="p">};</span>
 
 <span class="c1">////////////////
 // PARAMETERS //
@@ -963,13 +970,14 @@ big endian machine, it should load again successfully.</p>
 </span>
   <span class="n">CLAP_EVENT_PARAM_SET</span><span class="p">,</span>          <span class="c1">// param attribute
 </span>  <span class="n">CLAP_EVENT_PARAM_RAMP</span><span class="p">,</span>         <span class="c1">// param attribute
-</span>  <span class="n">CLAP_EVENT_PITCH_SET</span><span class="p">,</span>          <span class="c1">// diapason attribute
+</span>  <span class="n">CLAP_EVENT_PITCH_SET</span><span class="p">,</span>          <span class="c1">// pitch attribute
 </span>  <span class="n">CLAP_EVENT_PRESET_SET</span><span class="p">,</span>         <span class="c1">// preset attribute
 </span>
   <span class="n">CLAP_EVENT_MIDI</span><span class="p">,</span>               <span class="c1">// midi attribute
+</span>  <span class="n">CLAP_EVENT_CONTROL</span><span class="p">,</span>            <span class="c1">// control attribute
 </span>
-  <span class="n">CLAP_EVENT_GUI_OPENED</span><span class="p">,</span>         <span class="c1">// plugin to host
-</span>  <span class="n">CLAP_EVENT_GUI_CLOSED</span><span class="p">,</span>         <span class="c1">// plugin to host
+  <span class="n">CLAP_EVENT_GUI_OPENED</span><span class="p">,</span>         <span class="c1">// plugin to host, no attribute
+</span>  <span class="n">CLAP_EVENT_GUI_CLOSED</span><span class="p">,</span>         <span class="c1">// plugin to host, no attribute
 </span><span class="p">};</span>
 
 <span class="k">struct</span> <span class="n">clap_event_note</span>
@@ -989,6 +997,12 @@ big endian machine, it should load again successfully.</p>
 </span>  <span class="kt">char</span>                   <span class="o">*</span><span class="n">display_text</span><span class="p">;</span>  <span class="c1">// use this for display if not NULL.
 </span>  <span class="kt">bool</span>                    <span class="n">is_recordable</span><span class="p">;</span> <span class="c1">// used to tell the host if this event
 </span>                                         <span class="c1">// can be recorded
+</span><span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">clap_event_control</span>
+<span class="p">{</span>
+  <span class="kt">uint32_t</span> <span class="n">index</span><span class="p">;</span>
+  <span class="kt">float</span>    <span class="n">value</span><span class="p">;</span> <span class="c1">// 0 .. 1.0f
 </span><span class="p">};</span>
 
 <span class="k">struct</span> <span class="n">clap_event_pitch</span>
@@ -1116,8 +1130,7 @@ big endian machine, it should load again successfully.</p>
   <span class="kt">bool</span> <span class="n">supports_microtones</span><span class="p">;</span>
 
   <span class="cm">/* audio channels */</span>
-  <span class="kt">uint32_t</span>                     <span class="n">channels_configs_count</span><span class="p">;</span>
-  <span class="k">struct</span> <span class="n">clap_channels_config</span> <span class="o">*</span><span class="n">channels_configs</span><span class="p">;</span>
+  <span class="k">struct</span> <span class="n">clap_channels_config</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">get_channels_configs</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">set_channels_config</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>          <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
                               <span class="k">struct</span> <span class="n">clap_channels_config</span> <span class="o">*</span><span class="n">config</span><span class="p">);</span>
 
@@ -1148,10 +1161,10 @@ big endian machine, it should load again successfully.</p>
 <span class="p">};</span>
 
 <span class="cm">/* typedef for dlsym() cast */</span>
-<span class="k">typedef</span> <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="p">(</span><span class="n">clap_create_f</span><span class="p">)(</span><span class="kt">uint32_t</span>          <span class="n">plugin_index</span><span class="p">,</span>
-                                            <span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span>
-                                            <span class="kt">uint32_t</span>          <span class="n">sample_rate</span><span class="p">,</span>
-                                            <span class="kt">uint32_t</span>         <span class="o">*</span><span class="n">plugin_count</span><span class="p">);</span>
+<span class="k">typedef</span> <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">clap_create_f</span><span class="p">)(</span><span class="kt">uint32_t</span>          <span class="n">plugin_index</span><span class="p">,</span>
+                                             <span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span>
+                                             <span class="kt">uint32_t</span>          <span class="n">sample_rate</span><span class="p">,</span>
+                                             <span class="kt">uint32_t</span>         <span class="o">*</span><span class="n">plugin_count</span><span class="p">);</span>
 
 <span class="cm">/* plugin entry point */</span>
 <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span>
