@@ -67,6 +67,8 @@ enum clap_channel_role
 
 struct clap_channel
 {
+  struct clap_channel    *next;
+
   enum clap_channel_type  type;
   enum clap_channel_role  role;
   char                   *name;
@@ -76,11 +78,8 @@ struct clap_channel
 
 struct clap_channels_config
 {
-  uint32_t input_count;
-  uint32_t output_count;
-
-  struct clap_channel *inputs;
-  struct clap_channel *output;
+  struct clap_channel *inputs;  // linked list
+  struct clap_channel *outputs; // linked list
 };
 
 ////////////////
@@ -155,13 +154,14 @@ enum clap_event_type
 
   CLAP_EVENT_PARAM_SET,          // param attribute
   CLAP_EVENT_PARAM_RAMP,         // param attribute
-  CLAP_EVENT_PITCH_SET,          // diapason attribute
+  CLAP_EVENT_PITCH_SET,          // pitch attribute
   CLAP_EVENT_PRESET_SET,         // preset attribute
 
   CLAP_EVENT_MIDI,               // midi attribute
+  CLAP_EVENT_CONTROL,            // control attribute
 
-  CLAP_EVENT_GUI_OPENED,         // plugin to host
-  CLAP_EVENT_GUI_CLOSED,         // plugin to host
+  CLAP_EVENT_GUI_OPENED,         // plugin to host, no attribute
+  CLAP_EVENT_GUI_CLOSED,         // plugin to host, no attribute
 };
 
 struct clap_event_note
@@ -181,6 +181,12 @@ struct clap_event_param
   char                   *display_text;  // use this for display if not NULL.
   bool                    is_recordable; // used to tell the host if this event
                                          // can be recorded
+};
+
+struct clap_event_control
+{
+  uint32_t index;
+  float    value; // 0 .. 1.0f
 };
 
 struct clap_event_pitch
@@ -308,8 +314,7 @@ struct clap_plugin
   bool supports_microtones;
 
   /* audio channels */
-  uint32_t                     channels_configs_count;
-  struct clap_channels_config *channels_configs;
+  struct clap_channels_config *(*get_channels_configs)(struct clap_plugin *plugin);
   bool (*set_channels_config)(struct clap_plugin          *plugin,
                               struct clap_channels_config *config);
 
