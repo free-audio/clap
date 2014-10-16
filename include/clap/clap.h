@@ -351,7 +351,7 @@ struct clap_plugin
 
   /* Returns a newly allocated preset list. The caller has to free it. */
   uint32_t (*get_presets_count)(struct clap_plugin *plugin);
-  bool (*get_presets)(struct clap_plugin *plugin, uint32_t index, struct clap_preset *preset);
+  bool (*get_preset)(struct clap_plugin *plugin, uint32_t index, struct clap_preset *preset);
 
   /* activation */
   bool (*activate)(struct clap_plugin *plugin);
