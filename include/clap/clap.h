@@ -63,16 +63,16 @@ enum clap_string_size
 
 enum clap_port_type
 {
-  CLAP_PORT_MONO = 0,
-  CLAP_PORT_STEREO,
-  CLAP_PORT_SURROUND,
+  CLAP_PORT_MONO     = 0,
+  CLAP_PORT_STEREO   = 1,
+  CLAP_PORT_SURROUND = 2,
 };
 
 enum clap_port_role
 {
-  CLAP_PORT_INOUT = 0,
-  CLAP_PORT_SIDECHAIN,
-  CLAP_PORT_FEEDBACK,
+  CLAP_PORT_INOUT     = 0,
+  CLAP_PORT_SIDECHAIN = 1,
+  CLAP_PORT_FEEDBACK  = 2,
 };
 
 struct clap_port_info
@@ -97,31 +97,31 @@ struct clap_ports_config
 
 enum clap_param_type
 {
-  CLAP_PARAM_GROUP = 0,
-  CLAP_PARAM_BOOL,
-  CLAP_PARAM_FLOAT,
-  CLAP_PARAM_INT,
-  CLAP_PARAM_ENUM, // uses int
+  CLAP_PARAM_GROUP = 0, // no value for this one
+  CLAP_PARAM_BOOL  = 1, // uses value.b
+  CLAP_PARAM_FLOAT = 2, // uses value.f
+  CLAP_PARAM_INT   = 3, // uses value.i
+  CLAP_PARAM_ENUM  = 4, // uses value.i
 };
 
 enum clap_param_scale
 {
   CLAP_PARAM_LINEAR = 0,
-  CLAP_PARAM_LOG,
+  CLAP_PARAM_LOG    = 1,
 };
 
 union clap_param_value
 {
-  bool                b;
-  float               f;
-  int32_t             i;
+  bool    b;
+  float   f;
+  int32_t i;
 };
 
 struct clap_param
 {
   /* tree fields */
   uint32_t index;  // parameter's index
-  uint32_t parent; // parent index
+  uint32_t parent; // parent's index
 
   /* param info */
   enum clap_param_type    type;
@@ -129,7 +129,7 @@ struct clap_param
   char                    name[CLAP_NAME_SIZE]; // the display name
   char                    desc[CLAP_DESC_SIZE];
   bool                    is_per_note;
-  char                    display_text[CLAP_DISPLAY_SIZE];
+  char                    display_text[CLAP_DISPLAY_SIZE]; // the text used to display the value
   union clap_param_value  value;
   union clap_param_value  min;
   union clap_param_value  max;
@@ -146,7 +146,7 @@ struct clap_preset
   char     name[CLAP_NAME_SIZE];   // display name
   char     desc[CLAP_DESC_SIZE];   // desc and how to use it
   char     author[CLAP_NAME_SIZE];
-  char     tags[CLAP_TAGS_SIZE];   // "tag1;tag2;tag3;...
+  char     tags[CLAP_TAGS_SIZE];   // "tag1;tag2;tag3;..."
 };
 
 ////////////
@@ -155,20 +155,23 @@ struct clap_preset
 
 enum clap_event_type
 {
-  CLAP_EVENT_NOTE_ON = 0,        // note attribute
-  CLAP_EVENT_NOTE_MODULATION,    // note attribute
-  CLAP_EVENT_NOTE_OFF,           // note attribute
+  CLAP_EVENT_NOTE_ON         = 0, // note attribute
+  CLAP_EVENT_NOTE_MODULATION = 1, // note attribute
+  CLAP_EVENT_NOTE_OFF        = 2, // note attribute
 
-  CLAP_EVENT_PARAM_SET,          // param attribute
-  CLAP_EVENT_PARAM_RAMP,         // param attribute
-  CLAP_EVENT_PITCH_SET,          // pitch attribute
-  CLAP_EVENT_PRESET_SET,         // preset attribute
+  CLAP_EVENT_PARAM_SET  = 3,    // param attribute
+  CLAP_EVENT_PARAM_RAMP = 4,    // param attribute
+  CLAP_EVENT_PITCH_SET  = 5,    // pitch attribute
+  CLAP_EVENT_PRESET_SET = 6,    // preset attribute
 
-  CLAP_EVENT_MIDI,               // midi attribute
-  CLAP_EVENT_CONTROL,            // control attribute
+  CLAP_EVENT_MIDI    = 7,       // midi attribute
+  CLAP_EVENT_CONTROL = 8,       // control attribute
 
-  CLAP_EVENT_GUI_OPENED,         // plugin to host, no attribute
-  CLAP_EVENT_GUI_CLOSED,         // plugin to host, no attribute
+  CLAP_EVENT_GUI_OPENED = 9,    // plugin to host, no attribute
+  CLAP_EVENT_GUI_CLOSED = 10,   // plugin to host, no attribute
+
+  CLAP_EVENT_NEW_PRESETS       = 11, // plugin to host, no attribute
+  CLAP_EVENT_NEW_PORTS_CONFIGS = 12, // plugin to host, no attribute
 };
 
 struct clap_event_note
@@ -216,14 +219,15 @@ struct clap_event
 {
   struct clap_event    *next; // linked list, NULL on end
   enum clap_event_type  type;
-  uint64_t              sample_offset; // offset from the parent event or current time in samples
+  uint64_t              steady_time; // steady_time of the event, see host->steady_time(host)
 
   union {
-    struct clap_event_note   note;
-    struct clap_event_param  param;
-    struct clap_event_pitch  pitch;
-    struct clap_event_preset preset;
-    struct clap_event_midi   midi;
+    struct clap_event_note    note;
+    struct clap_event_param   param;
+    struct clap_event_pitch   pitch;
+    struct clap_event_preset  preset;
+    struct clap_event_midi    midi;
+    struct clap_event_control control;
   };
 };
 
@@ -247,12 +251,12 @@ struct clap_process
 
   /* process info */
   bool     is_offline;
-  uint32_t tempo_in_samples;
-  uint64_t time_in_samples;
+  uint32_t tempo;       // the tempo in samples
+  uint64_t song_time;   // the song time in samples
+  uint64_t steady_time; // the steady time in samples
 
   /* events */
-  struct clap_event *in_events;
-  struct clap_event *out_events;
+  struct clap_event *events;
 
   /* output values */
   bool need_processing;
@@ -267,16 +271,18 @@ struct clap_host
   uint32_t clap_version; // initialized to CALP_VERSION
 
   /* host info */
-  const char *name;
-  const char *manufacturer;
-  const char *version;
+  char name[CLAP_NAME_SIZE];
+  char manufacturer[CLAP_NAME_SIZE];
+  char version[CLAP_NAME_SIZE];
 
   /* for events generated outside of process, like from the GUI. */
   void (*events)(struct clap_host   *host,
                  struct clap_plugin *plugin,
                  struct clap_event  *events);
 
-  /* used for timing events */
+  /* The time in samples, this clock is monotonicaly increasing,
+   * it means that each time you call this function, the return
+   * value must be greater or equal to the previous one. */
   uint64_t (*steady_time)(struct clap_host *host);
 
   /* future features */
@@ -371,14 +377,14 @@ struct clap_plugin
 typedef struct clap_plugin *(*clap_create_f)(uint32_t          plugin_index,
 			                     struct clap_host *host,
                                              uint32_t          sample_rate,
-                                             uint32_t         *plugin_count);
+                                             uint32_t         *plugins_count);
 
 /* plugin entry point */
 struct clap_plugin *
 clap_create(uint32_t          plugin_index,
             struct clap_host *host,
             uint32_t          sample_rate,
-            uint32_t         *plugin_count);
+            uint32_t         *plugins_count);
 
 # ifdef __cplusplus
 }
