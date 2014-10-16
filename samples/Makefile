@@ -1,4 +1,4 @@
-CFLAGS = -I../include -std=c99 -Wall -Wextra
+CFLAGS = -I../include -std=c99 -Wall
 LDFLAGS = -ldl
 
 all: clap-info

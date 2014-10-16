@@ -3,9 +3,37 @@
 
 #include <clap/clap.h>
 
+static void host_events(struct clap_host   *host,
+                        struct clap_plugin *plugin,
+                        struct clap_event  *events)
+{
+}
+
+static uint64_t host_steady_time(struct clap_host *host)
+{
+  return 0;
+}
+
+static void *host_extension(struct clap_host *host, const char *extension_id)
+{
+  return NULL;
+}
+
+static void initialize_host(struct clap_host *host)
+{
+  host->clap_version = CLAP_VERSION;
+  host->events       = host_events;
+  host->steady_time  = host_steady_time;
+  host->extension    = host_extension;
+  snprintf(host->name, sizeof (host->name), "clap-info");
+  snprintf(host->manufacturer, sizeof (host->manufacturer), "clap");
+  snprintf(host->version, sizeof (host->version), "1.0");
+}
+
 int main(int argc, char **argv)
 {
-  struct clap_host host; // XXX initialize host
+  struct clap_host host;
+  initialize_host(&host);
 
   void * handle = dlopen(argv[1], RTLD_NOW | RTLD_LOCAL);
   if (!handle) {
@@ -34,20 +62,29 @@ int main(int argc, char **argv)
       continue;
     }
 
-    fprintf(stdout,
-            "found plugin:\n"
-            " id:       %s\n"
-            " name:     %s\n"
-            " description: %s\n"
-            " manufacturer: %s\n"
-            " version: %s\n"
-            " url: %s\n",
-            plugin->id,
-            plugin->name,
-            plugin->description,
-            plugin->manufacturer,
-            plugin->version,
-            plugin->url);
+    fprintf(stdout, " id: %s\n", plugin->id);
+    fprintf(stdout, " name: %s\n", plugin->name);
+    fprintf(stdout, " description: %s\n", plugin->description);
+    fprintf(stdout, " manufacturer: %s\n", plugin->manufacturer);
+    fprintf(stdout, " version: %s\n", plugin->version);
+    fprintf(stdout, " url: %s\n", plugin->url);
+    fprintf(stdout, " support: %s\n", plugin->support);
+    fprintf(stdout, " license: %s\n", plugin->license);
+    fprintf(stdout, " categories: %s\n", plugin->categories);
+    fprintf(stdout, " type:");
+    if (plugin->type & CLAP_PLUGIN_INSTRUMENT)
+      fprintf(stdout, " instrument");
+    if (plugin->type & CLAP_PLUGIN_EFFECT)
+      fprintf(stdout, " effect");
+    if (plugin->type & CLAP_PLUGIN_EVENT_EFFECT)
+      fprintf(stdout, " event_effect");
+    if (plugin->type & CLAP_PLUGIN_ANALYZER)
+      fprintf(stdout, " analyzer");
+    fprintf(stdout, "\n");
+    fprintf(stdout, " chunk_size: %d\n", plugin->chunk_size);
+    fprintf(stdout, " has_gui: %d\n", plugin->has_gui);
+    fprintf(stdout, " supports_tunning: %d\n", plugin->supports_tunning);
+    fprintf(stdout, " supports_microtones: %d\n", plugin->supports_microtones);
 
     // destroy the plugin
     plugin->destroy(plugin);

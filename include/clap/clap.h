@@ -121,7 +121,7 @@ struct clap_param
 {
   /* tree fields */
   uint32_t index;  // parameter's index
-  uint32_t parent; // parent's index
+  uint32_t parent; // parent's index, -1 for no parent
 
   /* param info */
   enum clap_param_type    type;
@@ -296,10 +296,10 @@ struct clap_host
 // bitfield
 enum clap_plugin_type
 {
-  CLAP_PLUGIN_INSTRUMENT  = (1 << 0),
-  CLAP_PLUGIN_EFFECT      = (1 << 1),
-  CLAP_PLUGIN_MIDI_EFFECT = (1 << 2),
-  CLAP_PLUGIN_ANALYZER    = (1 << 3)
+  CLAP_PLUGIN_INSTRUMENT   = (1 << 0),
+  CLAP_PLUGIN_EFFECT       = (1 << 1),
+  CLAP_PLUGIN_EVENT_EFFECT = (1 << 2), // can be seen as midi effect
+  CLAP_PLUGIN_ANALYZER     = (1 << 3),
 };
 
 struct clap_plugin
@@ -316,14 +316,14 @@ struct clap_plugin
   char id[CLAP_ID_SIZE];
   char name[CLAP_NAME_SIZE];
   char description[CLAP_DESC_SIZE];
-  char manufacturer[CLAP_NAME_SIZE];
   char version[CLAP_NAME_SIZE];
+  char manufacturer[CLAP_NAME_SIZE];
   char url[CLAP_URL_SIZE];
-  char license[CLAP_NAME_SIZE];
   char support[CLAP_URL_SIZE];  // a link to the support
-  char caterogries[CLAP_TAGS_SIZE]; // fm;analogue;delay;...
+  char license[CLAP_NAME_SIZE];
+  char categories[CLAP_TAGS_SIZE]; // fm;analogue;delay;...
 
-  uint32_t plugin_type;
+  uint32_t type; // clap_plugin_type bitfield
   uint32_t chunk_size;
 
   bool has_gui;

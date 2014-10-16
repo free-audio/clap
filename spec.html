@@ -754,10 +754,38 @@ big endian machine, it should load again successfully.</p>
 </span>
 <span class="cp">#include &lt;clap/clap.h&gt;
 </span>
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">host_events</span><span class="p">(</span><span class="k">struct</span> <span class="n">clap_host</span>   <span class="o">*</span><span class="n">host</span><span class="p">,</span>
+                        <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
+                        <span class="k">struct</span> <span class="n">clap_event</span>  <span class="o">*</span><span class="n">events</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">uint64_t</span> <span class="nf">host_steady_time</span><span class="p">(</span><span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="o">*</span><span class="nf">host_extension</span><span class="p">(</span><span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">extension_id</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">initialize_host</span><span class="p">(</span><span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">host</span><span class="o">-&gt;</span><span class="n">clap_version</span> <span class="o">=</span> <span class="n">CLAP_VERSION</span><span class="p">;</span>
+  <span class="n">host</span><span class="o">-&gt;</span><span class="n">events</span>       <span class="o">=</span> <span class="n">host_events</span><span class="p">;</span>
+  <span class="n">host</span><span class="o">-&gt;</span><span class="n">steady_time</span>  <span class="o">=</span> <span class="n">host_steady_time</span><span class="p">;</span>
+  <span class="n">host</span><span class="o">-&gt;</span><span class="n">extension</span>    <span class="o">=</span> <span class="n">host_extension</span><span class="p">;</span>
+  <span class="n">snprintf</span><span class="p">(</span><span class="n">host</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">,</span> <span class="k">sizeof</span> <span class="p">(</span><span class="n">host</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">),</span> <span class="s">&quot;clap-info&quot;</span><span class="p">);</span>
+  <span class="n">snprintf</span><span class="p">(</span><span class="n">host</span><span class="o">-&gt;</span><span class="n">manufacturer</span><span class="p">,</span> <span class="k">sizeof</span> <span class="p">(</span><span class="n">host</span><span class="o">-&gt;</span><span class="n">manufacturer</span><span class="p">),</span> <span class="s">&quot;clap&quot;</span><span class="p">);</span>
+  <span class="n">snprintf</span><span class="p">(</span><span class="n">host</span><span class="o">-&gt;</span><span class="n">version</span><span class="p">,</span> <span class="k">sizeof</span> <span class="p">(</span><span class="n">host</span><span class="o">-&gt;</span><span class="n">version</span><span class="p">),</span> <span class="s">&quot;1.0&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
 <span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
 <span class="p">{</span>
-  <span class="k">struct</span> <span class="n">clap_host</span> <span class="n">host</span><span class="p">;</span> <span class="c1">// XXX initialize host
-</span>
+  <span class="k">struct</span> <span class="n">clap_host</span> <span class="n">host</span><span class="p">;</span>
+  <span class="n">initialize_host</span><span class="p">(</span><span class="o">&amp;</span><span class="n">host</span><span class="p">);</span>
+
   <span class="kt">void</span> <span class="o">*</span> <span class="n">handle</span> <span class="o">=</span> <span class="n">dlopen</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">RTLD_NOW</span> <span class="o">|</span> <span class="n">RTLD_LOCAL</span><span class="p">);</span>
   <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">handle</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;failed to load %s: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dlerror</span><span class="p">());</span>
@@ -785,20 +813,29 @@ big endian machine, it should load again successfully.</p>
       <span class="k">continue</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span>
-            <span class="s">&quot;found plugin:</span><span class="se">\n</span><span class="s">&quot;</span>
-            <span class="s">&quot; id:       %s</span><span class="se">\n</span><span class="s">&quot;</span>
-            <span class="s">&quot; name:     %s</span><span class="se">\n</span><span class="s">&quot;</span>
-            <span class="s">&quot; description: %s</span><span class="se">\n</span><span class="s">&quot;</span>
-            <span class="s">&quot; manufacturer: %s</span><span class="se">\n</span><span class="s">&quot;</span>
-            <span class="s">&quot; version: %s</span><span class="se">\n</span><span class="s">&quot;</span>
-            <span class="s">&quot; url: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
-            <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">id</span><span class="p">,</span>
-            <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">,</span>
-            <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">description</span><span class="p">,</span>
-            <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">manufacturer</span><span class="p">,</span>
-            <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">version</span><span class="p">,</span>
-            <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">url</span><span class="p">);</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; id: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">id</span><span class="p">);</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; name: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">);</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; description: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">description</span><span class="p">);</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; manufacturer: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">manufacturer</span><span class="p">);</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; version: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">version</span><span class="p">);</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; url: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">url</span><span class="p">);</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; support: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">support</span><span class="p">);</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; license: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">license</span><span class="p">);</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; categories: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">categories</span><span class="p">);</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; type:&quot;</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">plugin</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">&amp;</span> <span class="n">CLAP_PLUGIN_INSTRUMENT</span><span class="p">)</span>
+      <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; instrument&quot;</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">plugin</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">&amp;</span> <span class="n">CLAP_PLUGIN_EFFECT</span><span class="p">)</span>
+      <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; effect&quot;</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">plugin</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">&amp;</span> <span class="n">CLAP_PLUGIN_EVENT_EFFECT</span><span class="p">)</span>
+      <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; event_effect&quot;</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">plugin</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">&amp;</span> <span class="n">CLAP_PLUGIN_ANALYZER</span><span class="p">)</span>
+      <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; analyzer&quot;</span><span class="p">);</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; chunk_size: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">chunk_size</span><span class="p">);</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; has_gui: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">has_gui</span><span class="p">);</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; supports_tunning: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">supports_tunning</span><span class="p">);</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; supports_microtones: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">supports_microtones</span><span class="p">);</span>
 
     <span class="c1">// destroy the plugin
 </span>    <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">destroy</span><span class="p">(</span><span class="n">plugin</span><span class="p">);</span>
@@ -879,16 +916,16 @@ big endian machine, it should load again successfully.</p>
 </span>
 <span class="k">enum</span> <span class="n">clap_port_type</span>
 <span class="p">{</span>
-  <span class="n">CLAP_PORT_MONO</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-  <span class="n">CLAP_PORT_STEREO</span><span class="p">,</span>
-  <span class="n">CLAP_PORT_SURROUND</span><span class="p">,</span>
+  <span class="n">CLAP_PORT_MONO</span>     <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="n">CLAP_PORT_STEREO</span>   <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="n">CLAP_PORT_SURROUND</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
 <span class="p">};</span>
 
 <span class="k">enum</span> <span class="n">clap_port_role</span>
 <span class="p">{</span>
-  <span class="n">CLAP_PORT_INOUT</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-  <span class="n">CLAP_PORT_SIDECHAIN</span><span class="p">,</span>
-  <span class="n">CLAP_PORT_FEEDBACK</span><span class="p">,</span>
+  <span class="n">CLAP_PORT_INOUT</span>     <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="n">CLAP_PORT_SIDECHAIN</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="n">CLAP_PORT_FEEDBACK</span>  <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
 <span class="p">};</span>
 
 <span class="k">struct</span> <span class="n">clap_port_info</span>
@@ -897,7 +934,7 @@ big endian machine, it should load again successfully.</p>
   <span class="k">enum</span> <span class="n">clap_port_role</span>  <span class="n">role</span><span class="p">;</span>
   <span class="kt">char</span>                 <span class="n">name</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>
   <span class="kt">uint32_t</span>             <span class="n">stream_id</span><span class="p">;</span> <span class="c1">// used to connect feedback loops
-</span>  <span class="kt">bool</span>                 <span class="n">repeatable</span><span class="p">;</span>
+</span>  <span class="kt">bool</span>                 <span class="n">is_repeatable</span><span class="p">;</span>
 <span class="p">};</span>
 
 <span class="k">struct</span> <span class="n">clap_ports_config</span>
@@ -913,31 +950,31 @@ big endian machine, it should load again successfully.</p>
 </span>
 <span class="k">enum</span> <span class="n">clap_param_type</span>
 <span class="p">{</span>
-  <span class="n">CLAP_PARAM_GROUP</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-  <span class="n">CLAP_PARAM_BOOL</span><span class="p">,</span>
-  <span class="n">CLAP_PARAM_FLOAT</span><span class="p">,</span>
-  <span class="n">CLAP_PARAM_INT</span><span class="p">,</span>
-  <span class="n">CLAP_PARAM_ENUM</span><span class="p">,</span> <span class="c1">// uses int
+  <span class="n">CLAP_PARAM_GROUP</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="c1">// no value for this one
+</span>  <span class="n">CLAP_PARAM_BOOL</span>  <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="c1">// uses value.b
+</span>  <span class="n">CLAP_PARAM_FLOAT</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="c1">// uses value.f
+</span>  <span class="n">CLAP_PARAM_INT</span>   <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="c1">// uses value.i
+</span>  <span class="n">CLAP_PARAM_ENUM</span>  <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="c1">// uses value.i
 </span><span class="p">};</span>
 
 <span class="k">enum</span> <span class="n">clap_param_scale</span>
 <span class="p">{</span>
   <span class="n">CLAP_PARAM_LINEAR</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-  <span class="n">CLAP_PARAM_LOG</span><span class="p">,</span>
+  <span class="n">CLAP_PARAM_LOG</span>    <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
 <span class="p">};</span>
 
 <span class="k">union</span> <span class="n">clap_param_value</span>
 <span class="p">{</span>
-  <span class="kt">bool</span>                <span class="n">b</span><span class="p">;</span>
-  <span class="kt">float</span>               <span class="n">f</span><span class="p">;</span>
-  <span class="kt">int32_t</span>             <span class="n">i</span><span class="p">;</span>
+  <span class="kt">bool</span>    <span class="n">b</span><span class="p">;</span>
+  <span class="kt">float</span>   <span class="n">f</span><span class="p">;</span>
+  <span class="kt">int32_t</span> <span class="n">i</span><span class="p">;</span>
 <span class="p">};</span>
 
 <span class="k">struct</span> <span class="n">clap_param</span>
 <span class="p">{</span>
   <span class="cm">/* tree fields */</span>
   <span class="kt">uint32_t</span> <span class="n">index</span><span class="p">;</span>  <span class="c1">// parameter's index
-</span>  <span class="kt">uint32_t</span> <span class="n">parent</span><span class="p">;</span> <span class="c1">// parent index
+</span>  <span class="kt">uint32_t</span> <span class="n">parent</span><span class="p">;</span> <span class="c1">// parent's index, -1 for no parent
 </span>
   <span class="cm">/* param info */</span>
   <span class="k">enum</span> <span class="n">clap_param_type</span>    <span class="n">type</span><span class="p">;</span>
@@ -945,8 +982,8 @@ big endian machine, it should load again successfully.</p>
 </span>  <span class="kt">char</span>                    <span class="n">name</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span> <span class="c1">// the display name
 </span>  <span class="kt">char</span>                    <span class="n">desc</span><span class="p">[</span><span class="n">CLAP_DESC_SIZE</span><span class="p">];</span>
   <span class="kt">bool</span>                    <span class="n">is_per_note</span><span class="p">;</span>
-  <span class="kt">char</span>                    <span class="n">display_text</span><span class="p">[</span><span class="n">CLAP_DISPLAY_SIZE</span><span class="p">];</span>
-  <span class="k">union</span> <span class="n">clap_param_value</span>  <span class="n">value</span><span class="p">;</span>
+  <span class="kt">char</span>                    <span class="n">display_text</span><span class="p">[</span><span class="n">CLAP_DISPLAY_SIZE</span><span class="p">];</span> <span class="c1">// the text used to display the value
+</span>  <span class="k">union</span> <span class="n">clap_param_value</span>  <span class="n">value</span><span class="p">;</span>
   <span class="k">union</span> <span class="n">clap_param_value</span>  <span class="n">min</span><span class="p">;</span>
   <span class="k">union</span> <span class="n">clap_param_value</span>  <span class="n">max</span><span class="p">;</span>
   <span class="k">enum</span> <span class="n">clap_param_scale</span>   <span class="n">scale</span><span class="p">;</span>
@@ -962,7 +999,7 @@ big endian machine, it should load again successfully.</p>
 </span>  <span class="kt">char</span>     <span class="n">name</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>   <span class="c1">// display name
 </span>  <span class="kt">char</span>     <span class="n">desc</span><span class="p">[</span><span class="n">CLAP_DESC_SIZE</span><span class="p">];</span>   <span class="c1">// desc and how to use it
 </span>  <span class="kt">char</span>     <span class="n">author</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>
-  <span class="kt">char</span>     <span class="n">tags</span><span class="p">[</span><span class="n">CLAP_TAGS_SIZE</span><span class="p">];</span>   <span class="c1">// &quot;tag1;tag2;tag3;...
+  <span class="kt">char</span>     <span class="n">tags</span><span class="p">[</span><span class="n">CLAP_TAGS_SIZE</span><span class="p">];</span>   <span class="c1">// &quot;tag1;tag2;tag3;...&quot;
 </span><span class="p">};</span>
 
 <span class="c1">////////////
@@ -971,20 +1008,23 @@ big endian machine, it should load again successfully.</p>
 </span>
 <span class="k">enum</span> <span class="n">clap_event_type</span>
 <span class="p">{</span>
-  <span class="n">CLAP_EVENT_NOTE_ON</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>        <span class="c1">// note attribute
-</span>  <span class="n">CLAP_EVENT_NOTE_MODULATION</span><span class="p">,</span>    <span class="c1">// note attribute
-</span>  <span class="n">CLAP_EVENT_NOTE_OFF</span><span class="p">,</span>           <span class="c1">// note attribute
+  <span class="n">CLAP_EVENT_NOTE_ON</span>         <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="c1">// note attribute
+</span>  <span class="n">CLAP_EVENT_NOTE_MODULATION</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="c1">// note attribute
+</span>  <span class="n">CLAP_EVENT_NOTE_OFF</span>        <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="c1">// note attribute
 </span>
-  <span class="n">CLAP_EVENT_PARAM_SET</span><span class="p">,</span>          <span class="c1">// param attribute
-</span>  <span class="n">CLAP_EVENT_PARAM_RAMP</span><span class="p">,</span>         <span class="c1">// param attribute
-</span>  <span class="n">CLAP_EVENT_PITCH_SET</span><span class="p">,</span>          <span class="c1">// pitch attribute
-</span>  <span class="n">CLAP_EVENT_PRESET_SET</span><span class="p">,</span>         <span class="c1">// preset attribute
+  <span class="n">CLAP_EVENT_PARAM_SET</span>  <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>    <span class="c1">// param attribute
+</span>  <span class="n">CLAP_EVENT_PARAM_RAMP</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>    <span class="c1">// param attribute
+</span>  <span class="n">CLAP_EVENT_PITCH_SET</span>  <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>    <span class="c1">// pitch attribute
+</span>  <span class="n">CLAP_EVENT_PRESET_SET</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span>    <span class="c1">// preset attribute
 </span>
-  <span class="n">CLAP_EVENT_MIDI</span><span class="p">,</span>               <span class="c1">// midi attribute
-</span>  <span class="n">CLAP_EVENT_CONTROL</span><span class="p">,</span>            <span class="c1">// control attribute
+  <span class="n">CLAP_EVENT_MIDI</span>    <span class="o">=</span> <span class="mi">7</span><span class="p">,</span>       <span class="c1">// midi attribute
+</span>  <span class="n">CLAP_EVENT_CONTROL</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>       <span class="c1">// control attribute
 </span>
-  <span class="n">CLAP_EVENT_GUI_OPENED</span><span class="p">,</span>         <span class="c1">// plugin to host, no attribute
-</span>  <span class="n">CLAP_EVENT_GUI_CLOSED</span><span class="p">,</span>         <span class="c1">// plugin to host, no attribute
+  <span class="n">CLAP_EVENT_GUI_OPENED</span> <span class="o">=</span> <span class="mi">9</span><span class="p">,</span>    <span class="c1">// plugin to host, no attribute
+</span>  <span class="n">CLAP_EVENT_GUI_CLOSED</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>   <span class="c1">// plugin to host, no attribute
+</span>
+  <span class="n">CLAP_EVENT_NEW_PRESETS</span>       <span class="o">=</span> <span class="mi">11</span><span class="p">,</span> <span class="c1">// plugin to host, no attribute
+</span>  <span class="n">CLAP_EVENT_NEW_PORTS_CONFIGS</span> <span class="o">=</span> <span class="mi">12</span><span class="p">,</span> <span class="c1">// plugin to host, no attribute
 </span><span class="p">};</span>
 
 <span class="k">struct</span> <span class="n">clap_event_note</span>
@@ -1032,14 +1072,15 @@ big endian machine, it should load again successfully.</p>
 <span class="p">{</span>
   <span class="k">struct</span> <span class="n">clap_event</span>    <span class="o">*</span><span class="n">next</span><span class="p">;</span> <span class="c1">// linked list, NULL on end
 </span>  <span class="k">enum</span> <span class="n">clap_event_type</span>  <span class="n">type</span><span class="p">;</span>
-  <span class="kt">uint64_t</span>              <span class="n">sample_offset</span><span class="p">;</span> <span class="c1">// offset from the parent event or current time in samples
+  <span class="kt">uint64_t</span>              <span class="n">steady_time</span><span class="p">;</span> <span class="c1">// steady_time of the event, see host-&gt;steady_time(host)
 </span>
   <span class="k">union</span> <span class="p">{</span>
-    <span class="k">struct</span> <span class="n">clap_event_note</span>   <span class="n">note</span><span class="p">;</span>
-    <span class="k">struct</span> <span class="n">clap_event_param</span>  <span class="n">param</span><span class="p">;</span>
-    <span class="k">struct</span> <span class="n">clap_event_pitch</span>  <span class="n">pitch</span><span class="p">;</span>
-    <span class="k">struct</span> <span class="n">clap_event_preset</span> <span class="n">preset</span><span class="p">;</span>
-    <span class="k">struct</span> <span class="n">clap_event_midi</span>   <span class="n">midi</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">clap_event_note</span>    <span class="n">note</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">clap_event_param</span>   <span class="n">param</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">clap_event_pitch</span>   <span class="n">pitch</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">clap_event_preset</span>  <span class="n">preset</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">clap_event_midi</span>    <span class="n">midi</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">clap_event_control</span> <span class="n">control</span><span class="p">;</span>
   <span class="p">};</span>
 <span class="p">};</span>
 
@@ -1063,12 +1104,12 @@ big endian machine, it should load again successfully.</p>
 
   <span class="cm">/* process info */</span>
   <span class="kt">bool</span>     <span class="n">is_offline</span><span class="p">;</span>
-  <span class="kt">uint32_t</span> <span class="n">tempo_in_samples</span><span class="p">;</span>
-  <span class="kt">uint64_t</span> <span class="n">time_in_samples</span><span class="p">;</span>
-
+  <span class="kt">uint32_t</span> <span class="n">tempo</span><span class="p">;</span>       <span class="c1">// the tempo in samples
+</span>  <span class="kt">uint64_t</span> <span class="n">song_time</span><span class="p">;</span>   <span class="c1">// the song time in samples
+</span>  <span class="kt">uint64_t</span> <span class="n">steady_time</span><span class="p">;</span> <span class="c1">// the steady time in samples
+</span>
   <span class="cm">/* events */</span>
-  <span class="k">struct</span> <span class="n">clap_event</span> <span class="o">*</span><span class="n">in_events</span><span class="p">;</span>
-  <span class="k">struct</span> <span class="n">clap_event</span> <span class="o">*</span><span class="n">out_events</span><span class="p">;</span>
+  <span class="k">struct</span> <span class="n">clap_event</span> <span class="o">*</span><span class="n">events</span><span class="p">;</span>
 
   <span class="cm">/* output values */</span>
   <span class="kt">bool</span> <span class="n">need_processing</span><span class="p">;</span>
@@ -1080,19 +1121,21 @@ big endian machine, it should load again successfully.</p>
 </span>
 <span class="k">struct</span> <span class="n">clap_host</span>
 <span class="p">{</span>
-  <span class="kt">uint32_t</span> <span class="n">clap_version</span><span class="p">;</span> <span class="c1">// initialized to CALP_VERSION
+  <span class="kt">uint32_t</span> <span class="n">clap_version</span><span class="p">;</span> <span class="c1">// initialized to CLAP_VERSION
 </span>
   <span class="cm">/* host info */</span>
-  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">;</span>
-  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">manufacturer</span><span class="p">;</span>
-  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">version</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="n">name</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>
+  <span class="kt">char</span> <span class="n">manufacturer</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>
+  <span class="kt">char</span> <span class="n">version</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>
 
-  <span class="cm">/* for events generated outside of process, like from the GUI. */</span>
+  <span class="cm">/* for events generated by the plugin. */</span>
   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">events</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span>   <span class="o">*</span><span class="n">host</span><span class="p">,</span>
                  <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
                  <span class="k">struct</span> <span class="n">clap_event</span>  <span class="o">*</span><span class="n">events</span><span class="p">);</span>
 
-  <span class="cm">/* used for timing events */</span>
+  <span class="cm">/* The time in samples, this clock is monotonicaly increasing,
+   * it means that each time you call this function, the return
+   * value must be greater or equal to the previous one. */</span>
   <span class="kt">uint64_t</span> <span class="p">(</span><span class="o">*</span><span class="n">steady_time</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">);</span>
 
   <span class="cm">/* future features */</span>
@@ -1106,10 +1149,10 @@ big endian machine, it should load again successfully.</p>
 <span class="c1">// bitfield
 </span><span class="k">enum</span> <span class="n">clap_plugin_type</span>
 <span class="p">{</span>
-  <span class="n">CLAP_PLUGIN_INSTRUMENT</span>  <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span><span class="p">),</span>
-  <span class="n">CLAP_PLUGIN_EFFECT</span>      <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="n">CLAP_PLUGIN_MIDI_EFFECT</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">),</span>
-  <span class="n">CLAP_PLUGIN_ANALYZER</span>    <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span><span class="p">)</span>
+  <span class="n">CLAP_PLUGIN_INSTRUMENT</span>   <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span><span class="p">),</span>
+  <span class="n">CLAP_PLUGIN_EFFECT</span>       <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">),</span>
+  <span class="n">CLAP_PLUGIN_EVENT_EFFECT</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">),</span> <span class="c1">// can be seen as midi effect
+</span>  <span class="n">CLAP_PLUGIN_ANALYZER</span>     <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span><span class="p">),</span>
 <span class="p">};</span>
 
 <span class="k">struct</span> <span class="n">clap_plugin</span>
@@ -1126,15 +1169,15 @@ big endian machine, it should load again successfully.</p>
   <span class="kt">char</span> <span class="n">id</span><span class="p">[</span><span class="n">CLAP_ID_SIZE</span><span class="p">];</span>
   <span class="kt">char</span> <span class="n">name</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>
   <span class="kt">char</span> <span class="n">description</span><span class="p">[</span><span class="n">CLAP_DESC_SIZE</span><span class="p">];</span>
-  <span class="kt">char</span> <span class="n">manufacturer</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>
   <span class="kt">char</span> <span class="n">version</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>
+  <span class="kt">char</span> <span class="n">manufacturer</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>
   <span class="kt">char</span> <span class="n">url</span><span class="p">[</span><span class="n">CLAP_URL_SIZE</span><span class="p">];</span>
-  <span class="kt">char</span> <span class="n">license</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>
   <span class="kt">char</span> <span class="n">support</span><span class="p">[</span><span class="n">CLAP_URL_SIZE</span><span class="p">];</span>  <span class="c1">// a link to the support
-</span>  <span class="kt">char</span> <span class="n">caterogries</span><span class="p">[</span><span class="n">CLAP_TAGS_SIZE</span><span class="p">];</span> <span class="c1">// fm;analogue;delay;...
+</span>  <span class="kt">char</span> <span class="n">license</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>
+  <span class="kt">char</span> <span class="n">categories</span><span class="p">[</span><span class="n">CLAP_TAGS_SIZE</span><span class="p">];</span> <span class="c1">// fm;analogue;delay;...
 </span>
-  <span class="kt">uint32_t</span> <span class="n">plugin_type</span><span class="p">;</span>
-  <span class="kt">uint32_t</span> <span class="n">chunk_size</span><span class="p">;</span>
+  <span class="kt">uint32_t</span> <span class="n">type</span><span class="p">;</span> <span class="c1">// clap_plugin_type bitfield
+</span>  <span class="kt">uint32_t</span> <span class="n">chunk_size</span><span class="p">;</span>
 
   <span class="kt">bool</span> <span class="n">has_gui</span><span class="p">;</span>
   <span class="kt">bool</span> <span class="n">supports_tunning</span><span class="p">;</span>
@@ -1187,14 +1230,14 @@ big endian machine, it should load again successfully.</p>
 <span class="k">typedef</span> <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">clap_create_f</span><span class="p">)(</span><span class="kt">uint32_t</span>          <span class="n">plugin_index</span><span class="p">,</span>
                                              <span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span>
                                              <span class="kt">uint32_t</span>          <span class="n">sample_rate</span><span class="p">,</span>
-                                             <span class="kt">uint32_t</span>         <span class="o">*</span><span class="n">plugin_count</span><span class="p">);</span>
+                                             <span class="kt">uint32_t</span>         <span class="o">*</span><span class="n">plugins_count</span><span class="p">);</span>
 
 <span class="cm">/* plugin entry point */</span>
 <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span>
 <span class="nf">clap_create</span><span class="p">(</span><span class="kt">uint32_t</span>          <span class="n">plugin_index</span><span class="p">,</span>
             <span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span>
             <span class="kt">uint32_t</span>          <span class="n">sample_rate</span><span class="p">,</span>
-            <span class="kt">uint32_t</span>         <span class="o">*</span><span class="n">plugin_count</span><span class="p">);</span>
+            <span class="kt">uint32_t</span>         <span class="o">*</span><span class="n">plugins_count</span><span class="p">);</span>
 
 <span class="cp"># ifdef __cplusplus
 </span><span class="p">}</span>
