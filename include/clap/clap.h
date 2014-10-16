@@ -330,6 +330,8 @@ struct clap_plugin
   bool supports_tunning;
   bool supports_microtones;
 
+  uint32_t latency; // latency in samples
+
   /* Audio ports.
    * The port configuration has to be done before the plugin
    * activation, or after the plugin deactivateion.
