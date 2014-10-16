@@ -206,7 +206,7 @@ struct clap_event_pitch
 
 struct clap_event_preset
 {
-  uint32_t id;
+  uint32_t id; // the preset id
 };
 
 struct clap_event_midi
@@ -330,7 +330,10 @@ struct clap_plugin
   bool supports_tunning;
   bool supports_microtones;
 
-  /* audio ports */
+  /* Audio ports.
+   * The port configuration has to be done before the plugin
+   * activation, or after the plugin deactivateion.
+   */
   uint32_t (*get_ports_configs_count)(struct clap_plugin *plugin);
   bool (*get_ports_config)(struct clap_plugin       *plugin,
                            uint32_t                  config_index,
@@ -379,7 +382,11 @@ typedef struct clap_plugin *(*clap_create_f)(uint32_t          plugin_index,
                                              uint32_t          sample_rate,
                                              uint32_t         *plugins_count);
 
-/* plugin entry point */
+/* Plugin entry point. If plugins_count is not null, then clap_create has
+ * to store the number of plugins available in *plugins_count.
+ * If clap_create failed to create a plugin, it returns NULL.
+ * The return value has to be freed by calling plugin->destroy(plugin).
+ */
 struct clap_plugin *
 clap_create(uint32_t          plugin_index,
             struct clap_host *host,
