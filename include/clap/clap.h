@@ -341,7 +341,7 @@ struct clap_plugin
   uint32_t chunk_size;
 
   bool has_gui;
-  bool supports_tunning;
+  bool supports_tuning;
   bool supports_microtones;
 
   uint32_t latency; // latency in samples
