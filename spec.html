@@ -832,13 +832,16 @@ send an event <tt class="docutils literal">CLAP_EVENT_GUI_CLOSED</tt> to the hos
 <h2><a class="toc-backref" href="#id40">Presets</a></h2>
 <div class="section" id="list-plugin-s-presets">
 <h3><a class="toc-backref" href="#id41">List plugin's presets</a></h3>
-<p>The host can browse the plugin's preset by calling <tt class="docutils literal"><span class="pre">plugin-&gt;get_presets(plugin);</span></tt>.
-This function returns a newly allocated preset linked list.
-It is the responsibility of the host to free the linked list.</p>
+<p>The host can browse the plugin's preset by calling:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">plugin-&gt;get_presets_count(plugin);</span></tt> to know how many presets it has.</li>
+<li><tt class="docutils literal"><span class="pre">plugin-&gt;get_preset(plugin,</span> preset_index, &amp;preset);</tt> to get a preset
+details.</li>
+</ul>
 </div>
 <div class="section" id="load-a-preset">
 <h3><a class="toc-backref" href="#id42">Load a preset</a></h3>
-<p>To load a preset, the host should send an event <tt class="docutils literal">CLAP_EVENT_PRESET_SET</tt> to
+<p>To load a preset, the host have to send an event <tt class="docutils literal">CLAP_EVENT_PRESET_SET</tt> to
 the plugin.</p>
 <p>When a preset is loaded from the plugin's GUI, the plugin must send a
 <tt class="docutils literal">CLAP_EVENT_PRESET_SET</tt> to the host.</p>
@@ -850,9 +853,11 @@ the plugin.</p>
 <pre class="code c literal-block">
 <span class="kt">void</span> <span class="o">*</span><span class="n">buffer</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
 <span class="kt">size_t</span> <span class="n">size</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-<span class="n">plugin</span><span class="o">-&gt;</span><span class="n">save</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">buffer</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">size</span><span class="p">);</span>
-<span class="c1">// do what you want
-</span><span class="n">free</span><span class="p">(</span><span class="n">buffer</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">plugin</span><span class="o">-&gt;</span><span class="n">save</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">buffer</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">size</span><span class="p">))</span> <span class="p">{</span>
+  <span class="c1">// save failed
+</span><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+  <span class="c1">// save succeed
+</span><span class="p">}</span>
 </pre>
 <p>Restoring the plugin's state is done by:</p>
 <pre class="code c literal-block">
@@ -1328,9 +1333,7 @@ big endian machine, it should load again successfully.</p>
   <span class="kt">uint32_t</span> <span class="n">latency</span><span class="p">;</span> <span class="c1">// latency in samples
 </span>
   <span class="cm">/* Audio ports.
-   * The port configuration has to be done before the plugin
-   * activation, or after the plugin deactivateion.
-   */</span>
+   * The port configuration has to be done while the plugin is deactivated. */</span>
   <span class="kt">uint32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">get_ports_configs_count</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">get_ports_config</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>       <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
                            <span class="kt">uint32_t</span>                  <span class="n">config_index</span><span class="p">,</span>
@@ -1347,11 +1350,15 @@ big endian machine, it should load again successfully.</p>
 
   <span class="cm">/* Returns a newly allocated parameters tree. The caller has to free it. */</span>
   <span class="kt">uint32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">get_params_count</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
-  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">get_param</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">index</span><span class="p">,</span> <span class="k">struct</span> <span class="n">clap_param</span> <span class="o">*</span><span class="n">param</span><span class="p">);</span>
+  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">get_param</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
+                    <span class="kt">uint32_t</span>            <span class="n">index</span><span class="p">,</span>
+                    <span class="k">struct</span> <span class="n">clap_param</span>  <span class="o">*</span><span class="n">param</span><span class="p">);</span>
 
   <span class="cm">/* Returns a newly allocated preset list. The caller has to free it. */</span>
   <span class="kt">uint32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">get_presets_count</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
-  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">get_preset</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">index</span><span class="p">,</span> <span class="k">struct</span> <span class="n">clap_preset</span> <span class="o">*</span><span class="n">preset</span><span class="p">);</span>
+  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">get_preset</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
+                     <span class="kt">uint32_t</span>            <span class="n">index</span><span class="p">,</span>
+                     <span class="k">struct</span> <span class="n">clap_preset</span> <span class="o">*</span><span class="n">preset</span><span class="p">);</span>
 
   <span class="cm">/* activation */</span>
   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">activate</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
@@ -1365,12 +1372,13 @@ big endian machine, it should load again successfully.</p>
   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">close_gui</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 
   <span class="cm">/* The plugin has to allocate and save its state into *buffer.
-   * The host has to free *buffer after that. */</span>
-  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">save</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="kt">void</span> <span class="o">**</span><span class="n">buffer</span><span class="p">,</span> <span class="kt">size_t</span> <span class="o">*</span><span class="n">size</span><span class="p">);</span>
-  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">restore</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buffer</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">size</span><span class="p">);</span>
+   * The plugin is also responsible to free the buffer on the
+   * next call to save() or when the plugin is destroyed. */</span>
+  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">save</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="kt">void</span> <span class="o">**</span><span class="n">buffer</span><span class="p">,</span> <span class="kt">size_t</span> <span class="o">*</span><span class="n">size</span><span class="p">);</span>
+  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">restore</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buffer</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">size</span><span class="p">);</span>
 
   <span class="cm">/* future features */</span>
-  <span class="kt">void</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">extension</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">extention_id</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">ptr</span><span class="p">);</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">extension</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">id</span><span class="p">);</span>
 <span class="p">};</span>
 
 <span class="cm">/* typedef for dlsym() cast */</span>
@@ -1382,8 +1390,7 @@ big endian machine, it should load again successfully.</p>
 <span class="cm">/* Plugin entry point. If plugins_count is not null, then clap_create has
  * to store the number of plugins available in *plugins_count.
  * If clap_create failed to create a plugin, it returns NULL.
- * The return value has to be freed by calling plugin-&gt;destroy(plugin).
- */</span>
+ * The return value has to be freed by calling plugin-&gt;destroy(plugin). */</span>
 <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span>
 <span class="nf">clap_create</span><span class="p">(</span><span class="kt">uint32_t</span>          <span class="n">plugin_index</span><span class="p">,</span>
             <span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span>

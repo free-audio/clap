@@ -546,14 +546,16 @@ Presets
 List plugin's presets
 ~~~~~~~~~~~~~~~~~~~~~
 
-The host can browse the plugin's preset by calling ``plugin->get_presets(plugin);``.
-This function returns a newly allocated preset linked list.
-It is the responsibility of the host to free the linked list.
+The host can browse the plugin's preset by calling:
+
+- ``plugin->get_presets_count(plugin);`` to know how many presets it has.
+- ``plugin->get_preset(plugin, preset_index, &preset);`` to get a preset
+  details.
 
 Load a preset
 ~~~~~~~~~~~~~
 
-To load a preset, the host should send an event ``CLAP_EVENT_PRESET_SET`` to
+To load a preset, the host have to send an event ``CLAP_EVENT_PRESET_SET`` to
 the plugin.
 
 When a preset is loaded from the plugin's GUI, the plugin must send a
@@ -568,9 +570,11 @@ Saving the plugin's state is done by:
 
   void *buffer = NULL;
   size_t size = 0;
-  plugin->save(plugin, &buffer, &size);
-  // do what you want
-  free(buffer);
+  if (!plugin->save(plugin, &buffer, &size)) {
+    // save failed
+  } else {
+    // save succeed
+  }
 
 Restoring the plugin's state is done by:
 

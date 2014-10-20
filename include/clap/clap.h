@@ -347,9 +347,7 @@ struct clap_plugin
   uint32_t latency; // latency in samples
 
   /* Audio ports.
-   * The port configuration has to be done before the plugin
-   * activation, or after the plugin deactivateion.
-   */
+   * The port configuration has to be done while the plugin is deactivated. */
   uint32_t (*get_ports_configs_count)(struct clap_plugin *plugin);
   bool (*get_ports_config)(struct clap_plugin       *plugin,
                            uint32_t                  config_index,
@@ -366,11 +364,15 @@ struct clap_plugin
 
   /* Returns a newly allocated parameters tree. The caller has to free it. */
   uint32_t (*get_params_count)(struct clap_plugin *plugin);
-  bool (*get_param)(struct clap_plugin *plugin, uint32_t index, struct clap_param *param);
+  bool (*get_param)(struct clap_plugin *plugin,
+                    uint32_t            index,
+                    struct clap_param  *param);
 
   /* Returns a newly allocated preset list. The caller has to free it. */
   uint32_t (*get_presets_count)(struct clap_plugin *plugin);
-  bool (*get_preset)(struct clap_plugin *plugin, uint32_t index, struct clap_preset *preset);
+  bool (*get_preset)(struct clap_plugin *plugin,
+                     uint32_t            index,
+                     struct clap_preset *preset);
 
   /* activation */
   bool (*activate)(struct clap_plugin *plugin);
@@ -384,12 +386,13 @@ struct clap_plugin
   void (*close_gui)(struct clap_plugin *plugin);
 
   /* The plugin has to allocate and save its state into *buffer.
-   * The host has to free *buffer after that. */
-  void (*save)(struct clap_plugin *plugin, void **buffer, size_t *size);
-  void (*restore)(struct clap_plugin *plugin, const void *buffer, size_t size);
+   * The plugin is also responsible to free the buffer on the
+   * next call to save() or when the plugin is destroyed. */
+  bool (*save)(struct clap_plugin *plugin, void **buffer, size_t *size);
+  bool (*restore)(struct clap_plugin *plugin, const void *buffer, size_t size);
 
   /* future features */
-  void *(*extension)(struct clap_plugin *plugin, const char *extention_id, void *ptr);
+  void *(*extension)(struct clap_plugin *plugin, const char *id);
 };
 
 /* typedef for dlsym() cast */
@@ -401,8 +404,7 @@ typedef struct clap_plugin *(*clap_create_f)(uint32_t          plugin_index,
 /* Plugin entry point. If plugins_count is not null, then clap_create has
  * to store the number of plugins available in *plugins_count.
  * If clap_create failed to create a plugin, it returns NULL.
- * The return value has to be freed by calling plugin->destroy(plugin).
- */
+ * The return value has to be freed by calling plugin->destroy(plugin). */
 struct clap_plugin *
 clap_create(uint32_t          plugin_index,
             struct clap_host *host,
