@@ -145,7 +145,8 @@ See `samples/clap-info.c`_
 Description
 ~~~~~~~~~~~
 
-Both the plugin and host have a few attribute giving general plugin description.
+Both the ``struct clap_plugin;`` and ``struct clap_host;`` have a few attribute giving
+general plugin/host information.
 
 +---------------------+---------------------------------------------------------------+
 | Attribute           | Description                                                   |
