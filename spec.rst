@@ -14,7 +14,9 @@ Goals
 - Make a free audio plugin format
 - Be easy to understand and implement
 - Bring new features missed in VST 2.4
-- Replace old concepts by modern ones
+- Replace old concepts by modern ones. For example the specification tries
+  to not use MIDI as its internal event systems, which let us have
+  micro-tones. Yet MIDI events are possible.
 - Designed to work on any operating system
 - Be event oriented
 - Be extensible without breaking existing plugins
