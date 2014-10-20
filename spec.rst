@@ -128,8 +128,8 @@ Precautions
 - It must not throw exceptions.
 - It can return ``NULL``.
 
-Shell plugins
-~~~~~~~~~~~~~
+Plugins collection
+~~~~~~~~~~~~~~~~~~
 
 A single dynamic library can contains multiple clap plugins.
 To list them, you have to call ``clap_create`` with an index of 0 and increment
