@@ -286,7 +286,7 @@ struct clap_host
   uint64_t (*steady_time)(struct clap_host *host);
 
   /* future features */
-  void *(*extension)(struct clap_host *host, const char *extention_id);
+  void *(*extension)(struct clap_host *host, const char *extention_id, void *ptr);
 };
 
 ////////////
@@ -375,7 +375,7 @@ struct clap_plugin
   void (*restore)(struct clap_plugin *plugin, const void *buffer, size_t size);
 
   /* future features */
-  void *(*extension)(struct clap_plugin *plugin, const char *extention_id);
+  void *(*extension)(struct clap_plugin *plugin, const char *extention_id, void *ptr);
 };
 
 /* typedef for dlsym() cast */
