@@ -94,17 +94,17 @@ For example:
 +-------------+---------------------------+
 | x86_64      | DigitalDragon.x86_64.so   |
 +-------------+---------------------------+
-| alpha       | DigitalDrapon.alpha.so    |
+| alpha       | DigitalDragon.alpha.so    |
 +-------------+---------------------------+
-| arm         | DigitalDrapon.arm.so      |
+| arm         | DigitalDragon.arm.so      |
 +-------------+---------------------------+
-| sparc       | DigitalDrapon.sparc.so    |
+| sparc       | DigitalDragon.sparc.so    |
 +-------------+---------------------------+
-| hppa        | DigitalDrapon.hppa.so     |
+| hppa        | DigitalDragon.hppa.so     |
 +-------------+---------------------------+
-| ppc         | DigitalDrapon.ppc.so      |
+| ppc         | DigitalDragon.ppc.so      |
 +-------------+---------------------------+
-| ppc64       | DigitalDrapon.ppc64.so    |
+| ppc64       | DigitalDragon.ppc64.so    |
 +-------------+---------------------------+
 
 If the name does not contain an indicator, then the plugin should be
@@ -539,6 +539,38 @@ send an event ``CLAP_EVENT_GUI_CLOSED`` to the host.
   ev.sample_offset = host->steady_time(host);
   host->events(host, plugin, &ev);
 
+Embedding
+~~~~~~~~~
+
+Some host are designed to embed plugin's window.
+As embedding is not a Clap requirement, it is offered as an extension.
+Also the OS dependency brought by this feature makes it ideal as an extension.
+
++------------+-----------------------+----------------------+----------------+
+| GUI        | header                | extension            | comment        |
++============+=======================+======================+================+
+| Generic    | `clap-embed.h`_       | ``CLAP_EMBED``       | For the host   |
++------------+-----------------------+----------------------+----------------+
+| Windows    | `clap-embed-win32.h`_ | ``CLAP_EMBED_WIN32`` | For the plugin |
++------------+-----------------------+----------------------+----------------+
+| X11        | `clap-embed-xlib.h`_  | ``CLAP_EMBED_XLIB``  | For the plugin |
++------------+-----------------------+----------------------+----------------+
+
+Sample on Windows
+`````````````````
+
+.. code:: c
+
+  #include <clap/clap.h>
+  #include <clap/clap-embed-win32.h>
+
+  struct clap_embed_win32 *embed = plugin->get_extension(CLAP_EMBED_WIN32);
+  if (embed) {
+    // the plugin can embed
+    embed->embed(plugin, window);
+  }
+  plugin->show_gui(plugin);
+
 
 Presets
 -------
@@ -610,8 +642,27 @@ samples/clap-info.c
 References
 ==========
 
-clap.c
+clap.h
 ------
 
 .. include:: include/clap/clap.h
    :code: c
+
+clap-embed.h
+------------
+
+.. include:: include/clap/clap-embed.h
+   :code: c
+
+clap-embed-win32.h
+------------------
+
+.. include:: include/clap/clap-embed-win32.h
+   :code: c
+
+clap-embed-xlib.h
+-----------------
+
+.. include:: include/clap/clap-embed-xlib.h
+   :code: c
+
