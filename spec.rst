@@ -29,6 +29,22 @@ Later goals
 - Provide a validation host, which should give hard time to the plugin and
   ensure that basic functionnality are working
 
+Design choice
+-------------
+
+- The plugin and the host interface must be thread-safe.
+- Avoid pointer exchange between the host and the plugin
+  whenever it is possible. The choose way is to pass a buffer
+  as a parameter and let the host/plugin copy/read data from it.
+  Rationale: as the host and the plugin can be multi-threaded,
+  keeping pointers to the plugin or host internal memory can lead
+  to race conditions. Also it can lead to ambiguities about who's
+  responsible to free the memory. Also the host and the plugin
+  may use custom allocator.
+- Use the C language.
+- Have support for dynamic configuration, to let a modular plugin
+  add new parameters, new outputs/inputs, etc... dynamically.
+
 Specification
 =============
 
@@ -44,12 +60,12 @@ Plugins location
 Common
 ~~~~~~
 
-- Directories should be scanned recursively
+- Directories should be scanned recursively.
 
 Linux
 ~~~~~
 
-- Plugins distrubuted with packages should be installed to: ``/usr/lib/clap/``
+- Plugins distributed with packages should be installed to: ``/usr/lib/clap/``
 - Plugins installed in the user's home should be installed to: ``${HOME}/.clap/``
 
 Windows
@@ -62,10 +78,42 @@ Mac
 
 TBD
 
+Multi-architecture conventions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Let's say that we have a plugin called ``DigitalDragon``. If we distribute
+it for multiple architecture, then the host should be able to identify which
+version is suited for the current architecture by reading its name.
+
+For example:
+
++-------------+---------------------------+
+| Archtecture | Filename                  |
++=============+===========================+
+| x86         | DigitalDragon.x86.so      |
++-------------+---------------------------+
+| x86_64      | DigitalDragon.x86_64.so   |
++-------------+---------------------------+
+| alpha       | DigitalDrapon.alpha.so    |
++-------------+---------------------------+
+| arm         | DigitalDrapon.arm.so      |
++-------------+---------------------------+
+| sparc       | DigitalDrapon.sparc.so    |
++-------------+---------------------------+
+| hppa        | DigitalDrapon.hppa.so     |
++-------------+---------------------------+
+| ppc         | DigitalDrapon.ppc.so      |
++-------------+---------------------------+
+| ppc64       | DigitalDrapon.ppc64.so    |
++-------------+---------------------------+
+
+If the name does not contain an indicator, then the plugin should be
+built for the native/current architecture.
+
 Instantiate a plugin
 --------------------
 
-Plugin instanciation can be done in a few steps:
+Plugin instantiating can be done in a few steps:
 
 - load the plugin library
 - find the symbol ``clap_create``
@@ -124,15 +172,20 @@ Both the plugin and host have a few attribute giving general plugin description.
 |                     | ``mailto:support@company.com`` or                             |
 |                     | ``http://company.com/support``.                               |
 +---------------------+---------------------------------------------------------------+
-| categories          | An array of categories, the plugins fits into. Eg: analogue,  |
-|                     | digital, fm, delay, reverb, compressor, ...                   |
+| categories          | A string containing a list of categories, joined with ``;``.  |
+|                     | For example: ``fm;analogue;delay``.                           |
 +---------------------+---------------------------------------------------------------+
-| plugin_type         | Bitfield describing what the plugin does. See                 |
+| type                | Bitfield describing what the plugin does. See                 |
 |                     | ``enum clap_plugin_type``.                                    |
++---------------------+---------------------------------------------------------------+
+| chunk_size          | The process buffer, must have a number of sample multiple of  |
+|                     | ``chunk_size``.                                               |
++---------------------+---------------------------------------------------------------+
+| latency             | The latency introduced by the plugin.                         |
 +---------------------+---------------------------------------------------------------+
 | has_gui             | True if the plugin can show a graphical user interface        |
 +---------------------+---------------------------------------------------------------+
-| supports_tunning    | True if the plugin supports tunning                           |
+| supports_tuning     | True if the plugin supports tuning                            |
 +---------------------+---------------------------------------------------------------+
 | supports_microtones | True if the plugin supports micro tones                       |
 +---------------------+---------------------------------------------------------------+
@@ -141,13 +194,13 @@ Both the plugin and host have a few attribute giving general plugin description.
 | plugin_data         | Reserved pointer for the plugin.                              |
 +---------------------+---------------------------------------------------------------+
 
-Audio channel configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Audio ports configuration
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A plugin may have multiple audio channels, and so multiple audio channels
+A plugin may have multiple audio ports, and so multiple audio ports
 layout or configurations.
 
-An audio channel has a type: mono, stereo, surround and a role: main
+An audio port has a type: mono, stereo, surround and a role: main
 input/output, sidechain, feedback.
 
 Pin layout
@@ -203,22 +256,20 @@ So for the following configuration:
 Available configurations
 ````````````````````````
 
-It is possible to discover a plugin's channel configurations by calling
-``plugin->get_channels_configs(plugin);``. It returns a newly allocated linked
-list of configurations. It is the responsability of the host to free the list.
+It is possible to discover a plugin's port configurations by calling
+``plugin->get_ports_configs_count(plugin);``. It returns the number of
+configurations. Then for each configuration you have to call
+``plugin->get_ports_config(plugin, config_index, &config);`` which will
+tell you the number of input and output ports. Then to get the port details,
+you have to call
+``plugin->get_port_info(plugin, config_index, port_index, &port);``.
 
 Selecting a configuration
 `````````````````````````
 
 Selecting an audio configuration has to be done when the plugin is deactivated.
-It is done by calling ``plugin->set_channels_config(plugin, config)``.
-
-The host should make sure that the config stays allocated/available until
-an other call to ``plugin->set_channel_config()`` or
-``plugin->destroy(plugin)``.
-
-``plugin->set_channels_config(plugin, config)`` returns ``true`` if the
-confiugration is successful, ``false`` otherwise.
+It is done by calling ``plugin->set_port_config(plugin, config_index)``.
+If the call returns false, then the plugin is in failed state.
 
 Repeatable channels
 ```````````````````
@@ -226,13 +277,16 @@ Repeatable channels
 Repeatable channels are a special case. A channel can be identified as
 repeatable if ``channel->is_repeatable == true``.
 
-A usefull case is for an analyzer. Imagine a spectroscope, to which you want to
+A useful case is for an analyzer. Imagine a spectroscope, to which you want to
 plug any number of inputs. Each of those inputs can be named and displayed in
 the spectrograph, so it is a convinient way analyze many tracks in the same
 spectroscope.
 
-To repeat a channel, just duplicate it and insert it between the original and
-its next channel. Then call ``plugin->set_channels_config(plugin, config);``.
+For the special case of repeatable side chain input, the host
+has to tell the plugin how many times the port should be repeated.
+To do that it has to call ``plugin->set_port_repeat(plugin, port_index, count)``.
+If it returns ``false`` then the plugin is in the same state as before
+the call.
 
 Feedback stream
 ```````````````
@@ -245,7 +299,7 @@ A practical usage is to put an effect in a delay feedback loop.
 A feedback loop has it's both ends identified by ``clap_channel->stream_id``.
 
 During the audio processing, ``struct clap_process`` contains a callback which
-is used to process the feeback stream:
+is used to process the feedback stream:
 
 .. code:: c
 
@@ -254,21 +308,27 @@ is used to process the feeback stream:
     uint32_t fb_in;     // index to the stereo feedback input buffer
     uint32_t fb_out;    // index to the stereo feedback output buffer
     uint32_t stream_id; // the feedback stream id
+    uint32_t offset;
 
-    // one sample process loop
-    for (uint32_t i = 0; i < process->nb_samples; ++i) {
-      // audio processing
+    // process all the buffer 
+    for (offset = 0; offset < process->nb_samples;
+         offset += process->feedback_chunk_size)
+    {
+
+      // ...
 
       // prepare feedback output buffer
-      process->output[fb_out][i]     = XXX;
-      process->output[fb_out + 1][i] = XXX;
+      for (uint32_t i = 0; i < process->feedback_chunk_size; ++i) {
+        process->output[fb_out][offset + i]     = XXX;
+        process->output[fb_out + 1][offset + i] = XXX;
+      }
 
       // process one sample feedback
       process->feedback(process, stream_id, 1);
 
       // audio processing of the feedback values:
-      //   process->input[fb_in][i]
-      //   process->input[fb_in + 1][i]
+      //   process->input[fb_in][offset + i]
+      //   process->input[fb_in + 1][offset + i]
     }
   }
 
@@ -319,7 +379,7 @@ Audio buffers
 ~~~~~~~~~~~~~
 
 The audio buffers are allocated by the host. They must be aligned by the
-maximum requirement of the vector instructions currently avalaible.
+maximum requirement of the vector instructions currently available.
 
 In-place processing is not supported.
 
@@ -342,12 +402,12 @@ Events
 Notes
 `````
 
-Notes are reprensented as a pair ``note, division``.
+Notes are represented as a pair ``note, division``.
 Division is the number of intervals between one note and an other note with
 half or the double frequency. A division by 12 must be supported.
 
 If a plugin plugin does not support micro tones, it should ignore
-micro-tunned notes.
+micro-tuned notes.
 
 The host should not send micro tones to the plugin if
 ``plugin->supports_microtones == false``.
@@ -384,7 +444,7 @@ There are a few parameter types:
 | type  | value attribute | description                                          |
 +=======+=================+======================================================+
 | group | none            | not a value, but the only parameter which can have   |
-|       |                 | childs. It should be used to organise parameters in  |
+|       |                 | child. It should be used to organize parameters in   |
 |       |                 | the host GUI.                                        |
 +-------+-----------------+------------------------------------------------------+
 | bool  | ``value.b``     | a boolean value, can be true or false                |
@@ -405,14 +465,14 @@ The plugin can inform the host, which scale to use for the parameter's UI
 or ``CLAP_PARAM_LOG``. A logarithmic scale is convinient for a frequency
 parameter.
 
-Automations
-~~~~~~~~~~~
+Automation
+~~~~~~~~~~
 
 When a parameter is modified by the GUI, the plugin should send a
 ``CLAP_EVENT_SET`` event must be sent to the host, using
 ``host->events(host, plugin, events);`` so the host can record the automation.
 
-When a parameter is modified by an other parameter, for exemple imagine you
+When a parameter is modified by an other parameter, for example imagine you
 have a parameter modulating "absolutely" an other one through an XY mapping.
 The host should record the modulation source but not the modulation target.
 To do that the plugin uses ``clap_event_param->is_recordable``.
@@ -464,7 +524,7 @@ Presets
 List plugin's presets
 ~~~~~~~~~~~~~~~~~~~~~
 
-The host can browse the plugin's preset by callign ``plugin->get_presets(plugin);``.
+The host can browse the plugin's preset by calling ``plugin->get_presets(plugin);``.
 This function returns a newly allocated preset linked list.
 It is the responsibility of the host to free the linked list.
 
@@ -496,7 +556,7 @@ Restoring the plugin's state is done by:
 
   plugin->restore(plugin, buffer, size);
 
-The state of the plugin should be indepentant of the machine: you can save a
+The state of the plugin should be independent of the machine: you can save a
 plugin state on a little endian machine and send it through the network to a
 big endian machine, it should load again successfully.
 
