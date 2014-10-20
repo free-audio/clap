@@ -124,7 +124,7 @@ tt.docutils {
 </li>
 <li><a class="reference internal" href="#instantiate-a-plugin" id="id13">Instantiate a plugin</a><ul>
 <li><a class="reference internal" href="#precautions" id="id14">Precautions</a></li>
-<li><a class="reference internal" href="#shell-plugins" id="id15">Shell plugins</a><ul>
+<li><a class="reference internal" href="#plugins-collection" id="id15">Plugins collection</a><ul>
 <li><a class="reference internal" href="#sample-plugin-loader" id="id16">Sample plugin loader</a></li>
 </ul>
 </li>
@@ -195,7 +195,9 @@ tt.docutils {
 <li>Make a free audio plugin format</li>
 <li>Be easy to understand and implement</li>
 <li>Bring new features missed in VST 2.4</li>
-<li>Replace old concepts by modern one</li>
+<li>Replace old concepts by modern ones. For example the specification tries
+to not use MIDI as its internal event systems, which let us have
+micro-tones. Yet MIDI events are possible.</li>
 <li>Designed to work on any operating system</li>
 <li>Be event oriented</li>
 <li>Be extensible without breaking existing plugins</li>
@@ -283,22 +285,22 @@ version is suited for the current architecture by reading its name.</p>
 <td>DigitalDragon.x86_64.so</td>
 </tr>
 <tr><td>alpha</td>
-<td>DigitalDrapon.alpha.so</td>
+<td>DigitalDragon.alpha.so</td>
 </tr>
 <tr><td>arm</td>
-<td>DigitalDrapon.arm.so</td>
+<td>DigitalDragon.arm.so</td>
 </tr>
 <tr><td>sparc</td>
-<td>DigitalDrapon.sparc.so</td>
+<td>DigitalDragon.sparc.so</td>
 </tr>
 <tr><td>hppa</td>
-<td>DigitalDrapon.hppa.so</td>
+<td>DigitalDragon.hppa.so</td>
 </tr>
 <tr><td>ppc</td>
-<td>DigitalDrapon.ppc.so</td>
+<td>DigitalDragon.ppc.so</td>
 </tr>
 <tr><td>ppc64</td>
-<td>DigitalDrapon.ppc64.so</td>
+<td>DigitalDragon.ppc64.so</td>
 </tr>
 </tbody>
 </table>
@@ -322,8 +324,8 @@ built for the native/current architecture.</p>
 <li>It can return <tt class="docutils literal">NULL</tt>.</li>
 </ul>
 </div>
-<div class="section" id="shell-plugins">
-<h3><a class="toc-backref" href="#id15">Shell plugins</a></h3>
+<div class="section" id="plugins-collection">
+<h3><a class="toc-backref" href="#id15">Plugins collection</a></h3>
 <p>A single dynamic library can contains multiple clap plugins.
 To list them, you have to call <tt class="docutils literal">clap_create</tt> with an index of 0 and increment
 the index until you reach <tt class="docutils literal">plugin_count</tt>.
@@ -336,7 +338,8 @@ the index until you reach <tt class="docutils literal">plugin_count</tt>.
 </div>
 <div class="section" id="description">
 <h3><a class="toc-backref" href="#id17">Description</a></h3>
-<p>Both the plugin and host have a few attribute giving general plugin description.</p>
+<p>Both the <tt class="docutils literal">struct clap_plugin;</tt> and <tt class="docutils literal">struct clap_host;</tt> have a few attribute giving
+general plugin/host information.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="25%" />
@@ -491,50 +494,50 @@ input/output, sidechain, feedback.</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>input
-input</td>
-<td>stereo</td>
-<td>inout</td>
-<td>process-&gt;inputs[0]
-process-&gt;inputs[1]</td>
-<td>left input
-right input</td>
+<tr><td rowspan="2">input</td>
+<td rowspan="2">stereo</td>
+<td rowspan="2">inout</td>
+<td>process-&gt;inputs[0]</td>
+<td>left input</td>
 </tr>
-<tr><td>input
-input</td>
-<td>stereo</td>
-<td>sidechain</td>
-<td>process-&gt;inputs[2]
-process-&gt;inputs[3]</td>
-<td>left sidechain
-right sidechain</td>
+<tr><td>process-&gt;inputs[1]</td>
+<td>right input</td>
 </tr>
-<tr><td>input
-input</td>
-<td>stereo</td>
-<td>feedback</td>
-<td>process-&gt;inputs[4]
-process-&gt;inputs[5]</td>
-<td>left feedback
-right feedback</td>
+<tr><td rowspan="2">input</td>
+<td rowspan="2">stereo</td>
+<td rowspan="2">sidechain</td>
+<td>process-&gt;inputs[2]</td>
+<td>left sidechain</td>
 </tr>
-<tr><td>output
-output</td>
-<td>stereo</td>
-<td>inout</td>
-<td>process-&gt;outputs[0]
-process-&gt;outputs[1]</td>
-<td>left input
-right input</td>
+<tr><td>process-&gt;inputs[3]</td>
+<td>right sidechain</td>
 </tr>
-<tr><td>output
-output</td>
-<td>stereo</td>
-<td>feedback</td>
-<td>process-&gt;outputs[2]
-process-&gt;outputs[3]</td>
-<td>left feedback
-right feedback</td>
+<tr><td rowspan="2">input</td>
+<td rowspan="2">stereo</td>
+<td rowspan="2">feedback</td>
+<td>process-&gt;inputs[4]</td>
+<td>left feedback</td>
+</tr>
+<tr><td>process-&gt;inputs[5]</td>
+<td>right feedback</td>
+</tr>
+<tr><td rowspan="2">output</td>
+<td rowspan="2">stereo</td>
+<td rowspan="2">inout</td>
+<td>process-&gt;outputs[0]</td>
+<td>left input</td>
+</tr>
+<tr><td>process-&gt;outputs[1]</td>
+<td>right input</td>
+</tr>
+<tr><td rowspan="2">output</td>
+<td rowspan="2">stereo</td>
+<td rowspan="2">feedback</td>
+<td>process-&gt;outputs[2]</td>
+<td>left feedback</td>
+</tr>
+<tr><td>process-&gt;outputs[3]</td>
+<td>right feedback</td>
 </tr>
 </tbody>
 </table>

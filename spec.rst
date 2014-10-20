@@ -241,19 +241,24 @@ So for the following configuration:
 | in/out | type     | role       | buffer              | desc            |
 +========+==========+============+=====================+=================+
 | input  | stereo   | inout      | process->inputs[0]  | left input      |
-| input  |          |            | process->inputs[1]  | right input     |
+|        |          |            +---------------------+-----------------+
+|        |          |            | process->inputs[1]  | right input     |
 +--------+----------+------------+---------------------+-----------------+
 | input  | stereo   | sidechain  | process->inputs[2]  | left sidechain  |
-| input  |          |            | process->inputs[3]  | right sidechain |
+|        |          |            +---------------------+-----------------+
+|        |          |            | process->inputs[3]  | right sidechain |
 +--------+----------+------------+---------------------+-----------------+
 | input  | stereo   | feedback   | process->inputs[4]  | left feedback   |
-| input  |          |            | process->inputs[5]  | right feedback  |
+|        |          |            +---------------------+-----------------+
+|        |          |            | process->inputs[5]  | right feedback  |
 +--------+----------+------------+---------------------+-----------------+
 | output | stereo   | inout      | process->outputs[0] | left input      |
-| output |          |            | process->outputs[1] | right input     |
+|        |          |            +---------------------+-----------------+
+|        |          |            | process->outputs[1] | right input     |
 +--------+----------+------------+---------------------+-----------------+
 | output | stereo   | feedback   | process->outputs[2] | left feedback   |
-| output |          |            | process->outputs[3] | right feedback  |
+|        |          |            +---------------------+-----------------+
+|        |          |            | process->outputs[3] | right feedback  |
 +--------+----------+------------+---------------------+-----------------+
 
 Available configurations
