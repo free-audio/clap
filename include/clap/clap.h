@@ -57,6 +57,15 @@ enum clap_string_size
   CLAP_URL_SIZE        = 256,
 };
 
+enum clap_log_severity
+{
+  CLAP_LOG_DEBUG   = 0,
+  CLAP_LOG_INFO    = 1,
+  CLAP_LOG_WARNING = 2,
+  CLAP_LOG_ERROR   = 3,
+  CLAP_LOG_FATAL   = 4,
+};
+
 ///////////
 // PORTS //
 ///////////
@@ -284,6 +293,11 @@ struct clap_host
    * it means that each time you call this function, the return
    * value must be greater or equal to the previous one. */
   uint64_t (*steady_time)(struct clap_host *host);
+
+  /* Log a message through the host. */
+  void (*log)(struct clap_host       *host,
+              enum clap_log_severity  severity,
+              const char             *msg);
 
   /* future features */
   void *(*extension)(struct clap_host *host, const char *extention_id, void *ptr);
