@@ -324,7 +324,7 @@ is used to process the feedback stream:
       }
 
       // process one sample feedback
-      process->feedback(process, stream_id, 1);
+      process->feedback(process, stream_id, process->feedback_chunk_size);
 
       // audio processing of the feedback values:
       //   process->input[fb_in][offset + i]
