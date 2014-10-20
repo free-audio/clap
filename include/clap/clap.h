@@ -53,7 +53,7 @@ enum clap_string_size
   CLAP_NAME_SIZE       = 32,
   CLAP_DESC_SIZE       = 256,
   CLAP_DISPLAY_SIZE    = 32,
-  CLAP_TAGS_SIZE       = 64,
+  CLAP_TAGS_SIZE       = 128,
   CLAP_URL_SIZE        = 256,
 };
 
