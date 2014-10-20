@@ -34,7 +34,7 @@ Design choice
 
 - The plugin and the host interface must be thread-safe.
 - Avoid pointer exchange between the host and the plugin
-  whenever it is possible. The choose way is to pass a buffer
+  whenever it is possible. The chosen way is to pass a buffer
   as a parameter and let the host/plugin copy/read data from it.
   Rationale: as the host and the plugin can be multi-threaded,
   keeping pointers to the plugin or host internal memory can lead
@@ -371,33 +371,25 @@ The data structure process regroup everything needed by the plugin:
 
 - audio buffers (in, out)
 - feedback process callback
-- events (in, out)
+- events (in)
 - tempo, time, is offline? (in)
 - more processing needed (out)
 
 Audio buffers
 ~~~~~~~~~~~~~
 
-The audio buffers are allocated by the host. They must be aligned by the
-maximum requirement of the vector instructions currently available.
-
-In-place processing is not supported.
-
-There is no minimum number of samples.
-
-See `Pin layout`_.
+- The audio buffers are allocated by the host. They must be aligned by the
+  maximum requirement of the vector instructions currently available.
+- In-place processing is not supported.
+- The number of samples must be a multiple of ``plugin->chunk_size``.
+- See `Pin layout`_.
 
 Events
 ~~~~~~
 
-- Events are relative to ``process->time_in_samples``.
-- Their time must be within the process duration: positive and included
-  into ``[0..process->nb_samples[`` or equal to ``0``.
-- The host is responsible to allocate to allocate input events (``in_events``).
+- Event's time must be within the process duration:
+  ``[process->steady_time .. process->steady_time + process->nb_sambles]``.
 - The plugin must not modify the input events (``in_events``).
-- The plugin is responsible to allocate the output events (``out_events``).
-- The host is responsible to free both input and output events
-  (``in_events`` and ``out_events``).
 
 Notes
 `````
@@ -431,9 +423,39 @@ The pitch can be changed by the host using the ``CLAP_EVENT_PITCH_SET`` event.
 Parameters
 ----------
 
-The host can get the plugin's parameters tree by calling
-``plugin->get_params(plugin)``. The host is responsible to free the return
-value.
+The host can get the plugin's parameters tree by calling:
+
+- ``plugin->get_params_count(plugin);`` to know the number of parameters
+- ``plugin->get_param(plugin, param_index, &param);`` to get the parameter
+  value and description
+
++------------------+----------------------------------------------------------+
+| Attribute        | Description                                              |
++==================+==========================================================+
+| ``type``         | The type of parameter. Must never change.                |
++------------------+----------------------------------------------------------+
+| ``id``           | What identifies the parameter. Must never change.        |
+|                  | This field must be saved along automation.               |
++------------------+----------------------------------------------------------+
+| ``name``         | The name of the parameter. This can change.              |
+|                  | Meant to be displayed.                                   |
++------------------+----------------------------------------------------------+
+| ``desc``         | The description of the parameter. This can change.       |
+|                  | Meant to be displayed.                                   |
++------------------+----------------------------------------------------------+
+| ``is_per_note``  | ``true`` if the parameter can be automated per voice.    |
++------------------+----------------------------------------------------------+
+| ``display_text`` | How the value should be displayed. Only used for enum    |
+|                  | types.                                                   |
++------------------+----------------------------------------------------------+
+| ``value``        | The current value of the parameter.                      |
++------------------+----------------------------------------------------------+
+| ``min``          | The minimum value of the parameter.                      |
++------------------+----------------------------------------------------------+
+| ``max``          | The maximum value of the parameter.                      |
++------------------+----------------------------------------------------------+
+| ``scale``        | The scale to use when exposing the parameter to the user.|
++------------------+----------------------------------------------------------+
 
 Types
 ~~~~~
@@ -469,7 +491,7 @@ Automation
 ~~~~~~~~~~
 
 When a parameter is modified by the GUI, the plugin should send a
-``CLAP_EVENT_SET`` event must be sent to the host, using
+``CLAP_EVENT_PARAM_SET`` event must be sent to the host, using
 ``host->events(host, plugin, events);`` so the host can record the automation.
 
 When a parameter is modified by an other parameter, for example imagine you

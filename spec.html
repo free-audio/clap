@@ -8,7 +8,7 @@
 <style type="text/css">
 
 .document {
-    width: 700px;
+    width: 755px;
 }
 
 .title {
@@ -209,7 +209,7 @@ ensure that basic functionnality are working</li>
 <ul class="simple">
 <li>The plugin and the host interface must be thread-safe.</li>
 <li>Avoid pointer exchange between the host and the plugin
-whenever it is possible. The choose way is to pass a buffer
+whenever it is possible. The chosen way is to pass a buffer
 as a parameter and let the host/plugin copy/read data from it.
 Rationale: as the host and the plugin can be multi-threaded,
 keeping pointers to the plugin or host internal memory can lead
@@ -633,29 +633,26 @@ The data structure process regroup everything needed by the plugin:</p>
 <ul class="simple">
 <li>audio buffers (in, out)</li>
 <li>feedback process callback</li>
-<li>events (in, out)</li>
+<li>events (in)</li>
 <li>tempo, time, is offline? (in)</li>
 <li>more processing needed (out)</li>
 </ul>
 <div class="section" id="audio-buffers">
 <h3><a class="toc-backref" href="#id27">Audio buffers</a></h3>
-<p>The audio buffers are allocated by the host. They must be aligned by the
-maximum requirement of the vector instructions currently available.</p>
-<p>In-place processing is not supported.</p>
-<p>There is no minimum number of samples.</p>
-<p>See <a class="reference internal" href="#pin-layout">Pin layout</a>.</p>
+<ul class="simple">
+<li>The audio buffers are allocated by the host. They must be aligned by the
+maximum requirement of the vector instructions currently available.</li>
+<li>In-place processing is not supported.</li>
+<li>The number of samples must be a multiple of <tt class="docutils literal"><span class="pre">plugin-&gt;chunk_size</span></tt>.</li>
+<li>See <a class="reference internal" href="#pin-layout">Pin layout</a>.</li>
+</ul>
 </div>
 <div class="section" id="events">
 <h3><a class="toc-backref" href="#id28">Events</a></h3>
 <ul class="simple">
-<li>Events are relative to <tt class="docutils literal"><span class="pre">process-&gt;time_in_samples</span></tt>.</li>
-<li>Their time must be within the process duration: positive and included
-into <tt class="docutils literal"><span class="pre">[0..process-&gt;nb_samples[</span></tt> or equal to <tt class="docutils literal">0</tt>.</li>
-<li>The host is responsible to allocate to allocate input events (<tt class="docutils literal">in_events</tt>).</li>
+<li>Event's time must be within the process duration:
+<tt class="docutils literal"><span class="pre">[process-&gt;steady_time</span> .. <span class="pre">process-&gt;steady_time</span> + <span class="pre">process-&gt;nb_sambles]</span></tt>.</li>
 <li>The plugin must not modify the input events (<tt class="docutils literal">in_events</tt>).</li>
-<li>The plugin is responsible to allocate the output events (<tt class="docutils literal">out_events</tt>).</li>
-<li>The host is responsible to free both input and output events
-(<tt class="docutils literal">in_events</tt> and <tt class="docutils literal">out_events</tt>).</li>
 </ul>
 <div class="section" id="notes">
 <h4><a class="toc-backref" href="#id29">Notes</a></h4>
@@ -684,9 +681,59 @@ The pitch can be changed by the host using the <tt class="docutils literal">CLAP
 </div>
 <div class="section" id="id1">
 <h2><a class="toc-backref" href="#id32">Parameters</a></h2>
-<p>The host can get the plugin's parameters tree by calling
-<tt class="docutils literal"><span class="pre">plugin-&gt;get_params(plugin)</span></tt>. The host is responsible to free the return
-value.</p>
+<p>The host can get the plugin's parameters tree by calling:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">plugin-&gt;get_params_count(plugin);</span></tt> to know the number of parameters</li>
+<li><tt class="docutils literal"><span class="pre">plugin-&gt;get_param(plugin,</span> param_index, &amp;param);</tt> to get the parameter
+value and description</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="76%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Attribute</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><tt class="docutils literal">type</tt></td>
+<td>The type of parameter. Must never change.</td>
+</tr>
+<tr><td><tt class="docutils literal">id</tt></td>
+<td>What identifies the parameter. Must never change.
+This field must be saved along automation.</td>
+</tr>
+<tr><td><tt class="docutils literal">name</tt></td>
+<td>The name of the parameter. This can change.
+Meant to be displayed.</td>
+</tr>
+<tr><td><tt class="docutils literal">desc</tt></td>
+<td>The description of the parameter. This can change.
+Meant to be displayed.</td>
+</tr>
+<tr><td><tt class="docutils literal">is_per_note</tt></td>
+<td><tt class="docutils literal">true</tt> if the parameter can be automated per voice.</td>
+</tr>
+<tr><td><tt class="docutils literal">display_text</tt></td>
+<td>How the value should be displayed. Only used for enum
+types.</td>
+</tr>
+<tr><td><tt class="docutils literal">value</tt></td>
+<td>The current value of the parameter.</td>
+</tr>
+<tr><td><tt class="docutils literal">min</tt></td>
+<td>The minimum value of the parameter.</td>
+</tr>
+<tr><td><tt class="docutils literal">max</tt></td>
+<td>The maximum value of the parameter.</td>
+</tr>
+<tr><td><tt class="docutils literal">scale</tt></td>
+<td>The scale to use when exposing the parameter to the user.</td>
+</tr>
+</tbody>
+</table>
 <div class="section" id="types">
 <h3><a class="toc-backref" href="#id33">Types</a></h3>
 <p>There are a few parameter types:</p>
@@ -739,7 +786,7 @@ parameter.</p>
 <div class="section" id="automation">
 <h3><a class="toc-backref" href="#id35">Automation</a></h3>
 <p>When a parameter is modified by the GUI, the plugin should send a
-<tt class="docutils literal">CLAP_EVENT_SET</tt> event must be sent to the host, using
+<tt class="docutils literal">CLAP_EVENT_PARAM_SET</tt> event must be sent to the host, using
 <tt class="docutils literal"><span class="pre">host-&gt;events(host,</span> plugin, events);</tt> so the host can record the automation.</p>
 <p>When a parameter is modified by an other parameter, for example imagine you
 have a parameter modulating &quot;absolutely&quot; an other one through an XY mapping.
