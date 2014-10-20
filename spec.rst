@@ -14,7 +14,7 @@ Goals
 - Make a free audio plugin format
 - Be easy to understand and implement
 - Bring new features missed in VST 2.4
-- Replace old concepts by modern one
+- Replace old concepts by modern ones
 - Designed to work on any operating system
 - Be event oriented
 - Be extensible without breaking existing plugins
