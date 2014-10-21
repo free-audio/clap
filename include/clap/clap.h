@@ -403,6 +403,9 @@ struct clap_plugin
   bool (*save)(struct clap_plugin *plugin, void **buffer, size_t *size);
   bool (*restore)(struct clap_plugin *plugin, const void *buffer, size_t size);
 
+  /* Sets the locale to use */
+  bool (*set_locale)(struct clap_plugin *plugin, const char *locale);
+
   /* future features */
   void *(*extension)(struct clap_plugin *plugin, const char *id);
 };
