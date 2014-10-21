@@ -163,29 +163,30 @@ tt.docutils {
 <li><a class="reference internal" href="#sending-events-to-the-host" id="id39">Sending events to the host</a></li>
 <li><a class="reference internal" href="#hiding-the-gui" id="id40">Hiding the GUI</a></li>
 <li><a class="reference internal" href="#embedding" id="id41">Embedding</a><ul>
-<li><a class="reference internal" href="#sample-on-windows" id="id42">Sample on Windows</a></li>
+<li><a class="reference internal" href="#example-on-windows" id="id42">Example on Windows</a></li>
+<li><a class="reference internal" href="#resizing-the-window" id="id43">Resizing the window</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#presets" id="id43">Presets</a><ul>
-<li><a class="reference internal" href="#list-plugin-s-presets" id="id44">List plugin's presets</a></li>
-<li><a class="reference internal" href="#load-a-preset" id="id45">Load a preset</a></li>
+<li><a class="reference internal" href="#presets" id="id44">Presets</a><ul>
+<li><a class="reference internal" href="#list-plugin-s-presets" id="id45">List plugin's presets</a></li>
+<li><a class="reference internal" href="#load-a-preset" id="id46">Load a preset</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#save-and-restore-plugin-s-state" id="id46">Save and restore plugin's state</a></li>
-<li><a class="reference internal" href="#extension-system" id="id47">Extension system</a></li>
+<li><a class="reference internal" href="#save-and-restore-plugin-s-state" id="id47">Save and restore plugin's state</a></li>
+<li><a class="reference internal" href="#extension-system" id="id48">Extension system</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#examples" id="id48">Examples</a><ul>
-<li><a class="reference internal" href="#samples-clap-info-c" id="id49">samples/clap-info.c</a></li>
+<li><a class="reference internal" href="#examples" id="id49">Examples</a><ul>
+<li><a class="reference internal" href="#samples-clap-info-c" id="id50">samples/clap-info.c</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#references" id="id50">References</a><ul>
-<li><a class="reference internal" href="#clap-h" id="id51">clap.h</a></li>
-<li><a class="reference internal" href="#clap-embed-h" id="id52">clap-embed.h</a></li>
-<li><a class="reference internal" href="#clap-embed-win32-h" id="id53">clap-embed-win32.h</a></li>
-<li><a class="reference internal" href="#clap-embed-xlib-h" id="id54">clap-embed-xlib.h</a></li>
+<li><a class="reference internal" href="#references" id="id51">References</a><ul>
+<li><a class="reference internal" href="#clap-h" id="id52">clap.h</a></li>
+<li><a class="reference internal" href="#clap-embed-h" id="id53">clap-embed.h</a></li>
+<li><a class="reference internal" href="#clap-embed-win32-h" id="id54">clap-embed-win32.h</a></li>
+<li><a class="reference internal" href="#clap-embed-xlib-h" id="id55">clap-embed-xlib.h</a></li>
 </ul>
 </li>
 </ul>
@@ -880,13 +881,14 @@ Also the OS dependency brought by this feature makes it ideal as an extension.</
 </tr>
 </tbody>
 </table>
-<div class="section" id="sample-on-windows">
-<h4><a class="toc-backref" href="#id42">Sample on Windows</a></h4>
+<div class="section" id="example-on-windows">
+<h4><a class="toc-backref" href="#id42">Example on Windows</a></h4>
 <pre class="code c literal-block">
 <span class="cp">#include &lt;clap/clap.h&gt;
 #include &lt;clap/clap-embed-win32.h&gt;
 </span>
-<span class="k">struct</span> <span class="n">clap_embed_win32</span> <span class="o">*</span><span class="n">embed</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">get_extension</span><span class="p">(</span><span class="n">CLAP_EMBED_WIN32</span><span class="p">);</span>
+<span class="c1">// host code
+</span><span class="k">struct</span> <span class="n">clap_embed_win32</span> <span class="o">*</span><span class="n">embed</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">get_extension</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">CLAP_EMBED_WIN32</span><span class="p">);</span>
 <span class="k">if</span> <span class="p">(</span><span class="n">embed</span><span class="p">)</span> <span class="p">{</span>
   <span class="c1">// the plugin can embed
 </span>  <span class="n">embed</span><span class="o">-&gt;</span><span class="n">embed</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">window</span><span class="p">);</span>
@@ -894,12 +896,25 @@ Also the OS dependency brought by this feature makes it ideal as an extension.</
 <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">show_gui</span><span class="p">(</span><span class="n">plugin</span><span class="p">);</span>
 </pre>
 </div>
+<div class="section" id="resizing-the-window">
+<h4><a class="toc-backref" href="#id43">Resizing the window</a></h4>
+<pre class="code c literal-block">
+<span class="cp">#include &lt;clap/clap.h&gt;
+#include &lt;clap/clap-embed.h&gt;
+</span>
+<span class="c1">// plugin code
+</span><span class="k">struct</span> <span class="n">clap_embed</span> <span class="o">*</span><span class="n">embed</span> <span class="o">=</span> <span class="n">host</span><span class="o">-&gt;</span><span class="n">get_extension</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">CLAP_EMBED</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">embed</span> <span class="o">&amp;&amp;</span> <span class="n">embed</span><span class="o">-&gt;</span><span class="n">resize</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))</span> <span class="p">{</span>
+  <span class="c1">// resize succeed
+</span><span class="p">}</span>
+</pre>
+</div>
 </div>
 </div>
 <div class="section" id="presets">
-<h2><a class="toc-backref" href="#id43">Presets</a></h2>
+<h2><a class="toc-backref" href="#id44">Presets</a></h2>
 <div class="section" id="list-plugin-s-presets">
-<h3><a class="toc-backref" href="#id44">List plugin's presets</a></h3>
+<h3><a class="toc-backref" href="#id45">List plugin's presets</a></h3>
 <p>The host can browse the plugin's preset by calling:</p>
 <ul class="simple">
 <li><tt class="docutils literal"><span class="pre">plugin-&gt;get_presets_count(plugin);</span></tt> to know how many presets it has.</li>
@@ -908,7 +923,7 @@ details.</li>
 </ul>
 </div>
 <div class="section" id="load-a-preset">
-<h3><a class="toc-backref" href="#id45">Load a preset</a></h3>
+<h3><a class="toc-backref" href="#id46">Load a preset</a></h3>
 <p>To load a preset, the host have to send an event <tt class="docutils literal">CLAP_EVENT_PRESET_SET</tt> to
 the plugin.</p>
 <p>When a preset is loaded from the plugin's GUI, the plugin must send a
@@ -916,7 +931,7 @@ the plugin.</p>
 </div>
 </div>
 <div class="section" id="save-and-restore-plugin-s-state">
-<h2><a class="toc-backref" href="#id46">Save and restore plugin's state</a></h2>
+<h2><a class="toc-backref" href="#id47">Save and restore plugin's state</a></h2>
 <p>Saving the plugin's state is done by:</p>
 <pre class="code c literal-block">
 <span class="kt">void</span> <span class="o">*</span><span class="n">buffer</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
@@ -936,7 +951,7 @@ plugin state on a little endian machine and send it through the network to a
 big endian machine, it should load again successfully.</p>
 </div>
 <div class="section" id="extension-system">
-<h2><a class="toc-backref" href="#id47">Extension system</a></h2>
+<h2><a class="toc-backref" href="#id48">Extension system</a></h2>
 <p>To extend clap's functionnality, there is a pretty simple mechanism:</p>
 <pre class="code c literal-block">
 <span class="kt">void</span> <span class="o">*</span><span class="n">plug_ext</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">extension</span><span class="p">(</span><span class="n">plug</span><span class="p">,</span> <span class="s">&quot;company/ext-name&quot;</span><span class="p">);</span>
@@ -946,9 +961,9 @@ big endian machine, it should load again successfully.</p>
 </div>
 </div>
 <div class="section" id="examples">
-<h1><a class="toc-backref" href="#id48">Examples</a></h1>
+<h1><a class="toc-backref" href="#id49">Examples</a></h1>
 <div class="section" id="samples-clap-info-c">
-<h2><a class="toc-backref" href="#id49">samples/clap-info.c</a></h2>
+<h2><a class="toc-backref" href="#id50">samples/clap-info.c</a></h2>
 <pre class="code c literal-block">
 <span class="cp">#include &lt;stdio.h&gt;
 #include &lt;dlfcn.h&gt;
@@ -1048,9 +1063,9 @@ big endian machine, it should load again successfully.</p>
 </div>
 </div>
 <div class="section" id="references">
-<h1><a class="toc-backref" href="#id50">References</a></h1>
+<h1><a class="toc-backref" href="#id51">References</a></h1>
 <div class="section" id="clap-h">
-<h2><a class="toc-backref" href="#id51">clap.h</a></h2>
+<h2><a class="toc-backref" href="#id52">clap.h</a></h2>
 <pre class="code c literal-block">
 <span class="cm">/**
  * CLAP - CLever Audio Plugin (&lt;--- needs to find a marketing ok name)
@@ -1473,7 +1488,7 @@ big endian machine, it should load again successfully.</p>
 </pre>
 </div>
 <div class="section" id="clap-embed-h">
-<h2><a class="toc-backref" href="#id52">clap-embed.h</a></h2>
+<h2><a class="toc-backref" href="#id53">clap-embed.h</a></h2>
 <pre class="code c literal-block">
 <span class="cp">#ifndef CLAP_EMBED_H
 # define CLAP_EMBED_H
@@ -1484,7 +1499,7 @@ big endian machine, it should load again successfully.</p>
 </span>
 <span class="k">struct</span> <span class="n">clap_host_embed</span>
 <span class="p">{</span>
-  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">resize</span><span class="p">)(</span><span class="kt">uint32_t</span> <span class="n">width</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">height</span><span class="p">);</span>
+  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">resize</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">width</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">height</span><span class="p">);</span>
 <span class="p">};</span>
 
 <span class="cp">#endif </span><span class="cm">/* !CLAP_EMBED_H */</span><span class="cp">
@@ -1492,7 +1507,7 @@ big endian machine, it should load again successfully.</p>
 </pre>
 </div>
 <div class="section" id="clap-embed-win32-h">
-<h2><a class="toc-backref" href="#id53">clap-embed-win32.h</a></h2>
+<h2><a class="toc-backref" href="#id54">clap-embed-win32.h</a></h2>
 <pre class="code c literal-block">
 <span class="cp">#ifndef CLAP_EMBED_WIN32_H
 # define CLAP_EMBED_WIN32_H
@@ -1516,7 +1531,7 @@ big endian machine, it should load again successfully.</p>
 </pre>
 </div>
 <div class="section" id="clap-embed-xlib-h">
-<h2><a class="toc-backref" href="#id54">clap-embed-xlib.h</a></h2>
+<h2><a class="toc-backref" href="#id55">clap-embed-xlib.h</a></h2>
 <pre class="code c literal-block">
 <span class="cp">#ifndef CLAP_EMBED_XLIB_H
 # define CLAP_EMBED_XLIB_H

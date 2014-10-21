@@ -570,20 +570,35 @@ Also the OS dependency brought by this feature makes it ideal as an extension.
 | X11        | `clap-embed-xlib.h`_  | ``CLAP_EMBED_XLIB``  | For the plugin |
 +------------+-----------------------+----------------------+----------------+
 
-Sample on Windows
-`````````````````
+Example on Windows
+``````````````````
 
 .. code:: c
 
   #include <clap/clap.h>
   #include <clap/clap-embed-win32.h>
 
-  struct clap_embed_win32 *embed = plugin->get_extension(CLAP_EMBED_WIN32);
+  // host code
+  struct clap_embed_win32 *embed = plugin->get_extension(plugin, CLAP_EMBED_WIN32);
   if (embed) {
     // the plugin can embed
     embed->embed(plugin, window);
   }
   plugin->show_gui(plugin);
+
+Resizing the window
+```````````````````
+
+.. code:: c
+
+  #include <clap/clap.h>
+  #include <clap/clap-embed.h>
+
+  // plugin code
+  struct clap_embed *embed = host->get_extension(plugin, CLAP_EMBED);
+  if (embed && embed->resize(host, width, height)) {
+    // resize succeed
+  }
 
 
 Presets
