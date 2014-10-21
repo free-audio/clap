@@ -181,6 +181,8 @@ enum clap_event_type
 
   CLAP_EVENT_NEW_PRESETS       = 11, // plugin to host, no attribute
   CLAP_EVENT_NEW_PORTS_CONFIGS = 12, // plugin to host, no attribute
+
+  CLAP_EVENT_LATENCY_CHANGED = 13, // plugin to host, latency attribute
 };
 
 struct clap_event_note
@@ -224,6 +226,11 @@ struct clap_event_midi
   uint8_t  *buffer;
 };
 
+struct clap_event_latency
+{
+  uint32_t latency;
+};
+
 struct clap_event
 {
   struct clap_event    *next; // linked list, NULL on end
@@ -237,6 +244,7 @@ struct clap_event
     struct clap_event_preset  preset;
     struct clap_event_midi    midi;
     struct clap_event_control control;
+    struct clap_event_latency latency;
   };
 };
 
