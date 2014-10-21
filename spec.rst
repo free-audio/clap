@@ -146,7 +146,7 @@ the index until you reach ``plugin_count``.
 Sample plugin loader
 ````````````````````
 
-See `samples/clap-info.c`_
+See `examples/clap-info/clap-info.c`_
 
 Description
 ~~~~~~~~~~~
@@ -662,10 +662,10 @@ If the extension is not supported, the plugin should return ``NULL``.
 Examples
 ========
 
-samples/clap-info.c
--------------------
+examples/clap-info/clap-info.c
+------------------------------
 
-.. include:: samples/clap-info.c
+.. include:: examples/clap-info/clap-info.c
    :code: c
 
 References

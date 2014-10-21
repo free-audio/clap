@@ -1,9 +1,9 @@
-CFLAGS = -I../include -std=c99 -Wall
+CFLAGS = -I../../include -std=c99 -Wall
 LDFLAGS = -ldl
 
 all: clap-info
 
-clap-info: clap-info.c ../include/clap/clap.h
+clap-info: clap-info.c
 	gcc $(CFLAGS) $< $(LDFLAGS) -o $@
 
 clean:

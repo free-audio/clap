@@ -312,7 +312,7 @@ struct clap_host
               const char             *msg);
 
   /* future features */
-  void *(*extension)(struct clap_host *host, const char *extention_id, void *ptr);
+  void *(*extension)(struct clap_host *host, const char *extention_id);
 };
 
 ////////////

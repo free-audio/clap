@@ -179,7 +179,7 @@ tt.docutils {
 </ul>
 </li>
 <li><a class="reference internal" href="#examples" id="id49">Examples</a><ul>
-<li><a class="reference internal" href="#samples-clap-info-c" id="id50">samples/clap-info.c</a></li>
+<li><a class="reference internal" href="#examples-clap-info-clap-info-c" id="id50">examples/clap-info/clap-info.c</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#references" id="id51">References</a><ul>
@@ -340,7 +340,7 @@ the index until you reach <tt class="docutils literal">plugin_count</tt>.
 <tt class="docutils literal">plugin_index &gt;= plugin_count</tt>.</p>
 <div class="section" id="sample-plugin-loader">
 <h4><a class="toc-backref" href="#id17">Sample plugin loader</a></h4>
-<p>See <a class="reference internal" href="#samples-clap-info-c">samples/clap-info.c</a></p>
+<p>See <a class="reference internal" href="#examples-clap-info-clap-info-c">examples/clap-info/clap-info.c</a></p>
 </div>
 </div>
 <div class="section" id="description">
@@ -962,8 +962,8 @@ big endian machine, it should load again successfully.</p>
 </div>
 <div class="section" id="examples">
 <h1><a class="toc-backref" href="#id49">Examples</a></h1>
-<div class="section" id="samples-clap-info-c">
-<h2><a class="toc-backref" href="#id50">samples/clap-info.c</a></h2>
+<div class="section" id="examples-clap-info-clap-info-c">
+<h2><a class="toc-backref" href="#id50">examples/clap-info/clap-info.c</a></h2>
 <pre class="code c literal-block">
 <span class="cp">#include &lt;stdio.h&gt;
 #include &lt;dlfcn.h&gt;
@@ -1050,7 +1050,7 @@ big endian machine, it should load again successfully.</p>
     <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
     <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; chunk_size: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">chunk_size</span><span class="p">);</span>
     <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; has_gui: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">has_gui</span><span class="p">);</span>
-    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; supports_tunning: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">supports_tunning</span><span class="p">);</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; supports_tunning: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">supports_tuning</span><span class="p">);</span>
     <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; supports_microtones: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">supports_microtones</span><span class="p">);</span>
 
     <span class="c1">// destroy the plugin
@@ -1381,7 +1381,7 @@ big endian machine, it should load again successfully.</p>
               <span class="k">const</span> <span class="kt">char</span>             <span class="o">*</span><span class="n">msg</span><span class="p">);</span>
 
   <span class="cm">/* future features */</span>
-  <span class="kt">void</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">extension</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">extention_id</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">ptr</span><span class="p">);</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">extension</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">extention_id</span><span class="p">);</span>
 <span class="p">};</span>
 
 <span class="c1">////////////
