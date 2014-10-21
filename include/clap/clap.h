@@ -183,6 +183,10 @@ enum clap_event_type
   CLAP_EVENT_NEW_PORTS_CONFIGS = 12, // plugin to host, no attribute
 
   CLAP_EVENT_LATENCY_CHANGED = 13, // plugin to host, latency attribute
+
+  CLAP_EVENT_PLAY  = 14, // no attribute
+  CLAP_EVENT_PAUSE = 15, // no attribute
+  CLAP_EVENT_STOP  = 16, // no attribute
 };
 
 struct clap_event_note
