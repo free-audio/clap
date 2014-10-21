@@ -50,6 +50,12 @@ Design choice
 Specification
 =============
 
+How to read the specification
+-----------------------------
+
+The specification should be read along the reference headers.
+https://abique.github.io/clap/ gives a convinient view for that.
+
 Encoding
 --------
 
