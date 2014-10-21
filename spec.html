@@ -1250,6 +1250,12 @@ big endian machine, it should load again successfully.</p>
 </span>
   <span class="n">CLAP_EVENT_NEW_PRESETS</span>       <span class="o">=</span> <span class="mi">11</span><span class="p">,</span> <span class="c1">// plugin to host, no attribute
 </span>  <span class="n">CLAP_EVENT_NEW_PORTS_CONFIGS</span> <span class="o">=</span> <span class="mi">12</span><span class="p">,</span> <span class="c1">// plugin to host, no attribute
+</span>
+  <span class="n">CLAP_EVENT_LATENCY_CHANGED</span> <span class="o">=</span> <span class="mi">13</span><span class="p">,</span> <span class="c1">// plugin to host, latency attribute
+</span>
+  <span class="n">CLAP_EVENT_PLAY</span>  <span class="o">=</span> <span class="mi">14</span><span class="p">,</span> <span class="c1">// no attribute
+</span>  <span class="n">CLAP_EVENT_PAUSE</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span> <span class="c1">// no attribute
+</span>  <span class="n">CLAP_EVENT_STOP</span>  <span class="o">=</span> <span class="mi">16</span><span class="p">,</span> <span class="c1">// no attribute
 </span><span class="p">};</span>
 
 <span class="k">struct</span> <span class="n">clap_event_note</span>
@@ -1293,6 +1299,11 @@ big endian machine, it should load again successfully.</p>
   <span class="kt">uint8_t</span>  <span class="o">*</span><span class="n">buffer</span><span class="p">;</span>
 <span class="p">};</span>
 
+<span class="k">struct</span> <span class="n">clap_event_latency</span>
+<span class="p">{</span>
+  <span class="kt">uint32_t</span> <span class="n">latency</span><span class="p">;</span>
+<span class="p">};</span>
+
 <span class="k">struct</span> <span class="n">clap_event</span>
 <span class="p">{</span>
   <span class="k">struct</span> <span class="n">clap_event</span>    <span class="o">*</span><span class="n">next</span><span class="p">;</span> <span class="c1">// linked list, NULL on end
@@ -1306,6 +1317,7 @@ big endian machine, it should load again successfully.</p>
     <span class="k">struct</span> <span class="n">clap_event_preset</span>  <span class="n">preset</span><span class="p">;</span>
     <span class="k">struct</span> <span class="n">clap_event_midi</span>    <span class="n">midi</span><span class="p">;</span>
     <span class="k">struct</span> <span class="n">clap_event_control</span> <span class="n">control</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">clap_event_latency</span> <span class="n">latency</span><span class="p">;</span>
   <span class="p">};</span>
 <span class="p">};</span>
 
@@ -1459,6 +1471,9 @@ big endian machine, it should load again successfully.</p>
    * next call to save() or when the plugin is destroyed. */</span>
   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">save</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="kt">void</span> <span class="o">**</span><span class="n">buffer</span><span class="p">,</span> <span class="kt">size_t</span> <span class="o">*</span><span class="n">size</span><span class="p">);</span>
   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">restore</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buffer</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">size</span><span class="p">);</span>
+
+  <span class="cm">/* Sets the locale to use */</span>
+  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">set_locale</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">locale</span><span class="p">);</span>
 
   <span class="cm">/* future features */</span>
   <span class="kt">void</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">extension</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">id</span><span class="p">);</span>
