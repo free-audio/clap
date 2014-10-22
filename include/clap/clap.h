@@ -30,6 +30,7 @@
 extern "C" {
 # endif
 
+# include <stddef.h>
 # include <stdbool.h>
 # include <stdint.h>
 
@@ -262,7 +263,12 @@ struct clap_process
   void *host_data;
 
   /* audio buffers */
-  float    **input;
+  union {
+    float       **input_f;
+    double      **input_d;
+    long double **input_ld;
+  };
+
   float    **output;
   uint32_t   nb_samples;
 
@@ -400,8 +406,8 @@ struct clap_plugin
   /* The plugin has to allocate and save its state into *buffer.
    * The plugin is also responsible to free the buffer on the
    * next call to save() or when the plugin is destroyed. */
-  bool (*save)(struct clap_plugin *plugin, void **buffer, size_t *size);
-  bool (*restore)(struct clap_plugin *plugin, const void *buffer, size_t size);
+  bool (*save)(struct clap_plugin *plugin, void **buffer, uint32_t *size);
+  bool (*restore)(struct clap_plugin *plugin, const void *buffer, uint32_t size);
 
   /* Sets the locale to use */
   bool (*set_locale)(struct clap_plugin *plugin, const char *locale);
