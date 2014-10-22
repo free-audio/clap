@@ -9,6 +9,7 @@ struct thyns_plugin
   struct thyns        thyns;
   struct clap_plugin  plugin;
   struct clap_host   *host;
+  float               pitch;
 };
 
 void

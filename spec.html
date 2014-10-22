@@ -1057,6 +1057,8 @@ big endian machine, it should load again successfully.</p>
 </span>    <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">destroy</span><span class="p">(</span><span class="n">plugin</span><span class="p">);</span>
   <span class="p">}</span>
 
+  <span class="n">dlclose</span><span class="p">(</span><span class="n">handle</span><span class="p">);</span>
+
   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
 </pre>
@@ -1099,7 +1101,8 @@ big endian machine, it should load again successfully.</p>
 </span><span class="k">extern</span> <span class="s">&quot;C&quot;</span> <span class="p">{</span>
 <span class="cp"># endif
 </span>
-<span class="cp"># include &lt;stdbool.h&gt;
+<span class="cp"># include &lt;stddef.h&gt;
+# include &lt;stdbool.h&gt;
 # include &lt;stdint.h&gt;
 </span>
 <span class="cp"># define CLAP_VERSION_MAKE(Major, Minor, Revision) \
@@ -1331,7 +1334,12 @@ big endian machine, it should load again successfully.</p>
   <span class="kt">void</span> <span class="o">*</span><span class="n">host_data</span><span class="p">;</span>
 
   <span class="cm">/* audio buffers */</span>
-  <span class="kt">float</span>    <span class="o">**</span><span class="n">input</span><span class="p">;</span>
+  <span class="k">union</span> <span class="p">{</span>
+    <span class="kt">float</span>       <span class="o">**</span><span class="n">input_f</span><span class="p">;</span>
+    <span class="kt">double</span>      <span class="o">**</span><span class="n">input_d</span><span class="p">;</span>
+    <span class="kt">long</span> <span class="kt">double</span> <span class="o">**</span><span class="n">input_ld</span><span class="p">;</span>
+  <span class="p">};</span>
+
   <span class="kt">float</span>    <span class="o">**</span><span class="n">output</span><span class="p">;</span>
   <span class="kt">uint32_t</span>   <span class="n">nb_samples</span><span class="p">;</span>
 
@@ -1469,8 +1477,8 @@ big endian machine, it should load again successfully.</p>
   <span class="cm">/* The plugin has to allocate and save its state into *buffer.
    * The plugin is also responsible to free the buffer on the
    * next call to save() or when the plugin is destroyed. */</span>
-  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">save</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="kt">void</span> <span class="o">**</span><span class="n">buffer</span><span class="p">,</span> <span class="kt">size_t</span> <span class="o">*</span><span class="n">size</span><span class="p">);</span>
-  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">restore</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buffer</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">size</span><span class="p">);</span>
+  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">save</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="kt">void</span> <span class="o">**</span><span class="n">buffer</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="o">*</span><span class="n">size</span><span class="p">);</span>
+  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">restore</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buffer</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">size</span><span class="p">);</span>
 
   <span class="cm">/* Sets the locale to use */</span>
   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">set_locale</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">locale</span><span class="p">);</span>
