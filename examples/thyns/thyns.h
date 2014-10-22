@@ -1,10 +1,9 @@
-#include <clap/clap.h>
+#ifndef THYNS_H
+# define THYNS_H
 
-#define _GNU_SOURCE
-
-#include "env.h"
-#include "filt.h"
-#include "osc.h"
+# include "env.h"
+# include "filt.h"
+# include "osc.h"
 
 struct thyns
 {
@@ -61,13 +60,4 @@ double thyns_step(struct thyns *thyns)
   return filtered * thyns->amp * thyns_env_step(&thyns->amp_env);
 }
 
-struct clap_plugin *
-clap_create(uint32_t          plugin_index,
-            struct clap_host *host,
-            uint32_t          sample_rate,
-            uint32_t         *plugins_count)
-{
-  if (plugins_count)
-    *plugins_count = 0;
-  return NULL;
-}
+#endif /* !THYNS_H */

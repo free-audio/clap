@@ -1,2 +1,3 @@
 add_library(thyns SHARED
-  thyns.c)
+  plugin.c)
+target_link_libraries(thyns m)

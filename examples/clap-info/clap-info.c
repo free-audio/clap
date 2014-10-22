@@ -90,5 +90,7 @@ int main(int argc, char **argv)
     plugin->destroy(plugin);
   }
 
+  dlclose(handle);
+
   return 0;
 }
