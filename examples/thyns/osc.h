@@ -1,8 +1,7 @@
 #ifndef OSC_H
 # define OSC_H
 
-# include <assert.h>
-# include <math.h>
+# include "defs.h"
 
 enum thyns_osc_type
 {

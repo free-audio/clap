@@ -6,8 +6,7 @@
 #ifndef FILT_H
 # define FILT_H
 
-# include <string.h>
-# include <math.h>
+# include "defs.h"
 
 struct thyns_filt
 {

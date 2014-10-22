@@ -1,7 +1,7 @@
 #ifndef ENV_H
 # define ENV_H
 
-# include <assert.h>
+# include "defs.h"
 
 enum thyns_env_state
 {
