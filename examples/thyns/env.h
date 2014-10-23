@@ -31,12 +31,12 @@ struct thyns_env
 static inline void thyns_env_init(struct thyns_env * restrict env)
 {
   env->state = THYNS_ENV_IDLE;
+  env->v     = 0;
 }
 
 static inline void thyns_env_restart(struct thyns_env * restrict env)
 {
   env->state = THYNS_ENV_ATTACK;
-  env->v     = 0;
 }
 
 static inline double thyns_env_step(struct thyns_env * restrict env)

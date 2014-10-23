@@ -4,34 +4,35 @@
 # include <clap/clap.h>
 
 # include "voice.h"
+# include "dlist.h"
 
 # define THYNS_VOICE_COUNT 32
 
 struct thyns
 {
-  uint32_t sr; // sample rate
+  uint32_t sr;    // sample rate
   double   pi_sr; // M_PI / sample_rate
 
   uint64_t steady_time;
 
-  struct thyns_voice *running;
+  struct thyns_voice *singing;
   struct thyns_voice *idle;
+  struct thyns_voice *keys[0x80];
 
   struct thyns_voice buffer[THYNS_VOICE_COUNT];
 };
 
 static inline void thyns_init(struct thyns *thyns, uint32_t sr)
 {
+  memset(thyns, 0, sizeof (*thyns));
+
   thyns->sr      = sr;
   thyns->pi_sr   = M_PI / sr;
-  thyns->running = NULL;
-  thyns->idle    = thyns->buffer;
 
   for (uint32_t i = 0; i < THYNS_VOICE_COUNT; ++i) {
     thyns_voice_init(thyns->buffer + i, sr);
-    thyns->buffer[i].next = thyns->buffer + i + 1;
+    thyns_dlist_push_back(thyns->idle, thyns->buffer + i);
   }
-  thyns->buffer[THYNS_VOICE_COUNT - 1].next = NULL;
 }
 
 static double thyns_step(struct thyns        *thyns,
@@ -39,7 +40,7 @@ static double thyns_step(struct thyns        *thyns,
 {
   double out = 0;
   struct thyns_voice *prev = NULL;
-  struct thyns_voice *v    = thyns->running;
+  struct thyns_voice *v    = thyns->singing;
 
   while (v) {
     out += thyns_voice_step(v);
@@ -54,7 +55,7 @@ static double thyns_step(struct thyns        *thyns,
       } else {
         v->next     = thyns->idle;
         thyns->idle = v;
-        v           = thyns->running;
+        v           = thyns->singing;
       }
     } else {
       prev = v;
@@ -65,18 +66,49 @@ static double thyns_step(struct thyns        *thyns,
   return out;
 }
 
-static inline struct thyns_voice *
-thyns_find_voice(struct thyns *thyns, uint8_t note)
+static inline void
+thyns_note_on(struct thyns *thyns,
+              uint8_t       key,
+              float         pitch)
 {
-  // XXX
-  return NULL;
+  struct thyns_voice *voice = NULL;
+
+  assert(key < 0x80);
+  if (thyns->keys[key]) {
+    voice = thyns->keys[key];
+  } else {
+    if (thyns->idle) {
+      voice = thyns->idle;
+      thyns_dlist_remove(thyns->idle, voice);
+    } else {
+      voice = thyns->singing;
+      thyns_dlist_remove(thyns->singing, voice);
+      thyns->keys[voice->key] = NULL;
+    }
+    thyns_dlist_push_back(thyns->singing, voice);
+    thyns->keys[key] = voice;
+  }
+
+  thyns_voice_start_note(thyns->keys[key], key, pitch);
 }
 
-static inline void thyns_handle_event(struct thyns      *thyns,
-                                      struct clap_event *ev)
+static inline void
+thyns_note_off(struct thyns *thyns,
+               uint8_t       key)
+{
+}
+
+static inline void
+thyns_handle_event(struct thyns      *thyns,
+                   struct clap_event *ev)
 {
   switch (ev->type) {
   case CLAP_EVENT_NOTE_ON:
+    thyns_note_on(thyns, ev->note.key, ev->note.pitch);
+    break;
+
+  case CLAP_EVENT_NOTE_OFF:
+    thyns_note_off(thyns, ev->note.key);
     break;
 
   default:
@@ -105,7 +137,7 @@ static inline void thyns_process(struct thyns        *thyns,
     process->output[0][i] = thyns_step(thyns, process);
   }
 
-  process->need_processing = thyns->running;
+  process->need_processing = thyns->singing;
 }
 
 #endif /* !THYNS_H */

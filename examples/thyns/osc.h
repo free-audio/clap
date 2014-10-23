@@ -14,17 +14,24 @@ enum thyns_osc_type
 
 struct thyns_osc
 {
+  uint32_t sr;    // sample rate
+  double   pi_sr; // M_PI / sample_rate
+
   enum thyns_osc_type type;
   double              pwm; // 0..1
 
+  double tune;
   double freq;
   double angle_ramp;
   double angle;
   double phase;
 };
 
-static inline void thyns_osc_init(struct thyns_osc *osc)
+static inline void
+ thyns_osc_init(struct thyns_osc *osc, uint32_t sr)
 {
+  osc->sr    = sr;
+  osc->pi_sr = M_PI / sr;
   osc->type  = THYNS_OSC_NONE;
   osc->pwm   = 0.5;
   osc->freq  = 0;
@@ -32,14 +39,15 @@ static inline void thyns_osc_init(struct thyns_osc *osc)
   osc->phase = 0;
 }
 
-static inline void thyns_osc_set_freq(struct thyns_osc *osc,
-                                      double freq,
-                                      double pi_sr)
+static inline void
+thyns_osc_set_freq(struct thyns_osc *osc, double freq)
 {
-  osc->angle_ramp = 2 * pi_sr * freq;
+  osc->freq = freq;
+  osc->angle_ramp = 2 * osc->pi_sr * freq * pow(2, osc->tune);
 }
 
-static inline double thyns_osc_step(struct thyns_osc *osc)
+static inline double
+thyns_osc_step(struct thyns_osc *osc)
 {
   osc->angle += fmod(osc->angle + osc->angle_ramp, 2 * M_PI);
   double angle = fmod(osc->angle + osc->phase, 2 * M_PI);

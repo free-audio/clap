@@ -10,6 +10,9 @@
 
 struct thyns_filt
 {
+  uint32_t sr;    // sample rate
+  double   pi_sr; // M_PI / sample_rate
+
   double cutoff; // in hz
   double resonance;
 
@@ -24,21 +27,23 @@ struct thyns_filt
   float y4;      // delayed feedback
 };
 
-static inline void thyns_filt_init(struct thyns_filt *filt)
+static inline void
+thyns_filt_init(struct thyns_filt *filt, uint32_t sr)
 {
   memset(filt, 0, sizeof (*filt));
+  filt->sr    = sr;
+  filt->pi_sr = M_PI / sr;
 }
 
-static inline void thyns_filt_set_cutoff(struct thyns_filt *filt,
-                                         double             cutoff,
-                                         double             pi_sr)
+static inline void
+thyns_filt_set_cutoff(struct thyns_filt *filt, double cutoff)
 {
-  filt->g     = tan(pi_sr * cutoff);
+  filt->g     = tan(filt->pi_sr * cutoff);
   filt->g_div = 1.0 / (1.0 + filt->g);
 }
 
-static inline double thyns_filt_step(struct thyns_filt *filt,
-                                     double             in)
+static inline double
+thyns_filt_step(struct thyns_filt *filt, double in)
 {
   double x0 = in - filt->resonance * filt->y4;
   double y1 = (filt->g * tanh(x0) + filt->iceq1) * filt->g_div;
