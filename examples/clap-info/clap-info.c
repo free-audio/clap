@@ -84,7 +84,6 @@ int main(int argc, char **argv)
     fprintf(stdout, " chunk_size: %d\n", plugin->chunk_size);
     fprintf(stdout, " has_gui: %d\n", plugin->has_gui);
     fprintf(stdout, " supports_tunning: %d\n", plugin->supports_tuning);
-    fprintf(stdout, " supports_microtones: %d\n", plugin->supports_microtones);
 
     // destroy the plugin
     plugin->destroy(plugin);

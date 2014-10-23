@@ -325,7 +325,7 @@ is used to process the feedback stream:
     uint32_t offset;
 
     // process all the buffer 
-    for (offset = 0; offset < process->nb_samples;
+    for (offset = 0; offset < process->samples_count;
          offset += process->feedback_chunk_size)
     {
 

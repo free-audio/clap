@@ -65,13 +65,47 @@ static double thyns_step(struct thyns        *thyns,
   return out;
 }
 
+static inline struct thyns_voice *
+thyns_find_voice(struct thyns *thyns, uint8_t note)
+{
+  // XXX
+  return NULL;
+}
+
+static inline void thyns_handle_event(struct thyns      *thyns,
+                                      struct clap_event *ev)
+{
+  switch (ev->type) {
+  case CLAP_EVENT_NOTE_ON:
+    break;
+
+  default:
+    break;
+  }
+}
+
 static inline void thyns_process(struct thyns        *thyns,
                                  struct clap_process *process)
 {
+  struct clap_event *ev = process->events;
+
   thyns->steady_time = process->steady_time;
   for (uint32_t i = 0; i < process->samples_count; ++i, ++thyns->steady_time) {
-    process->output[i] = thyns_step(thyns, process);
+
+    // handle events
+    for (; ev; ev = ev->next) {
+      assert(ev->steady_time >= thyns->steady_time);
+      if (ev->steady_time > thyns->steady_time)
+        break;
+
+      thyns_handle_event(thyns, ev);
+    }
+
+    // process
+    process->output[0][i] = thyns_step(thyns, process);
   }
+
+  process->need_processing = thyns->running;
 }
 
 #endif /* !THYNS_H */

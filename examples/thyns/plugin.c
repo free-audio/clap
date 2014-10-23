@@ -203,7 +203,6 @@ thyns_plugin_create(struct clap_host *host,
   p->plugin.chunk_size = 1;
   p->plugin.has_gui = false;
   p->plugin.supports_tuning = true;
-  p->plugin.supports_microtones = true;
   p->plugin.latency = 0;
   p->plugin.get_ports_configs_count = thyns_plugin_get_ports_configs_count;
   p->plugin.get_ports_config = thyns_plugin_get_ports_config;

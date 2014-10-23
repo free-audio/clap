@@ -171,7 +171,6 @@ enum clap_event_type
 
   CLAP_EVENT_PARAM_SET  = 3,    // param attribute
   CLAP_EVENT_PARAM_RAMP = 4,    // param attribute
-  CLAP_EVENT_PITCH_SET  = 5,    // pitch attribute
   CLAP_EVENT_PRESET_SET = 6,    // preset attribute
 
   CLAP_EVENT_MIDI    = 7,       // midi attribute
@@ -192,9 +191,8 @@ enum clap_event_type
 
 struct clap_event_note
 {
-  uint32_t division; // 12 for a standard octave
-  uint32_t note;     // starts from 0
-  float    velocity; // 0 .. 1.0f
+  uint8_t key;
+  float   pitch;
 
   struct clap_event *events; // events specific to this note
 };
@@ -213,11 +211,6 @@ struct clap_event_control
 {
   uint32_t index;
   float    value; // 0 .. 1.0f
-};
-
-struct clap_event_pitch
-{
-  float freq_hz; // usually 440Hz
 };
 
 struct clap_event_preset
@@ -245,7 +238,6 @@ struct clap_event
   union {
     struct clap_event_note    note;
     struct clap_event_param   param;
-    struct clap_event_pitch   pitch;
     struct clap_event_preset  preset;
     struct clap_event_midi    midi;
     struct clap_event_control control;
@@ -263,12 +255,7 @@ struct clap_process
   void *host_data;
 
   /* audio buffers */
-  union {
-    float       **input_f;
-    double      **input_d;
-    long double **input_ld;
-  };
-
+  float    **input;
   float    **output;
   uint32_t   samples_count;
 
@@ -360,7 +347,6 @@ struct clap_plugin
 
   bool has_gui;
   bool supports_tuning;
-  bool supports_microtones;
 
   uint32_t latency; // latency in samples
 

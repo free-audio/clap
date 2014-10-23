@@ -596,7 +596,7 @@ is used to process the feedback stream:</p>
 </span>  <span class="kt">uint32_t</span> <span class="n">offset</span><span class="p">;</span>
 
   <span class="c1">// process all the buffer
-</span>  <span class="k">for</span> <span class="p">(</span><span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">offset</span> <span class="o">&lt;</span> <span class="n">process</span><span class="o">-&gt;</span><span class="n">nb_samples</span><span class="p">;</span>
+</span>  <span class="k">for</span> <span class="p">(</span><span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">offset</span> <span class="o">&lt;</span> <span class="n">process</span><span class="o">-&gt;</span><span class="n">samples_count</span><span class="p">;</span>
        <span class="n">offset</span> <span class="o">+=</span> <span class="n">process</span><span class="o">-&gt;</span><span class="n">feedback_chunk_size</span><span class="p">)</span>
   <span class="p">{</span>
 
@@ -1051,7 +1051,6 @@ big endian machine, it should load again successfully.</p>
     <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; chunk_size: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">chunk_size</span><span class="p">);</span>
     <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; has_gui: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">has_gui</span><span class="p">);</span>
     <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; supports_tunning: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">supports_tuning</span><span class="p">);</span>
-    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; supports_microtones: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">supports_microtones</span><span class="p">);</span>
 
     <span class="c1">// destroy the plugin
 </span>    <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">destroy</span><span class="p">(</span><span class="n">plugin</span><span class="p">);</span>
@@ -1242,7 +1241,6 @@ big endian machine, it should load again successfully.</p>
 </span>
   <span class="n">CLAP_EVENT_PARAM_SET</span>  <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>    <span class="c1">// param attribute
 </span>  <span class="n">CLAP_EVENT_PARAM_RAMP</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>    <span class="c1">// param attribute
-</span>  <span class="n">CLAP_EVENT_PITCH_SET</span>  <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>    <span class="c1">// pitch attribute
 </span>  <span class="n">CLAP_EVENT_PRESET_SET</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span>    <span class="c1">// preset attribute
 </span>
   <span class="n">CLAP_EVENT_MIDI</span>    <span class="o">=</span> <span class="mi">7</span><span class="p">,</span>       <span class="c1">// midi attribute
@@ -1263,10 +1261,9 @@ big endian machine, it should load again successfully.</p>
 
 <span class="k">struct</span> <span class="n">clap_event_note</span>
 <span class="p">{</span>
-  <span class="kt">uint32_t</span> <span class="n">division</span><span class="p">;</span> <span class="c1">// 12 for a standard octave
-</span>  <span class="kt">uint32_t</span> <span class="n">note</span><span class="p">;</span>     <span class="c1">// starts from 0
-</span>  <span class="kt">float</span>    <span class="n">velocity</span><span class="p">;</span> <span class="c1">// 0 .. 1.0f
-</span>
+  <span class="kt">uint8_t</span> <span class="n">key</span><span class="p">;</span>
+  <span class="kt">float</span>   <span class="n">pitch</span><span class="p">;</span>
+
   <span class="k">struct</span> <span class="n">clap_event</span> <span class="o">*</span><span class="n">events</span><span class="p">;</span> <span class="c1">// events specific to this note
 </span><span class="p">};</span>
 
@@ -1284,11 +1281,6 @@ big endian machine, it should load again successfully.</p>
 <span class="p">{</span>
   <span class="kt">uint32_t</span> <span class="n">index</span><span class="p">;</span>
   <span class="kt">float</span>    <span class="n">value</span><span class="p">;</span> <span class="c1">// 0 .. 1.0f
-</span><span class="p">};</span>
-
-<span class="k">struct</span> <span class="n">clap_event_pitch</span>
-<span class="p">{</span>
-  <span class="kt">float</span> <span class="n">freq_hz</span><span class="p">;</span> <span class="c1">// usually 440Hz
 </span><span class="p">};</span>
 
 <span class="k">struct</span> <span class="n">clap_event_preset</span>
@@ -1316,7 +1308,6 @@ big endian machine, it should load again successfully.</p>
   <span class="k">union</span> <span class="p">{</span>
     <span class="k">struct</span> <span class="n">clap_event_note</span>    <span class="n">note</span><span class="p">;</span>
     <span class="k">struct</span> <span class="n">clap_event_param</span>   <span class="n">param</span><span class="p">;</span>
-    <span class="k">struct</span> <span class="n">clap_event_pitch</span>   <span class="n">pitch</span><span class="p">;</span>
     <span class="k">struct</span> <span class="n">clap_event_preset</span>  <span class="n">preset</span><span class="p">;</span>
     <span class="k">struct</span> <span class="n">clap_event_midi</span>    <span class="n">midi</span><span class="p">;</span>
     <span class="k">struct</span> <span class="n">clap_event_control</span> <span class="n">control</span><span class="p">;</span>
@@ -1334,14 +1325,9 @@ big endian machine, it should load again successfully.</p>
   <span class="kt">void</span> <span class="o">*</span><span class="n">host_data</span><span class="p">;</span>
 
   <span class="cm">/* audio buffers */</span>
-  <span class="k">union</span> <span class="p">{</span>
-    <span class="kt">float</span>       <span class="o">**</span><span class="n">input_f</span><span class="p">;</span>
-    <span class="kt">double</span>      <span class="o">**</span><span class="n">input_d</span><span class="p">;</span>
-    <span class="kt">long</span> <span class="kt">double</span> <span class="o">**</span><span class="n">input_ld</span><span class="p">;</span>
-  <span class="p">};</span>
-
+  <span class="kt">float</span>    <span class="o">**</span><span class="n">input</span><span class="p">;</span>
   <span class="kt">float</span>    <span class="o">**</span><span class="n">output</span><span class="p">;</span>
-  <span class="kt">uint32_t</span>   <span class="n">nb_samples</span><span class="p">;</span>
+  <span class="kt">uint32_t</span>   <span class="n">samples_count</span><span class="p">;</span>
 
   <span class="cm">/* feedback loops */</span>
   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">feedback</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_process</span> <span class="o">*</span><span class="n">process</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">stream_id</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">nb_samples</span><span class="p">);</span>
@@ -1431,7 +1417,6 @@ big endian machine, it should load again successfully.</p>
 
   <span class="kt">bool</span> <span class="n">has_gui</span><span class="p">;</span>
   <span class="kt">bool</span> <span class="n">supports_tuning</span><span class="p">;</span>
-  <span class="kt">bool</span> <span class="n">supports_microtones</span><span class="p">;</span>
 
   <span class="kt">uint32_t</span> <span class="n">latency</span><span class="p">;</span> <span class="c1">// latency in samples
 </span>
