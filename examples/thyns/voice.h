@@ -12,6 +12,8 @@ struct thyns_voice
   uint32_t sr; // sample rate
   double   pi_sr; // M_PI / sample_rate
 
+  double pitch;
+
   uint32_t note;
   uint32_t division;
 

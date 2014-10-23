@@ -12,13 +12,15 @@ struct thyns
   uint32_t sr; // sample rate
   double   pi_sr; // M_PI / sample_rate
 
+  uint64_t steady_time;
+
   struct thyns_voice *running;
   struct thyns_voice *idle;
 
   struct thyns_voice buffer[THYNS_VOICE_COUNT];
 };
 
-static void thyns_init(struct thyns *thyns, uint32_t sr)
+static inline void thyns_init(struct thyns *thyns, uint32_t sr)
 {
   thyns->sr      = sr;
   thyns->pi_sr   = M_PI / sr;
@@ -32,8 +34,8 @@ static void thyns_init(struct thyns *thyns, uint32_t sr)
   thyns->buffer[THYNS_VOICE_COUNT - 1].next = NULL;
 }
 
-double thyns_step(struct thyns *thyns,
-                  struct clap_process *process)
+static double thyns_step(struct thyns        *thyns,
+                         struct clap_process *process)
 {
   double out = 0;
   struct thyns_voice *prev = NULL;
@@ -61,6 +63,15 @@ double thyns_step(struct thyns *thyns,
   }
 
   return out;
+}
+
+static inline void thyns_process(struct thyns        *thyns,
+                                 struct clap_process *process)
+{
+  thyns->steady_time = process->steady_time;
+  for (uint32_t i = 0; i < process->samples_count; ++i, ++thyns->steady_time) {
+    process->output[i] = thyns_step(thyns, process);
+  }
 }
 
 #endif /* !THYNS_H */

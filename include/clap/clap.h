@@ -270,7 +270,7 @@ struct clap_process
   };
 
   float    **output;
-  uint32_t   nb_samples;
+  uint32_t   samples_count;
 
   /* feedback loops */
   void (*feedback)(struct clap_process *process, uint32_t stream_id, uint32_t nb_samples);

@@ -134,6 +134,7 @@ void
 thyns_plugin_process(struct clap_plugin  *plugin,
                      struct clap_process *process)
 {
+  thyns_process(plugin->plugin_data, process);
 }
 
 bool
