@@ -30,21 +30,27 @@ thyns_plugin_get_attribute(struct clap_plugin *plugin,
 {
 #define attr(Attr, Value)                       \
   do {                                          \
-    if (!strcmp(Attr, attr)) {                  \
+    if (!strcmp(CLAP_ATTR_##Attr, attr)) {      \
       snprintf(buffer, size, "%s", Value);      \
       return sizeof (Value) - 1;                \
     }                                           \
   } while (0)
 
-  attr(CLAP_ATTR_ID, "clap/thyns");
-  attr(CLAP_ATTR_NAME, "Thyns");
-  attr(CLAP_ATTR_DESCRIPTION, "Clap demo synth");
-  attr(CLAP_ATTR_VERSION, "0.0.1");
-  attr(CLAP_ATTR_MANUFACTURER, "Clap");
-  attr(CLAP_ATTR_URL, "https://github.com/abique/clap");
-  attr(CLAP_ATTR_SUPPORT, "https://github.com/abique/clap");
-  attr(CLAP_ATTR_LICENSE, "MIT");
-  attr(CLAP_ATTR_CATEGORIES, "");
+  attr(ID, "clap/thyns");
+  attr(NAME, "Thyns");
+  attr(DESCRIPTION, "Clap demo synth");
+  attr(VERSION, "0.0.1");
+  attr(MANUFACTURER, "Clap");
+  attr(URL, "https://github.com/abique/clap");
+  attr(SUPPORT, "https://github.com/abique/clap");
+  attr(LICENSE, "MIT");
+  attr(CATEGORIES, "");
+  attr(TYPE, "instrument");
+  attr(CHUNK_SIZE, "1");
+  attr(HAS_GUI, "0");
+  attr(SUPPORTS_TUNING, "1");
+  attr(LATENCY, "0");
+
   return 0;
 
 #undef attr
@@ -218,11 +224,6 @@ thyns_plugin_create(struct clap_host *host,
   p->plugin.clap_version = CLAP_VERSION;
   p->plugin.destroy = thyns_plugin_destroy;
   p->plugin.plugin_data = p;
-  p->plugin.type = CLAP_PLUGIN_INSTRUMENT;
-  p->plugin.chunk_size = 1;
-  p->plugin.has_gui = false;
-  p->plugin.supports_tuning = true;
-  p->plugin.latency = 0;
   p->plugin.get_attribute = thyns_plugin_get_attribute;
   p->plugin.get_ports_configs_count = thyns_plugin_get_ports_configs_count;
   p->plugin.get_ports_config = thyns_plugin_get_ports_config;

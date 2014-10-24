@@ -25,9 +25,6 @@ static void initialize_host(struct clap_host *host)
   host->events       = host_events;
   host->steady_time  = host_steady_time;
   host->extension    = host_extension;
-  snprintf(host->name, sizeof (host->name), "clap-info");
-  snprintf(host->manufacturer, sizeof (host->manufacturer), "clap");
-  snprintf(host->version, sizeof (host->version), "1.0");
 }
 
 int main(int argc, char **argv)
@@ -80,22 +77,13 @@ int main(int argc, char **argv)
     print_attr(SUPPORT);
     print_attr(LICENSE);
     print_attr(CATEGORIES);
+    print_attr(TYPE);
+    print_attr(CHUNK_SIZE);
+    print_attr(LATENCY);
+    print_attr(HAS_GUI);
+    print_attr(SUPPORTS_TUNING);
 
 #undef print_attr
-
-    fprintf(stdout, " type:");
-    if (plugin->type & CLAP_PLUGIN_INSTRUMENT)
-      fprintf(stdout, " instrument");
-    if (plugin->type & CLAP_PLUGIN_EFFECT)
-      fprintf(stdout, " effect");
-    if (plugin->type & CLAP_PLUGIN_EVENT_EFFECT)
-      fprintf(stdout, " event_effect");
-    if (plugin->type & CLAP_PLUGIN_ANALYZER)
-      fprintf(stdout, " analyzer");
-    fprintf(stdout, "\n");
-    fprintf(stdout, " chunk_size: %d\n", plugin->chunk_size);
-    fprintf(stdout, " has_gui: %d\n", plugin->has_gui);
-    fprintf(stdout, " supports_tunning: %d\n", plugin->supports_tuning);
 
     // destroy the plugin
     plugin->destroy(plugin);
