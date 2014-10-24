@@ -62,15 +62,27 @@ int main(int argc, char **argv)
       continue;
     }
 
-    fprintf(stdout, " id: %s\n", plugin->id);
-    fprintf(stdout, " name: %s\n", plugin->name);
-    fprintf(stdout, " description: %s\n", plugin->description);
-    fprintf(stdout, " manufacturer: %s\n", plugin->manufacturer);
-    fprintf(stdout, " version: %s\n", plugin->version);
-    fprintf(stdout, " url: %s\n", plugin->url);
-    fprintf(stdout, " support: %s\n", plugin->support);
-    fprintf(stdout, " license: %s\n", plugin->license);
-    fprintf(stdout, " categories: %s\n", plugin->categories);
+    char buffer[256];
+
+#define print_attr(Attr)                                                \
+    do {                                                                \
+      plugin->get_attribute(                                            \
+        plugin, CLAP_ATTR_##Attr, buffer, sizeof (buffer));             \
+      fprintf(stdout, " %s: %s\n", CLAP_ATTR_##Attr, buffer);           \
+    } while (0)
+
+    print_attr(ID);
+    print_attr(NAME);
+    print_attr(DESCRIPTION);
+    print_attr(MANUFACTURER);
+    print_attr(VERSION);
+    print_attr(URL);
+    print_attr(SUPPORT);
+    print_attr(LICENSE);
+    print_attr(CATEGORIES);
+
+#undef print_attr
+
     fprintf(stdout, " type:");
     if (plugin->type & CLAP_PLUGIN_INSTRUMENT)
       fprintf(stdout, " instrument");

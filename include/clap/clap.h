@@ -67,6 +67,16 @@ enum clap_log_severity
   CLAP_LOG_FATAL   = 4,
 };
 
+# define CLAP_ATTR_ID           "clap/id"
+# define CLAP_ATTR_NAME         "clap/name"
+# define CLAP_ATTR_DESCRIPTION  "clap/description"
+# define CLAP_ATTR_VERSION      "clap/version"
+# define CLAP_ATTR_MANUFACTURER "clap/manufacturer"
+# define CLAP_ATTR_URL          "clap/url"
+# define CLAP_ATTR_SUPPORT      "clap/support"
+# define CLAP_ATTR_LICENSE      "clap/license"
+# define CLAP_ATTR_CATEGORIES   "clap/categories"
+
 ///////////
 // PORTS //
 ///////////
@@ -328,27 +338,21 @@ struct clap_plugin
   void *host_data;   // reserved pointer for the host
   void *plugin_data; // reserved pointer for the plugin
 
-  /* free plugin's resources */
-  void (*destroy)(struct clap_plugin *plugin);
-
-  /* plugin info */
-  char id[CLAP_ID_SIZE];
-  char name[CLAP_NAME_SIZE];
-  char description[CLAP_DESC_SIZE];
-  char version[CLAP_NAME_SIZE];
-  char manufacturer[CLAP_NAME_SIZE];
-  char url[CLAP_URL_SIZE];
-  char support[CLAP_URL_SIZE];  // a link to the support
-  char license[CLAP_NAME_SIZE];
-  char categories[CLAP_TAGS_SIZE]; // fm;analogue;delay;...
-
   uint32_t type; // clap_plugin_type bitfield
   uint32_t chunk_size;
+  uint32_t latency; // latency in samples
 
   bool has_gui;
   bool supports_tuning;
 
-  uint32_t latency; // latency in samples
+  /* free plugin's resources */
+  void (*destroy)(struct clap_plugin *plugin);
+
+  /* returns the size of the original string, 0 if not string */
+  uint32_t (*get_attribute)(struct clap_plugin *plugin,
+                            const char         *attr,
+                            char               *buffer,
+                            uint32_t            size);
 
   /* Audio ports.
    * The port configuration has to be done while the plugin is deactivated. */

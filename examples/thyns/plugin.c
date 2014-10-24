@@ -23,6 +23,34 @@ thyns_plugin_destroy(struct clap_plugin *plugin)
 }
 
 uint32_t
+thyns_plugin_get_attribute(struct clap_plugin *plugin,
+                           const char         *attr,
+                           char               *buffer,
+                           uint32_t            size)
+{
+#define attr(Attr, Value)                       \
+  do {                                          \
+    if (!strcmp(Attr, attr)) {                  \
+      snprintf(buffer, size, "%s", Value);      \
+      return sizeof (Value) - 1;                \
+    }                                           \
+  } while (0)
+
+  attr(CLAP_ATTR_ID, "clap/thyns");
+  attr(CLAP_ATTR_NAME, "Thyns");
+  attr(CLAP_ATTR_DESCRIPTION, "Clap demo synth");
+  attr(CLAP_ATTR_VERSION, "0.0.1");
+  attr(CLAP_ATTR_MANUFACTURER, "Clap");
+  attr(CLAP_ATTR_URL, "https://github.com/abique/clap");
+  attr(CLAP_ATTR_SUPPORT, "https://github.com/abique/clap");
+  attr(CLAP_ATTR_LICENSE, "MIT");
+  attr(CLAP_ATTR_CATEGORIES, "");
+  return 0;
+
+#undef attr
+}
+
+uint32_t
 thyns_plugin_get_ports_configs_count(struct clap_plugin *plugin)
 {
   return 1;
@@ -190,20 +218,12 @@ thyns_plugin_create(struct clap_host *host,
   p->plugin.clap_version = CLAP_VERSION;
   p->plugin.destroy = thyns_plugin_destroy;
   p->plugin.plugin_data = p;
-  snprintf(p->plugin.id, sizeof (p->plugin.id), "clap/thyns");
-  snprintf(p->plugin.name, sizeof (p->plugin.name), "Thyns");
-  snprintf(p->plugin.description, sizeof (p->plugin.description), "Clap demo synth");
-  snprintf(p->plugin.version, sizeof (p->plugin.version), "0.0.1");
-  snprintf(p->plugin.manufacturer, sizeof (p->plugin.manufacturer), "Clap");
-  snprintf(p->plugin.url, sizeof (p->plugin.url), "https://github.com/abique/clap");
-  snprintf(p->plugin.support, sizeof (p->plugin.support), "https://github.com/abique/clap");
-  snprintf(p->plugin.license, sizeof (p->plugin.license), "MIT");
-  snprintf(p->plugin.categories, sizeof (p->plugin.categories), "");
   p->plugin.type = CLAP_PLUGIN_INSTRUMENT;
   p->plugin.chunk_size = 1;
   p->plugin.has_gui = false;
   p->plugin.supports_tuning = true;
   p->plugin.latency = 0;
+  p->plugin.get_attribute = thyns_plugin_get_attribute;
   p->plugin.get_ports_configs_count = thyns_plugin_get_ports_configs_count;
   p->plugin.get_ports_config = thyns_plugin_get_ports_config;
   p->plugin.get_port_info = thyns_plugin_get_port_info;
