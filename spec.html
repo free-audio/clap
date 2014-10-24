@@ -197,9 +197,6 @@ tt.docutils {
 <li>Make a free audio plugin format</li>
 <li>Be easy to understand and implement</li>
 <li>Bring new features missed in VST 2.4</li>
-<li>Replace old concepts by modern ones. For example the specification tries
-to not use MIDI as its internal event systems, which let us have
-micro-tones. Yet MIDI events are possible.</li>
 <li>Designed to work on any operating system</li>
 <li>Be event oriented</li>
 <li>Be extensible without breaking existing plugins</li>
@@ -213,6 +210,11 @@ micro-tones. Yet MIDI events are possible.</li>
 <li>Provide a validation plugin, which should signal anything wrong the host does</li>
 <li>Provide a validation host, which should give hard time to the plugin and
 ensure that basic functionnality are working</li>
+<li>Provide a libclap2vst, which adapts a clap plugin interface to a vst plugin
+interface</li>
+<li>Provide a remote plugin/host library</li>
+<li>Provide a libvst2clap, which adapts a vst plugin interface to a clap plugin
+interface</li>
 </ul>
 </div>
 <div class="section" id="design-choice">
@@ -1029,15 +1031,27 @@ big endian machine, it should load again successfully.</p>
       <span class="k">continue</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; id: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">id</span><span class="p">);</span>
-    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; name: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">);</span>
-    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; description: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">description</span><span class="p">);</span>
-    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; manufacturer: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">manufacturer</span><span class="p">);</span>
-    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; version: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">version</span><span class="p">);</span>
-    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; url: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">url</span><span class="p">);</span>
-    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; support: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">support</span><span class="p">);</span>
-    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; license: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">license</span><span class="p">);</span>
-    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; categories: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">categories</span><span class="p">);</span>
+    <span class="kt">char</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">256</span><span class="p">];</span>
+
+<span class="cp">#define print_attr(Attr)                                                \
+    do {                                                                \
+      plugin-&gt;get_attribute(                                            \
+        plugin, CLAP_ATTR_##Attr, buffer, sizeof (buffer));             \
+      fprintf(stdout, &quot; %s: %s\n&quot;, CLAP_ATTR_##Attr, buffer);           \
+    } while (0)
+</span>
+    <span class="n">print_attr</span><span class="p">(</span><span class="n">ID</span><span class="p">);</span>
+    <span class="n">print_attr</span><span class="p">(</span><span class="n">NAME</span><span class="p">);</span>
+    <span class="n">print_attr</span><span class="p">(</span><span class="n">DESCRIPTION</span><span class="p">);</span>
+    <span class="n">print_attr</span><span class="p">(</span><span class="n">MANUFACTURER</span><span class="p">);</span>
+    <span class="n">print_attr</span><span class="p">(</span><span class="n">VERSION</span><span class="p">);</span>
+    <span class="n">print_attr</span><span class="p">(</span><span class="n">URL</span><span class="p">);</span>
+    <span class="n">print_attr</span><span class="p">(</span><span class="n">SUPPORT</span><span class="p">);</span>
+    <span class="n">print_attr</span><span class="p">(</span><span class="n">LICENSE</span><span class="p">);</span>
+    <span class="n">print_attr</span><span class="p">(</span><span class="n">CATEGORIES</span><span class="p">);</span>
+
+<span class="cp">#undef print_attr
+</span>
     <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; type:&quot;</span><span class="p">);</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">plugin</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">&amp;</span> <span class="n">CLAP_PLUGIN_INSTRUMENT</span><span class="p">)</span>
       <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; instrument&quot;</span><span class="p">);</span>
@@ -1137,6 +1151,16 @@ big endian machine, it should load again successfully.</p>
   <span class="n">CLAP_LOG_FATAL</span>   <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
 <span class="p">};</span>
 
+<span class="cp"># define CLAP_ATTR_ID           &quot;clap/id&quot;
+# define CLAP_ATTR_NAME         &quot;clap/name&quot;
+# define CLAP_ATTR_DESCRIPTION  &quot;clap/description&quot;
+# define CLAP_ATTR_VERSION      &quot;clap/version&quot;
+# define CLAP_ATTR_MANUFACTURER &quot;clap/manufacturer&quot;
+# define CLAP_ATTR_URL          &quot;clap/url&quot;
+# define CLAP_ATTR_SUPPORT      &quot;clap/support&quot;
+# define CLAP_ATTR_LICENSE      &quot;clap/license&quot;
+# define CLAP_ATTR_CATEGORIES   &quot;clap/categories&quot;
+</span>
 <span class="c1">///////////
 // PORTS //
 ///////////
@@ -1398,28 +1422,22 @@ big endian machine, it should load again successfully.</p>
   <span class="kt">void</span> <span class="o">*</span><span class="n">host_data</span><span class="p">;</span>   <span class="c1">// reserved pointer for the host
 </span>  <span class="kt">void</span> <span class="o">*</span><span class="n">plugin_data</span><span class="p">;</span> <span class="c1">// reserved pointer for the plugin
 </span>
-  <span class="cm">/* free plugin's resources */</span>
-  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">destroy</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
-
-  <span class="cm">/* plugin info */</span>
-  <span class="kt">char</span> <span class="n">id</span><span class="p">[</span><span class="n">CLAP_ID_SIZE</span><span class="p">];</span>
-  <span class="kt">char</span> <span class="n">name</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>
-  <span class="kt">char</span> <span class="n">description</span><span class="p">[</span><span class="n">CLAP_DESC_SIZE</span><span class="p">];</span>
-  <span class="kt">char</span> <span class="n">version</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>
-  <span class="kt">char</span> <span class="n">manufacturer</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>
-  <span class="kt">char</span> <span class="n">url</span><span class="p">[</span><span class="n">CLAP_URL_SIZE</span><span class="p">];</span>
-  <span class="kt">char</span> <span class="n">support</span><span class="p">[</span><span class="n">CLAP_URL_SIZE</span><span class="p">];</span>  <span class="c1">// a link to the support
-</span>  <span class="kt">char</span> <span class="n">license</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>
-  <span class="kt">char</span> <span class="n">categories</span><span class="p">[</span><span class="n">CLAP_TAGS_SIZE</span><span class="p">];</span> <span class="c1">// fm;analogue;delay;...
-</span>
   <span class="kt">uint32_t</span> <span class="n">type</span><span class="p">;</span> <span class="c1">// clap_plugin_type bitfield
 </span>  <span class="kt">uint32_t</span> <span class="n">chunk_size</span><span class="p">;</span>
-
+  <span class="kt">uint32_t</span> <span class="n">latency</span><span class="p">;</span> <span class="c1">// latency in samples
+</span>
   <span class="kt">bool</span> <span class="n">has_gui</span><span class="p">;</span>
   <span class="kt">bool</span> <span class="n">supports_tuning</span><span class="p">;</span>
 
-  <span class="kt">uint32_t</span> <span class="n">latency</span><span class="p">;</span> <span class="c1">// latency in samples
-</span>
+  <span class="cm">/* free plugin's resources */</span>
+  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">destroy</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
+
+  <span class="cm">/* returns the size of the original string, 0 if not string */</span>
+  <span class="kt">uint32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">get_attribute</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
+                            <span class="k">const</span> <span class="kt">char</span>         <span class="o">*</span><span class="n">attr</span><span class="p">,</span>
+                            <span class="kt">char</span>               <span class="o">*</span><span class="n">buffer</span><span class="p">,</span>
+                            <span class="kt">uint32_t</span>            <span class="n">size</span><span class="p">);</span>
+
   <span class="cm">/* Audio ports.
    * The port configuration has to be done while the plugin is deactivated. */</span>
   <span class="kt">uint32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">get_ports_configs_count</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>

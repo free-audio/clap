@@ -14,9 +14,6 @@ Goals
 - Make a free audio plugin format
 - Be easy to understand and implement
 - Bring new features missed in VST 2.4
-- Replace old concepts by modern ones. For example the specification tries
-  to not use MIDI as its internal event systems, which let us have
-  micro-tones. Yet MIDI events are possible.
 - Designed to work on any operating system
 - Be event oriented
 - Be extensible without breaking existing plugins
@@ -30,6 +27,11 @@ Later goals
 - Provide a validation plugin, which should signal anything wrong the host does
 - Provide a validation host, which should give hard time to the plugin and
   ensure that basic functionnality are working
+- Provide a libclap2vst, which adapts a clap plugin interface to a vst plugin
+  interface
+- Provide a remote plugin/host library
+- Provide a libvst2clap, which adapts a vst plugin interface to a clap plugin
+  interface
 
 Design choice
 -------------
@@ -324,7 +326,7 @@ is used to process the feedback stream:
     uint32_t stream_id; // the feedback stream id
     uint32_t offset;
 
-    // process all the buffer 
+    // process all the buffer
     for (offset = 0; offset < process->samples_count;
          offset += process->feedback_chunk_size)
     {
@@ -694,4 +696,3 @@ clap-embed-xlib.h
 
 .. include:: include/clap/clap-embed-xlib.h
    :code: c
-
