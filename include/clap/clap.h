@@ -155,6 +155,7 @@ struct clap_param
   char                    desc[CLAP_DESC_SIZE];
   bool                    is_per_note;
   char                    display_text[CLAP_DISPLAY_SIZE]; // the text used to display the value
+  bool                    is_used; // is this parameter used by the patch?
   union clap_param_value  value;
   union clap_param_value  min;
   union clap_param_value  max;
