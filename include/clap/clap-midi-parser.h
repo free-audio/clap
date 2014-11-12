@@ -1,3 +1,9 @@
+/*
+ * Simple MIDI parser implementation.
+ * I used the following reference:
+ * http://www.sonicspot.com/guide/midifiles.html
+ */
+
 #ifndef CLAP_MIDI_PARSER_H
 # define CLAP_MIDI_PARSER_H
 
@@ -52,7 +58,7 @@ struct clap_midi_channel_event
 struct clap_midi_meta_event
 {
   uint8_t        type;
-  uint32_t       lenght;
+  uint32_t       length;
   const uint8_t *bytes;  // reference to the input buffer
 };
 
@@ -60,7 +66,7 @@ struct clap_midi_sysex_event
 {
   uint8_t        sysex;
   uint8_t        type;
-  uint32_t       lenght;
+  uint32_t       length;
   const uint8_t *bytes;  // reference to the input buffer
 };
 
@@ -72,13 +78,11 @@ struct clap_midi_parser
   const uint8_t *in;
   uint32_t       size;
 
-  union {
-    struct clap_midi_header        header;
-    struct clap_midi_track         track;
-    struct clap_midi_channel_event channel;
-    struct clap_midi_meta_event    meta;
-    struct clap_midi_sysex_event   sysex;
-  };
+  struct clap_midi_header        header;
+  struct clap_midi_track         track;
+  struct clap_midi_channel_event channel;
+  struct clap_midi_meta_event    meta;
+  struct clap_midi_sysex_event   sysex;
 };
 
 static inline enum clap_midi_parser_status
