@@ -165,7 +165,7 @@ general plugin/host information.
 |                     | version 1.0.0                                                 |
 +---------------------+---------------------------------------------------------------+
 | id                  | Unique identifier of the plugin. It should never change. It   |
-|                     | should be the same on 32bits or 64bits or whatever.           |
+|                     | should be the same on any plateform.                          |
 +---------------------+---------------------------------------------------------------+
 | name                | The name of the product.                                      |
 +---------------------+---------------------------------------------------------------+
