@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <clap/clap.h>
+#include <clap/clap-plugin-helper.h>
 
 #include "thyns.h"
 
@@ -9,7 +10,6 @@ struct thyns_plugin
   struct thyns        thyns;
   struct clap_plugin  plugin;
   struct clap_host   *host;
-  float               pitch;
 };
 
 void
@@ -117,93 +117,11 @@ thyns_plugin_set_ports_config(struct clap_plugin *plugin,
   }
 }
 
-bool
-thyns_plugin_set_port_repeat(struct clap_plugin  *plugin,
-                             uint32_t             port_index,
-                             uint32_t             count)
-{
-  return false;
-}
-
-uint32_t
-thyns_plugin_get_params_count(struct clap_plugin *plugin)
-{
-  return 0;
-}
-
-bool
-thyns_plugin_get_param(struct clap_plugin *plugin,
-                       uint32_t            index,
-                       struct clap_param  *param)
-{
-  return false;
-}
-
-uint32_t
-thyns_plugin_get_presets_count(struct clap_plugin *plugin)
-{
-  return 0;
-}
-
-bool
-thyns_plugin_get_preset(struct clap_plugin *plugin,
-                        uint32_t            index,
-                        struct clap_preset *preset)
-{
-  return false;
-}
-
-bool
-thyns_plugin_activate(struct clap_plugin *plugin)
-{
-  return true;
-}
-
-void
-thyns_plugin_deactivate(struct clap_plugin *plugin)
-{
-}
-
 void
 thyns_plugin_process(struct clap_plugin  *plugin,
                      struct clap_process *process)
 {
   thyns_process(plugin->plugin_data, process);
-}
-
-bool
-thyns_plugin_open_gui(struct clap_plugin *plugin)
-{
-  return false;
-}
-
-void
-thyns_plugin_close_gui(struct clap_plugin *plugin)
-{
-}
-
-bool
-thyns_plugin_save(struct clap_plugin *plugin, void **buffer, uint32_t *size)
-{
-  return false;
-}
-
-bool
-thyns_plugin_restore(struct clap_plugin *plugin, const void *buffer, uint32_t size)
-{
-  return false;
-}
-
-bool
-thyns_plugin_set_locale(struct clap_plugin *plugin, const char *locale)
-{
-  return false;
-}
-
-void *
-thyns_plugin_extension(struct clap_plugin *plugin, const char *id)
-{
-  return NULL;
 }
 
 struct thyns_plugin *
@@ -221,7 +139,7 @@ thyns_plugin_create(struct clap_host *host,
   p->host = host;
 
   // initialize plugin
-  p->plugin.clap_version = CLAP_VERSION;
+  clap_plugin_default(&p->plugin);
   p->plugin.destroy = thyns_plugin_destroy;
   p->plugin.plugin_data = p;
   p->plugin.get_attribute = thyns_plugin_get_attribute;
@@ -229,20 +147,7 @@ thyns_plugin_create(struct clap_host *host,
   p->plugin.get_ports_config = thyns_plugin_get_ports_config;
   p->plugin.get_port_info = thyns_plugin_get_port_info;
   p->plugin.set_ports_config = thyns_plugin_set_ports_config;
-  p->plugin.set_port_repeat = thyns_plugin_set_port_repeat;
-  p->plugin.get_params_count = thyns_plugin_get_params_count;
-  p->plugin.get_param = thyns_plugin_get_param;
-  p->plugin.get_presets_count = thyns_plugin_get_presets_count;
-  p->plugin.get_preset = thyns_plugin_get_preset;
-  p->plugin.activate = thyns_plugin_activate;
-  p->plugin.deactivate = thyns_plugin_deactivate;
   p->plugin.process = thyns_plugin_process;
-  p->plugin.open_gui = thyns_plugin_open_gui;
-  p->plugin.close_gui = thyns_plugin_close_gui;
-  p->plugin.save = thyns_plugin_save;
-  p->plugin.restore = thyns_plugin_restore;
-  p->plugin.set_locale = thyns_plugin_set_locale;
-  p->plugin.extension = thyns_plugin_extension;
   return p;
 }
 

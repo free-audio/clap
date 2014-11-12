@@ -667,7 +667,7 @@ Examples
 examples/clap-info/clap-info.c
 ------------------------------
 
-.. include:: examples/clap-info/clap-info.c
+.. include:: tools/clap-info/clap-info.c
    :code: c
 
 References
