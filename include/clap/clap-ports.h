@@ -16,7 +16,6 @@ enum clap_port_role
 {
   CLAP_PORT_INOUT     = 0,
   CLAP_PORT_SIDECHAIN = 1,
-  CLAP_PORT_FEEDBACK  = 2,
 };
 
 struct clap_port_info
@@ -24,7 +23,6 @@ struct clap_port_info
   enum clap_port_type  type;
   enum clap_port_role  role;
   char                 name[CLAP_NAME_SIZE];
-  uint32_t             stream_id; // used to connect feedback loops
   bool                 is_repeatable;
 };
 

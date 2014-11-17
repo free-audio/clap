@@ -93,7 +93,6 @@ union clap_param_value
   int32_t i;
 };
 
-
 ////////////
 // EVENTS //
 ////////////
@@ -193,12 +192,6 @@ struct clap_process
   float    **input;
   float    **output;
   uint32_t   samples_count;
-
-  /* feedback loops */
-  void (*feedback)(struct clap_process *process,
-                   uint32_t             stream_id,
-                   uint32_t             nb_samples);
-  uint32_t feedback_chunk_size;
 
   /* process info */
   bool     is_offline;
