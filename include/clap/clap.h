@@ -285,16 +285,6 @@ struct clap_plugin
   enum clap_process_status (*process)(struct clap_plugin  *plugin,
                                       struct clap_process *process);
 
-  /* gui */
-  bool (*open_gui)(struct clap_plugin *plugin);
-  void (*close_gui)(struct clap_plugin *plugin);
-
-  /* The plugin has to allocate and save its state into *buffer.
-   * The plugin is also responsible to free the buffer on the
-   * next call to save() or when the plugin is destroyed. */
-  bool (*save)(struct clap_plugin *plugin, void **buffer, uint32_t *size);
-  bool (*restore)(struct clap_plugin *plugin, const void *buffer, uint32_t size);
-
   /* future features */
   void *(*extension)(struct clap_plugin *plugin, const char *id);
 };
