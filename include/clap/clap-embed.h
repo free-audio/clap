@@ -3,7 +3,7 @@
 
 # include "clap.h"
 
-# define CLAP_EMBED "clap/embed"
+# define CLAP_EXT_EMBED "clap/embed"
 
 struct clap_host_embed
 {

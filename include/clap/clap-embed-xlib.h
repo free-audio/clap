@@ -6,7 +6,7 @@
 # include "clap.h"
 # include "clap-embed.h"
 
-# define CLAP_EMBED_XLIB "clap/embed/xlib"
+# define CLAP_EXT_EMBED_XLIB "clap/embed/xlib"
 
 struct clap_plugin_embed_xlib
 {

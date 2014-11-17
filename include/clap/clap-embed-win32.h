@@ -6,7 +6,7 @@
 # include "clap.h"
 # include "clap-embed.h"
 
-# define CLAP_EMBED_WIN32 "clap/embed/win32"
+# define CLAP_EXT_EMBED_WIN32 "clap/embed/win32"
 
 struct clap_plugin_embed_win32
 {

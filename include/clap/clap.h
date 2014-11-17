@@ -82,58 +82,9 @@ enum clap_log_severity
 # define CLAP_ATTR_HAS_GUI         "clap/has_gui"
 # define CLAP_ATTR_SUPPORTS_TUNING "clap/supports_tuning"
 
-///////////
-// PORTS //
-///////////
-
-enum clap_port_type
-{
-  CLAP_PORT_MONO     = 0,
-  CLAP_PORT_STEREO   = 1,
-  CLAP_PORT_SURROUND = 2,
-};
-
-enum clap_port_role
-{
-  CLAP_PORT_INOUT     = 0,
-  CLAP_PORT_SIDECHAIN = 1,
-  CLAP_PORT_FEEDBACK  = 2,
-};
-
-struct clap_port_info
-{
-  enum clap_port_type  type;
-  enum clap_port_role  role;
-  char                 name[CLAP_NAME_SIZE];
-  uint32_t             stream_id; // used to connect feedback loops
-  bool                 is_repeatable;
-};
-
-struct clap_ports_config
-{
-  char     name[CLAP_NAME_SIZE];
-  uint32_t inputs_count;
-  uint32_t outputs_count;
-};
-
 ////////////////
 // PARAMETERS //
 ////////////////
-
-enum clap_param_type
-{
-  CLAP_PARAM_GROUP = 0, // no value for this one
-  CLAP_PARAM_BOOL  = 1, // uses value.b
-  CLAP_PARAM_FLOAT = 2, // uses value.f
-  CLAP_PARAM_INT   = 3, // uses value.i
-  CLAP_PARAM_ENUM  = 4, // uses value.i
-};
-
-enum clap_param_scale
-{
-  CLAP_PARAM_LINEAR = 0,
-  CLAP_PARAM_LOG    = 1,
-};
 
 union clap_param_value
 {
@@ -142,38 +93,6 @@ union clap_param_value
   int32_t i;
 };
 
-struct clap_param
-{
-  /* tree fields */
-  uint32_t index;  // parameter's index
-  uint32_t parent; // parent's index, -1 for no parent
-
-  /* param info */
-  enum clap_param_type    type;
-  char                    id[32];   // a string which identify the param
-  char                    name[CLAP_NAME_SIZE]; // the display name
-  char                    desc[CLAP_DESC_SIZE];
-  bool                    is_per_note;
-  char                    display_text[CLAP_DISPLAY_SIZE]; // the text used to display the value
-  bool                    is_used; // is this parameter used by the patch?
-  union clap_param_value  value;
-  union clap_param_value  min;
-  union clap_param_value  max;
-  enum clap_param_scale   scale;
-};
-
-/////////////
-// PRESETS //
-/////////////
-
-struct clap_preset
-{
-  uint32_t id;                     // preset id
-  char     name[CLAP_NAME_SIZE];   // display name
-  char     desc[CLAP_DESC_SIZE];   // desc and how to use it
-  char     author[CLAP_NAME_SIZE];
-  char     tags[CLAP_TAGS_SIZE];   // "tag1;tag2;tag3;..."
-};
 
 ////////////
 // EVENTS //
@@ -356,34 +275,6 @@ struct clap_plugin
                             char               *buffer,
                             uint32_t            size);
 
-  /* Audio ports.
-   * The port configuration has to be done while the plugin is deactivated. */
-  uint32_t (*get_ports_configs_count)(struct clap_plugin *plugin);
-  bool (*get_ports_config)(struct clap_plugin       *plugin,
-                           uint32_t                  config_index,
-                           struct clap_ports_config *config);
-  bool (*get_port_info)(struct clap_plugin    *plugin,
-                        uint32_t               config_index,
-                        uint32_t               port_index,
-                        struct clap_port_info *port);
-  bool (*set_ports_config)(struct clap_plugin *plugin,
-                           uint32_t            config_index);
-  bool (*set_port_repeat)(struct clap_plugin  *plugin,
-                          uint32_t             port_index,
-                          uint32_t             count);
-
-  /* Returns a newly allocated parameters tree. The caller has to free it. */
-  uint32_t (*get_params_count)(struct clap_plugin *plugin);
-  bool (*get_param)(struct clap_plugin *plugin,
-                    uint32_t            index,
-                    struct clap_param  *param);
-
-  /* Returns a newly allocated preset list. The caller has to free it. */
-  uint32_t (*get_presets_count)(struct clap_plugin *plugin);
-  bool (*get_preset)(struct clap_plugin *plugin,
-                     uint32_t            index,
-                     struct clap_preset *preset);
-
   /* activation */
   bool (*activate)(struct clap_plugin *plugin);
   void (*deactivate)(struct clap_plugin *plugin);
@@ -400,9 +291,6 @@ struct clap_plugin
    * next call to save() or when the plugin is destroyed. */
   bool (*save)(struct clap_plugin *plugin, void **buffer, uint32_t *size);
   bool (*restore)(struct clap_plugin *plugin, const void *buffer, uint32_t size);
-
-  /* Sets the locale to use */
-  bool (*set_locale)(struct clap_plugin *plugin, const char *locale);
 
   /* future features */
   void *(*extension)(struct clap_plugin *plugin, const char *id);
