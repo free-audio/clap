@@ -183,6 +183,18 @@ struct clap_event
 // PROCESS //
 /////////////
 
+enum clap_process_status
+{
+  /* Processing failed. The output buffer must be discarded. */
+  CLAP_PROCESS_ERROR    = 0,
+
+  /* Processing succeed. */
+  CLAP_PROCESS_CONTINUE = 1,
+
+  /* Processing succeed, but no more processing is required, until next event. */
+  CLAP_PROCESS_STOP     = 2,
+};
+
 struct clap_process
 {
   /* host custom ptr */
@@ -201,9 +213,6 @@ struct clap_process
 
   /* events */
   struct clap_event *events;
-
-  /* output values */
-  bool need_processing;
 };
 
 //////////
@@ -272,8 +281,9 @@ struct clap_plugin
   bool (*activate)(struct clap_plugin *plugin);
   void (*deactivate)(struct clap_plugin *plugin);
 
-  /* work */
-  void (*process)(struct clap_plugin *plugin, struct clap_process *process);
+  /* process */
+  enum clap_process_status (*process)(struct clap_plugin  *plugin,
+                                      struct clap_process *process);
 
   /* gui */
   bool (*open_gui)(struct clap_plugin *plugin);
