@@ -1,15 +1,16 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <clap/clap.h>
-#include <clap/clap-plugin-helper.h>
+#include <clap/clap-ports.h>
 
 #include "thyns.h"
 
 struct thyns_plugin
 {
-  struct thyns        thyns;
-  struct clap_plugin  plugin;
-  struct clap_host   *host;
+  struct thyns              thyns;
+  struct clap_plugin        plugin;
+  struct clap_plugin_ports  ports;
+  struct clap_host         *host;
 };
 
 void
@@ -92,7 +93,6 @@ thyns_plugin_get_port_info(struct clap_plugin    *plugin,
       snprintf(port->name, sizeof (port->name), "out");
       port->type          = CLAP_PORT_MONO;
       port->role          = CLAP_PORT_INOUT;
-      port->stream_id     = 0;
       port->is_repeatable = false;
       return true;;
     }
@@ -117,11 +117,11 @@ thyns_plugin_set_ports_config(struct clap_plugin *plugin,
   }
 }
 
-void
+enum clap_process_status
 thyns_plugin_process(struct clap_plugin  *plugin,
                      struct clap_process *process)
 {
-  thyns_process(plugin->plugin_data, process);
+  return thyns_process(plugin->plugin_data, process);
 }
 
 struct thyns_plugin *
@@ -139,15 +139,17 @@ thyns_plugin_create(struct clap_host *host,
   p->host = host;
 
   // initialize plugin
-  clap_plugin_default(&p->plugin);
+  p->plugin.clap_version = CLAP_VERSION;
   p->plugin.destroy = thyns_plugin_destroy;
   p->plugin.plugin_data = p;
   p->plugin.get_attribute = thyns_plugin_get_attribute;
-  p->plugin.get_ports_configs_count = thyns_plugin_get_ports_configs_count;
-  p->plugin.get_ports_config = thyns_plugin_get_ports_config;
-  p->plugin.get_port_info = thyns_plugin_get_port_info;
-  p->plugin.set_ports_config = thyns_plugin_set_ports_config;
   p->plugin.process = thyns_plugin_process;
+
+  // initialize ports extension
+  p->ports.get_ports_configs_count = thyns_plugin_get_ports_configs_count;
+  p->ports.get_ports_config = thyns_plugin_get_ports_config;
+  p->ports.get_port_info = thyns_plugin_get_port_info;
+  p->ports.set_ports_config = thyns_plugin_set_ports_config;
   return p;
 }
 

@@ -116,8 +116,8 @@ thyns_handle_event(struct thyns      *thyns,
   }
 }
 
-static inline void thyns_process(struct thyns        *thyns,
-                                 struct clap_process *process)
+static inline enum clap_process_status
+thyns_process(struct thyns *thyns, struct clap_process *process)
 {
   struct clap_event *ev = process->events;
 
@@ -137,7 +137,9 @@ static inline void thyns_process(struct thyns        *thyns,
     process->output[0][i] = thyns_step(thyns, process);
   }
 
-  process->need_processing = thyns->singing;
+  if (thyns->singing)
+    return CLAP_PROCESS_CONTINUE;
+  return CLAP_PROCESS_STOP;
 }
 
 #endif /* !THYNS_H */
