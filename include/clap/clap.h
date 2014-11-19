@@ -271,10 +271,13 @@ struct clap_plugin
   void *host_data;   // reserved pointer for the host
   void *plugin_data; // reserved pointer for the plugin
 
-  /* free plugin's resources */
+  /* Free the plugin and its resources. */
   void (*destroy)(struct clap_plugin *plugin);
 
-  /* returns the size of the original string, 0 if no value */
+  /* Copy at most size of the attribute's value into buffer.
+   * This function must place a '\0' byte at the end of the string.
+   * Returns the size of the original string or 0 if there is no
+   * value for this attributes. */
   uint32_t (*get_attribute)(struct clap_plugin *plugin,
                             const char         *attr,
                             char               *buffer,
