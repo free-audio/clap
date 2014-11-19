@@ -80,7 +80,6 @@ int main(int argc, char **argv)
     print_attr(TYPE);
     print_attr(CHUNK_SIZE);
     print_attr(LATENCY);
-    print_attr(HAS_GUI);
     print_attr(SUPPORTS_TUNING);
 
 #undef print_attr

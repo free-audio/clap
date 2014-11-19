@@ -48,7 +48,6 @@ thyns_plugin_get_attribute(struct clap_plugin *plugin,
   attr(CATEGORIES, "");
   attr(TYPE, "instrument");
   attr(CHUNK_SIZE, "1");
-  attr(HAS_GUI, "0");
   attr(SUPPORTS_TUNING, "1");
   attr(LATENCY, "0");
 
