@@ -79,8 +79,11 @@ enum clap_log_severity
 # define CLAP_ATTR_TYPE            "clap/type"
 # define CLAP_ATTR_CHUNK_SIZE      "clap/chunk_size"
 # define CLAP_ATTR_LATENCY         "clap/latency"
-# define CLAP_ATTR_HAS_GUI         "clap/has_gui"
+// Should be "1" if the plugin supports tunning.
 # define CLAP_ATTR_SUPPORTS_TUNING "clap/supports_tuning"
+// Shoudl be "1" if the plugin is doing remote processing.
+// This is a hint for the host to optimize task scheduling.
+# define CLAP_ATTR_IS_REMOTE_PROCESSING "clap/is_remote_processing"
 
 ////////////////
 // PARAMETERS //
@@ -271,7 +274,7 @@ struct clap_plugin
   /* free plugin's resources */
   void (*destroy)(struct clap_plugin *plugin);
 
-  /* returns the size of the original string, 0 if not string */
+  /* returns the size of the original string, 0 if no value */
   uint32_t (*get_attribute)(struct clap_plugin *plugin,
                             const char         *attr,
                             char               *buffer,
