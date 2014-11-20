@@ -135,6 +135,7 @@ thyns_process(struct thyns *thyns, struct clap_process *process)
 
     // process
     process->output[0][i] = thyns_step(thyns, process);
+    process->output[1][i] = process->output[0][i];
   }
 
   if (thyns->singing)

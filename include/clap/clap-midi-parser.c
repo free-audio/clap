@@ -61,6 +61,24 @@ clap_midi_parse_track(struct clap_midi_parser *parser)
 }
 
 static inline enum clap_midi_parser_status
+clap_midi_parse_channel_event(struct clap_midi_parser *parser)
+{
+  if (parser->size < 3)
+    return CLAP_MIDI_PARSER_EOB;
+
+  parser->channel.event_type = parser->in[0] & 0xf;
+  parser->channel.channel    = parser->in[0] >> 4;
+  parser->channel.param1     = parser->in[1];
+  parser->channel.param2     = parser->in[2];
+
+  parser->in         += 3;
+  parser->size       -= 3;
+  parser->track.size -= 3;
+
+  return CLAP_MIDI_PARSER_CHANNEL;
+}
+
+static inline enum clap_midi_parser_status
 clap_midi_parse_meta_event(struct clap_midi_parser *parser)
 {
   assert(parser->in[0] == 0xff);
@@ -86,6 +104,8 @@ clap_midi_parse_meta_event(struct clap_midi_parser *parser)
 static inline enum clap_midi_parser_status
 clap_midi_parse_event(struct clap_midi_parser *parser)
 {
+  if ((parser->in[0] & 0xf) <= 0xe)
+    return clap_midi_parse_channel_event(parser);
   if (parser->in[0] == 0xff)
     return clap_midi_parse_meta_event(parser);
   return CLAP_MIDI_PARSER_ERROR;
@@ -114,5 +134,43 @@ clap_midi_parse(struct clap_midi_parser *parser)
 
   default:
     return CLAP_MIDI_PARSER_ERROR;
+  }
+}
+
+static inline void
+clap_midi_convert(const uint8_t     *in,
+                  uint32_t           size,
+                  struct clap_event *event)
+{
+  struct clap_midi_parser parser;
+  parser.state      = CLAP_MIDI_PARSER_TRACK;
+  parser.in         = in;
+  parser.size       = size;
+  parser.track.size = size;
+
+  enum clap_midi_parser_status status = clap_midi_parse(&parser);
+  switch (status) {
+  case CLAP_MIDI_PARSER_CHANNEL:
+    switch (parser.channel.event_type) {
+    case CLAP_MIDI_CHANNEL_NOTE_OFF:
+      event->type          = CLAP_EVENT_NOTE_OFF;
+      event->note.key      = parser.channel.param1;
+      event->note.velocity = ((float)parser.channel.param2) / 127.0f;
+      event->note.events   = NULL;
+      break;
+
+    case CLAP_MIDI_CHANNEL_NOTE_ON:
+      event->type          = CLAP_EVENT_NOTE_ON;
+      event->note.key      = parser.channel.param1;
+      event->note.velocity = ((float)parser.channel.param2) / 127.0f;
+      event->note.events   = NULL;
+      break;
+    }
+
+  default:
+    event->type = CLAP_EVENT_MIDI;
+    event->midi.buffer = in;
+    event->midi.size   = size;
+    break;
   }
 }

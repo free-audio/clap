@@ -10,6 +10,8 @@
 # include <stdint.h>
 # include <string.h>
 
+# include "clap.h"
+
 enum clap_midi_parser_status
 {
   CLAP_MIDI_PARSER_EOB     = -2,
@@ -78,6 +80,7 @@ struct clap_midi_parser
   const uint8_t *in;
   uint32_t       size;
 
+  /* result */
   struct clap_midi_header        header;
   struct clap_midi_track         track;
   struct clap_midi_channel_event channel;
@@ -87,6 +90,14 @@ struct clap_midi_parser
 
 static inline enum clap_midi_parser_status
 clap_midi_parse(struct clap_midi_parser *parser);
+
+/* Converts a midi buffer in the state track, into a clap_event.
+ * If the midi data can't be converted into clap's events, it is then
+ * converted as a clap_midi_event. */
+static inline void
+clap_midi_convert(const uint8_t     *in,
+                  uint32_t           size,
+                  struct clap_event *event);
 
 # include "clap-midi-parser.c"
 

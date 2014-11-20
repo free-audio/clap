@@ -9,7 +9,6 @@ struct thyns_plugin
 {
   struct thyns              thyns;
   struct clap_plugin        plugin;
-  struct clap_plugin_ports  ports;
   struct clap_host         *host;
 };
 
@@ -56,71 +55,28 @@ thyns_plugin_get_attribute(struct clap_plugin *plugin,
 #undef attr
 }
 
-uint32_t
-thyns_plugin_get_ports_configs_count(struct clap_plugin *plugin)
-{
-  return 1;
-}
-
-bool
-thyns_plugin_get_ports_config(struct clap_plugin       *plugin,
-                              uint32_t                  config_index,
-                              struct clap_ports_config *config)
-{
-  switch (config_index) {
-  case 0:
-    snprintf(config->name, sizeof (config->name), "mono");
-    config->inputs_count = 0;
-    config->outputs_count = 1;
-    return true;
-
-  default:
-    return false;
-  }
-}
-
-bool
-thyns_plugin_get_port_info(struct clap_plugin    *plugin,
-                           uint32_t               config_index,
-                           uint32_t               port_index,
-                           struct clap_port_info *port)
-{
-  switch (config_index) {
-  case 0:
-    switch (port_index) {
-    case 0:
-      snprintf(port->name, sizeof (port->name), "out");
-      port->type          = CLAP_PORT_MONO;
-      port->role          = CLAP_PORT_INOUT;
-      port->is_repeatable = false;
-      return true;;
-    }
-    return false;
-
-  default:
-    return false;
-  }
-  return true;
-}
-
-bool
-thyns_plugin_set_ports_config(struct clap_plugin *plugin,
-                              uint32_t            config_index)
-{
-  switch (config_index) {
-  case 0:
-    return true;
-
-  default:
-    return false;
-  }
-}
-
 enum clap_process_status
 thyns_plugin_process(struct clap_plugin  *plugin,
                      struct clap_process *process)
 {
   return thyns_process(plugin->plugin_data, process);
+}
+
+void *
+thyns_plugin_extension(struct clap_plugin *plugin, const char *extension)
+{
+  return NULL;
+}
+
+bool
+thyns_plugin_activate(struct clap_plugin *plugin)
+{
+  return true;
+}
+
+void
+thyns_plugin_deactivate(struct clap_plugin *plugin)
+{
 }
 
 struct thyns_plugin *
@@ -143,12 +99,10 @@ thyns_plugin_create(struct clap_host *host,
   p->plugin.plugin_data = p;
   p->plugin.get_attribute = thyns_plugin_get_attribute;
   p->plugin.process = thyns_plugin_process;
+  p->plugin.extension = thyns_plugin_extension;
+  p->plugin.activate = thyns_plugin_activate;
+  p->plugin.deactivate = thyns_plugin_deactivate;
 
-  // initialize ports extension
-  p->ports.get_ports_configs_count = thyns_plugin_get_ports_configs_count;
-  p->ports.get_ports_config = thyns_plugin_get_ports_config;
-  p->ports.get_port_info = thyns_plugin_get_port_info;
-  p->ports.set_ports_config = thyns_plugin_set_ports_config;
   return p;
 }
 
