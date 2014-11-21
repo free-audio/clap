@@ -38,30 +38,30 @@ static inline void thyns_init(struct thyns *thyns, uint32_t sr)
 static double thyns_step(struct thyns        *thyns,
                          struct clap_process *process)
 {
+  if (!thyns->singing)
+    return 0;
+
   double out = 0;
   struct thyns_voice *prev = NULL;
   struct thyns_voice *v    = thyns->singing;
+  struct thyns_voice *end  = v->prev;
 
-  while (v) {
+  do {
     out += thyns_voice_step(v);
 
     // can we release the voice?
     if (v->amp_env.state == THYNS_ENV_IDLE) {
-      if (prev) {
-        prev->next  = v->next;
-        v->next     = thyns->idle;
-        thyns->idle = v;
-        v           = prev->next;
-      } else {
-        v->next     = thyns->idle;
-        thyns->idle = v;
-        v           = thyns->singing;
-      }
+      printf("releasing %d\n", v->key);
+      assert(v->key != 0);
+      thyns->keys[v->key] = NULL;
+      thyns_dlist_remove(thyns->singing, v);
+      thyns_dlist_push_back(thyns->idle, v);
+      v = prev ? prev->next : thyns->singing;
     } else {
       prev = v;
       v    = v->next;
     }
-  }
+  } while (v && prev != end && v != prev);
 
   return out;
 }
@@ -73,6 +73,7 @@ thyns_note_on(struct thyns *thyns,
 {
   struct thyns_voice *voice = NULL;
 
+  printf("note_on(%d, %f)\n", key, pitch);
   assert(key < 0x80);
   if (thyns->keys[key]) {
     voice = thyns->keys[key];
@@ -87,6 +88,7 @@ thyns_note_on(struct thyns *thyns,
     }
     thyns_dlist_push_back(thyns->singing, voice);
     thyns->keys[key] = voice;
+    voice->key = key;
   }
 
   thyns_voice_start_note(thyns->keys[key], key, pitch);
@@ -96,6 +98,10 @@ static inline void
 thyns_note_off(struct thyns *thyns,
                uint8_t       key)
 {
+  printf("note_off(%d)\n", key);
+  assert(key < 0x80);
+  if (thyns->keys[key])
+    thyns_voice_stop_note(thyns->keys[key], key);
 }
 
 static inline void
@@ -137,6 +143,9 @@ thyns_process(struct thyns *thyns, struct clap_process *process)
     process->output[0][i] = thyns_step(thyns, process);
     process->output[1][i] = process->output[0][i];
   }
+
+  // ensure no more events are left
+  assert(!ev);
 
   if (thyns->singing)
     return CLAP_PROCESS_CONTINUE;

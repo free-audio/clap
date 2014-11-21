@@ -137,6 +137,8 @@ struct clap_event_note
 
 struct clap_event_param
 {
+  bool                    is_global; // is this event global?
+  uint8_t                 key;       // if !is_global, target key
   uint32_t                index;
   union clap_param_value  value;
   float                   increment;        // for param ramp

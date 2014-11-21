@@ -13,7 +13,7 @@ struct thyns_voice
   uint32_t sr; // sample rate
   double   pi_sr; // M_PI / sample_rate
 
-  uint32_t key;
+  uint8_t  key;
   float    freq;
 
   // osc part
@@ -47,13 +47,14 @@ thyns_voice_init(struct thyns_voice *voice, uint32_t sr)
 
   // filter
   thyns_filt_init(&voice->filt, sr);
-  thyns_filt_set_cutoff(&voice->filt, 1000);
+  voice->filt.cutoff = 4000;
+  voice->filt.resonance = 1.5;
   thyns_env_init(&voice->filt_env);
-  voice->filt_env_depth = 0;
+  voice->filt_env_depth = 0.2;
 
   // amp
   thyns_env_init(&voice->amp_env);
-  voice->amp = 0.7;
+  voice->amp = 0.2;
 }
 
 static inline void
@@ -68,19 +69,27 @@ thyns_voice_start_note(struct thyns_voice *voice,
   thyns_env_restart(&voice->amp_env);
 }
 
+static inline void
+thyns_voice_stop_note(struct thyns_voice *voice,
+                      uint32_t            key)
+{
+  thyns_env_release(&voice->filt_env);
+  thyns_env_release(&voice->amp_env);
+}
+
 static inline double
 thyns_voice_step(struct thyns_voice *voice)
 {
   double osc1 = thyns_osc_step(&voice->osc1);
   double osc2 = thyns_osc_step(&voice->osc2);
   double oscm = osc1 * (1 - voice->osc_mix) + osc2 * voice->osc_mix;
-
-  double fenv   = thyns_env_step(&voice->filt_env);
+  double fenv   = thyns_env_step(&voice->filt_env) * voice->filt_env_depth;
   double cutoff = exp(log(voice->filt.cutoff) + fenv);
   thyns_filt_set_cutoff(&voice->filt, cutoff);
   double filtered = thyns_filt_step(&voice->filt, oscm);
+  double amp = voice->amp * thyns_env_step(&voice->amp_env);
 
-  return filtered * voice->amp * thyns_env_step(&voice->amp_env);
+  return filtered * amp;
 }
 
 #endif /* !VOICE_H */

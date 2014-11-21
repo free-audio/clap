@@ -9,7 +9,7 @@ enum thyns_osc_type
   THYNS_OSC_SQUARE = 1,
   THYNS_OSC_SAW    = 2,
   THYNS_OSC_TRI    = 3,
-  THYNS_OSC_SIN    = 4,
+  THYNS_OSC_SINE   = 4,
 };
 
 struct thyns_osc
@@ -31,12 +31,13 @@ static inline void
  thyns_osc_init(struct thyns_osc *osc, uint32_t sr)
 {
   osc->sr    = sr;
-  osc->pi_sr = M_PI / sr;
-  osc->type  = THYNS_OSC_NONE;
+  osc->pi_sr = M_PI / ((float)sr);
+  osc->type  = THYNS_OSC_SQUARE;
   osc->pwm   = 0.5;
   osc->freq  = 0;
   osc->angle = 0;
   osc->phase = 0;
+  osc->tune  = 0;
 }
 
 static inline void
@@ -49,7 +50,7 @@ thyns_osc_set_freq(struct thyns_osc *osc, double freq)
 static inline double
 thyns_osc_step(struct thyns_osc *osc)
 {
-  osc->angle += fmod(osc->angle + osc->angle_ramp, 2 * M_PI);
+  osc->angle = fmod(osc->angle + osc->angle_ramp, 2 * M_PI);
   double angle = fmod(osc->angle + osc->phase, 2 * M_PI);
 
   switch (osc->type) {
@@ -67,7 +68,7 @@ thyns_osc_step(struct thyns_osc *osc)
       return angle * 2.0 / M_PI - 1;
     return (2 * M_PI - angle) * 2.0 / M_PI - 1;
 
-  case THYNS_OSC_SIN:
+  case THYNS_OSC_SINE:
     return sin(angle);
 
   default:

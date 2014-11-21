@@ -3,6 +3,8 @@
 
 # define thyns_dlist_push_back(Head, Item)      \
   do {                                          \
+    assert((Item)->prev == NULL);               \
+    assert((Item)->next == NULL);               \
     if (!(Head)) {                              \
       (Head) = (Item);                          \
       (Item)->next = (Item);                    \
@@ -17,12 +19,18 @@
 
 # define thyns_dlist_remove(Head, Item)         \
   do {                                          \
-    (Item)->next->prev = (Item)->prev;          \
-    (Item)->prev->next = (Item)->next;          \
+    assert((Head));                             \
+    assert((Item)->prev);                       \
+    assert((Item)->next);                       \
+    if ((Item)->next == (Item))                 \
+      (Head) = NULL;                            \
+    else {                                      \
+      (Head) = (Item)->next;                    \
+      (Item)->next->prev = (Item)->prev;        \
+      (Item)->prev->next = (Item)->next;        \
+    }                                           \
     (Item)->next = NULL;                        \
     (Item)->prev = NULL;                        \
-    if ((Head) == (Item))                       \
-      (Head) = NULL;                            \
   } while (0)
 
 #endif /* !DLIST_H */

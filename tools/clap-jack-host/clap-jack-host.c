@@ -87,6 +87,7 @@ int process(jack_nframes_t nframes, void *arg)
   p.output = out;
   p.samples_count = nframes;
   p.is_offline = false;
+  p.steady_time = app->steady_time;
   // XXX add time info
 
   /* convert midi events */
