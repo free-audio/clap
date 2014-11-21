@@ -103,27 +103,30 @@ union clap_param_value
 enum clap_event_type
 {
   CLAP_EVENT_NOTE_ON         = 0, // note attribute
-  CLAP_EVENT_NOTE_MODULATION = 1, // note attribute
-  CLAP_EVENT_NOTE_OFF        = 2, // note attribute
+  CLAP_EVENT_NOTE_OFF        = 1, // note attribute
 
-  CLAP_EVENT_PARAM_SET  = 3,    // param attribute
-  CLAP_EVENT_PARAM_RAMP = 4,    // param attribute
-  CLAP_EVENT_PRESET_SET = 6,    // preset attribute
+  CLAP_EVENT_PARAM_SET  = 2,    // param attribute
+  CLAP_EVENT_PARAM_RAMP = 3,    // param attribute
+  CLAP_EVENT_PRESET_SET = 4,    // preset attribute
 
-  CLAP_EVENT_MIDI    = 7,       // midi attribute
-  CLAP_EVENT_CONTROL = 8,       // control attribute
+  CLAP_EVENT_MIDI    = 5,       // midi attribute
+  CLAP_EVENT_CONTROL = 6,       // control attribute
 
-  CLAP_EVENT_GUI_OPENED = 9,    // plugin to host, no attribute
-  CLAP_EVENT_GUI_CLOSED = 10,   // plugin to host, no attribute
+  CLAP_EVENT_GUI_OPENED = 7,    // plugin to host, no attribute
+  CLAP_EVENT_GUI_CLOSED = 8,   // plugin to host, no attribute
 
-  CLAP_EVENT_NEW_PRESETS       = 11, // plugin to host, no attribute
-  CLAP_EVENT_NEW_PORTS_CONFIGS = 12, // plugin to host, no attribute
+  CLAP_EVENT_NEW_PRESETS       = 9, // plugin to host, no attribute
+  CLAP_EVENT_NEW_PORTS_CONFIGS = 10, // plugin to host, no attribute
 
-  CLAP_EVENT_LATENCY_CHANGED = 13, // plugin to host, latency attribute
+  CLAP_EVENT_LATENCY_CHANGED = 11, // plugin to host, latency attribute
 
-  CLAP_EVENT_PLAY  = 14, // no attribute
-  CLAP_EVENT_PAUSE = 15, // no attribute
-  CLAP_EVENT_STOP  = 16, // no attribute
+  CLAP_EVENT_PLAY  = 12, // no attribute
+  CLAP_EVENT_PAUSE = 13, // no attribute
+  CLAP_EVENT_STOP  = 14, // no attribute
+
+  CLAP_EVENT_CUSTOM_DATA = 15, // not really used in the interface, but
+                               // convinient to pass custom data through
+                               // the interface (in case of bridge, ...)
 };
 
 struct clap_event_note
@@ -149,6 +152,8 @@ struct clap_event_param
 
 struct clap_event_control
 {
+  bool     is_global; // is this event global?
+  uint8_t  key;       // if !is_global, target key
   uint32_t index;
   float    value; // 0 .. 1.0f
 };
@@ -160,6 +165,8 @@ struct clap_event_preset
 
 struct clap_event_midi
 {
+  bool           is_global; // is this event global?
+  uint8_t        key;       // if !is_global, target key
   const uint8_t *buffer;
   uint32_t       size;
 };
@@ -169,6 +176,12 @@ struct clap_event_latency
   uint32_t latency;
 };
 
+struct clap_event_custom_data
+{
+  uint32_t  size;
+  void     *data;
+};
+
 struct clap_event
 {
   struct clap_event    *next; // linked list, NULL on end
@@ -176,12 +189,13 @@ struct clap_event
   uint64_t              steady_time; // steady_time of the event, see host->steady_time(host)
 
   union {
-    struct clap_event_note    note;
-    struct clap_event_param   param;
-    struct clap_event_preset  preset;
-    struct clap_event_midi    midi;
-    struct clap_event_control control;
-    struct clap_event_latency latency;
+    struct clap_event_note        note;
+    struct clap_event_param       param;
+    struct clap_event_preset      preset;
+    struct clap_event_midi        midi;
+    struct clap_event_control     control;
+    struct clap_event_latency     latency;
+    struct clap_event_custom_data custom_data;
   };
 };
 
