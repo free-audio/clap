@@ -38,4 +38,5 @@ cd qt-build
                 -skip tools \
                 -skip translations \
                 -skip webkit \
-                -skip webkit-examples
+                -skip webkit-examples \
+                -skip qtscript
