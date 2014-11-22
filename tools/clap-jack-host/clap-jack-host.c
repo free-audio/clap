@@ -5,6 +5,7 @@
 
 #include <clap/clap.h>
 #include <clap/clap-midi-parser.h>
+#include <clap/clap-gui.h>
 
 #include <jack/jack.h>
 #include <jack/midiport.h>
@@ -230,6 +231,10 @@ int main(int argc, char **argv)
     fprintf(stderr, "can't activate the plugin\n");
     return 1;
   }
+
+  struct clap_plugin_gui *gui = app.plugin->extension(app.plugin, CLAP_EXT_GUI);
+  if (gui)
+    gui->open_gui(app.plugin);
 
   if (jack_activate(app.client)) {
     fprintf(stderr, "can't activate jack.\n");
