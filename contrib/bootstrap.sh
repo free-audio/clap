@@ -21,4 +21,21 @@ cd qt-build
                 -no-directfb \
                 -no-kms \
                 -no-linuxfb \
-		-no-sql-{mysql,odbc,sqlite,pgsql}
+		-no-sql-{mysql,odbc,sqlite} \
+                -no-compile-examples \
+                -no-gtkstyle \
+                -skip location \
+                -skip serialport \
+                -skip xmlpatterns \
+                -skip activeqt \
+                -skip connectivity \
+                -skip androidextras \
+                -skip websockets \
+                -skip doc \
+                -skip multimedia \
+                -skip sensors \
+                -skip svg \
+                -skip tools \
+                -skip translations \
+                -skip webkit \
+                -skip webkit-examples
