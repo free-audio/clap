@@ -1,3 +1,0 @@
-[submodule "JUCE"]
-	path = contrib/JUCE
-	url = git://github.com/julianstorer/JUCE.git
