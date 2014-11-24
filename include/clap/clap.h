@@ -102,8 +102,8 @@ union clap_param_value
 
 enum clap_event_type
 {
-  CLAP_EVENT_NOTE_ON         = 0, // note attribute
-  CLAP_EVENT_NOTE_OFF        = 1, // note attribute
+  CLAP_EVENT_NOTE_ON  = 0, // note attribute
+  CLAP_EVENT_NOTE_OFF = 1, // note attribute
 
   CLAP_EVENT_PARAM_SET  = 2,    // param attribute
   CLAP_EVENT_PARAM_RAMP = 3,    // param attribute
@@ -112,7 +112,7 @@ enum clap_event_type
   CLAP_EVENT_MIDI    = 5,       // midi attribute
   CLAP_EVENT_CONTROL = 6,       // control attribute
 
-  CLAP_EVENT_GUI_OPENED = 7,    // plugin to host, no attribute
+  CLAP_EVENT_GUI_OPENED = 7,   // plugin to host, no attribute
   CLAP_EVENT_GUI_CLOSED = 8,   // plugin to host, no attribute
 
   CLAP_EVENT_NEW_PRESETS       = 9, // plugin to host, no attribute
@@ -124,7 +124,10 @@ enum clap_event_type
   CLAP_EVENT_PAUSE = 13, // no attribute
   CLAP_EVENT_STOP  = 14, // no attribute
 
-  CLAP_EVENT_CUSTOM_DATA = 15, // not really used in the interface, but
+  CLAP_EVENT_TEMPO_CHANGED = 15, // attribute tempo
+  CLAP_EVENT_JUMP = 16, // attribute jump
+
+  CLAP_EVENT_CUSTOM_DATA = 17, // not really used in the interface, but
                                // convinient to pass custom data through
                                // the interface (in case of bridge, ...)
 };
@@ -176,6 +179,17 @@ struct clap_event_latency
   uint32_t latency;
 };
 
+struct clap_event_tempo
+{
+  uint32_t tempo; // tempo in samples
+  uint32_t phase; // the phase in samples
+};
+
+struct clap_event_jump
+{
+  uint32_t song_time; // song time in samples
+};
+
 struct clap_event_custom_data
 {
   uint32_t  size;
@@ -195,6 +209,8 @@ struct clap_event
     struct clap_event_midi        midi;
     struct clap_event_control     control;
     struct clap_event_latency     latency;
+    struct clap_event_tempo       tempo;
+    struct clap_event_jump	  jump;
     struct clap_event_custom_data custom_data;
   };
 };
@@ -224,11 +240,8 @@ struct clap_process
 
   /* process info */
   bool     is_offline;
-  uint32_t tempo;       // the tempo in samples
   uint64_t song_time;   // the song time in samples
   uint64_t steady_time; // the steady time in samples
-  uint32_t loop_start_time;
-  uint32_t loop_end_time;
 
   /* events */
   struct clap_event *events;
