@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <clap/clap.h>
-#include <clap/clap-ports.h>
+#include <clap/ext/ports.h>
 
 #include "thyns.h"
 

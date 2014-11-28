@@ -1,10 +1,10 @@
-#ifndef CLAP_EMBED_WIN32_H
-# define CLAP_EMBED_WIN32_H
+#ifndef CLAP_EXT_EMBED_WIN32_H
+# define CLAP_EXT_EMBED_WIN32_H
 
 # include <windows.h>
 
-# include "clap.h"
-# include "clap-embed.h"
+# include "../clap.h"
+# include "embed.h"
 
 # define CLAP_EXT_EMBED_WIN32 "clap/embed/win32"
 
@@ -15,4 +15,4 @@ struct clap_plugin_embed_win32
   bool (*disembed)(struct clap_plugin *plugin);
 };
 
-#endif /* !CLAP_EMBED_WIN32_H */
+#endif /* !CLAP_EXT_EMBED_WIN32_H */

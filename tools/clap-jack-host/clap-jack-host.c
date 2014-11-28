@@ -4,8 +4,8 @@
 #include <unistd.h>
 
 #include <clap/clap.h>
-#include <clap/clap-midi-parser.h>
-#include <clap/clap-gui.h>
+#include <clap/midi/parser.h>
+#include <clap/ext/gui.h>
 
 #include <jack/jack.h>
 #include <jack/midiport.h>

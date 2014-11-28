@@ -309,10 +309,18 @@ clap_midi_convert(const uint8_t     *in,
       event->note.events   = NULL;
       event->note.pitch    = clap_midi_pitches[event->note.key];
       return;
+
+    case CLAP_MIDI_CHANNEL_CC:
+      event->type              = CLAP_EVENT_CONTROL;
+      event->control.is_global = false;
+      event->control.index     = parser.channel.param1;
+      event->control.value     = ((float)parser.channel.param2) / 127.0f;
+      return;
     }
 
+    /* fall to default */
+
   default:
-    printf("midi\n");
     event->type = CLAP_EVENT_MIDI;
     event->midi.buffer = in;
     event->midi.size   = size;

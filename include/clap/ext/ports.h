@@ -1,7 +1,7 @@
-#ifndef CLAP_PORTS_H
-# define CLAP_PORTS_H
+#ifndef CLAP_EXT_PORTS_H
+# define CLAP_EXT_PORTS_H
 
-# include "clap.h"
+# include "../clap.h"
 
 # define CLAP_EXT_PORTS "clap/ports"
 
@@ -52,4 +52,4 @@ struct clap_plugin_ports
                           uint32_t             count);
 };
 
-#endif /* !CLAP_PORT_H */
+#endif /* !CLAP_EXT_PORT_H */

@@ -1,7 +1,7 @@
-#ifndef CLAP_PRESETS_H
-# define CLAP_PRESETS_H
+#ifndef CLAP_EXT_PRESETS_H
+# define CLAP_EXT_PRESETS_H
 
-# include "clap.h"
+# include "../clap.h"
 
 # define CLAP_EXT_PRESETS "clap/presets"
 
@@ -23,4 +23,4 @@ struct clap_plugin_presets
                      struct clap_preset *preset);
 };
 
-#endif /* !CLAP_PRESETS_H */
+#endif /* !CLAP_EXT_PRESETS_H */

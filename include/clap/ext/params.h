@@ -1,7 +1,7 @@
-#ifndef CLAP_PARAMS_H
-# define CLAP_PARAMS_H
+#ifndef CLAP_EXT_PARAMS_H
+# define CLAP_EXT_PARAMS_H
 
-# include "clap.h"
+# include "../clap.h"
 
 # define CLAP_EXT_PARAMS "clap/params"
 
@@ -49,4 +49,4 @@ struct clap_plugin_params
                     struct clap_param  *param);
 };
 
-#endif /* !CLAP_PARAMS_H */
+#endif /* !CLAP_EXT_PARAMS_H */

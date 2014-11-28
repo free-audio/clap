@@ -1,7 +1,7 @@
-#ifndef CLAP_GUI_H
-# define CLAP_GUI_H
+#ifndef CLAP_EXT_GUI_H
+# define CLAP_EXT_GUI_H
 
-# include "clap.h"
+# include "../clap.h"
 
 # define CLAP_EXT_GUI "clap/gui"
 
@@ -12,4 +12,4 @@ struct clap_plugin_gui
   void (*close_gui)(struct clap_plugin *plugin);
 };
 
-#endif /* !CLAP_GUI_H */
+#endif /* !CLAP_EXT_GUI_H */

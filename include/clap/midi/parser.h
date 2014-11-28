@@ -10,7 +10,7 @@
 # include <stdint.h>
 # include <string.h>
 
-# include "clap.h"
+# include "../clap.h"
 
 enum clap_midi_parser_status
 {
@@ -99,6 +99,6 @@ clap_midi_convert(const uint8_t     *in,
                   uint32_t           size,
                   struct clap_event *event);
 
-# include "clap-midi-parser.c"
+# include "parser.c"
 
 #endif /* !CLAP_MIDI_PARSER_H */

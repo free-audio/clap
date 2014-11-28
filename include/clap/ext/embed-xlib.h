@@ -1,10 +1,10 @@
-#ifndef CLAP_EMBED_XLIB_H
-# define CLAP_EMBED_XLIB_H
+#ifndef CLAP_EXT_EMBED_XLIB_H
+# define CLAP_EXT_EMBED_XLIB_H
 
 # include <X11/Xlib.h>
 
-# include "clap.h"
-# include "clap-embed.h"
+# include "../clap.h"
+# include "embed.h"
 
 # define CLAP_EXT_EMBED_XLIB "clap/embed/xlib"
 
