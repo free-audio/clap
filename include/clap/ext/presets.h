@@ -7,11 +7,12 @@
 
 struct clap_preset
 {
-  uint32_t id;                     // preset id
+  char     url[CLAP_URL_SIZE];     // location to the patch
   char     name[CLAP_NAME_SIZE];   // display name
   char     desc[CLAP_DESC_SIZE];   // desc and how to use it
   char     author[CLAP_NAME_SIZE];
   char     tags[CLAP_TAGS_SIZE];   // "tag1;tag2;tag3;..."
+  uint8_t  score;                  // 0 = garbage, ..., 5 = favorite
 };
 
 struct clap_plugin_presets

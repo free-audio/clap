@@ -163,7 +163,7 @@ struct clap_event_control
 
 struct clap_event_preset
 {
-  uint32_t id; // the preset id
+  char url[CLAP_URL_SIZE]; // the url to the preset
 };
 
 struct clap_event_midi
@@ -239,7 +239,6 @@ struct clap_process
   uint32_t   samples_count;
 
   /* process info */
-  bool     is_offline;
   uint64_t song_time;   // the song time in samples
   uint64_t steady_time; // the steady time in samples
 
@@ -277,7 +276,7 @@ struct clap_host
               enum clap_log_severity  severity,
               const char             *msg);
 
-  /* future features */
+  /* feature extensions */
   void *(*extension)(struct clap_host *host, const char *extention_id);
 };
 
@@ -321,7 +320,7 @@ struct clap_plugin
   enum clap_process_status (*process)(struct clap_plugin  *plugin,
                                       struct clap_process *process);
 
-  /* future features */
+  /* features extensions */
   void *(*extension)(struct clap_plugin *plugin, const char *id);
 };
 
