@@ -126,10 +126,6 @@ enum clap_event_type
 
   CLAP_EVENT_TEMPO_CHANGED = 15, // attribute tempo
   CLAP_EVENT_JUMP = 16, // attribute jump
-
-  CLAP_EVENT_CUSTOM_DATA = 17, // not really used in the interface, but
-                               // convinient to pass custom data through
-                               // the interface (in case of bridge, ...)
 };
 
 struct clap_event_note
@@ -143,20 +139,26 @@ struct clap_event_note
 
 struct clap_event_param
 {
+  /* key/voice index */
   bool                    is_global; // is this event global?
   uint8_t                 key;       // if !is_global, target key
-  uint32_t                index;
+
+  /* parameter */
+  uint32_t                index; // parameter index
   union clap_param_value  value;
   float                   increment;        // for param ramp
-  char                    display_text[CLAP_DISPLAY_SIZE]; // use this for display if not NULL.
+  char                    display_text[CLAP_DISPLAY_SIZE]; // use this for display.
   bool                    is_recordable;    // used to tell the host if this event
                                             // can be recorded
 };
 
 struct clap_event_control
 {
+  /* voice/key index */
   bool     is_global; // is this event global?
   uint8_t  key;       // if !is_global, target key
+
+  /* control */
   uint32_t index;
   float    value; // 0 .. 1.0f
 };
@@ -168,8 +170,11 @@ struct clap_event_preset
 
 struct clap_event_midi
 {
+  /* voice/key index */
   bool           is_global; // is this event global?
   uint8_t        key;       // if !is_global, target key
+
+  /* midi event */
   const uint8_t *buffer;
   uint32_t       size;
 };
@@ -188,12 +193,6 @@ struct clap_event_tempo
 struct clap_event_jump
 {
   uint32_t song_time; // song time in samples
-};
-
-struct clap_event_custom_data
-{
-  uint32_t  size;
-  void     *data;
 };
 
 struct clap_event
