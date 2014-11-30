@@ -1,4 +1,4 @@
-/**
+/*
  * CLAP - CLever Audio Plugin (<--- needs to find a marketing ok name)
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~
  *
@@ -211,7 +211,6 @@ struct clap_event
     struct clap_event_latency     latency;
     struct clap_event_tempo       tempo;
     struct clap_event_jump	  jump;
-    struct clap_event_custom_data custom_data;
   };
 };
 
