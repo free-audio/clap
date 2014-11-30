@@ -12,7 +12,10 @@ struct clap_plugin_embed_xlib
 {
   void (*get_size)(uint32_t *width, uint32_t *height);
 
-  /* the display_name can be retrieved from your own
+  /* Note for the client, you can get a Display* by calling
+   * XOpenDisplay(display_name).
+   *
+   * Note for the host, the display_name can be retrieved from your own
    * display->display_name. */
   bool (*embed)(struct clap_plugin *plugin,
                 Window              window,

@@ -33,10 +33,11 @@ struct clap_ports_config
   uint32_t outputs_count;
 };
 
+/* The audio ports configuration has to be done while the plugin is
+ * deactivated. */
 struct clap_plugin_ports
 {
-  /* Audio ports.
-   * The port configuration has to be done while the plugin is deactivated. */
+  /* Returns the number of available configurations */
   uint32_t (*get_ports_configs_count)(struct clap_plugin *plugin);
   bool (*get_ports_config)(struct clap_plugin       *plugin,
                            uint32_t                  config_index,
