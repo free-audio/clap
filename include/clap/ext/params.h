@@ -43,13 +43,13 @@ struct clap_param
 struct clap_plugin_params
 {
   /* Returns the number of parameters. */
-  uint32_t (*get_params_count)(struct clap_plugin *plugin);
+  uint32_t (*count)(struct clap_plugin *plugin);
 
   /* Copies the parameter's info to param and returns true.
    * If index is greater or equal to the number then return false. */
-  bool (*get_param)(struct clap_plugin *plugin,
-                    uint32_t            index,
-                    struct clap_param  *param);
+  bool (*get)(struct clap_plugin *plugin,
+              uint32_t            index,
+              struct clap_param  *param);
 };
 
 #endif /* !CLAP_EXT_PARAMS_H */
