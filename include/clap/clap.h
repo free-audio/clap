@@ -150,6 +150,7 @@ struct clap_event_param
   char                    display_text[CLAP_DISPLAY_SIZE]; // use this for display.
   bool                    is_recordable;    // used to tell the host if this event
                                             // can be recorded
+  bool                    is_used; // is the parameter used in the patch?
 };
 
 struct clap_event_control
