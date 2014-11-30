@@ -28,7 +28,7 @@ struct clap_param
 
   /* param info */
   enum clap_param_type    type;
-  char                    id[32];   // a string which identify the param
+  char                    id[CLAP_ID_SIZE]; // a string which identify the param
   char                    name[CLAP_NAME_SIZE]; // the display name
   char                    desc[CLAP_DESC_SIZE];
   bool                    is_per_note;
@@ -42,8 +42,11 @@ struct clap_param
 
 struct clap_plugin_params
 {
-  /* Returns a newly allocated parameters tree. The caller has to free it. */
+  /* Returns the number of parameters. */
   uint32_t (*get_params_count)(struct clap_plugin *plugin);
+
+  /* Copies the parameter's info to param and returns true.
+   * If index is greater or equal to the number then return false. */
   bool (*get_param)(struct clap_plugin *plugin,
                     uint32_t            index,
                     struct clap_param  *param);

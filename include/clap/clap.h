@@ -50,7 +50,7 @@ struct clap_host;
 
 enum clap_string_size
 {
-  CLAP_ID_SIZE         = 32,
+  CLAP_ID_SIZE         = 48,
   CLAP_NAME_SIZE       = 32,
   CLAP_DESC_SIZE       = 256,
   CLAP_DISPLAY_SIZE    = 32,
