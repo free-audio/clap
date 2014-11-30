@@ -27,12 +27,12 @@ struct clap_param
   uint32_t parent; // parent's index, -1 for no parent
 
   /* param info */
-  enum clap_param_type    type;
   char                    id[CLAP_ID_SIZE]; // a string which identify the param
   char                    name[CLAP_NAME_SIZE]; // the display name
   char                    desc[CLAP_DESC_SIZE];
+  char                    display[CLAP_DISPLAY_SIZE]; // the text used to display the value
+  enum clap_param_type    type;
   bool                    is_per_note;
-  char                    display_text[CLAP_DISPLAY_SIZE]; // the text used to display the value
   bool                    is_used; // is this parameter used by the patch?
   union clap_param_value  value;
   union clap_param_value  min;
