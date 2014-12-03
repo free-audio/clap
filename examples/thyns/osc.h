@@ -55,7 +55,7 @@ struct thyns_osc
   double                  *tune;
 };
 
-void
+static inline void
 thyns_osc_param_set(struct thyns_osc_params *params,
                     uint32_t                 index,
                     union clap_param_value   value)
@@ -79,7 +79,31 @@ thyns_osc_param_set(struct thyns_osc_params *params,
   }
 }
 
-void
+static inline void
+thyns_osc_param_use(struct thyns_osc *osc,
+                    struct thyns_osc_params *params,
+                    uint32_t index)
+{
+  switch (index) {
+  case THYNS_OSC_PARAM_WAVEFORM:
+    osc->waveform = &params->waveform;
+    break;
+
+  case THYNS_OSC_PARAM_PHASE:
+    osc->phase = &params->phase;
+    break;
+
+  case THYNS_OSC_PARAM_PWM:
+    osc->pwm = &params->pwm;
+    break;
+
+  case THYNS_OSC_PARAM_TUNE:
+    osc->tune = &params->tune;
+    break;
+  }
+}
+
+static inline void
 thyns_osc_param_info(struct thyns_osc_params *params,
                      uint32_t                 index,
                      struct clap_param       *param,
