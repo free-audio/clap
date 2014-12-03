@@ -34,6 +34,7 @@ struct clap_param
   enum clap_param_type    type;
   bool                    is_per_note;
   bool                    is_used; // is this parameter used by the patch?
+  bool                    is_periodic;
   union clap_param_value  value;
   union clap_param_value  min;
   union clap_param_value  max;
