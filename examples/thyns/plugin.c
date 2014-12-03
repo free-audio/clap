@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <clap/clap.h>
-#include <clap/ext/ports.h>
+#include <clap/ext/params.h>
 
 #include "thyns.h"
 
@@ -10,6 +10,7 @@ struct thyns_plugin
   struct thyns              thyns;
   struct clap_plugin        plugin;
   struct clap_host         *host;
+  struct clap_plugin_params params;
 };
 
 void
@@ -65,6 +66,10 @@ thyns_plugin_process(struct clap_plugin  *plugin,
 void *
 thyns_plugin_extension(struct clap_plugin *plugin, const char *extension)
 {
+  struct thyns_plugin *p = plugin->plugin_data;
+
+  if (!strcmp(extension, CLAP_EXT_PARAMS))
+    return &p->params;
   return NULL;
 }
 
@@ -77,6 +82,20 @@ thyns_plugin_activate(struct clap_plugin *plugin)
 void
 thyns_plugin_deactivate(struct clap_plugin *plugin)
 {
+}
+
+uint32_t
+thyns_params_count(struct clap_plugin *plugin)
+{
+  return 2 * THYNS_OSC_PARAM_COUNT;
+}
+
+bool
+thyns_params_get(struct clap_plugin *plugin,
+                 uint32_t            index,
+                 struct clap_param  *param)
+{
+  return false;
 }
 
 struct thyns_plugin *
@@ -102,6 +121,8 @@ thyns_plugin_create(struct clap_host *host,
   p->plugin.extension = thyns_plugin_extension;
   p->plugin.activate = thyns_plugin_activate;
   p->plugin.deactivate = thyns_plugin_deactivate;
+  p->params.count = thyns_params_count;
+  p->params.get = thyns_params_get;
 
   return p;
 }

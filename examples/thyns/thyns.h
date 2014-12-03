@@ -1,10 +1,9 @@
 #ifndef THYNS_H
 # define THYNS_H
 
-# include <clap/clap.h>
-
 # include "voice.h"
 # include "dlist.h"
+# include "params.h"
 
 # define THYNS_VOICE_COUNT 32
 
@@ -19,6 +18,7 @@ struct thyns
   struct thyns_voice *idle;
   struct thyns_voice *keys[0x80];
 
+  struct thyns_params params;
   struct thyns_voice buffer[THYNS_VOICE_COUNT];
 };
 
@@ -28,6 +28,8 @@ static inline void thyns_init(struct thyns *thyns, uint32_t sr)
 
   thyns->sr      = sr;
   thyns->pi_sr   = M_PI / sr;
+
+  thyns_params_init(&thyns->params);
 
   for (uint32_t i = 0; i < THYNS_VOICE_COUNT; ++i) {
     thyns_voice_init(thyns->buffer + i, sr);
@@ -46,6 +48,7 @@ static double thyns_step(struct thyns        *thyns,
   struct thyns_voice *v    = thyns->singing;
   struct thyns_voice *end  = v->prev;
 
+  /* compute voices */
   do {
     out += thyns_voice_step(v);
 
@@ -89,6 +92,7 @@ thyns_note_on(struct thyns *thyns,
     thyns_dlist_push_back(thyns->singing, voice);
     thyns->keys[key] = voice;
     voice->key = key;
+    thyns_voice_params_init(voice, &thyns->params);
   }
 
   thyns_voice_start_note(thyns->keys[key], key, pitch);
@@ -115,6 +119,11 @@ thyns_handle_event(struct thyns      *thyns,
 
   case CLAP_EVENT_NOTE_OFF:
     thyns_note_off(thyns, ev->note.key);
+    break;
+
+  case CLAP_EVENT_PARAM_SET:
+    if (ev->param.is_global)
+      thyns_params_set(&thyns->params, ev->param.index, ev->param.value);
     break;
 
   default:

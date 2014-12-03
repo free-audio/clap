@@ -4,6 +4,7 @@
 # include "env.h"
 # include "filt.h"
 # include "osc.h"
+# include "params.h"
 
 struct thyns_voice
 {
@@ -29,6 +30,9 @@ struct thyns_voice
   // amp
   struct thyns_env  amp_env;
   double            amp;
+
+  // voice parameters
+  struct thyns_params params;
 };
 
 static inline void
@@ -55,6 +59,23 @@ thyns_voice_init(struct thyns_voice *voice, uint32_t sr)
   // amp
   thyns_env_init(&voice->amp_env);
   voice->amp = 0.2;
+}
+
+static inline void
+thyns_voice_params_init(struct thyns_voice  *voice,
+                        struct thyns_params *params)
+{
+  // osc1
+  voice->osc1.waveform = &params->osc1.waveform;
+  voice->osc1.pwm      = &params->osc1.pwm;
+  voice->osc1.phase    = &params->osc1.phase;
+  voice->osc1.tune     = &params->osc1.tune;
+
+  // osc2
+  voice->osc2.waveform = &params->osc2.waveform;
+  voice->osc2.pwm      = &params->osc2.pwm;
+  voice->osc2.phase    = &params->osc2.phase;
+  voice->osc2.tune     = &params->osc2.tune;
 }
 
 static inline void
