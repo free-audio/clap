@@ -65,17 +65,35 @@ static inline void
 thyns_voice_params_init(struct thyns_voice  *voice,
                         struct thyns_params *params)
 {
+  uint32_t off = 0;
+
   // osc1
-  voice->osc1.waveform = &params->osc1.waveform;
-  voice->osc1.pwm      = &params->osc1.pwm;
-  voice->osc1.phase    = &params->osc1.phase;
-  voice->osc1.tune     = &params->osc1.tune;
+  for (int i = 0; i < THYNS_OSC_PARAM_COUNT; ++i)
+    voice->osc1.values[i] = params->values + off + i;
+  off += THYNS_OSC_PARAM_COUNT;
 
   // osc2
-  voice->osc2.waveform = &params->osc2.waveform;
-  voice->osc2.pwm      = &params->osc2.pwm;
-  voice->osc2.phase    = &params->osc2.phase;
-  voice->osc2.tune     = &params->osc2.tune;
+  for (int i = 0; i < THYNS_OSC_PARAM_COUNT; ++i)
+    voice->osc1.values[i] = params->values + off + i;
+  off += THYNS_OSC_PARAM_COUNT;
+}
+
+static inline void
+thyns_voice_use_param(struct thyns_voice  *voice,
+                      struct thyns_params *params,
+                      uint32_t             index)
+{
+  uint32_t i = 0;
+
+  if (index < i + THYNS_OSC_PARAM_COUNT) {
+    voice->osc1.values[index - i] = params->values + index;
+  }
+  i += THYNS_OSC_PARAM_COUNT;
+
+  if (index < i + THYNS_OSC_PARAM_COUNT) {
+    voice->osc2.values[index - i] = params->values + index;
+  }
+  i += THYNS_OSC_PARAM_COUNT;
 }
 
 static inline void

@@ -29,14 +29,6 @@ enum thyns_osc_param_index
   THYNS_OSC_PARAM_COUNT
 };
 
-struct thyns_osc_params
-{
-  enum thyns_osc_waveform waveform;
-  double                  pwm;  // 0..1
-  double                  phase;
-  double                  tune;
-};
-
 struct thyns_osc
 {
   /* processing constants */
@@ -49,65 +41,14 @@ struct thyns_osc
   double angle;
 
   /* parameters */
-  enum thyns_osc_waveform *waveform;
-  double                  *pwm;  // 0..1
-  double                  *phase;
-  double                  *tune;
+  union clap_param_value *values[THYNS_OSC_PARAM_COUNT];
 };
 
 static inline void
-thyns_osc_param_set(struct thyns_osc_params *params,
-                    uint32_t                 index,
-                    union clap_param_value   value)
-{
-  switch (index) {
-  case THYNS_OSC_PARAM_WAVEFORM:
-    params->waveform = value.i;
-    break;
-
-  case THYNS_OSC_PARAM_PHASE:
-    params->phase = value.f;
-    break;
-
-  case THYNS_OSC_PARAM_PWM:
-    params->pwm = value.f;
-    break;
-
-  case THYNS_OSC_PARAM_TUNE:
-    params->tune = value.f;
-    break;
-  }
-}
-
-static inline void
-thyns_osc_param_use(struct thyns_osc *osc,
-                    struct thyns_osc_params *params,
-                    uint32_t index)
-{
-  switch (index) {
-  case THYNS_OSC_PARAM_WAVEFORM:
-    osc->waveform = &params->waveform;
-    break;
-
-  case THYNS_OSC_PARAM_PHASE:
-    osc->phase = &params->phase;
-    break;
-
-  case THYNS_OSC_PARAM_PWM:
-    osc->pwm = &params->pwm;
-    break;
-
-  case THYNS_OSC_PARAM_TUNE:
-    osc->tune = &params->tune;
-    break;
-  }
-}
-
-static inline void
-thyns_osc_param_info(struct thyns_osc_params *params,
-                     uint32_t                 index,
-                     struct clap_param       *param,
-                     const char              *prefix)
+thyns_osc_param_info(uint32_t                 index,
+                     union clap_param_value   value,
+                     const char              *prefix,
+                     struct clap_param       *param)
 {
 #define P(Dst, Args...) snprintf(Dst, sizeof (Dst), Args);
 
@@ -116,12 +57,12 @@ thyns_osc_param_info(struct thyns_osc_params *params,
     P(param->id, "%s%s", prefix, "waveform");
     P(param->name, "%s", "waveform");
     P(param->desc, "%s", "Oscillator's waveform");
-    P(param->display, "%s", thyns_osc_waveform_name[params->waveform]);
+    P(param->display, "%s", thyns_osc_waveform_name[value.i]);
     param->type = CLAP_PARAM_ENUM;
     param->is_per_note = true;
     param->is_used = true;
     param->is_periodic = false;
-    param->value.i = params->waveform;
+    param->value = value;
     param->min.i = 0;
     param->max.i = THYNS_OSC_SINE;
     param->scale = CLAP_PARAM_LINEAR;
@@ -131,12 +72,12 @@ thyns_osc_param_info(struct thyns_osc_params *params,
     P(param->id, "%s%s", prefix, "phase");
     P(param->name, "%s", "phase");
     P(param->desc, "%s", "Oscillator's phase");
-    P(param->display, "%f", params->phase);
+    P(param->display, "%f", value.f);
     param->type = CLAP_PARAM_FLOAT;
     param->is_per_note = true;
     param->is_used = true;
     param->is_periodic = true;
-    param->value.f = params->phase;
+    param->value = value;
     param->min.f = 0;
     param->max.f = 2 * M_PI;
     param->scale = CLAP_PARAM_LINEAR;
@@ -146,12 +87,12 @@ thyns_osc_param_info(struct thyns_osc_params *params,
     P(param->id, "%s%s", prefix, "pwm");
     P(param->name, "%s", "pwm");
     P(param->desc, "%s", "Oscillator's pulse width modulation");
-    P(param->display, "%f", params->pwm);
+    P(param->display, "%f", value.f);
     param->type = CLAP_PARAM_FLOAT;
     param->is_per_note = true;
     param->is_used = true;
     param->is_periodic = false;
-    param->value.f = params->pwm;
+    param->value = value;
     param->min.f = 0;
     param->max.f = 1;
     param->scale = CLAP_PARAM_LINEAR;
@@ -161,12 +102,12 @@ thyns_osc_param_info(struct thyns_osc_params *params,
     P(param->id, "%s%s", prefix, "tune");
     P(param->name, "%s", "tune");
     P(param->desc, "%s", "Oscillator's tunning in semitones");
-    P(param->display, "%f", params->pwm);
+    P(param->display, "%f", value.f);
     param->type = CLAP_PARAM_FLOAT;
     param->is_per_note = true;
     param->is_used = true;
     param->is_periodic = false;
-    param->value.f = params->tune;
+    param->value = value;
     param->min.f = -48;
     param->max.f = +48;
     param->scale = CLAP_PARAM_LINEAR;
@@ -177,12 +118,12 @@ thyns_osc_param_info(struct thyns_osc_params *params,
 }
 
 static inline void
-thyns_osc_params_init(struct thyns_osc_params *params)
+thyns_osc_params_init(union clap_param_value *values)
 {
-  params->waveform = THYNS_OSC_SQUARE;
-  params->pwm      = 0.5;
-  params->phase    = 0;
-  params->tune     = 0;
+  values[THYNS_OSC_PARAM_WAVEFORM].i = THYNS_OSC_SQUARE;
+  values[THYNS_OSC_PARAM_PWM].f      = 0.5;
+  values[THYNS_OSC_PARAM_PHASE].f    = 0;
+  values[THYNS_OSC_PARAM_TUNE].f     = 0;
 }
 
 static inline void
@@ -198,16 +139,16 @@ static inline void
 thyns_osc_set_freq(struct thyns_osc *osc, double freq)
 {
   osc->freq = freq;
-  osc->angle_ramp = 2 * osc->pi_sr * freq * pow(2, *osc->tune / 12.f);
+  osc->angle_ramp = 2 * osc->pi_sr * freq * pow(2, osc->values[THYNS_OSC_PARAM_TUNE]->f / 12.f);
 }
 
 static inline double
 thyns_osc_step(struct thyns_osc *osc)
 {
   osc->angle = fmod(osc->angle + osc->angle_ramp, 2 * M_PI);
-  double angle = fmod(osc->angle + *osc->phase, 2 * M_PI);
+  double angle = fmod(osc->angle + osc->values[THYNS_OSC_PARAM_PHASE]->f, 2 * M_PI);
 
-  switch (*osc->waveform) {
+  switch (osc->values[THYNS_OSC_PARAM_WAVEFORM]->i) {
   case THYNS_OSC_NONE:
     return 0;
 

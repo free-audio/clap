@@ -123,7 +123,12 @@ thyns_handle_event(struct thyns      *thyns,
 
   case CLAP_EVENT_PARAM_SET:
     if (ev->param.is_global)
-      thyns_params_set(&thyns->params, ev->param.index, ev->param.value);
+      thyns->params.values[ev->param.index] = ev->param.value;
+    else if (thyns->keys[ev->param.key]) {
+      struct thyns_voice *voice = thyns->keys[ev->param.key];
+      voice->params.values[ev->param.index] = ev->param.value;
+      thyns_voice_use_param(voice, &voice->params, ev->param.index);
+    }
     break;
 
   default:
