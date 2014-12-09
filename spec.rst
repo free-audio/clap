@@ -11,43 +11,22 @@ A free audio plugin format
 Goals
 =====
 
-- Make a free audio plugin format
+- Make a free digital instrument and effect plugin format
 - Be easy to understand and implement
 - Bring new features missed in VST 2.4
-- Designed to work on any operating system
+- Designed to work on any operating system and processor architecture
 - Be event oriented
-- Be extensible without breaking existing plugins
+- Be extensible without breaking existing interface
 - Be easy to bridge
-
-Later goals
------------
-
-- Provide a reference host
-- Provide some reference plugins
-- Provide a validation plugin, which should signal anything wrong the host does
-- Provide a validation host, which should give hard time to the plugin and
-  ensure that basic functionnality are working
-- Provide a libclap2vst, which adapts a clap plugin interface to a vst plugin
-  interface
-- Provide a remote plugin/host library
-- Provide a libvst2clap, which adapts a vst plugin interface to a clap plugin
-  interface
+- Support dynamic configuration: let a modular plugin dynamically
+  add new parameters, new outputs/inputs, etc...
 
 Design choice
 -------------
 
-- The plugin and the host interface must be thread-safe.
-- Avoid pointer exchange between the host and the plugin
-  whenever it is possible. The chosen way is to pass a buffer
-  as a parameter and let the host/plugin copy/read data from it.
-  Rationale: as the host and the plugin can be multi-threaded,
-  keeping pointers to the plugin or host internal memory can lead
-  to race conditions. Also it can lead to ambiguities about who's
-  responsible to free the memory. Also the host and the plugin
-  may use custom allocator.
-- Use the C language.
-- Have support for dynamic configuration, to let a modular plugin
-  add new parameters, new outputs/inputs, etc... dynamically.
+- Use the C language for the interface.
+- The host interface must be thread-safe.
+- The plugin interface is not thread-safe.
 
 Specification
 =============
@@ -56,7 +35,7 @@ How to read the specification
 -----------------------------
 
 The specification should be read along the reference headers.
-https://abique.github.io/clap/ gives a convinient view for that.
+https://free-audio.github.io/clap/ gives a convinient view for that.
 
 Encoding
 --------
@@ -123,9 +102,9 @@ built for the native/current architecture.
 Instantiate a plugin
 --------------------
 
-Plugin instantiating can be done in a few steps:
+Plugin instantiation can be done in a few steps:
 
-- load the plugin library
+- load the plugin library with ``dlopen`` or symilar functions
 - find the symbol ``clap_create``
 - instantiate the plugin by calling ``clap_create``
 
@@ -136,12 +115,21 @@ Precautions
 - It must not throw exceptions.
 - It can return ``NULL``.
 
+Release a plugin
+~~~~~~~~~~~~~~~~
+
+To release a plugin, call ``plugin->destroy(plugin);``.
+It is not required to deactivate the plugin prior to destroy it.
+
 Plugins collection
 ~~~~~~~~~~~~~~~~~~
 
-A single dynamic library can contains multiple clap plugins.
-To list them, you have to call ``clap_create`` with an index of 0 and increment
-the index until you reach ``plugin_count``.
+A single shared library can contains multiple clap plugins.
+To list them, you have to call ``clap_create`` with an index of 0.
+``clap_create`` will store the number of plugins in the collection
+into the parameter ``*plugins_count``. After that you can create any
+of them by using an ``index`` between ``0`` and ``*plugins_count``.
+
 ``clap_create`` returns ``NULL`` if the plugin creation failed or if
 ``plugin_index >= plugin_count``.
 
@@ -150,60 +138,53 @@ Sample plugin loader
 
 See `examples/clap-info/clap-info.c`_
 
-Description
-~~~~~~~~~~~
+Plugin description
+~~~~~~~~~~~~~~~~~~
 
-Both the ``struct clap_plugin;`` and ``struct clap_host;`` have a few attribute giving
-general plugin/host information.
+``struct clap_plugin`` only contains a interger ``clap_version`` which
+indicates which version of the clap interface has been used to build the plugin, and
+a few methods. This attribute must be initialized by the plugin with
+``CLAP_PLUGIN_VERSION``.
 
-+---------------------+---------------------------------------------------------------+
-| Attribute           | Description                                                   |
-+=====================+===============================================================+
-| clap_version        | Described the plugin format version implemented. Should be    |
-|                     | initialized with CLAP_PLUGIN_VERSION,                         |
-|                     | or CLAP_VERSION_MAKE(1, 0, 0) if you want to only support     |
-|                     | version 1.0.0                                                 |
-+---------------------+---------------------------------------------------------------+
-| id                  | Unique identifier of the plugin. It should never change. It   |
-|                     | should be the same on any plateform.                          |
-+---------------------+---------------------------------------------------------------+
-| name                | The name of the product.                                      |
-+---------------------+---------------------------------------------------------------+
-| description         | A brief description of the product.                           |
-+---------------------+---------------------------------------------------------------+
-| manufacturer        | Which company made the plugin.                                |
-+---------------------+---------------------------------------------------------------+
-| version             | A string describing the product version.                      |
-+---------------------+---------------------------------------------------------------+
-| url                 | An URL to the product homepage.                               |
-+---------------------+---------------------------------------------------------------+
-| license             | The plugin license type, Custom, GPLv3, MIT, ...              |
-+---------------------+---------------------------------------------------------------+
-| support             | A link to the support, it can be                              |
-|                     | ``mailto:support@company.com`` or                             |
-|                     | ``http://company.com/support``.                               |
-+---------------------+---------------------------------------------------------------+
-| categories          | A string containing a list of categories, joined with ``;``.  |
-|                     | For example: ``fm;analogue;delay``.                           |
-+---------------------+---------------------------------------------------------------+
-| type                | Bitfield describing what the plugin does. See                 |
-|                     | ``enum clap_plugin_type``.                                    |
-+---------------------+---------------------------------------------------------------+
-| chunk_size          | The process buffer, must have a number of sample multiple of  |
-|                     | ``chunk_size``.                                               |
-+---------------------+---------------------------------------------------------------+
-| latency             | The latency introduced by the plugin.                         |
-+---------------------+---------------------------------------------------------------+
-| has_gui             | True if the plugin can show a graphical user interface        |
-+---------------------+---------------------------------------------------------------+
-| supports_tuning     | True if the plugin supports tuning                            |
-+---------------------+---------------------------------------------------------------+
-| supports_microtones | True if the plugin supports micro tones                       |
-+---------------------+---------------------------------------------------------------+
-| host_data           | Reserved pointer for the host.                                |
-+---------------------+---------------------------------------------------------------+
-| plugin_data         | Reserved pointer for the plugin.                              |
-+---------------------+---------------------------------------------------------------+
+Then to get plugin's attribute, you have to use ``plugin->get_attribute(plugin, ...)``.
+
++--------------------------------+---------------------------------------------------------------+
+| Attribute                      | Description                                                   |
++================================+===============================================================+
+| CLAP_ATTR_ID                   | Unique identifier of the plugin. It should never change. It   |
+|                                | should be the same on any plateform.                          |
++--------------------------------+---------------------------------------------------------------+
+| CLAP_ATTR_NAME                 | The name of the product.                                      |
++--------------------------------+---------------------------------------------------------------+
+| CLAP_ATTR_DESCRIPTION          | A brief description of the product.                           |
++--------------------------------+---------------------------------------------------------------+
+| CLAP_ATTR_MANUFACTURER         | Which company made the plugin.                                |
++--------------------------------+---------------------------------------------------------------+
+| CLAP_ATTR_VERSION              | A string describing the product version.                      |
++--------------------------------+---------------------------------------------------------------+
+| CLAP_ATTR_URL                  | An URL to the product homepage.                               |
++--------------------------------+---------------------------------------------------------------+
+| CLAP_ATTR_LICENSE              | The plugin license type, Custom, GPLv3, MIT, ...              |
++--------------------------------+---------------------------------------------------------------+
+| CLAP_ATTR_SUPPORT              | A link to the support, it can be                              |
+|                                | ``mailto:support@company.com`` or                             |
+|                                | ``http://company.com/support``.                               |
++--------------------------------+---------------------------------------------------------------+
+| CLAP_ATTR_CATEGORIES           | A string containing a list of categories, joined with ``;``.  |
+|                                | For example: ``fm;analogue;delay``.                           |
++--------------------------------+---------------------------------------------------------------+
+| CLAP_ATTR_TYPE                 | Bitfield describing what the plugin does. See                 |
+|                                | ``enum clap_plugin_type``.                                    |
++--------------------------------+---------------------------------------------------------------+
+| CLAP_ATTR_CHUNK_SIZE           | The process buffer, must have a number of sample multiple of  |
+|                                | ``chunk_size``.                                               |
++--------------------------------+---------------------------------------------------------------+
+| CLAP_ATTR_LATENCY              | The latency introduced by the plugin.                         |
++--------------------------------+---------------------------------------------------------------+
+| CLAP_ATTR_SUPPORTS_TUNING      | True if the plugin supports tuning                            |
++--------------------------------+---------------------------------------------------------------+
+| CLAP_ATTR_IS_REMOTE_PROCESSING | True if the plugin supports tuning                            |
++--------------------------------+---------------------------------------------------------------+
 
 Audio ports configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -212,7 +193,8 @@ A plugin may have multiple audio ports, and so multiple audio ports
 layout or configurations.
 
 An audio port has a type: mono, stereo, surround and a role: main
-input/output, sidechain, feedback.
+input/output or sidechain. We might add a feedback role in the futur
+if there is a need for it.
 
 Pin layout
 ``````````
@@ -243,7 +225,24 @@ Pin layout
 |          | 7   | surround back right |
 +----------+-----+---------------------+
 
-So for the following configuration:
+Configurations
+``````````````
+
+After the call to ``clap_create()`` the new plugin uses the default ports
+configuration: 1 stereo input and 1 stereo output. So if you're fine with
+it, there is nothing more to do.
+
+If a plugins wants to offer more ports configuration to the host/user, it
+has to use ports extension. See `clap/ext/ports.h`_.
+
+The host can select a ports configuration only if the plugin is in
+the deactivated state.
+
+Note that if the plugin does not support the default configuration
+which is stereo input and stereo output, then it must return false
+during the plugin activation (``plugin->activate(plugin)``).
+
+Here is a configuration for a stereo sidechain compressor:
 
 +--------+----------+------------+---------------------+-----------------+
 | in/out | type     | role       | buffer              | desc            |
@@ -256,29 +255,36 @@ So for the following configuration:
 |        |          |            +---------------------+-----------------+
 |        |          |            | process->inputs[3]  | right sidechain |
 +--------+----------+------------+---------------------+-----------------+
-| input  | stereo   | feedback   | process->inputs[4]  | left feedback   |
-|        |          |            +---------------------+-----------------+
-|        |          |            | process->inputs[5]  | right feedback  |
-+--------+----------+------------+---------------------+-----------------+
 | output | stereo   | inout      | process->outputs[0] | left input      |
 |        |          |            +---------------------+-----------------+
 |        |          |            | process->outputs[1] | right input     |
 +--------+----------+------------+---------------------+-----------------+
-| output | stereo   | feedback   | process->outputs[2] | left feedback   |
-|        |          |            +---------------------+-----------------+
-|        |          |            | process->outputs[3] | right feedback  |
-+--------+----------+------------+---------------------+-----------------+
 
-Available configurations
-````````````````````````
+Getting the ports configurations
+````````````````````````````````
+
+.. code:: c
+
+  #include <clap/ext/ports.h>
+
+  struct clap_plugin_ports *ports = plugin->extension(plugin, CLAP_EXT_PORTS);
+  if (!ports)
+    return; // no ports extensions
+  uint32_t count = ports->get_configs_count(plugin);
+  for (uint32_t i = 0; i < count; ++i) {
+    struct clap_ports_config config;
+    if (!ports->get_config(plugin, i, &config))
+      continue;
+    // ...
+  }
 
 It is possible to discover a plugin's port configurations by calling
-``plugin->get_ports_configs_count(plugin);``. It returns the number of
+``ports->get_configs_count(plugin);``. It returns the number of
 configurations. Then for each configuration you have to call
-``plugin->get_ports_config(plugin, config_index, &config);`` which will
+``ports->get_config(plugin, config_index, &config);`` which will
 tell you the number of input and output ports. Then to get the port details,
 you have to call
-``plugin->get_port_info(plugin, config_index, port_index, &port);``.
+``ports->get_info(plugin, config_index, port_index, &port);``.
 
 Selecting a configuration
 `````````````````````````
@@ -300,58 +306,11 @@ spectroscope.
 
 For the special case of repeatable side chain input, the host
 has to tell the plugin how many times the port should be repeated.
-To do that it has to call ``plugin->set_port_repeat(plugin, port_index, count)``.
+To do that it has to call ``plugin->set_repeat(plugin, port_index, count)``.
 If it returns ``false`` then the plugin is in the same state as before
 the call.
 
-Feedback stream
-```````````````
-
-Feedback stream are used to plug external audio processing into one
-of the plugin feedback loop.
-
-A practical usage is to put an effect in a delay feedback loop.
-
-A feedback loop has it's both ends identified by ``clap_channel->stream_id``.
-
-During the audio processing, ``struct clap_process`` contains a callback which
-is used to process the feedback stream:
-
-.. code:: c
-
-  void my_plugin_process(struct clap_plugin *plugin, struct clap_process *process)
-  {
-    uint32_t fb_in;     // index to the stereo feedback input buffer
-    uint32_t fb_out;    // index to the stereo feedback output buffer
-    uint32_t stream_id; // the feedback stream id
-    uint32_t offset;
-
-    // process all the buffer
-    for (offset = 0; offset < process->samples_count;
-         offset += process->feedback_chunk_size)
-    {
-
-      // ...
-
-      // prepare feedback output buffer
-      for (uint32_t i = 0; i < process->feedback_chunk_size; ++i) {
-        process->output[fb_out][offset + i]     = XXX;
-        process->output[fb_out + 1][offset + i] = XXX;
-      }
-
-      // process one sample feedback
-      process->feedback(process, stream_id, process->feedback_chunk_size);
-
-      // audio processing of the feedback values:
-      //   process->input[fb_in][offset + i]
-      //   process->input[fb_in + 1][offset + i]
-    }
-  }
-
-Threading
----------
-
-The plugin must be thread safe.
+Only inputs can be repeatable.
 
 Activation
 ----------
@@ -366,8 +325,8 @@ The host must not call ``activate()`` if the plugin is already activated.
 Yet the plugin should handle correctly double calls to ``activate()``.
 
 The plugin activation could be nothing, or could be a task which takes time,
-like connecting a remote server. So the host should not activate plugins in
-the audio processing thread.
+like connecting a remote server or device.
+So the host should not activate plugins in the audio processing thread.
 
 To deactivate the plugin, just call ``plugin->deactivate(plugin)``. Like
 ``activate()``, ``deactivate()`` should not be called from the audio processing
@@ -377,7 +336,8 @@ Also ``deactivate()`` should not be called if the plugin is not activated.
 Yet the plugin should handle a call to ``deactivate()`` even if it is
 not activated.
 
-It is preferable to de-activate the plugin before destroying it.
+It is recommended (but not mandatory) to de-activate the plugin before
+destroying it.
 
 Processing
 ----------
@@ -386,10 +346,23 @@ The processing is done in one call: ``plugin->process(plugin, process);``.
 The data structure process regroup everything needed by the plugin:
 
 - audio buffers (in, out)
-- feedback process callback
 - events (in)
-- tempo, time, is offline? (in)
-- more processing needed (out)
+- some time info
+
+Once the processing is finished, the methods returns a process status
+which can be:
+
+
++-----------------------+-------------------------------------------------------------+
+| Status                | Meaning                                                     |
++=======================+=============================================================+
+| CLAP_PROCESS_ERROR    | An error happened, and the buffers should be discarded      |
++-----------------------+-------------------------------------------------------------+
+| CLAP_PROCESS_CONTINUE | Succeed, the plugins wants to process the next block        |
++-----------------------+-------------------------------------------------------------+
+| CLAP_PROCESS_STOP     | Succeed, every voices terminated, wake me up on a new event |
++-----------------------+-------------------------------------------------------------+
+
 
 Audio buffers
 ~~~~~~~~~~~~~
@@ -397,15 +370,16 @@ Audio buffers
 - The audio buffers are allocated by the host. They must be aligned by the
   maximum requirement of the vector instructions currently available.
 - In-place processing is not supported.
-- The number of samples must be a multiple of ``plugin->chunk_size``.
+- The number of samples must be a multiple of the plugin chunk_size.
 - See `Pin layout`_.
+- See `Plugin description`_
 
 Events
 ~~~~~~
 
 - Event's time must be within the process duration:
   ``[process->steady_time .. process->steady_time + process->nb_sambles]``.
-- The plugin must not modify the input events (``in_events``).
+- The plugin must not modify the events.
 
 Notes
 `````
@@ -562,15 +536,15 @@ Some host are designed to embed plugin's window.
 As embedding is not a Clap requirement, it is offered as an extension.
 Also the OS dependency brought by this feature makes it ideal as an extension.
 
-+------------+-----------------------+----------------------+----------------+
-| GUI        | header                | extension            | comment        |
-+============+=======================+======================+================+
-| Generic    | `clap-embed.h`_       | ``CLAP_EMBED``       | For the host   |
-+------------+-----------------------+----------------------+----------------+
-| Windows    | `clap-embed-win32.h`_ | ``CLAP_EMBED_WIN32`` | For the plugin |
-+------------+-----------------------+----------------------+----------------+
-| X11        | `clap-embed-xlib.h`_  | ``CLAP_EMBED_XLIB``  | For the plugin |
-+------------+-----------------------+----------------------+----------------+
++------------+---------------------------+----------------------+----------------+
+| GUI        | header                    | extension            | comment        |
++============+===========================+======================+================+
+| Generic    | `clap/ext/embed.h`_       | ``CLAP_EMBED``       | For the host   |
++------------+---------------------------+----------------------+----------------+
+| Windows    | `clap/ext/embed-win32.h`_ | ``CLAP_EMBED_WIN32`` | For the plugin |
++------------+---------------------------+----------------------+----------------+
+| X11        | `clap/ext/embed-xlib.h`_  | ``CLAP_EMBED_XLIB``  | For the plugin |
++------------+---------------------------+----------------------+----------------+
 
 Example on Windows
 ``````````````````
@@ -673,26 +647,32 @@ examples/clap-info/clap-info.c
 References
 ==========
 
-clap.h
-------
+clap/clap.h
+-----------
 
 .. include:: include/clap/clap.h
    :code: c
 
-clap-embed.h
-------------
+clap/ext/ports.h
+----------------
 
-.. include:: include/clap/clap-embed.h
+.. include:: include/clap/ext/ports.h
    :code: c
 
-clap-embed-win32.h
-------------------
+clap/ext/embed.h
+----------------
 
-.. include:: include/clap/clap-embed-win32.h
+.. include:: include/clap/ext/embed.h
    :code: c
 
-clap-embed-xlib.h
------------------
+clap/ext/embed-win32.h
+----------------------
 
-.. include:: include/clap/clap-embed-xlib.h
+.. include:: include/clap/ext/embed-win32.h
+   :code: c
+
+clap/ext/embed-xlib.h
+---------------------
+
+.. include:: include/clap/ext/embed-xlib.h
    :code: c

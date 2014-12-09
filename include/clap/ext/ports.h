@@ -38,19 +38,19 @@ struct clap_ports_config
 struct clap_plugin_ports
 {
   /* Returns the number of available configurations */
-  uint32_t (*get_ports_configs_count)(struct clap_plugin *plugin);
-  bool (*get_ports_config)(struct clap_plugin       *plugin,
-                           uint32_t                  config_index,
-                           struct clap_ports_config *config);
-  bool (*get_port_info)(struct clap_plugin    *plugin,
-                        uint32_t               config_index,
-                        uint32_t               port_index,
-                        struct clap_port_info *port);
-  bool (*set_ports_config)(struct clap_plugin *plugin,
-                           uint32_t            config_index);
-  bool (*set_port_repeat)(struct clap_plugin  *plugin,
-                          uint32_t             port_index,
-                          uint32_t             count);
+  uint32_t (*get_configs_count)(struct clap_plugin *plugin);
+  bool (*get_config)(struct clap_plugin       *plugin,
+                     uint32_t                  config_index,
+                     struct clap_ports_config *config);
+  bool (*get_info)(struct clap_plugin    *plugin,
+                   uint32_t               config_index,
+                   uint32_t               port_index,
+                   struct clap_port_info *port);
+  bool (*set_config)(struct clap_plugin *plugin,
+                     uint32_t            config_index);
+  bool (*set_repeat)(struct clap_plugin  *plugin,
+                     uint32_t             port_index,
+                     uint32_t             count);
 };
 
 #endif /* !CLAP_EXT_PORT_H */

@@ -299,7 +299,8 @@ struct clap_plugin
   void *host_data;   // reserved pointer for the host
   void *plugin_data; // reserved pointer for the plugin
 
-  /* Free the plugin and its resources. */
+  /* Free the plugin and its resources.
+   * It is not required to deactivate the plugin prior to this call. */
   void (*destroy)(struct clap_plugin *plugin);
 
   /* Copy at most size of the attribute's value into buffer.
@@ -332,7 +333,9 @@ typedef struct clap_plugin *(*clap_create_f)(uint32_t          plugin_index,
 /* Plugin entry point. If plugins_count is not null, then clap_create has
  * to store the number of plugins available in *plugins_count.
  * If clap_create failed to create a plugin, it returns NULL.
- * The return value has to be freed by calling plugin->destroy(plugin). */
+ * The return value has to be freed by calling plugin->destroy(plugin).
+ *
+ * This function must be thread-safe. */
 struct clap_plugin *
 clap_create(uint32_t          plugin_index,
             struct clap_host *host,
