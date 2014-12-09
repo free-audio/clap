@@ -146,47 +146,46 @@ tt.docutils {
 <li><a class="reference internal" href="#events" id="id28">Events</a><ul>
 <li><a class="reference internal" href="#notes" id="id29">Notes</a></li>
 <li><a class="reference internal" href="#parameters" id="id30">Parameters</a></li>
-<li><a class="reference internal" href="#pitch" id="id31">Pitch</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id1" id="id32">Parameters</a><ul>
-<li><a class="reference internal" href="#types" id="id33">Types</a></li>
-<li><a class="reference internal" href="#scales" id="id34">Scales</a></li>
-<li><a class="reference internal" href="#automation" id="id35">Automation</a></li>
+<li><a class="reference internal" href="#id1" id="id31">Parameters</a><ul>
+<li><a class="reference internal" href="#types" id="id32">Types</a></li>
+<li><a class="reference internal" href="#scales" id="id33">Scales</a></li>
+<li><a class="reference internal" href="#automation" id="id34">Automation</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#graphical-user-interface" id="id36">Graphical User Interface</a><ul>
-<li><a class="reference internal" href="#showing-the-gui" id="id37">Showing the GUI</a></li>
-<li><a class="reference internal" href="#sending-events-to-the-host" id="id38">Sending events to the host</a></li>
-<li><a class="reference internal" href="#hiding-the-gui" id="id39">Hiding the GUI</a></li>
-<li><a class="reference internal" href="#embedding" id="id40">Embedding</a><ul>
-<li><a class="reference internal" href="#example-on-windows" id="id41">Example on Windows</a></li>
-<li><a class="reference internal" href="#resizing-the-window" id="id42">Resizing the window</a></li>
+<li><a class="reference internal" href="#graphical-user-interface" id="id35">Graphical User Interface</a><ul>
+<li><a class="reference internal" href="#showing-the-gui" id="id36">Showing the GUI</a></li>
+<li><a class="reference internal" href="#sending-events-to-the-host" id="id37">Sending events to the host</a></li>
+<li><a class="reference internal" href="#hiding-the-gui" id="id38">Hiding the GUI</a></li>
+<li><a class="reference internal" href="#embedding" id="id39">Embedding</a><ul>
+<li><a class="reference internal" href="#example-on-windows" id="id40">Example on Windows</a></li>
+<li><a class="reference internal" href="#resizing-the-window" id="id41">Resizing the window</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#presets" id="id43">Presets</a><ul>
-<li><a class="reference internal" href="#list-plugin-s-presets" id="id44">List plugin's presets</a></li>
-<li><a class="reference internal" href="#load-a-preset" id="id45">Load a preset</a></li>
+<li><a class="reference internal" href="#presets" id="id42">Presets</a><ul>
+<li><a class="reference internal" href="#list-plugin-s-presets" id="id43">List plugin's presets</a></li>
+<li><a class="reference internal" href="#load-a-preset" id="id44">Load a preset</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#save-and-restore-plugin-s-state" id="id46">Save and restore plugin's state</a></li>
-<li><a class="reference internal" href="#extension-system" id="id47">Extension system</a></li>
+<li><a class="reference internal" href="#save-and-restore-plugin-s-state" id="id45">Save and restore plugin's state</a></li>
+<li><a class="reference internal" href="#extension-system" id="id46">Extension system</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#examples" id="id48">Examples</a><ul>
-<li><a class="reference internal" href="#examples-clap-info-clap-info-c" id="id49">examples/clap-info/clap-info.c</a></li>
+<li><a class="reference internal" href="#examples" id="id47">Examples</a><ul>
+<li><a class="reference internal" href="#examples-clap-info-clap-info-c" id="id48">examples/clap-info/clap-info.c</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#references" id="id50">References</a><ul>
-<li><a class="reference internal" href="#clap-clap-h" id="id51">clap/clap.h</a></li>
-<li><a class="reference internal" href="#clap-ext-ports-h" id="id52">clap/ext/ports.h</a></li>
-<li><a class="reference internal" href="#clap-ext-embed-h" id="id53">clap/ext/embed.h</a></li>
-<li><a class="reference internal" href="#clap-ext-embed-win32-h" id="id54">clap/ext/embed-win32.h</a></li>
-<li><a class="reference internal" href="#clap-ext-embed-xlib-h" id="id55">clap/ext/embed-xlib.h</a></li>
+<li><a class="reference internal" href="#references" id="id49">References</a><ul>
+<li><a class="reference internal" href="#clap-clap-h" id="id50">clap/clap.h</a></li>
+<li><a class="reference internal" href="#clap-ext-ports-h" id="id51">clap/ext/ports.h</a></li>
+<li><a class="reference internal" href="#clap-ext-embed-h" id="id52">clap/ext/embed.h</a></li>
+<li><a class="reference internal" href="#clap-ext-embed-win32-h" id="id53">clap/ext/embed-win32.h</a></li>
+<li><a class="reference internal" href="#clap-ext-embed-xlib-h" id="id54">clap/ext/embed-xlib.h</a></li>
 </ul>
 </li>
 </ul>
@@ -640,37 +639,66 @@ maximum requirement of the vector instructions currently available.</li>
 </ul>
 <div class="section" id="notes">
 <h4><a class="toc-backref" href="#id29">Notes</a></h4>
-<p>Notes are represented as a pair <tt class="docutils literal">note, division</tt>.
-Division is the number of intervals between one note and an other note with
-half or the double frequency. A division by 12 must be supported.</p>
-<p>If a plugin plugin does not support micro tones, it should ignore
-micro-tuned notes.</p>
-<p>The host should not send micro tones to the plugin if
-<tt class="docutils literal"><span class="pre">plugin-&gt;supports_microtones</span> == false</tt>.</p>
+<p>A note is identified by a key. A key correspond to the keys of a midi keyboard (128 keys).
+If the plugin supports tunning then it should use the <tt class="docutils literal"><span class="pre">event-&gt;note.pitch</span></tt> as
+the note frequency.</p>
+<p>The note A4 correspond to the key 57 and the frequency 440Hz.
+The note A3 correspond to the key 45 and the frequency 220Hz.</p>
+<p>If the plugin supports tunning, then the host could play the note A4 by sending
+a NOTE_ON event with key = 0 and pitch = 440. Then to stop the the host can
+send a NOTE_OFF event with the same key, so 0 in our case or it can send
+a NOTE_ON event on the same key (0), which would terminate the note on the key
+0 and start a new note on the key 0 with the given pitch.</p>
+<p>Here is a scenario where the plugin does not support tunning:</p>
+<ul class="simple">
+<li>NOTE_ON, key = 60, pitch = 42; starts the note C4, with the pitch 493.88Hz</li>
+<li>NOTE_OFF, key = 0, pitch = 493.88; ignored because no note has been started on key 0</li>
+<li>NOTE_ON, key = 60, pitch = 54; retrigers the note C4, with the pitch 493.88Hz</li>
+<li>NOTE_OFF, key = 60, pitch = 62; stops the note C4</li>
+</ul>
+<p>Here is a scenario where the plugin does support tunning:</p>
+<ul class="simple">
+<li>NOTE_ON, key = 60, pitch = 42; starts a note, with the pitch 42Hz</li>
+<li>NOTE_OFF, key = 0, pitch = 493.88; ignored because no note has been started on key 0</li>
+<li>NOTE_ON, key = 60, pitch = 54; stops the note with the pitch 42Hz and starts
+a note with a pitch of 54Hz</li>
+<li>NOTE_OFF, key = 60, pitch = 62; stops the note with a pitch of 54Hz</li>
+</ul>
+<p>The plugin is encouraged to use an array with 128 pointers to voice, so
+it can quickly figure which voice is playing the given key.</p>
 </div>
 <div class="section" id="parameters">
 <h4><a class="toc-backref" href="#id30">Parameters</a></h4>
 <p>Parameters can be automated by the host using <tt class="docutils literal">CLAP_EVENT_PARAM_SET</tt> or
 <tt class="docutils literal">CLAP_EVENT_PARAM_RAMP</tt>.</p>
 <p>When using <tt class="docutils literal">CLAP_EVENT_PARAM_RAMP</tt>, the value of the parameter has to be
-incremented by <tt class="docutils literal"><span class="pre">event-&gt;param.increment</span></tt> each steps until an other event
-occur on this parameter.</p>
-</div>
-<div class="section" id="pitch">
-<h4><a class="toc-backref" href="#id31">Pitch</a></h4>
-<p>The pitch is the frequency of the note A4. Its default value is 440Hz.
-The pitch can be changed by the host using the <tt class="docutils literal">CLAP_EVENT_PITCH_SET</tt> event.</p>
+incremented by <tt class="docutils literal"><span class="pre">event-&gt;param.increment</span></tt> for each samples until an event
+<tt class="docutils literal">CLAP_EVENT_PARAM_SET</tt> or <tt class="docutils literal">CLAP_EVENT_PARAM_RAMP</tt> occur for this parameter.</p>
 </div>
 </div>
 </div>
 <div class="section" id="id1">
-<h2><a class="toc-backref" href="#id32">Parameters</a></h2>
+<h2><a class="toc-backref" href="#id31">Parameters</a></h2>
 <p>The host can get the plugin's parameters tree by calling:</p>
 <ul class="simple">
 <li><tt class="docutils literal"><span class="pre">plugin-&gt;get_params_count(plugin);</span></tt> to know the number of parameters</li>
 <li><tt class="docutils literal"><span class="pre">plugin-&gt;get_param(plugin,</span> param_index, &amp;param);</tt> to get the parameter
 value and description</li>
 </ul>
+<pre class="code c literal-block">
+<span class="cp">#include &lt;clap/ext/params.h&gt;
+</span>
+<span class="k">struct</span> <span class="n">clap_plugin_params</span> <span class="o">*</span><span class="n">params</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">extension</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">CLAP_EXT_PARAMS</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">params</span><span class="p">)</span>
+  <span class="k">return</span><span class="p">;</span> <span class="c1">// no params extensions
+</span><span class="kt">uint32_t</span> <span class="n">count</span> <span class="o">=</span> <span class="n">ports</span><span class="o">-&gt;</span><span class="n">count</span><span class="p">(</span><span class="n">plugin</span><span class="p">);</span>
+<span class="k">for</span> <span class="p">(</span><span class="kt">uint32_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">struct</span> <span class="n">clap_param</span> <span class="n">param</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">ports</span><span class="o">-&gt;</span><span class="n">get</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">param</span><span class="p">))</span>
+    <span class="k">continue</span><span class="p">;</span>
+  <span class="c1">// ...
+</span><span class="p">}</span>
+</pre>
 <table border="1" class="docutils">
 <colgroup>
 <col width="24%" />
@@ -704,6 +732,13 @@ Meant to be displayed.</td>
 <td>How the value should be displayed. Only used for enum
 types.</td>
 </tr>
+<tr><td><tt class="docutils literal">is_used</tt></td>
+<td>True if the parameter is used by the current patch.</td>
+</tr>
+<tr><td><tt class="docutils literal">is_periodic</tt></td>
+<td>Means that the parameter is periodic, so
+<tt class="docutils literal">value = value % max</tt>.</td>
+</tr>
 <tr><td><tt class="docutils literal">value</tt></td>
 <td>The current value of the parameter.</td>
 </tr>
@@ -719,7 +754,7 @@ types.</td>
 </tbody>
 </table>
 <div class="section" id="types">
-<h3><a class="toc-backref" href="#id33">Types</a></h3>
+<h3><a class="toc-backref" href="#id32">Types</a></h3>
 <p>There are a few parameter types:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -761,33 +796,41 @@ should rely on <tt class="docutils literal">display_text</tt> to show its value.
 </table>
 </div>
 <div class="section" id="scales">
-<h3><a class="toc-backref" href="#id34">Scales</a></h3>
+<h3><a class="toc-backref" href="#id33">Scales</a></h3>
 <p>The plugin can inform the host, which scale to use for the parameter's UI
 (knob, slider, ...). <tt class="docutils literal"><span class="pre">clap_param-&gt;scale</span></tt> can be set to <tt class="docutils literal">CLAP_PARAM_LINEAR</tt>
 or <tt class="docutils literal">CLAP_PARAM_LOG</tt>. A logarithmic scale is convinient for a frequency
 parameter.</p>
 </div>
 <div class="section" id="automation">
-<h3><a class="toc-backref" href="#id35">Automation</a></h3>
+<h3><a class="toc-backref" href="#id34">Automation</a></h3>
 <p>When a parameter is modified by the GUI, the plugin should send a
 <tt class="docutils literal">CLAP_EVENT_PARAM_SET</tt> event must be sent to the host, using
 <tt class="docutils literal"><span class="pre">host-&gt;events(host,</span> plugin, events);</tt> so the host can record the automation.</p>
-<p>When a parameter is modified by an other parameter, for example imagine you
-have a parameter modulating &quot;absolutely&quot; an other one through an XY mapping.
+<p>When a parameter is modified by an other parameter (this is discouraged),
+for example imagine you have a parameter modulating &quot;absolutely&quot; an other
+one through an XY mapping.
 The host should record the modulation source but not the modulation target.
 To do that the plugin uses <tt class="docutils literal"><span class="pre">clap_event_param-&gt;is_recordable</span></tt>.</p>
 </div>
 </div>
 <div class="section" id="graphical-user-interface">
-<h2><a class="toc-backref" href="#id36">Graphical User Interface</a></h2>
+<h2><a class="toc-backref" href="#id35">Graphical User Interface</a></h2>
 <div class="section" id="showing-the-gui">
-<h3><a class="toc-backref" href="#id37">Showing the GUI</a></h3>
+<h3><a class="toc-backref" href="#id36">Showing the GUI</a></h3>
 <p>The plugin should show the GUI after a call to <tt class="docutils literal"><span class="pre">plugin-&gt;show_gui(plugin)</span></tt>.
 If the plugin could successfully show the GUI, it returns <tt class="docutils literal">true</tt>, <tt class="docutils literal">false</tt>
 otherwise.</p>
+<pre class="code c literal-block">
+<span class="cp">#include &lt;clap/ext/gui.h&gt;
+</span>
+<span class="k">struct</span> <span class="n">clap_plugin_gui</span> <span class="o">*</span><span class="n">gui</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">extension</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">CLAP_EXT_GUI</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">gui</span><span class="p">)</span>
+  <span class="n">gui</span><span class="o">-&gt;</span><span class="n">open_gui</span><span class="p">(</span><span class="n">plugin</span><span class="p">);</span>
+</pre>
 </div>
 <div class="section" id="sending-events-to-the-host">
-<h3><a class="toc-backref" href="#id38">Sending events to the host</a></h3>
+<h3><a class="toc-backref" href="#id37">Sending events to the host</a></h3>
 <p>The plugin can notify the host of parameter changes by sending events to:
 <tt class="docutils literal"><span class="pre">host-&gt;events(host,</span> plugin, events);</tt>.</p>
 <p>Events sent to the host should be stamped:</p>
@@ -799,8 +842,8 @@ otherwise.</p>
 </pre>
 </div>
 <div class="section" id="hiding-the-gui">
-<h3><a class="toc-backref" href="#id39">Hiding the GUI</a></h3>
-<p>The plugin should hide the GUI after a call to <tt class="docutils literal"><span class="pre">plugin-&gt;hide_gui(plugin)</span></tt>.
+<h3><a class="toc-backref" href="#id38">Hiding the GUI</a></h3>
+<p>The plugin should hide the GUI after a call to <tt class="docutils literal"><span class="pre">plugin-&gt;close_gui(plugin)</span></tt>.
 If the plugin window has been closed by the user, then the plugin should
 send an event <tt class="docutils literal">CLAP_EVENT_GUI_CLOSED</tt> to the host.</p>
 <pre class="code c literal-block">
@@ -812,7 +855,7 @@ send an event <tt class="docutils literal">CLAP_EVENT_GUI_CLOSED</tt> to the hos
 </pre>
 </div>
 <div class="section" id="embedding">
-<h3><a class="toc-backref" href="#id40">Embedding</a></h3>
+<h3><a class="toc-backref" href="#id39">Embedding</a></h3>
 <p>Some host are designed to embed plugin's window.
 As embedding is not a Clap requirement, it is offered as an extension.
 Also the OS dependency brought by this feature makes it ideal as an extension.</p>
@@ -849,7 +892,7 @@ Also the OS dependency brought by this feature makes it ideal as an extension.</
 </tbody>
 </table>
 <div class="section" id="example-on-windows">
-<h4><a class="toc-backref" href="#id41">Example on Windows</a></h4>
+<h4><a class="toc-backref" href="#id40">Example on Windows</a></h4>
 <pre class="code c literal-block">
 <span class="cp">#include &lt;clap/clap.h&gt;
 #include &lt;clap/clap-embed-win32.h&gt;
@@ -864,7 +907,7 @@ Also the OS dependency brought by this feature makes it ideal as an extension.</
 </pre>
 </div>
 <div class="section" id="resizing-the-window">
-<h4><a class="toc-backref" href="#id42">Resizing the window</a></h4>
+<h4><a class="toc-backref" href="#id41">Resizing the window</a></h4>
 <pre class="code c literal-block">
 <span class="cp">#include &lt;clap/clap.h&gt;
 #include &lt;clap/clap-embed.h&gt;
@@ -879,9 +922,9 @@ Also the OS dependency brought by this feature makes it ideal as an extension.</
 </div>
 </div>
 <div class="section" id="presets">
-<h2><a class="toc-backref" href="#id43">Presets</a></h2>
+<h2><a class="toc-backref" href="#id42">Presets</a></h2>
 <div class="section" id="list-plugin-s-presets">
-<h3><a class="toc-backref" href="#id44">List plugin's presets</a></h3>
+<h3><a class="toc-backref" href="#id43">List plugin's presets</a></h3>
 <p>The host can browse the plugin's preset by calling:</p>
 <ul class="simple">
 <li><tt class="docutils literal"><span class="pre">plugin-&gt;get_presets_count(plugin);</span></tt> to know how many presets it has.</li>
@@ -890,7 +933,7 @@ details.</li>
 </ul>
 </div>
 <div class="section" id="load-a-preset">
-<h3><a class="toc-backref" href="#id45">Load a preset</a></h3>
+<h3><a class="toc-backref" href="#id44">Load a preset</a></h3>
 <p>To load a preset, the host have to send an event <tt class="docutils literal">CLAP_EVENT_PRESET_SET</tt> to
 the plugin.</p>
 <p>When a preset is loaded from the plugin's GUI, the plugin must send a
@@ -898,7 +941,7 @@ the plugin.</p>
 </div>
 </div>
 <div class="section" id="save-and-restore-plugin-s-state">
-<h2><a class="toc-backref" href="#id46">Save and restore plugin's state</a></h2>
+<h2><a class="toc-backref" href="#id45">Save and restore plugin's state</a></h2>
 <p>Saving the plugin's state is done by:</p>
 <pre class="code c literal-block">
 <span class="kt">void</span> <span class="o">*</span><span class="n">buffer</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
@@ -918,7 +961,7 @@ plugin state on a little endian machine and send it through the network to a
 big endian machine, it should load again successfully.</p>
 </div>
 <div class="section" id="extension-system">
-<h2><a class="toc-backref" href="#id47">Extension system</a></h2>
+<h2><a class="toc-backref" href="#id46">Extension system</a></h2>
 <p>To extend clap's functionnality, there is a pretty simple mechanism:</p>
 <pre class="code c literal-block">
 <span class="kt">void</span> <span class="o">*</span><span class="n">plug_ext</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">extension</span><span class="p">(</span><span class="n">plug</span><span class="p">,</span> <span class="s">&quot;company/ext-name&quot;</span><span class="p">);</span>
@@ -928,9 +971,9 @@ big endian machine, it should load again successfully.</p>
 </div>
 </div>
 <div class="section" id="examples">
-<h1><a class="toc-backref" href="#id48">Examples</a></h1>
+<h1><a class="toc-backref" href="#id47">Examples</a></h1>
 <div class="section" id="examples-clap-info-clap-info-c">
-<h2><a class="toc-backref" href="#id49">examples/clap-info/clap-info.c</a></h2>
+<h2><a class="toc-backref" href="#id48">examples/clap-info/clap-info.c</a></h2>
 <pre class="code c literal-block">
 <span class="cp">#include &lt;stdio.h&gt;
 #include &lt;dlfcn.h&gt;
@@ -1030,9 +1073,9 @@ big endian machine, it should load again successfully.</p>
 </div>
 </div>
 <div class="section" id="references">
-<h1><a class="toc-backref" href="#id50">References</a></h1>
+<h1><a class="toc-backref" href="#id49">References</a></h1>
 <div class="section" id="clap-clap-h">
-<h2><a class="toc-backref" href="#id51">clap/clap.h</a></h2>
+<h2><a class="toc-backref" href="#id50">clap/clap.h</a></h2>
 <pre class="code c literal-block">
 <span class="cm">/*
  * CLAP - CLever Audio Plugin (&lt;--- needs to find a marketing ok name)
@@ -1169,8 +1212,6 @@ big endian machine, it should load again successfully.</p>
   <span class="kt">uint8_t</span> <span class="n">key</span><span class="p">;</span>
   <span class="kt">float</span>   <span class="n">pitch</span><span class="p">;</span>
   <span class="kt">float</span>   <span class="n">velocity</span><span class="p">;</span> <span class="c1">// 0..1
-</span>
-  <span class="k">struct</span> <span class="n">clap_event</span> <span class="o">*</span><span class="n">events</span><span class="p">;</span> <span class="c1">// events specific to this note
 </span><span class="p">};</span>
 
 <span class="k">struct</span> <span class="n">clap_event_param</span>
@@ -1386,7 +1427,7 @@ big endian machine, it should load again successfully.</p>
 </pre>
 </div>
 <div class="section" id="clap-ext-ports-h">
-<h2><a class="toc-backref" href="#id52">clap/ext/ports.h</a></h2>
+<h2><a class="toc-backref" href="#id51">clap/ext/ports.h</a></h2>
 <pre class="code c literal-block">
 <span class="cp">#ifndef CLAP_EXT_PORTS_H
 # define CLAP_EXT_PORTS_H
@@ -1447,7 +1488,7 @@ big endian machine, it should load again successfully.</p>
 </pre>
 </div>
 <div class="section" id="clap-ext-embed-h">
-<h2><a class="toc-backref" href="#id53">clap/ext/embed.h</a></h2>
+<h2><a class="toc-backref" href="#id52">clap/ext/embed.h</a></h2>
 <pre class="code c literal-block">
 <span class="cp">#ifndef CLAP_EXT_EMBED_H
 # define CLAP_EXT_EMBED_H
@@ -1467,7 +1508,7 @@ big endian machine, it should load again successfully.</p>
 </pre>
 </div>
 <div class="section" id="clap-ext-embed-win32-h">
-<h2><a class="toc-backref" href="#id54">clap/ext/embed-win32.h</a></h2>
+<h2><a class="toc-backref" href="#id53">clap/ext/embed-win32.h</a></h2>
 <pre class="code c literal-block">
 <span class="cp">#ifndef CLAP_EXT_EMBED_WIN32_H
 # define CLAP_EXT_EMBED_WIN32_H
@@ -1490,7 +1531,7 @@ big endian machine, it should load again successfully.</p>
 </pre>
 </div>
 <div class="section" id="clap-ext-embed-xlib-h">
-<h2><a class="toc-backref" href="#id55">clap/ext/embed-xlib.h</a></h2>
+<h2><a class="toc-backref" href="#id54">clap/ext/embed-xlib.h</a></h2>
 <pre class="code c literal-block">
 <span class="cp">#ifndef CLAP_EXT_EMBED_XLIB_H
 # define CLAP_EXT_EMBED_XLIB_H

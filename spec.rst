@@ -384,15 +384,36 @@ Events
 Notes
 `````
 
-Notes are represented as a pair ``note, division``.
-Division is the number of intervals between one note and an other note with
-half or the double frequency. A division by 12 must be supported.
+A note is identified by a key. A key correspond to the keys of a midi keyboard (128 keys).
+If the plugin supports tunning then it should use the ``event->note.pitch`` as
+the note frequency.
 
-If a plugin plugin does not support micro tones, it should ignore
-micro-tuned notes.
+The note A4 correspond to the key 57 and the frequency 440Hz.
+The note A3 correspond to the key 45 and the frequency 220Hz.
 
-The host should not send micro tones to the plugin if
-``plugin->supports_microtones == false``.
+If the plugin supports tunning, then the host could play the note A4 by sending
+a NOTE_ON event with key = 0 and pitch = 440. Then to stop the the host can
+send a NOTE_OFF event with the same key, so 0 in our case or it can send
+a NOTE_ON event on the same key (0), which would terminate the note on the key
+0 and start a new note on the key 0 with the given pitch.
+
+Here is a scenario where the plugin does not support tunning:
+
+- NOTE_ON, key = 60, pitch = 42; starts the note C4, with the pitch 493.88Hz
+- NOTE_OFF, key = 0, pitch = 493.88; ignored because no note has been started on key 0
+- NOTE_ON, key = 60, pitch = 54; retrigers the note C4, with the pitch 493.88Hz
+- NOTE_OFF, key = 60, pitch = 62; stops the note C4
+
+Here is a scenario where the plugin does support tunning:
+
+- NOTE_ON, key = 60, pitch = 42; starts a note, with the pitch 42Hz
+- NOTE_OFF, key = 0, pitch = 493.88; ignored because no note has been started on key 0
+- NOTE_ON, key = 60, pitch = 54; stops the note with the pitch 42Hz and starts
+  a note with a pitch of 54Hz
+- NOTE_OFF, key = 60, pitch = 62; stops the note with a pitch of 54Hz
+
+The plugin is encouraged to use an array with 128 pointers to voice, so
+it can quickly figure which voice is playing the given key.
 
 Parameters
 ``````````
@@ -401,14 +422,8 @@ Parameters can be automated by the host using ``CLAP_EVENT_PARAM_SET`` or
 ``CLAP_EVENT_PARAM_RAMP``.
 
 When using ``CLAP_EVENT_PARAM_RAMP``, the value of the parameter has to be
-incremented by ``event->param.increment`` each steps until an other event
-occur on this parameter.
-
-Pitch
-`````
-
-The pitch is the frequency of the note A4. Its default value is 440Hz.
-The pitch can be changed by the host using the ``CLAP_EVENT_PITCH_SET`` event.
+incremented by ``event->param.increment`` for each samples until an event
+``CLAP_EVENT_PARAM_SET`` or ``CLAP_EVENT_PARAM_RAMP`` occur for this parameter.
 
 Parameters
 ----------
@@ -418,6 +433,21 @@ The host can get the plugin's parameters tree by calling:
 - ``plugin->get_params_count(plugin);`` to know the number of parameters
 - ``plugin->get_param(plugin, param_index, &param);`` to get the parameter
   value and description
+
+.. code:: c
+
+  #include <clap/ext/params.h>
+
+  struct clap_plugin_params *params = plugin->extension(plugin, CLAP_EXT_PARAMS);
+  if (!params)
+    return; // no params extensions
+  uint32_t count = ports->count(plugin);
+  for (uint32_t i = 0; i < count; ++i) {
+    struct clap_param param;
+    if (!ports->get(plugin, i, &param))
+      continue;
+    // ...
+  }
 
 +------------------+----------------------------------------------------------+
 | Attribute        | Description                                              |
@@ -437,6 +467,11 @@ The host can get the plugin's parameters tree by calling:
 +------------------+----------------------------------------------------------+
 | ``display_text`` | How the value should be displayed. Only used for enum    |
 |                  | types.                                                   |
++------------------+----------------------------------------------------------+
+| ``is_used``      | True if the parameter is used by the current patch.      |
++------------------+----------------------------------------------------------+
+| ``is_periodic``  | Means that the parameter is periodic, so                 |
+|                  | ``value = value % max``.                                 |
 +------------------+----------------------------------------------------------+
 | ``value``        | The current value of the parameter.                      |
 +------------------+----------------------------------------------------------+
@@ -484,8 +519,9 @@ When a parameter is modified by the GUI, the plugin should send a
 ``CLAP_EVENT_PARAM_SET`` event must be sent to the host, using
 ``host->events(host, plugin, events);`` so the host can record the automation.
 
-When a parameter is modified by an other parameter, for example imagine you
-have a parameter modulating "absolutely" an other one through an XY mapping.
+When a parameter is modified by an other parameter (this is discouraged),
+for example imagine you have a parameter modulating "absolutely" an other
+one through an XY mapping.
 The host should record the modulation source but not the modulation target.
 To do that the plugin uses ``clap_event_param->is_recordable``.
 
@@ -498,6 +534,14 @@ Showing the GUI
 The plugin should show the GUI after a call to ``plugin->show_gui(plugin)``.
 If the plugin could successfully show the GUI, it returns ``true``, ``false``
 otherwise.
+
+.. code:: c
+
+  #include <clap/ext/gui.h>
+
+  struct clap_plugin_gui *gui = plugin->extension(plugin, CLAP_EXT_GUI);
+  if (gui)
+    gui->open_gui(plugin);
 
 Sending events to the host
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -517,7 +561,7 @@ Events sent to the host should be stamped:
 Hiding the GUI
 ~~~~~~~~~~~~~~
 
-The plugin should hide the GUI after a call to ``plugin->hide_gui(plugin)``.
+The plugin should hide the GUI after a call to ``plugin->close_gui(plugin)``.
 If the plugin window has been closed by the user, then the plugin should
 send an event ``CLAP_EVENT_GUI_CLOSED`` to the host.
 

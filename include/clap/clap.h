@@ -133,8 +133,6 @@ struct clap_event_note
   uint8_t key;
   float   pitch;
   float   velocity; // 0..1
-
-  struct clap_event *events; // events specific to this note
 };
 
 struct clap_event_param
