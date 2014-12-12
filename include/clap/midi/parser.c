@@ -298,7 +298,6 @@ clap_midi_convert(const uint8_t     *in,
       event->type          = CLAP_EVENT_NOTE_OFF;
       event->note.key      = parser.channel.param1;
       event->note.velocity = ((float)parser.channel.param2) / 127.0f;
-      event->note.events   = NULL;
       event->note.pitch    = clap_midi_pitches[event->note.key];
       return;
 
@@ -306,7 +305,6 @@ clap_midi_convert(const uint8_t     *in,
       event->type          = CLAP_EVENT_NOTE_ON;
       event->note.key      = parser.channel.param1;
       event->note.velocity = ((float)parser.channel.param2) / 127.0f;
-      event->note.events   = NULL;
       event->note.pitch    = clap_midi_pitches[event->note.key];
       return;
 

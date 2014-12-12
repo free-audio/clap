@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <dlfcn.h>
 
+#ifndef RLTD_DEEPBIND
+# define RTLD_DEEPBIND 0
+#endif
+
 int main(int argc, char **argv)
 {
   void *handle1 = dlopen(argv[1], RTLD_NOW | RTLD_LOCAL | RTLD_DEEPBIND);
