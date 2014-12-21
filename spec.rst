@@ -16,7 +16,7 @@ Goals
 - Bring new features missed in VST 2.4
 - Designed to work on any operating system and processor architecture
 - Be event oriented
-- Be extensible without breaking existing interface
+- Be extensible
 - Be easy to bridge
 - Support dynamic configuration: let a modular plugin dynamically
   add new parameters, new outputs/inputs, etc...
@@ -176,15 +176,28 @@ Then to get plugin's attribute, you have to use ``plugin->get_attribute(plugin, 
 | CLAP_ATTR_TYPE                 | Bitfield describing what the plugin does. See                 |
 |                                | ``enum clap_plugin_type``.                                    |
 +--------------------------------+---------------------------------------------------------------+
-| CLAP_ATTR_CHUNK_SIZE           | The process buffer, must have a number of sample multiple of  |
+| CLAP_ATTR_CHUNK_SIZE           | The process buffer must have a number of sample multiple of   |
 |                                | ``chunk_size``.                                               |
 +--------------------------------+---------------------------------------------------------------+
 | CLAP_ATTR_LATENCY              | The latency introduced by the plugin.                         |
 +--------------------------------+---------------------------------------------------------------+
-| CLAP_ATTR_SUPPORTS_TUNING      | True if the plugin supports tuning                            |
+| CLAP_ATTR_SUPPORTS_TUNING      | True if the plugin supports tuning.                           |
 +--------------------------------+---------------------------------------------------------------+
-| CLAP_ATTR_IS_REMOTE_PROCESSING | True if the plugin supports tuning                            |
+| CLAP_ATTR_IS_REMOTE_PROCESSING | True if the plugin is doing remote processing. This can help  |
+|                                | the DAW's task scheduling.                                    |
 +--------------------------------+---------------------------------------------------------------+
+
+Extension system
+~~~~~~~~~~~~~~~~
+
+To extend clap's functionnality, there is a pretty simple mechanism:
+
+.. code:: c
+
+  void *plug_ext = plugin->extension(plug, "company/ext-name");
+  void *host_ext = host->extension(host, "company/ext-name");
+
+If the extension is not supported, the plugin should return ``NULL``.
 
 Audio ports configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -194,7 +207,8 @@ layout or configurations.
 
 An audio port has a type: mono, stereo, surround and a role: main
 input/output or sidechain. We might add a feedback role in the futur
-if there is a need for it.
+if there is a need for it. Also, an instrument/effect can load and host
+clap effects for its feedback loops.
 
 Pin layout
 ``````````
@@ -269,7 +283,7 @@ Getting the ports configurations
 
   struct clap_plugin_ports *ports = plugin->extension(plugin, CLAP_EXT_PORTS);
   if (!ports)
-    return; // no ports extensions
+    return; // no ports extension
   uint32_t count = ports->get_configs_count(plugin);
   for (uint32_t i = 0; i < count; ++i) {
     struct clap_ports_config config;
@@ -428,10 +442,10 @@ incremented by ``event->param.increment`` for each samples until an event
 Parameters
 ----------
 
-The host can get the plugin's parameters tree by calling:
+The host can get the plugin's parameters tree by using the params extension:
 
-- ``plugin->get_params_count(plugin);`` to know the number of parameters
-- ``plugin->get_param(plugin, param_index, &param);`` to get the parameter
+- ``params->count(plugin);`` to know the number of parameters
+- ``params->get(plugin, param_index, &param);`` to get the parameter
   value and description
 
 .. code:: c
@@ -449,6 +463,8 @@ The host can get the plugin's parameters tree by calling:
     // ...
   }
 
+See `clap/ext/params.h`_.
+ 
 +------------------+----------------------------------------------------------+
 | Attribute        | Description                                              |
 +==================+==========================================================+
@@ -531,8 +547,8 @@ Graphical User Interface
 Showing the GUI
 ~~~~~~~~~~~~~~~
 
-The plugin should show the GUI after a call to ``plugin->show_gui(plugin)``.
-If the plugin could successfully show the GUI, it returns ``true``, ``false``
+To show the plugin's GUI, you need to use the gui extension: ``gui->open(plugin)``.
+If the plugin succeed to show the GUI, it returns ``true``, ``false``
 otherwise.
 
 .. code:: c
@@ -541,7 +557,9 @@ otherwise.
 
   struct clap_plugin_gui *gui = plugin->extension(plugin, CLAP_EXT_GUI);
   if (gui)
-    gui->open_gui(plugin);
+    gui->open(plugin);
+
+See `clap/ext/gui.h`_.
 
 Sending events to the host
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -555,13 +573,13 @@ Events sent to the host should be stamped:
 
   struct clap_event ev;
   // ...
-  ev.sample_offset = host->steady_time(host);
+  ev.steady_time = host->steady_time(host);
   host->events(host, plugin, &ev);
 
 Hiding the GUI
 ~~~~~~~~~~~~~~
 
-The plugin should hide the GUI after a call to ``plugin->close_gui(plugin)``.
+The plugin should hide the GUI after a call to ``gui->close(plugin)``.
 If the plugin window has been closed by the user, then the plugin should
 send an event ``CLAP_EVENT_GUI_CLOSED`` to the host.
 
@@ -577,8 +595,8 @@ Embedding
 ~~~~~~~~~
 
 Some host are designed to embed plugin's window.
-As embedding is not a Clap requirement, it is offered as an extension.
-Also the OS dependency brought by this feature makes it ideal as an extension.
+As embedding is not a requirement and is OS specific, it is then offered as
+an extension.
 
 +------------+---------------------------+----------------------+----------------+
 | GUI        | header                    | extension            | comment        |
@@ -596,15 +614,16 @@ Example on Windows
 .. code:: c
 
   #include <clap/clap.h>
-  #include <clap/clap-embed-win32.h>
+  #include <clap/ext/gui.h>
+  #include <clap/ext/embed-win32.h>
 
-  // host code
-  struct clap_embed_win32 *embed = plugin->get_extension(plugin, CLAP_EMBED_WIN32);
-  if (embed) {
-    // the plugin can embed
+  struct clap_plugin_embed_win32 *embed = plugin->get_extension(plugin, CLAP_EMBED_WIN32);
+  if (embed)
     embed->embed(plugin, window);
-  }
-  plugin->show_gui(plugin);
+
+  struct clap_plugin_gui *gui = plugin->get_extension(plugin, CLAP_EXT_GUI);
+  if (gui)
+    gui->open(plugin);
 
 Resizing the window
 ```````````````````
@@ -612,10 +631,10 @@ Resizing the window
 .. code:: c
 
   #include <clap/clap.h>
-  #include <clap/clap-embed.h>
+  #include <clap/ext/embed.h>
 
   // plugin code
-  struct clap_embed *embed = host->get_extension(plugin, CLAP_EMBED);
+  struct clap_host_embed *embed = host->get_extension(plugin, CLAP_EMBED);
   if (embed && embed->resize(host, width, height)) {
     // resize succeed
   }
@@ -627,11 +646,30 @@ Presets
 List plugin's presets
 ~~~~~~~~~~~~~~~~~~~~~
 
-The host can browse the plugin's preset by calling:
+The host can browse the plugin's presets by using the preset extension:
 
-- ``plugin->get_presets_count(plugin);`` to know how many presets it has.
-- ``plugin->get_preset(plugin, preset_index, &preset);`` to get a preset
-  details.
+.. code:: c
+
+  #include <clap/clap.h>
+  #include <clap/ext/presets.h>
+
+  struct clap_plugin_presets *presets = plugin->get_extension(plugin, CLAP_PRESETS);
+  struct clap_preset_iterator *iter = NULL;
+  struct clap_preset;
+
+  if (presets && presets->iter_begin(plugin, &iter)) {
+    do {
+      if (!presets->iter_get(plugin, iter, &preset))
+        break;
+
+      // XXX: do your work with preset;
+    } while (presets->iter_next(plugin, iter));
+
+    // release the iterator
+    presets->iter_destroy(plugin, iter);
+  }
+
+See `clap/ext/presets.h`_.
 
 Load a preset
 ~~~~~~~~~~~~~
@@ -645,39 +683,34 @@ When a preset is loaded from the plugin's GUI, the plugin must send a
 Save and restore plugin's state
 -------------------------------
 
-Saving the plugin's state is done by:
+Saving the plugin's state is done by using the state extension:
 
 .. code:: c
 
-  void *buffer = NULL;
-  size_t size = 0;
-  if (!plugin->save(plugin, &buffer, &size)) {
-    // save failed
-  } else {
+  #include <clap/clap.h>
+  #include <clap/ext/state.h>
+
+  void   *buffer = NULL;
+  size_t  size   = 0;
+
+  struct clap_plugin_state *state = plugin->get_extension(plugin, CLAP_EXT_STATE);
+  if (state && state->save(plugin, &buffer, &size)) {
     // save succeed
+  } else {
+    // save failed
   }
 
 Restoring the plugin's state is done by:
 
 .. code:: c
 
-  plugin->restore(plugin, buffer, size);
+  state->restore(plugin, buffer, size);
 
 The state of the plugin should be independent of the machine: you can save a
 plugin state on a little endian machine and send it through the network to a
 big endian machine, it should load again successfully.
 
-Extension system
-----------------
-
-To extend clap's functionnality, there is a pretty simple mechanism:
-
-.. code:: c
-
-  void *plug_ext = plugin->extension(plug, "company/ext-name");
-  void *host_ext = host->extension(host, "company/ext-name");
-
-If the extension is not supported, the plugin should return ``NULL``.
+See `clap/ext/state.h`_.
 
 Examples
 ========
@@ -701,6 +734,30 @@ clap/ext/ports.h
 ----------------
 
 .. include:: include/clap/ext/ports.h
+   :code: c
+
+clap/ext/gui.h
+--------------
+
+.. include:: include/clap/ext/gui.h
+   :code: c
+
+clap/ext/state.h
+----------------
+
+.. include:: include/clap/ext/state.h
+   :code: c
+
+clap/ext/params.h
+-----------------
+
+.. include:: include/clap/ext/params.h
+   :code: c
+
+clap/ext/presets.h
+------------------
+
+.. include:: include/clap/ext/presets.h
    :code: c
 
 clap/ext/embed.h

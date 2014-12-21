@@ -12,7 +12,7 @@ struct clap_preset
   char     desc[CLAP_DESC_SIZE];   // desc and how to use it
   char     author[CLAP_NAME_SIZE];
   char     tags[CLAP_TAGS_SIZE];   // "tag1;tag2;tag3;..."
-  uint8_t  score;                  // 0 = garbage, ..., 5 = favorite
+  uint8_t  score;                  // 0 = garbage, ..., 4 = favorite
 };
 
 struct clap_preset_iterator;
@@ -49,6 +49,11 @@ struct clap_plugin_presets
   bool (*get)(struct clap_plugin *plugin,
               const char         *url,
               struct clap_preset *preset);
+
+  /* Set the preset score. */
+  void (*set_score)(struct clap_plugin *plugin,
+                    const char         *url,
+                    uint8_t             score);
 };
 
 #endif /* !CLAP_EXT_PRESETS_H */

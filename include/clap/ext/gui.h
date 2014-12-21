@@ -8,8 +8,8 @@
 struct clap_plugin_gui
 {
   /* gui */
-  bool (*open_gui)(struct clap_plugin *plugin);
-  void (*close_gui)(struct clap_plugin *plugin);
+  bool (*open)(struct clap_plugin *plugin);
+  void (*close)(struct clap_plugin *plugin);
 };
 
 #endif /* !CLAP_EXT_GUI_H */

@@ -130,50 +130,50 @@ tt.docutils {
 </ul>
 </li>
 <li><a class="reference internal" href="#plugin-description" id="id18">Plugin description</a></li>
-<li><a class="reference internal" href="#audio-ports-configuration" id="id19">Audio ports configuration</a><ul>
-<li><a class="reference internal" href="#pin-layout" id="id20">Pin layout</a></li>
-<li><a class="reference internal" href="#configurations" id="id21">Configurations</a></li>
-<li><a class="reference internal" href="#getting-the-ports-configurations" id="id22">Getting the ports configurations</a></li>
-<li><a class="reference internal" href="#selecting-a-configuration" id="id23">Selecting a configuration</a></li>
-<li><a class="reference internal" href="#repeatable-channels" id="id24">Repeatable channels</a></li>
+<li><a class="reference internal" href="#extension-system" id="id19">Extension system</a></li>
+<li><a class="reference internal" href="#audio-ports-configuration" id="id20">Audio ports configuration</a><ul>
+<li><a class="reference internal" href="#pin-layout" id="id21">Pin layout</a></li>
+<li><a class="reference internal" href="#configurations" id="id22">Configurations</a></li>
+<li><a class="reference internal" href="#getting-the-ports-configurations" id="id23">Getting the ports configurations</a></li>
+<li><a class="reference internal" href="#selecting-a-configuration" id="id24">Selecting a configuration</a></li>
+<li><a class="reference internal" href="#repeatable-channels" id="id25">Repeatable channels</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#activation" id="id25">Activation</a></li>
-<li><a class="reference internal" href="#processing" id="id26">Processing</a><ul>
-<li><a class="reference internal" href="#audio-buffers" id="id27">Audio buffers</a></li>
-<li><a class="reference internal" href="#events" id="id28">Events</a><ul>
-<li><a class="reference internal" href="#notes" id="id29">Notes</a></li>
-<li><a class="reference internal" href="#parameters" id="id30">Parameters</a></li>
+<li><a class="reference internal" href="#activation" id="id26">Activation</a></li>
+<li><a class="reference internal" href="#processing" id="id27">Processing</a><ul>
+<li><a class="reference internal" href="#audio-buffers" id="id28">Audio buffers</a></li>
+<li><a class="reference internal" href="#events" id="id29">Events</a><ul>
+<li><a class="reference internal" href="#notes" id="id30">Notes</a></li>
+<li><a class="reference internal" href="#parameters" id="id31">Parameters</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id1" id="id31">Parameters</a><ul>
-<li><a class="reference internal" href="#types" id="id32">Types</a></li>
-<li><a class="reference internal" href="#scales" id="id33">Scales</a></li>
-<li><a class="reference internal" href="#automation" id="id34">Automation</a></li>
+<li><a class="reference internal" href="#id1" id="id32">Parameters</a><ul>
+<li><a class="reference internal" href="#types" id="id33">Types</a></li>
+<li><a class="reference internal" href="#scales" id="id34">Scales</a></li>
+<li><a class="reference internal" href="#automation" id="id35">Automation</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#graphical-user-interface" id="id35">Graphical User Interface</a><ul>
-<li><a class="reference internal" href="#showing-the-gui" id="id36">Showing the GUI</a></li>
-<li><a class="reference internal" href="#sending-events-to-the-host" id="id37">Sending events to the host</a></li>
-<li><a class="reference internal" href="#hiding-the-gui" id="id38">Hiding the GUI</a></li>
-<li><a class="reference internal" href="#embedding" id="id39">Embedding</a><ul>
-<li><a class="reference internal" href="#example-on-windows" id="id40">Example on Windows</a></li>
-<li><a class="reference internal" href="#resizing-the-window" id="id41">Resizing the window</a></li>
+<li><a class="reference internal" href="#graphical-user-interface" id="id36">Graphical User Interface</a><ul>
+<li><a class="reference internal" href="#showing-the-gui" id="id37">Showing the GUI</a></li>
+<li><a class="reference internal" href="#sending-events-to-the-host" id="id38">Sending events to the host</a></li>
+<li><a class="reference internal" href="#hiding-the-gui" id="id39">Hiding the GUI</a></li>
+<li><a class="reference internal" href="#embedding" id="id40">Embedding</a><ul>
+<li><a class="reference internal" href="#example-on-windows" id="id41">Example on Windows</a></li>
+<li><a class="reference internal" href="#resizing-the-window" id="id42">Resizing the window</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#presets" id="id42">Presets</a><ul>
-<li><a class="reference internal" href="#list-plugin-s-presets" id="id43">List plugin's presets</a></li>
-<li><a class="reference internal" href="#load-a-preset" id="id44">Load a preset</a></li>
+<li><a class="reference internal" href="#presets" id="id43">Presets</a><ul>
+<li><a class="reference internal" href="#list-plugin-s-presets" id="id44">List plugin's presets</a></li>
+<li><a class="reference internal" href="#load-a-preset" id="id45">Load a preset</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#save-and-restore-plugin-s-state" id="id45">Save and restore plugin's state</a></li>
-<li><a class="reference internal" href="#extension-system" id="id46">Extension system</a></li>
+<li><a class="reference internal" href="#save-and-restore-plugin-s-state" id="id46">Save and restore plugin's state</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#examples" id="id47">Examples</a><ul>
@@ -183,9 +183,13 @@ tt.docutils {
 <li><a class="reference internal" href="#references" id="id49">References</a><ul>
 <li><a class="reference internal" href="#clap-clap-h" id="id50">clap/clap.h</a></li>
 <li><a class="reference internal" href="#clap-ext-ports-h" id="id51">clap/ext/ports.h</a></li>
-<li><a class="reference internal" href="#clap-ext-embed-h" id="id52">clap/ext/embed.h</a></li>
-<li><a class="reference internal" href="#clap-ext-embed-win32-h" id="id53">clap/ext/embed-win32.h</a></li>
-<li><a class="reference internal" href="#clap-ext-embed-xlib-h" id="id54">clap/ext/embed-xlib.h</a></li>
+<li><a class="reference internal" href="#clap-ext-gui-h" id="id52">clap/ext/gui.h</a></li>
+<li><a class="reference internal" href="#clap-ext-state-h" id="id53">clap/ext/state.h</a></li>
+<li><a class="reference internal" href="#clap-ext-params-h" id="id54">clap/ext/params.h</a></li>
+<li><a class="reference internal" href="#clap-ext-presets-h" id="id55">clap/ext/presets.h</a></li>
+<li><a class="reference internal" href="#clap-ext-embed-h" id="id56">clap/ext/embed.h</a></li>
+<li><a class="reference internal" href="#clap-ext-embed-win32-h" id="id57">clap/ext/embed-win32.h</a></li>
+<li><a class="reference internal" href="#clap-ext-embed-xlib-h" id="id58">clap/ext/embed-xlib.h</a></li>
 </ul>
 </li>
 </ul>
@@ -198,7 +202,7 @@ tt.docutils {
 <li>Bring new features missed in VST 2.4</li>
 <li>Designed to work on any operating system and processor architecture</li>
 <li>Be event oriented</li>
-<li>Be extensible without breaking existing interface</li>
+<li>Be extensible</li>
 <li>Be easy to bridge</li>
 <li>Support dynamic configuration: let a modular plugin dynamically
 add new parameters, new outputs/inputs, etc...</li>
@@ -383,30 +387,41 @@ For example: <tt class="docutils literal">fm;analogue;delay</tt>.</td>
 <tt class="docutils literal">enum clap_plugin_type</tt>.</td>
 </tr>
 <tr><td>CLAP_ATTR_CHUNK_SIZE</td>
-<td>The process buffer, must have a number of sample multiple of
+<td>The process buffer must have a number of sample multiple of
 <tt class="docutils literal">chunk_size</tt>.</td>
 </tr>
 <tr><td>CLAP_ATTR_LATENCY</td>
 <td>The latency introduced by the plugin.</td>
 </tr>
 <tr><td>CLAP_ATTR_SUPPORTS_TUNING</td>
-<td>True if the plugin supports tuning</td>
+<td>True if the plugin supports tuning.</td>
 </tr>
 <tr><td>CLAP_ATTR_IS_REMOTE_PROCESSING</td>
-<td>True if the plugin supports tuning</td>
+<td>True if the plugin is doing remote processing. This can help
+the DAW's task scheduling.</td>
 </tr>
 </tbody>
 </table>
 </div>
+<div class="section" id="extension-system">
+<h3><a class="toc-backref" href="#id19">Extension system</a></h3>
+<p>To extend clap's functionnality, there is a pretty simple mechanism:</p>
+<pre class="code c literal-block">
+<span class="kt">void</span> <span class="o">*</span><span class="n">plug_ext</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">extension</span><span class="p">(</span><span class="n">plug</span><span class="p">,</span> <span class="s">&quot;company/ext-name&quot;</span><span class="p">);</span>
+<span class="kt">void</span> <span class="o">*</span><span class="n">host_ext</span> <span class="o">=</span> <span class="n">host</span><span class="o">-&gt;</span><span class="n">extension</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="s">&quot;company/ext-name&quot;</span><span class="p">);</span>
+</pre>
+<p>If the extension is not supported, the plugin should return <tt class="docutils literal">NULL</tt>.</p>
+</div>
 <div class="section" id="audio-ports-configuration">
-<h3><a class="toc-backref" href="#id19">Audio ports configuration</a></h3>
+<h3><a class="toc-backref" href="#id20">Audio ports configuration</a></h3>
 <p>A plugin may have multiple audio ports, and so multiple audio ports
 layout or configurations.</p>
 <p>An audio port has a type: mono, stereo, surround and a role: main
 input/output or sidechain. We might add a feedback role in the futur
-if there is a need for it.</p>
+if there is a need for it. Also, an instrument/effect can load and host
+clap effects for its feedback loops.</p>
 <div class="section" id="pin-layout">
-<h4><a class="toc-backref" href="#id20">Pin layout</a></h4>
+<h4><a class="toc-backref" href="#id21">Pin layout</a></h4>
 <table border="1" class="docutils">
 <colgroup>
 <col width="28%" />
@@ -460,7 +475,7 @@ if there is a need for it.</p>
 </table>
 </div>
 <div class="section" id="configurations">
-<h4><a class="toc-backref" href="#id21">Configurations</a></h4>
+<h4><a class="toc-backref" href="#id22">Configurations</a></h4>
 <p>After the call to <tt class="docutils literal">clap_create()</tt> the new plugin uses the default ports
 configuration: 1 stereo input and 1 stereo output. So if you're fine with
 it, there is nothing more to do.</p>
@@ -520,13 +535,13 @@ during the plugin activation (<tt class="docutils literal"><span class="pre">plu
 </table>
 </div>
 <div class="section" id="getting-the-ports-configurations">
-<h4><a class="toc-backref" href="#id22">Getting the ports configurations</a></h4>
+<h4><a class="toc-backref" href="#id23">Getting the ports configurations</a></h4>
 <pre class="code c literal-block">
 <span class="cp">#include &lt;clap/ext/ports.h&gt;
 </span>
 <span class="k">struct</span> <span class="n">clap_plugin_ports</span> <span class="o">*</span><span class="n">ports</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">extension</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">CLAP_EXT_PORTS</span><span class="p">);</span>
 <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">ports</span><span class="p">)</span>
-  <span class="k">return</span><span class="p">;</span> <span class="c1">// no ports extensions
+  <span class="k">return</span><span class="p">;</span> <span class="c1">// no ports extension
 </span><span class="kt">uint32_t</span> <span class="n">count</span> <span class="o">=</span> <span class="n">ports</span><span class="o">-&gt;</span><span class="n">get_configs_count</span><span class="p">(</span><span class="n">plugin</span><span class="p">);</span>
 <span class="k">for</span> <span class="p">(</span><span class="kt">uint32_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">struct</span> <span class="n">clap_ports_config</span> <span class="n">config</span><span class="p">;</span>
@@ -544,13 +559,13 @@ you have to call
 <tt class="docutils literal"><span class="pre">ports-&gt;get_info(plugin,</span> config_index, port_index, &amp;port);</tt>.</p>
 </div>
 <div class="section" id="selecting-a-configuration">
-<h4><a class="toc-backref" href="#id23">Selecting a configuration</a></h4>
+<h4><a class="toc-backref" href="#id24">Selecting a configuration</a></h4>
 <p>Selecting an audio configuration has to be done when the plugin is deactivated.
 It is done by calling <tt class="docutils literal"><span class="pre">plugin-&gt;set_port_config(plugin,</span> config_index)</tt>.
 If the call returns false, then the plugin is in failed state.</p>
 </div>
 <div class="section" id="repeatable-channels">
-<h4><a class="toc-backref" href="#id24">Repeatable channels</a></h4>
+<h4><a class="toc-backref" href="#id25">Repeatable channels</a></h4>
 <p>Repeatable channels are a special case. A channel can be identified as
 repeatable if <tt class="docutils literal"><span class="pre">channel-&gt;is_repeatable</span> == true</tt>.</p>
 <p>A useful case is for an analyzer. Imagine a spectroscope, to which you want to
@@ -567,7 +582,7 @@ the call.</p>
 </div>
 </div>
 <div class="section" id="activation">
-<h2><a class="toc-backref" href="#id25">Activation</a></h2>
+<h2><a class="toc-backref" href="#id26">Activation</a></h2>
 <p>Before doing any processing, the plugin must be activated by calling
 <tt class="docutils literal">bool succeed = <span class="pre">plugin-&gt;activate(plugin);</span></tt>.</p>
 <p>If <tt class="docutils literal">succeed == true</tt> then the activation succeed. If the activation failed,
@@ -587,7 +602,7 @@ not activated.</p>
 destroying it.</p>
 </div>
 <div class="section" id="processing">
-<h2><a class="toc-backref" href="#id26">Processing</a></h2>
+<h2><a class="toc-backref" href="#id27">Processing</a></h2>
 <p>The processing is done in one call: <tt class="docutils literal"><span class="pre">plugin-&gt;process(plugin,</span> process);</tt>.
 The data structure process regroup everything needed by the plugin:</p>
 <ul class="simple">
@@ -620,7 +635,7 @@ which can be:</p>
 </tbody>
 </table>
 <div class="section" id="audio-buffers">
-<h3><a class="toc-backref" href="#id27">Audio buffers</a></h3>
+<h3><a class="toc-backref" href="#id28">Audio buffers</a></h3>
 <ul class="simple">
 <li>The audio buffers are allocated by the host. They must be aligned by the
 maximum requirement of the vector instructions currently available.</li>
@@ -631,14 +646,14 @@ maximum requirement of the vector instructions currently available.</li>
 </ul>
 </div>
 <div class="section" id="events">
-<h3><a class="toc-backref" href="#id28">Events</a></h3>
+<h3><a class="toc-backref" href="#id29">Events</a></h3>
 <ul class="simple">
 <li>Event's time must be within the process duration:
 <tt class="docutils literal"><span class="pre">[process-&gt;steady_time</span> .. <span class="pre">process-&gt;steady_time</span> + <span class="pre">process-&gt;nb_sambles]</span></tt>.</li>
 <li>The plugin must not modify the events.</li>
 </ul>
 <div class="section" id="notes">
-<h4><a class="toc-backref" href="#id29">Notes</a></h4>
+<h4><a class="toc-backref" href="#id30">Notes</a></h4>
 <p>A note is identified by a key. A key correspond to the keys of a midi keyboard (128 keys).
 If the plugin supports tunning then it should use the <tt class="docutils literal"><span class="pre">event-&gt;note.pitch</span></tt> as
 the note frequency.</p>
@@ -668,7 +683,7 @@ a note with a pitch of 54Hz</li>
 it can quickly figure which voice is playing the given key.</p>
 </div>
 <div class="section" id="parameters">
-<h4><a class="toc-backref" href="#id30">Parameters</a></h4>
+<h4><a class="toc-backref" href="#id31">Parameters</a></h4>
 <p>Parameters can be automated by the host using <tt class="docutils literal">CLAP_EVENT_PARAM_SET</tt> or
 <tt class="docutils literal">CLAP_EVENT_PARAM_RAMP</tt>.</p>
 <p>When using <tt class="docutils literal">CLAP_EVENT_PARAM_RAMP</tt>, the value of the parameter has to be
@@ -678,11 +693,11 @@ incremented by <tt class="docutils literal"><span class="pre">event-&gt;param.in
 </div>
 </div>
 <div class="section" id="id1">
-<h2><a class="toc-backref" href="#id31">Parameters</a></h2>
-<p>The host can get the plugin's parameters tree by calling:</p>
+<h2><a class="toc-backref" href="#id32">Parameters</a></h2>
+<p>The host can get the plugin's parameters tree by using the params extension:</p>
 <ul class="simple">
-<li><tt class="docutils literal"><span class="pre">plugin-&gt;get_params_count(plugin);</span></tt> to know the number of parameters</li>
-<li><tt class="docutils literal"><span class="pre">plugin-&gt;get_param(plugin,</span> param_index, &amp;param);</tt> to get the parameter
+<li><tt class="docutils literal"><span class="pre">params-&gt;count(plugin);</span></tt> to know the number of parameters</li>
+<li><tt class="docutils literal"><span class="pre">params-&gt;get(plugin,</span> param_index, &amp;param);</tt> to get the parameter
 value and description</li>
 </ul>
 <pre class="code c literal-block">
@@ -699,6 +714,7 @@ value and description</li>
   <span class="c1">// ...
 </span><span class="p">}</span>
 </pre>
+<p>See <a class="reference internal" href="#clap-ext-params-h">clap/ext/params.h</a>.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="24%" />
@@ -754,7 +770,7 @@ types.</td>
 </tbody>
 </table>
 <div class="section" id="types">
-<h3><a class="toc-backref" href="#id32">Types</a></h3>
+<h3><a class="toc-backref" href="#id33">Types</a></h3>
 <p>There are a few parameter types:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -796,14 +812,14 @@ should rely on <tt class="docutils literal">display_text</tt> to show its value.
 </table>
 </div>
 <div class="section" id="scales">
-<h3><a class="toc-backref" href="#id33">Scales</a></h3>
+<h3><a class="toc-backref" href="#id34">Scales</a></h3>
 <p>The plugin can inform the host, which scale to use for the parameter's UI
 (knob, slider, ...). <tt class="docutils literal"><span class="pre">clap_param-&gt;scale</span></tt> can be set to <tt class="docutils literal">CLAP_PARAM_LINEAR</tt>
 or <tt class="docutils literal">CLAP_PARAM_LOG</tt>. A logarithmic scale is convinient for a frequency
 parameter.</p>
 </div>
 <div class="section" id="automation">
-<h3><a class="toc-backref" href="#id34">Automation</a></h3>
+<h3><a class="toc-backref" href="#id35">Automation</a></h3>
 <p>When a parameter is modified by the GUI, the plugin should send a
 <tt class="docutils literal">CLAP_EVENT_PARAM_SET</tt> event must be sent to the host, using
 <tt class="docutils literal"><span class="pre">host-&gt;events(host,</span> plugin, events);</tt> so the host can record the automation.</p>
@@ -815,35 +831,36 @@ To do that the plugin uses <tt class="docutils literal"><span class="pre">clap_e
 </div>
 </div>
 <div class="section" id="graphical-user-interface">
-<h2><a class="toc-backref" href="#id35">Graphical User Interface</a></h2>
+<h2><a class="toc-backref" href="#id36">Graphical User Interface</a></h2>
 <div class="section" id="showing-the-gui">
-<h3><a class="toc-backref" href="#id36">Showing the GUI</a></h3>
-<p>The plugin should show the GUI after a call to <tt class="docutils literal"><span class="pre">plugin-&gt;show_gui(plugin)</span></tt>.
-If the plugin could successfully show the GUI, it returns <tt class="docutils literal">true</tt>, <tt class="docutils literal">false</tt>
+<h3><a class="toc-backref" href="#id37">Showing the GUI</a></h3>
+<p>To show the plugin's GUI, you need to use the gui extension: <tt class="docutils literal"><span class="pre">gui-&gt;open(plugin)</span></tt>.
+If the plugin succeed to show the GUI, it returns <tt class="docutils literal">true</tt>, <tt class="docutils literal">false</tt>
 otherwise.</p>
 <pre class="code c literal-block">
 <span class="cp">#include &lt;clap/ext/gui.h&gt;
 </span>
 <span class="k">struct</span> <span class="n">clap_plugin_gui</span> <span class="o">*</span><span class="n">gui</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">extension</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">CLAP_EXT_GUI</span><span class="p">);</span>
 <span class="k">if</span> <span class="p">(</span><span class="n">gui</span><span class="p">)</span>
-  <span class="n">gui</span><span class="o">-&gt;</span><span class="n">open_gui</span><span class="p">(</span><span class="n">plugin</span><span class="p">);</span>
+  <span class="n">gui</span><span class="o">-&gt;</span><span class="n">open</span><span class="p">(</span><span class="n">plugin</span><span class="p">);</span>
 </pre>
+<p>See <a class="reference internal" href="#clap-ext-gui-h">clap/ext/gui.h</a>.</p>
 </div>
 <div class="section" id="sending-events-to-the-host">
-<h3><a class="toc-backref" href="#id37">Sending events to the host</a></h3>
+<h3><a class="toc-backref" href="#id38">Sending events to the host</a></h3>
 <p>The plugin can notify the host of parameter changes by sending events to:
 <tt class="docutils literal"><span class="pre">host-&gt;events(host,</span> plugin, events);</tt>.</p>
 <p>Events sent to the host should be stamped:</p>
 <pre class="code c literal-block">
 <span class="k">struct</span> <span class="n">clap_event</span> <span class="n">ev</span><span class="p">;</span>
 <span class="c1">// ...
-</span><span class="n">ev</span><span class="p">.</span><span class="n">sample_offset</span> <span class="o">=</span> <span class="n">host</span><span class="o">-&gt;</span><span class="n">steady_time</span><span class="p">(</span><span class="n">host</span><span class="p">);</span>
+</span><span class="n">ev</span><span class="p">.</span><span class="n">steady_time</span> <span class="o">=</span> <span class="n">host</span><span class="o">-&gt;</span><span class="n">steady_time</span><span class="p">(</span><span class="n">host</span><span class="p">);</span>
 <span class="n">host</span><span class="o">-&gt;</span><span class="n">events</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">plugin</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ev</span><span class="p">);</span>
 </pre>
 </div>
 <div class="section" id="hiding-the-gui">
-<h3><a class="toc-backref" href="#id38">Hiding the GUI</a></h3>
-<p>The plugin should hide the GUI after a call to <tt class="docutils literal"><span class="pre">plugin-&gt;close_gui(plugin)</span></tt>.
+<h3><a class="toc-backref" href="#id39">Hiding the GUI</a></h3>
+<p>The plugin should hide the GUI after a call to <tt class="docutils literal"><span class="pre">gui-&gt;close(plugin)</span></tt>.
 If the plugin window has been closed by the user, then the plugin should
 send an event <tt class="docutils literal">CLAP_EVENT_GUI_CLOSED</tt> to the host.</p>
 <pre class="code c literal-block">
@@ -855,10 +872,10 @@ send an event <tt class="docutils literal">CLAP_EVENT_GUI_CLOSED</tt> to the hos
 </pre>
 </div>
 <div class="section" id="embedding">
-<h3><a class="toc-backref" href="#id39">Embedding</a></h3>
+<h3><a class="toc-backref" href="#id40">Embedding</a></h3>
 <p>Some host are designed to embed plugin's window.
-As embedding is not a Clap requirement, it is offered as an extension.
-Also the OS dependency brought by this feature makes it ideal as an extension.</p>
+As embedding is not a requirement and is OS specific, it is then offered as
+an extension.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="16%" />
@@ -892,28 +909,29 @@ Also the OS dependency brought by this feature makes it ideal as an extension.</
 </tbody>
 </table>
 <div class="section" id="example-on-windows">
-<h4><a class="toc-backref" href="#id40">Example on Windows</a></h4>
+<h4><a class="toc-backref" href="#id41">Example on Windows</a></h4>
 <pre class="code c literal-block">
 <span class="cp">#include &lt;clap/clap.h&gt;
-#include &lt;clap/clap-embed-win32.h&gt;
+#include &lt;clap/ext/gui.h&gt;
+#include &lt;clap/ext/embed-win32.h&gt;
 </span>
-<span class="c1">// host code
-</span><span class="k">struct</span> <span class="n">clap_embed_win32</span> <span class="o">*</span><span class="n">embed</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">get_extension</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">CLAP_EMBED_WIN32</span><span class="p">);</span>
-<span class="k">if</span> <span class="p">(</span><span class="n">embed</span><span class="p">)</span> <span class="p">{</span>
-  <span class="c1">// the plugin can embed
-</span>  <span class="n">embed</span><span class="o">-&gt;</span><span class="n">embed</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">window</span><span class="p">);</span>
-<span class="p">}</span>
-<span class="n">plugin</span><span class="o">-&gt;</span><span class="n">show_gui</span><span class="p">(</span><span class="n">plugin</span><span class="p">);</span>
+<span class="k">struct</span> <span class="n">clap_plugin_embed_win32</span> <span class="o">*</span><span class="n">embed</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">get_extension</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">CLAP_EMBED_WIN32</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">embed</span><span class="p">)</span>
+  <span class="n">embed</span><span class="o">-&gt;</span><span class="n">embed</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">window</span><span class="p">);</span>
+
+<span class="k">struct</span> <span class="n">clap_plugin_gui</span> <span class="o">*</span><span class="n">gui</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">get_extension</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">CLAP_EXT_GUI</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">gui</span><span class="p">)</span>
+  <span class="n">gui</span><span class="o">-&gt;</span><span class="n">open</span><span class="p">(</span><span class="n">plugin</span><span class="p">);</span>
 </pre>
 </div>
 <div class="section" id="resizing-the-window">
-<h4><a class="toc-backref" href="#id41">Resizing the window</a></h4>
+<h4><a class="toc-backref" href="#id42">Resizing the window</a></h4>
 <pre class="code c literal-block">
 <span class="cp">#include &lt;clap/clap.h&gt;
-#include &lt;clap/clap-embed.h&gt;
+#include &lt;clap/ext/embed.h&gt;
 </span>
 <span class="c1">// plugin code
-</span><span class="k">struct</span> <span class="n">clap_embed</span> <span class="o">*</span><span class="n">embed</span> <span class="o">=</span> <span class="n">host</span><span class="o">-&gt;</span><span class="n">get_extension</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">CLAP_EMBED</span><span class="p">);</span>
+</span><span class="k">struct</span> <span class="n">clap_host_embed</span> <span class="o">*</span><span class="n">embed</span> <span class="o">=</span> <span class="n">host</span><span class="o">-&gt;</span><span class="n">get_extension</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">CLAP_EMBED</span><span class="p">);</span>
 <span class="k">if</span> <span class="p">(</span><span class="n">embed</span> <span class="o">&amp;&amp;</span> <span class="n">embed</span><span class="o">-&gt;</span><span class="n">resize</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))</span> <span class="p">{</span>
   <span class="c1">// resize succeed
 </span><span class="p">}</span>
@@ -922,18 +940,34 @@ Also the OS dependency brought by this feature makes it ideal as an extension.</
 </div>
 </div>
 <div class="section" id="presets">
-<h2><a class="toc-backref" href="#id42">Presets</a></h2>
+<h2><a class="toc-backref" href="#id43">Presets</a></h2>
 <div class="section" id="list-plugin-s-presets">
-<h3><a class="toc-backref" href="#id43">List plugin's presets</a></h3>
-<p>The host can browse the plugin's preset by calling:</p>
-<ul class="simple">
-<li><tt class="docutils literal"><span class="pre">plugin-&gt;get_presets_count(plugin);</span></tt> to know how many presets it has.</li>
-<li><tt class="docutils literal"><span class="pre">plugin-&gt;get_preset(plugin,</span> preset_index, &amp;preset);</tt> to get a preset
-details.</li>
-</ul>
+<h3><a class="toc-backref" href="#id44">List plugin's presets</a></h3>
+<p>The host can browse the plugin's presets by using the preset extension:</p>
+<pre class="code c literal-block">
+<span class="cp">#include &lt;clap/clap.h&gt;
+#include &lt;clap/ext/presets.h&gt;
+</span>
+<span class="k">struct</span> <span class="n">clap_plugin_presets</span> <span class="o">*</span><span class="n">presets</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">get_extension</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">CLAP_PRESETS</span><span class="p">);</span>
+<span class="k">struct</span> <span class="n">clap_preset_iterator</span> <span class="o">*</span><span class="n">iter</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="k">struct</span> <span class="n">clap_preset</span><span class="p">;</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="n">presets</span> <span class="o">&amp;&amp;</span> <span class="n">presets</span><span class="o">-&gt;</span><span class="n">iter_begin</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">iter</span><span class="p">))</span> <span class="p">{</span>
+  <span class="k">do</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">presets</span><span class="o">-&gt;</span><span class="n">iter_get</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">iter</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">preset</span><span class="p">))</span>
+      <span class="k">break</span><span class="p">;</span>
+
+    <span class="c1">// XXX: do your work with preset;
+</span>  <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">presets</span><span class="o">-&gt;</span><span class="n">iter_next</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">iter</span><span class="p">));</span>
+
+  <span class="c1">// release the iterator
+</span>  <span class="n">presets</span><span class="o">-&gt;</span><span class="n">iter_destroy</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">iter</span><span class="p">);</span>
+<span class="p">}</span>
+</pre>
+<p>See <a class="reference internal" href="#clap-ext-presets-h">clap/ext/presets.h</a>.</p>
 </div>
 <div class="section" id="load-a-preset">
-<h3><a class="toc-backref" href="#id44">Load a preset</a></h3>
+<h3><a class="toc-backref" href="#id45">Load a preset</a></h3>
 <p>To load a preset, the host have to send an event <tt class="docutils literal">CLAP_EVENT_PRESET_SET</tt> to
 the plugin.</p>
 <p>When a preset is loaded from the plugin's GUI, the plugin must send a
@@ -941,33 +975,30 @@ the plugin.</p>
 </div>
 </div>
 <div class="section" id="save-and-restore-plugin-s-state">
-<h2><a class="toc-backref" href="#id45">Save and restore plugin's state</a></h2>
-<p>Saving the plugin's state is done by:</p>
+<h2><a class="toc-backref" href="#id46">Save and restore plugin's state</a></h2>
+<p>Saving the plugin's state is done by using the state extension:</p>
 <pre class="code c literal-block">
-<span class="kt">void</span> <span class="o">*</span><span class="n">buffer</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-<span class="kt">size_t</span> <span class="n">size</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">plugin</span><span class="o">-&gt;</span><span class="n">save</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">buffer</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">size</span><span class="p">))</span> <span class="p">{</span>
-  <span class="c1">// save failed
-</span><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+<span class="cp">#include &lt;clap/clap.h&gt;
+#include &lt;clap/ext/state.h&gt;
+</span>
+<span class="kt">void</span>   <span class="o">*</span><span class="n">buffer</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="kt">size_t</span>  <span class="n">size</span>   <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="k">struct</span> <span class="n">clap_plugin_state</span> <span class="o">*</span><span class="n">state</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">get_extension</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">CLAP_EXT_STATE</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">state</span> <span class="o">&amp;&amp;</span> <span class="n">state</span><span class="o">-&gt;</span><span class="n">save</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">buffer</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">size</span><span class="p">))</span> <span class="p">{</span>
   <span class="c1">// save succeed
+</span><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+  <span class="c1">// save failed
 </span><span class="p">}</span>
 </pre>
 <p>Restoring the plugin's state is done by:</p>
 <pre class="code c literal-block">
-<span class="n">plugin</span><span class="o">-&gt;</span><span class="n">restore</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">size</span><span class="p">);</span>
+<span class="n">state</span><span class="o">-&gt;</span><span class="n">restore</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">size</span><span class="p">);</span>
 </pre>
 <p>The state of the plugin should be independent of the machine: you can save a
 plugin state on a little endian machine and send it through the network to a
 big endian machine, it should load again successfully.</p>
-</div>
-<div class="section" id="extension-system">
-<h2><a class="toc-backref" href="#id46">Extension system</a></h2>
-<p>To extend clap's functionnality, there is a pretty simple mechanism:</p>
-<pre class="code c literal-block">
-<span class="kt">void</span> <span class="o">*</span><span class="n">plug_ext</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">extension</span><span class="p">(</span><span class="n">plug</span><span class="p">,</span> <span class="s">&quot;company/ext-name&quot;</span><span class="p">);</span>
-<span class="kt">void</span> <span class="o">*</span><span class="n">host_ext</span> <span class="o">=</span> <span class="n">host</span><span class="o">-&gt;</span><span class="n">extension</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="s">&quot;company/ext-name&quot;</span><span class="p">);</span>
-</pre>
-<p>If the extension is not supported, the plugin should return <tt class="docutils literal">NULL</tt>.</p>
+<p>See <a class="reference internal" href="#clap-ext-state-h">clap/ext/state.h</a>.</p>
 </div>
 </div>
 <div class="section" id="examples">
@@ -1487,8 +1518,175 @@ big endian machine, it should load again successfully.</p>
 <span class="cp">#endif </span><span class="cm">/* !CLAP_EXT_PORT_H */</span>
 </pre>
 </div>
+<div class="section" id="clap-ext-gui-h">
+<h2><a class="toc-backref" href="#id52">clap/ext/gui.h</a></h2>
+<pre class="code c literal-block">
+<span class="cp">#ifndef CLAP_EXT_GUI_H
+# define CLAP_EXT_GUI_H
+</span>
+<span class="cp"># include &quot;../clap.h&quot;
+</span>
+<span class="cp"># define CLAP_EXT_GUI &quot;clap/gui&quot;
+</span>
+<span class="k">struct</span> <span class="n">clap_plugin_gui</span>
+<span class="p">{</span>
+  <span class="cm">/* gui */</span>
+  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">open</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
+  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">close</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="cp">#endif </span><span class="cm">/* !CLAP_EXT_GUI_H */</span>
+</pre>
+</div>
+<div class="section" id="clap-ext-state-h">
+<h2><a class="toc-backref" href="#id53">clap/ext/state.h</a></h2>
+<pre class="code c literal-block">
+<span class="cp">#ifndef CLAP_EXT_STATE_H
+# define CLAP_EXT_STATE_H
+</span>
+<span class="cp"># include &quot;../clap.h&quot;
+</span>
+<span class="cp"># define CLAP_EXT_STATE &quot;clap/state&quot;
+</span>
+<span class="k">struct</span> <span class="n">clap_plugin_state</span>
+<span class="p">{</span>
+  <span class="cm">/* The plugin has to allocate and save its state into *buffer.
+   * The plugin is also responsible to free the buffer on the
+   * next call to save() or when the plugin is destroyed. */</span>
+  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">save</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="kt">void</span> <span class="o">**</span><span class="n">buffer</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="o">*</span><span class="n">size</span><span class="p">);</span>
+  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">restore</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buffer</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">size</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="cp">#endif </span><span class="cm">/* !CLAP_EXT_STATE_H */</span>
+</pre>
+</div>
+<div class="section" id="clap-ext-params-h">
+<h2><a class="toc-backref" href="#id54">clap/ext/params.h</a></h2>
+<pre class="code c literal-block">
+<span class="cp">#ifndef CLAP_EXT_PARAMS_H
+# define CLAP_EXT_PARAMS_H
+</span>
+<span class="cp"># include &quot;../clap.h&quot;
+</span>
+<span class="cp"># define CLAP_EXT_PARAMS &quot;clap/params&quot;
+</span>
+<span class="k">enum</span> <span class="n">clap_param_type</span>
+<span class="p">{</span>
+  <span class="n">CLAP_PARAM_GROUP</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="c1">// no value for this one
+</span>  <span class="n">CLAP_PARAM_BOOL</span>  <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="c1">// uses value.b
+</span>  <span class="n">CLAP_PARAM_FLOAT</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="c1">// uses value.f
+</span>  <span class="n">CLAP_PARAM_INT</span>   <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="c1">// uses value.i
+</span>  <span class="n">CLAP_PARAM_ENUM</span>  <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="c1">// uses value.i
+</span><span class="p">};</span>
+
+<span class="k">enum</span> <span class="n">clap_param_scale</span>
+<span class="p">{</span>
+  <span class="n">CLAP_PARAM_LINEAR</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="n">CLAP_PARAM_LOG</span>    <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">clap_param</span>
+<span class="p">{</span>
+  <span class="cm">/* tree fields */</span>
+  <span class="kt">uint32_t</span> <span class="n">index</span><span class="p">;</span>  <span class="c1">// parameter's index
+</span>  <span class="kt">uint32_t</span> <span class="n">parent</span><span class="p">;</span> <span class="c1">// parent's index, -1 for no parent
+</span>
+  <span class="cm">/* param info */</span>
+  <span class="kt">char</span>                    <span class="n">id</span><span class="p">[</span><span class="n">CLAP_ID_SIZE</span><span class="p">];</span> <span class="c1">// a string which identify the param
+</span>  <span class="kt">char</span>                    <span class="n">name</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span> <span class="c1">// the display name
+</span>  <span class="kt">char</span>                    <span class="n">desc</span><span class="p">[</span><span class="n">CLAP_DESC_SIZE</span><span class="p">];</span>
+  <span class="kt">char</span>                    <span class="n">display</span><span class="p">[</span><span class="n">CLAP_DISPLAY_SIZE</span><span class="p">];</span> <span class="c1">// the text used to display the value
+</span>  <span class="k">enum</span> <span class="n">clap_param_type</span>    <span class="n">type</span><span class="p">;</span>
+  <span class="kt">bool</span>                    <span class="n">is_per_note</span><span class="p">;</span>
+  <span class="kt">bool</span>                    <span class="n">is_used</span><span class="p">;</span> <span class="c1">// is this parameter used by the patch?
+</span>  <span class="kt">bool</span>                    <span class="n">is_periodic</span><span class="p">;</span>
+  <span class="k">union</span> <span class="n">clap_param_value</span>  <span class="n">value</span><span class="p">;</span>
+  <span class="k">union</span> <span class="n">clap_param_value</span>  <span class="n">min</span><span class="p">;</span>
+  <span class="k">union</span> <span class="n">clap_param_value</span>  <span class="n">max</span><span class="p">;</span>
+  <span class="k">enum</span> <span class="n">clap_param_scale</span>   <span class="n">scale</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">clap_plugin_params</span>
+<span class="p">{</span>
+  <span class="cm">/* Returns the number of parameters. */</span>
+  <span class="kt">uint32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">count</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
+
+  <span class="cm">/* Copies the parameter's info to param and returns true.
+   * If index is greater or equal to the number then return false. */</span>
+  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">get</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
+              <span class="kt">uint32_t</span>            <span class="n">index</span><span class="p">,</span>
+              <span class="k">struct</span> <span class="n">clap_param</span>  <span class="o">*</span><span class="n">param</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="cp">#endif </span><span class="cm">/* !CLAP_EXT_PARAMS_H */</span>
+</pre>
+</div>
+<div class="section" id="clap-ext-presets-h">
+<h2><a class="toc-backref" href="#id55">clap/ext/presets.h</a></h2>
+<pre class="code c literal-block">
+<span class="cp">#ifndef CLAP_EXT_PRESETS_H
+# define CLAP_EXT_PRESETS_H
+</span>
+<span class="cp"># include &quot;../clap.h&quot;
+</span>
+<span class="cp"># define CLAP_EXT_PRESETS &quot;clap/presets&quot;
+</span>
+<span class="k">struct</span> <span class="n">clap_preset</span>
+<span class="p">{</span>
+  <span class="kt">char</span>     <span class="n">url</span><span class="p">[</span><span class="n">CLAP_URL_SIZE</span><span class="p">];</span>     <span class="c1">// location to the patch
+</span>  <span class="kt">char</span>     <span class="n">name</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>   <span class="c1">// display name
+</span>  <span class="kt">char</span>     <span class="n">desc</span><span class="p">[</span><span class="n">CLAP_DESC_SIZE</span><span class="p">];</span>   <span class="c1">// desc and how to use it
+</span>  <span class="kt">char</span>     <span class="n">author</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>
+  <span class="kt">char</span>     <span class="n">tags</span><span class="p">[</span><span class="n">CLAP_TAGS_SIZE</span><span class="p">];</span>   <span class="c1">// &quot;tag1;tag2;tag3;...&quot;
+</span>  <span class="kt">uint8_t</span>  <span class="n">score</span><span class="p">;</span>                  <span class="c1">// 0 = garbage, ..., 4 = favorite
+</span><span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">clap_preset_iterator</span><span class="p">;</span>
+
+<span class="k">struct</span> <span class="n">clap_plugin_presets</span>
+<span class="p">{</span>
+  <span class="cm">/* Allocate a new preset iterator positioned at the beginning of the
+   * preset collection, store its pointer into (*iter).
+   * Returns true on success, false otherwise.
+   * If the collection is empty, then it must return false and (*iter)
+   * should be NULL. */</span>
+  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">iter_begin</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>             <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
+                     <span class="k">struct</span> <span class="n">clap_preset_iterator</span>   <span class="o">**</span><span class="n">iter</span><span class="p">);</span>
+
+  <span class="cm">/* Iterate to the next value. If the iterator reached the end of the
+   * collection, returns false.
+   * Returns true on success. */</span>
+  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">iter_next</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>              <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
+                    <span class="k">struct</span> <span class="n">clap_preset_iterator</span>     <span class="o">*</span><span class="n">iter</span><span class="p">);</span>
+
+  <span class="cm">/* Release the iterator.
+   * If iter is NULL, then do nothing. */</span>
+  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">iter_destroy</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>           <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
+                       <span class="k">struct</span> <span class="n">clap_preset_iterator</span>  <span class="o">*</span><span class="n">iter</span><span class="p">);</span>
+
+  <span class="cm">/* Get preset at the current iterator position.
+   * Returns true on success, false otherwise. */</span>
+  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">iter_get</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>               <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
+                   <span class="k">struct</span> <span class="n">clap_preset_iterator</span>      <span class="o">*</span><span class="n">iter</span><span class="p">,</span>
+                   <span class="k">struct</span> <span class="n">clap_preset</span>               <span class="o">*</span><span class="n">preset</span><span class="p">);</span>
+
+  <span class="cm">/* Get a preset info by its URL and returns true.
+   * If the preset is not found, then it should return false. */</span>
+  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">get</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
+              <span class="k">const</span> <span class="kt">char</span>         <span class="o">*</span><span class="n">url</span><span class="p">,</span>
+              <span class="k">struct</span> <span class="n">clap_preset</span> <span class="o">*</span><span class="n">preset</span><span class="p">);</span>
+
+  <span class="cm">/* Set the preset score. */</span>
+  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">set_score</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
+                    <span class="k">const</span> <span class="kt">char</span>         <span class="o">*</span><span class="n">url</span><span class="p">,</span>
+                    <span class="kt">uint8_t</span>             <span class="n">score</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="cp">#endif </span><span class="cm">/* !CLAP_EXT_PRESETS_H */</span>
+</pre>
+</div>
 <div class="section" id="clap-ext-embed-h">
-<h2><a class="toc-backref" href="#id52">clap/ext/embed.h</a></h2>
+<h2><a class="toc-backref" href="#id56">clap/ext/embed.h</a></h2>
 <pre class="code c literal-block">
 <span class="cp">#ifndef CLAP_EXT_EMBED_H
 # define CLAP_EXT_EMBED_H
@@ -1508,7 +1706,7 @@ big endian machine, it should load again successfully.</p>
 </pre>
 </div>
 <div class="section" id="clap-ext-embed-win32-h">
-<h2><a class="toc-backref" href="#id53">clap/ext/embed-win32.h</a></h2>
+<h2><a class="toc-backref" href="#id57">clap/ext/embed-win32.h</a></h2>
 <pre class="code c literal-block">
 <span class="cp">#ifndef CLAP_EXT_EMBED_WIN32_H
 # define CLAP_EXT_EMBED_WIN32_H
@@ -1531,7 +1729,7 @@ big endian machine, it should load again successfully.</p>
 </pre>
 </div>
 <div class="section" id="clap-ext-embed-xlib-h">
-<h2><a class="toc-backref" href="#id54">clap/ext/embed-xlib.h</a></h2>
+<h2><a class="toc-backref" href="#id58">clap/ext/embed-xlib.h</a></h2>
 <pre class="code c literal-block">
 <span class="cp">#ifndef CLAP_EXT_EMBED_XLIB_H
 # define CLAP_EXT_EMBED_XLIB_H
