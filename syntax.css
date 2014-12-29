@@ -7,10 +7,10 @@
 .code .n { color: #f8f8f2 } /* Name */
 .code .o { color: #f92672 } /* Operator */
 .code .p { color: #f8f8f2 } /* Punctuation */
-.code .cm { color: #75715e } /* Comment.Multiline */
-.code .cp { color: #75715e } /* Comment.Preproc */
-.code .c1 { color: #75715e } /* Comment.Single */
-.code .cs { color: #75715e } /* Comment.Special */
+.code .cm { color: #A56E27 } /* Comment.Multiline */
+.code .cp { color: #B5A869 } /* Comment.Preproc */
+.code .c1 { color: #A56E27 } /* Comment.Single */
+.code .cs { color: #A56E27 } /* Comment.Special */
 .code .ge { font-style: italic } /* Generic.Emph */
 .code .gs { font-weight: bold } /* Generic.Strong */
 .code .kc { color: #66d9ef } /* Keyword.Constant */
