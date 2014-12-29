@@ -184,8 +184,8 @@ struct clap_event_latency
 
 struct clap_event_jump
 {
-  uint32_t song_time;  // song time in samples
   uint32_t tempo;      // tempo in samples
+  uint32_t bar_offset; // 0 <= cycle_offset < tsig_denom * tempo
   uint32_t tsig_num;   // time signature numerator
   uint32_t tsig_denom; // time signature denominator
 };
@@ -232,7 +232,6 @@ struct clap_process
   uint32_t   samples_count;
 
   /* process info */
-  uint64_t song_time;   // the song time in samples
   uint64_t steady_time; // the steady time in samples
 
   /* events */
