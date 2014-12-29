@@ -124,8 +124,7 @@ enum clap_event_type
   CLAP_EVENT_PAUSE = 13, // no attribute
   CLAP_EVENT_STOP  = 14, // no attribute
 
-  CLAP_EVENT_TEMPO_CHANGED = 15, // attribute tempo
-  CLAP_EVENT_JUMP = 16, // attribute jump
+  CLAP_EVENT_JUMP = 15, // attribute jump
 };
 
 struct clap_event_note
@@ -183,15 +182,12 @@ struct clap_event_latency
   uint32_t latency;
 };
 
-struct clap_event_tempo
-{
-  uint32_t tempo; // tempo in samples
-  uint32_t phase; // the phase in samples
-};
-
 struct clap_event_jump
 {
-  uint32_t song_time; // song time in samples
+  uint32_t song_time;  // song time in samples
+  uint32_t tempo;      // tempo in samples
+  uint32_t tsig_num;   // time signature numerator
+  uint32_t tsig_denom; // time signature denominator
 };
 
 struct clap_event
