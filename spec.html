@@ -1295,6 +1295,7 @@ big endian machine, it should load again successfully.</p>
 <span class="k">struct</span> <span class="n">clap_event_jump</span>
 <span class="p">{</span>
   <span class="kt">uint32_t</span> <span class="n">tempo</span><span class="p">;</span>      <span class="c1">// tempo in samples
+</span>  <span class="kt">uint32_t</span> <span class="n">bar</span><span class="p">;</span>        <span class="c1">// the bar number
 </span>  <span class="kt">uint32_t</span> <span class="n">bar_offset</span><span class="p">;</span> <span class="c1">// 0 &lt;= cycle_offset &lt; tsig_denom * tempo
 </span>  <span class="kt">uint32_t</span> <span class="n">tsig_num</span><span class="p">;</span>   <span class="c1">// time signature numerator
 </span>  <span class="kt">uint32_t</span> <span class="n">tsig_denom</span><span class="p">;</span> <span class="c1">// time signature denominator

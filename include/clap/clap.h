@@ -185,6 +185,7 @@ struct clap_event_latency
 struct clap_event_jump
 {
   uint32_t tempo;      // tempo in samples
+  uint32_t bar;        // the bar number
   uint32_t bar_offset; // 0 <= cycle_offset < tsig_denom * tempo
   uint32_t tsig_num;   // time signature numerator
   uint32_t tsig_denom; // time signature denominator
