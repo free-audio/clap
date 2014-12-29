@@ -17,10 +17,10 @@ struct clap_plugin_embed_xlib
    *
    * Note for the host, the display_name can be retrieved from your own
    * display->display_name. */
-  bool (*embed)(struct clap_plugin *plugin,
-                Window              window,
-                const char         *display_name);
-  bool (*disembed)(struct clap_plugin *plugin);
+  bool (*attach)(struct clap_plugin *plugin,
+                 Window              window,
+                 const char         *display_name);
+  bool (*detach)(struct clap_plugin *plugin);
 };
 
 #endif /* !CLAP_EMBED_XLIB_H */
