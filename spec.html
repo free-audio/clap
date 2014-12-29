@@ -614,8 +614,8 @@ The data structure process regroup everything needed by the plugin:</p>
 which can be:</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="27%" />
-<col width="73%" />
+<col width="31%" />
+<col width="69%" />
 </colgroup>
 <thead valign="bottom">
 <tr><th class="head">Status</th>
@@ -623,17 +623,20 @@ which can be:</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>CLAP_PROCESS_ERROR</td>
+<tr><td><tt class="docutils literal">CLAP_PROCESS_ERROR</tt></td>
 <td>An error happened, and the buffers should be discarded</td>
 </tr>
-<tr><td>CLAP_PROCESS_CONTINUE</td>
+<tr><td><tt class="docutils literal">CLAP_PROCESS_CONTINUE</tt></td>
 <td>Succeed, the plugins wants to process the next block</td>
 </tr>
-<tr><td>CLAP_PROCESS_STOP</td>
+<tr><td><tt class="docutils literal">CLAP_PROCESS_STOP</tt></td>
 <td>Succeed, every voices terminated, wake me up on a new event</td>
 </tr>
 </tbody>
 </table>
+<p>If <tt class="docutils literal">process()</tt> returns <tt class="docutils literal">CLAP_PROCESS_STOP</tt> and some parameters were ramping
+(see <tt class="docutils literal">CLAP_EVENT_PARAM_RAMP</tt> event), then the host must send a <tt class="docutils literal">CLAP_EVENT_PARAM_SET</tt>
+or  <tt class="docutils literal">CLAP_EVENT_PARAM_RAMP</tt> for those parameters at the next call to process.</p>
 <div class="section" id="audio-buffers">
 <h3><a class="toc-backref" href="#id28">Audio buffers</a></h3>
 <ul class="simple">
@@ -686,9 +689,10 @@ it can quickly figure which voice is playing the given key.</p>
 <h4><a class="toc-backref" href="#id31">Parameters</a></h4>
 <p>Parameters can be automated by the host using <tt class="docutils literal">CLAP_EVENT_PARAM_SET</tt> or
 <tt class="docutils literal">CLAP_EVENT_PARAM_RAMP</tt>.</p>
-<p>When using <tt class="docutils literal">CLAP_EVENT_PARAM_RAMP</tt>, the value of the parameter has to be
-incremented by <tt class="docutils literal"><span class="pre">event-&gt;param.increment</span></tt> for each samples until an event
-<tt class="docutils literal">CLAP_EVENT_PARAM_SET</tt> or <tt class="docutils literal">CLAP_EVENT_PARAM_RAMP</tt> occur for this parameter.</p>
+<p>When using <tt class="docutils literal">CLAP_EVENT_PARAM_RAMP</tt>, the parameter is set to <tt class="docutils literal"><span class="pre">ev-&gt;param.value</span></tt>
+and has to be incremented by <tt class="docutils literal"><span class="pre">event-&gt;param.increment</span></tt> for each samples, except
+for the sample at <tt class="docutils literal"><span class="pre">ev-&gt;steady_time</span></tt>, until an event <tt class="docutils literal">CLAP_EVENT_PARAM_SET</tt> or
+<tt class="docutils literal">CLAP_EVENT_PARAM_RAMP</tt> occur for this parameter.</p>
 </div>
 </div>
 </div>
@@ -1314,7 +1318,6 @@ big endian machine, it should load again successfully.</p>
     <span class="k">struct</span> <span class="n">clap_event_midi</span>        <span class="n">midi</span><span class="p">;</span>
     <span class="k">struct</span> <span class="n">clap_event_control</span>     <span class="n">control</span><span class="p">;</span>
     <span class="k">struct</span> <span class="n">clap_event_latency</span>     <span class="n">latency</span><span class="p">;</span>
-    <span class="k">struct</span> <span class="n">clap_event_tempo</span>       <span class="n">tempo</span><span class="p">;</span>
     <span class="k">struct</span> <span class="n">clap_event_jump</span>        <span class="n">jump</span><span class="p">;</span>
   <span class="p">};</span>
 <span class="p">};</span>

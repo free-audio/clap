@@ -367,16 +367,19 @@ Once the processing is finished, the methods returns a process status
 which can be:
 
 
-+-----------------------+-------------------------------------------------------------+
-| Status                | Meaning                                                     |
-+=======================+=============================================================+
-| CLAP_PROCESS_ERROR    | An error happened, and the buffers should be discarded      |
-+-----------------------+-------------------------------------------------------------+
-| CLAP_PROCESS_CONTINUE | Succeed, the plugins wants to process the next block        |
-+-----------------------+-------------------------------------------------------------+
-| CLAP_PROCESS_STOP     | Succeed, every voices terminated, wake me up on a new event |
-+-----------------------+-------------------------------------------------------------+
++---------------------------+-------------------------------------------------------------+
+| Status                    | Meaning                                                     |
++===========================+=============================================================+
+| ``CLAP_PROCESS_ERROR``    | An error happened, and the buffers should be discarded      |
++---------------------------+-------------------------------------------------------------+
+| ``CLAP_PROCESS_CONTINUE`` | Succeed, the plugins wants to process the next block        |
++---------------------------+-------------------------------------------------------------+
+| ``CLAP_PROCESS_STOP``     | Succeed, every voices terminated, wake me up on a new event |
++---------------------------+-------------------------------------------------------------+
 
+If ``process()`` returns ``CLAP_PROCESS_STOP`` and some parameters were ramping
+(see ``CLAP_EVENT_PARAM_RAMP`` event), then the host must send a ``CLAP_EVENT_PARAM_SET``
+or  ``CLAP_EVENT_PARAM_RAMP`` for those parameters at the next call to process.
 
 Audio buffers
 ~~~~~~~~~~~~~
@@ -435,9 +438,10 @@ Parameters
 Parameters can be automated by the host using ``CLAP_EVENT_PARAM_SET`` or
 ``CLAP_EVENT_PARAM_RAMP``.
 
-When using ``CLAP_EVENT_PARAM_RAMP``, the value of the parameter has to be
-incremented by ``event->param.increment`` for each samples until an event
-``CLAP_EVENT_PARAM_SET`` or ``CLAP_EVENT_PARAM_RAMP`` occur for this parameter.
+When using ``CLAP_EVENT_PARAM_RAMP``, the parameter is set to ``ev->param.value``
+and has to be incremented by ``event->param.increment`` for each samples, except
+for the sample at ``ev->steady_time``, until an event ``CLAP_EVENT_PARAM_SET`` or
+``CLAP_EVENT_PARAM_RAMP`` occur for this parameter.
 
 Parameters
 ----------
