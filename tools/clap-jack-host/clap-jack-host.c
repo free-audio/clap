@@ -233,7 +233,7 @@ int main(int argc, char **argv)
 
   struct clap_plugin_gui *gui = app.plugin->extension(app.plugin, CLAP_EXT_GUI);
   if (gui)
-    gui->open_gui(app.plugin);
+    gui->open(app.plugin);
 
   if (jack_activate(app.client)) {
     fprintf(stderr, "can't activate jack.\n");

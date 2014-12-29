@@ -204,7 +204,6 @@ struct clap_event
     struct clap_event_midi        midi;
     struct clap_event_control     control;
     struct clap_event_latency     latency;
-    struct clap_event_tempo       tempo;
     struct clap_event_jump	  jump;
   };
 };
