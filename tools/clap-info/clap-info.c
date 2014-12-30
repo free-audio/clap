@@ -81,6 +81,8 @@ int main(int argc, char **argv)
     print_attr(CHUNK_SIZE);
     print_attr(LATENCY);
     print_attr(SUPPORTS_TUNING);
+    print_attr(SUPPORTS_IN_PLACE_PROCESSING);
+    print_attr(IS_REMOTE_PROCESSING);
 
 #undef print_attr
 

@@ -84,6 +84,8 @@ enum clap_log_severity
 // Shoudl be "1" if the plugin is doing remote processing.
 // This is a hint for the host to optimize task scheduling.
 # define CLAP_ATTR_IS_REMOTE_PROCESSING "clap/is_remote_processing"
+// Should be "1" if the plugin supports in place processing.
+# define CLAP_ATTR_SUPPORTS_IN_PLACE_PROCESSING "clap/supports_in_place_processing"
 
 ////////////////
 // PARAMETERS //

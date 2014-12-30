@@ -394,11 +394,14 @@ For example: <tt class="docutils literal">fm;analogue;delay</tt>.</td>
 <td>The latency introduced by the plugin.</td>
 </tr>
 <tr><td>CLAP_ATTR_SUPPORTS_TUNING</td>
-<td>True if the plugin supports tuning.</td>
+<td><tt class="docutils literal">1</tt> if the plugin supports tuning.</td>
 </tr>
 <tr><td>CLAP_ATTR_IS_REMOTE_PROCESSING</td>
-<td>True if the plugin is doing remote processing. This can help
+<td><tt class="docutils literal">1</tt> if the plugin is doing remote processing. This can help
 the DAW's task scheduling.</td>
+</tr>
+<tr><td>..._IN_PLACE_PROCESSING</td>
+<td><tt class="docutils literal">1</tt> if the plugin supports in place processing.</td>
 </tr>
 </tbody>
 </table>
@@ -642,7 +645,8 @@ or  <tt class="docutils literal">CLAP_EVENT_PARAM_RAMP</tt> for those parameters
 <ul class="simple">
 <li>The audio buffers are allocated by the host. They must be aligned by the
 maximum requirement of the vector instructions currently available.</li>
-<li>In-place processing is not supported.</li>
+<li>In-place processing is not supported by default, yet the host can use it
+if the plugin has the attribute <tt class="docutils literal">CLAP_ATTR_SUPPORTS_IN_PLACE_PROCESSING</tt>.</li>
 <li>The number of samples must be a multiple of the plugin chunk_size.</li>
 <li>See <a class="reference internal" href="#pin-layout">Pin layout</a>.</li>
 <li>See <a class="reference internal" href="#plugin-description">Plugin description</a></li>
@@ -1093,6 +1097,8 @@ big endian machine, it should load again successfully.</p>
     <span class="n">print_attr</span><span class="p">(</span><span class="n">CHUNK_SIZE</span><span class="p">);</span>
     <span class="n">print_attr</span><span class="p">(</span><span class="n">LATENCY</span><span class="p">);</span>
     <span class="n">print_attr</span><span class="p">(</span><span class="n">SUPPORTS_TUNING</span><span class="p">);</span>
+    <span class="n">print_attr</span><span class="p">(</span><span class="n">SUPPORTS_IN_PLACE_PROCESSING</span><span class="p">);</span>
+    <span class="n">print_attr</span><span class="p">(</span><span class="n">IS_REMOTE_PROCESSING</span><span class="p">);</span>
 
 <span class="cp">#undef print_attr
 </span>
@@ -1198,6 +1204,8 @@ big endian machine, it should load again successfully.</p>
 </span><span class="c1">// Shoudl be &quot;1&quot; if the plugin is doing remote processing.
 // This is a hint for the host to optimize task scheduling.
 </span><span class="cp"># define CLAP_ATTR_IS_REMOTE_PROCESSING &quot;clap/is_remote_processing&quot;
+</span><span class="c1">// Should be &quot;1&quot; if the plugin supports in place processing.
+</span><span class="cp"># define CLAP_ATTR_SUPPORTS_IN_PLACE_PROCESSING &quot;clap/supports_in_place_processing&quot;
 </span>
 <span class="c1">////////////////
 // PARAMETERS //

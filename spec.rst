@@ -181,10 +181,12 @@ Then to get plugin's attribute, you have to use ``plugin->get_attribute(plugin, 
 +--------------------------------+---------------------------------------------------------------+
 | CLAP_ATTR_LATENCY              | The latency introduced by the plugin.                         |
 +--------------------------------+---------------------------------------------------------------+
-| CLAP_ATTR_SUPPORTS_TUNING      | True if the plugin supports tuning.                           |
+| CLAP_ATTR_SUPPORTS_TUNING      | ``1`` if the plugin supports tuning.                          |
 +--------------------------------+---------------------------------------------------------------+
-| CLAP_ATTR_IS_REMOTE_PROCESSING | True if the plugin is doing remote processing. This can help  |
+| CLAP_ATTR_IS_REMOTE_PROCESSING | ``1`` if the plugin is doing remote processing. This can help |
 |                                | the DAW's task scheduling.                                    |
++--------------------------------+---------------------------------------------------------------+
+| ..._IN_PLACE_PROCESSING        | ``1`` if the plugin supports in place processing.             |
 +--------------------------------+---------------------------------------------------------------+
 
 Extension system
@@ -386,7 +388,8 @@ Audio buffers
 
 - The audio buffers are allocated by the host. They must be aligned by the
   maximum requirement of the vector instructions currently available.
-- In-place processing is not supported.
+- In-place processing is not supported by default, yet the host can use it
+  if the plugin has the attribute ``CLAP_ATTR_SUPPORTS_IN_PLACE_PROCESSING``.
 - The number of samples must be a multiple of the plugin chunk_size.
 - See `Pin layout`_.
 - See `Plugin description`_
