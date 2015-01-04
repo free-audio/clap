@@ -317,7 +317,7 @@ built for the native/current architecture.</p>
 <div class="section" id="release-a-plugin">
 <h3><a class="toc-backref" href="#id15">Release a plugin</a></h3>
 <p>To release a plugin, call <tt class="docutils literal"><span class="pre">plugin-&gt;destroy(plugin);</span></tt>.
-It is not required to deactivate the plugin prior to destroy it.</p>
+It is required to deactivate the plugin prior to destroy it.</p>
 </div>
 <div class="section" id="plugins-collection">
 <h3><a class="toc-backref" href="#id16">Plugins collection</a></h3>
@@ -598,11 +598,8 @@ So the host should not activate plugins in the audio processing thread.</p>
 <p>To deactivate the plugin, just call <tt class="docutils literal"><span class="pre">plugin-&gt;deactivate(plugin)</span></tt>. Like
 <tt class="docutils literal">activate()</tt>, <tt class="docutils literal">deactivate()</tt> should not be called from the audio processing
 thread as it may take time.</p>
-<p>Also <tt class="docutils literal">deactivate()</tt> should not be called if the plugin is not activated.
-Yet the plugin should handle a call to <tt class="docutils literal">deactivate()</tt> even if it is
-not activated.</p>
-<p>It is recommended (but not mandatory) to de-activate the plugin before
-destroying it.</p>
+<p><tt class="docutils literal">deactivate()</tt> must not be called if the plugin is not activated.</p>
+<p>The host must de-activate the plugin before destroying it.</p>
 </div>
 <div class="section" id="processing">
 <h2><a class="toc-backref" href="#id27">Processing</a></h2>

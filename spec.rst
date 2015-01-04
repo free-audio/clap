@@ -119,7 +119,7 @@ Release a plugin
 ~~~~~~~~~~~~~~~~
 
 To release a plugin, call ``plugin->destroy(plugin);``.
-It is not required to deactivate the plugin prior to destroy it.
+It is required to deactivate the plugin prior to destroy it.
 
 Plugins collection
 ~~~~~~~~~~~~~~~~~~
@@ -348,12 +348,9 @@ To deactivate the plugin, just call ``plugin->deactivate(plugin)``. Like
 ``activate()``, ``deactivate()`` should not be called from the audio processing
 thread as it may take time.
 
-Also ``deactivate()`` should not be called if the plugin is not activated.
-Yet the plugin should handle a call to ``deactivate()`` even if it is
-not activated.
+``deactivate()`` must not be called if the plugin is not activated.
 
-It is recommended (but not mandatory) to de-activate the plugin before
-destroying it.
+The host must de-activate the plugin before destroying it.
 
 Processing
 ----------
