@@ -53,11 +53,11 @@ thyns_voice_init(struct thyns_voice *voice, uint32_t sr)
   thyns_filt_init(&voice->filt, sr);
   voice->filt.cutoff = 4000;
   voice->filt.resonance = 1.5;
-  thyns_env_init(&voice->filt_env);
+  thyns_env_init(&voice->filt_env, sr);
   voice->filt_env_depth = 0.2;
 
   // amp
-  thyns_env_init(&voice->amp_env);
+  thyns_env_init(&voice->amp_env, sr);
   voice->amp = 0.2;
 }
 
@@ -81,6 +81,16 @@ thyns_voice_params_init(struct thyns_voice  *voice,
   for (int i = 0; i < THYNS_FILT_PARAM_COUNT; ++i)
     voice->filt.values[i] = params->values + off + i;
   off += THYNS_FILT_PARAM_COUNT;
+
+  // amp_env
+  for (int i = 0; i < THYNS_ENV_PARAM_COUNT; ++i)
+    voice->amp_env.values[i] = params->values + off + i;
+  off += THYNS_ENV_PARAM_COUNT;
+
+  // filt_env
+  for (int i = 0; i < THYNS_ENV_PARAM_COUNT; ++i)
+    voice->filt_env.values[i] = params->values + off + i;
+  off += THYNS_ENV_PARAM_COUNT;
 }
 
 static inline void
@@ -104,6 +114,16 @@ thyns_voice_use_param(struct thyns_voice  *voice,
     voice->filt.values[index - i] = params->values + index;
   }
   i += THYNS_FILT_PARAM_COUNT;
+
+  if (index < i + THYNS_ENV_PARAM_COUNT) {
+    voice->amp_env.values[index - i] = params->values + index;
+  }
+  i += THYNS_ENV_PARAM_COUNT;
+
+  if (index < i + THYNS_ENV_PARAM_COUNT) {
+    voice->filt_env.values[index - i] = params->values + index;
+  }
+  i += THYNS_ENV_PARAM_COUNT;
 }
 
 static inline void
