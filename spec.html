@@ -1153,7 +1153,7 @@ big endian machine, it should load again successfully.</p>
 </span>
 <span class="cp"># define CLAP_VERSION_MAKE(Major, Minor, Revision) \
   ((((Major) &amp; 0xff) &lt;&lt; 16) | (((Minor) &amp; 0xff) &lt;&lt; 8) | ((Revision) &amp; 0xff))
-# define CLAP_VERSION CLAP_VERSION_MAKE(1, 0, 0)
+# define CLAP_VERSION CLAP_VERSION_MAKE(0, 1, 0)
 # define CLAP_VERSION_MAJ(Version) (((Version) &gt;&gt; 16) &amp; 0xff)
 # define CLAP_VERSION_MIN(Version) (((Version) &gt;&gt; 8) &amp; 0xff)
 # define CLAP_VERSION_REV(Version) ((Version) &amp; 0xff)
