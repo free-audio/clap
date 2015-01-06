@@ -84,8 +84,8 @@ int process(jack_nframes_t nframes, void *arg)
   uint32_t midi_in_count = jack_midi_get_event_count(midi_in_buf);
 
   struct clap_process p;
-  p.input  = in;
-  p.output = out;
+  p.inputs  = in;
+  p.outputs = out;
   p.samples_count = nframes;
   p.steady_time = app->steady_time;
   // XXX add time info

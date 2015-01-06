@@ -63,9 +63,10 @@ int main(int argc, char **argv)
 
 #define print_attr(Attr)                                                \
     do {                                                                \
-      plugin->get_attribute(                                            \
+      int size = plugin->get_attribute(                                 \
         plugin, CLAP_ATTR_##Attr, buffer, sizeof (buffer));             \
-      fprintf(stdout, " %s: %s\n", CLAP_ATTR_##Attr, buffer);           \
+      if (size > 0)                                                     \
+        fprintf(stdout, " %s: %s\n", CLAP_ATTR_##Attr, buffer);         \
     } while (0)
 
     print_attr(ID);

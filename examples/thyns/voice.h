@@ -74,7 +74,7 @@ thyns_voice_params_init(struct thyns_voice  *voice,
 
   // osc2
   for (int i = 0; i < THYNS_OSC_PARAM_COUNT; ++i)
-    voice->osc1.values[i] = params->values + off + i;
+    voice->osc2.values[i] = params->values + off + i;
   off += THYNS_OSC_PARAM_COUNT;
 }
 
