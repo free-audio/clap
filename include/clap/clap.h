@@ -229,8 +229,8 @@ enum clap_process_status
 struct clap_process
 {
   /* audio buffers */
-  float    **input;
-  float    **output;
+  float    **inputs;
+  float    **outputs;
   uint32_t   samples_count;
 
   /* process info */
