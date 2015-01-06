@@ -402,26 +402,26 @@ Notes
 `````
 
 A note is identified by a key. A key correspond to the keys of a midi keyboard (128 keys).
-If the plugin supports tunning then it should use the ``event->note.pitch`` as
+If the plugin supports tuning then it should use the ``event->note.pitch`` as
 the note frequency.
 
 The note A4 correspond to the key 57 and the frequency 440Hz.
 The note A3 correspond to the key 45 and the frequency 220Hz.
 
-If the plugin supports tunning, then the host could play the note A4 by sending
+If the plugin supports tuning, then the host could play the note A4 by sending
 a NOTE_ON event with key = 0 and pitch = 440. Then to stop the the host can
 send a NOTE_OFF event with the same key, so 0 in our case or it can send
 a NOTE_ON event on the same key (0), which would terminate the note on the key
 0 and start a new note on the key 0 with the given pitch.
 
-Here is a scenario where the plugin does not support tunning:
+Here is a scenario where the plugin does not support tuning:
 
 - NOTE_ON, key = 60, pitch = 42; starts the note C4, with the pitch 493.88Hz
 - NOTE_OFF, key = 0, pitch = 493.88; ignored because no note has been started on key 0
 - NOTE_ON, key = 60, pitch = 54; retrigers the note C4, with the pitch 493.88Hz
 - NOTE_OFF, key = 60, pitch = 62; stops the note C4
 
-Here is a scenario where the plugin does support tunning:
+Here is a scenario where the plugin does support tuning:
 
 - NOTE_ON, key = 60, pitch = 42; starts a note, with the pitch 42Hz
 - NOTE_OFF, key = 0, pitch = 493.88; ignored because no note has been started on key 0

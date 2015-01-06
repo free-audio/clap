@@ -659,23 +659,23 @@ if the plugin has the attribute <tt class="docutils literal">CLAP_ATTR_SUPPORTS_
 <div class="section" id="notes">
 <h4><a class="toc-backref" href="#id30">Notes</a></h4>
 <p>A note is identified by a key. A key correspond to the keys of a midi keyboard (128 keys).
-If the plugin supports tunning then it should use the <tt class="docutils literal"><span class="pre">event-&gt;note.pitch</span></tt> as
+If the plugin supports tuning then it should use the <tt class="docutils literal"><span class="pre">event-&gt;note.pitch</span></tt> as
 the note frequency.</p>
 <p>The note A4 correspond to the key 57 and the frequency 440Hz.
 The note A3 correspond to the key 45 and the frequency 220Hz.</p>
-<p>If the plugin supports tunning, then the host could play the note A4 by sending
+<p>If the plugin supports tuning, then the host could play the note A4 by sending
 a NOTE_ON event with key = 0 and pitch = 440. Then to stop the the host can
 send a NOTE_OFF event with the same key, so 0 in our case or it can send
 a NOTE_ON event on the same key (0), which would terminate the note on the key
 0 and start a new note on the key 0 with the given pitch.</p>
-<p>Here is a scenario where the plugin does not support tunning:</p>
+<p>Here is a scenario where the plugin does not support tuning:</p>
 <ul class="simple">
 <li>NOTE_ON, key = 60, pitch = 42; starts the note C4, with the pitch 493.88Hz</li>
 <li>NOTE_OFF, key = 0, pitch = 493.88; ignored because no note has been started on key 0</li>
 <li>NOTE_ON, key = 60, pitch = 54; retrigers the note C4, with the pitch 493.88Hz</li>
 <li>NOTE_OFF, key = 60, pitch = 62; stops the note C4</li>
 </ul>
-<p>Here is a scenario where the plugin does support tunning:</p>
+<p>Here is a scenario where the plugin does support tuning:</p>
 <ul class="simple">
 <li>NOTE_ON, key = 60, pitch = 42; starts a note, with the pitch 42Hz</li>
 <li>NOTE_OFF, key = 0, pitch = 493.88; ignored because no note has been started on key 0</li>
