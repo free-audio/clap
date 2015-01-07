@@ -716,6 +716,9 @@ big endian machine, it should load again successfully.
 
 See `clap/ext/state.h`_.
 
+Note: if the plugin do not have the state extension, the host can save the
+plugin's parameters and restore them.
+
 Examples
 ========
 
