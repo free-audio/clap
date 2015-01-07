@@ -9,6 +9,7 @@ struct thyns_params
   union clap_param_value filt[THYNS_FILT_PARAM_COUNT];
   union clap_param_value amp_env[THYNS_ENV_PARAM_COUNT];
   union clap_param_value filt_env[THYNS_ENV_PARAM_COUNT];
+  union clap_param_value voice[THYNS_VOICE_PARAM_COUNT];
 };
 
 static void

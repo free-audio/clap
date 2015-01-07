@@ -94,7 +94,7 @@ thyns_note_on(struct thyns *thyns,
     voice->key = key;
   }
 
-  thyns_voice_params_init(voice, &thyns->params);
+  thyns_voice_values_init(voice, &thyns->params);
   thyns_voice_start_note(thyns->keys[key], key, pitch);
 }
 
@@ -127,7 +127,7 @@ thyns_handle_event(struct thyns      *thyns,
     else if (thyns->keys[ev->param.key]) {
       struct thyns_voice *voice = thyns->keys[ev->param.key];
       voice->params.values[ev->param.index] = ev->param.value;
-      thyns_voice_use_param(voice, &voice->params, ev->param.index);
+      thyns_voice_use_value(voice, &voice->params, ev->param.index);
     }
     break;
 

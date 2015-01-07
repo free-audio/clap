@@ -20,9 +20,6 @@ struct thyns_filt
   uint32_t sr;    // sample rate
   double   pi_sr; // M_PI / sample_rate
 
-  double cutoff; // in hz
-  double resonance;
-
   double g;
   double g_div;
 
@@ -82,8 +79,8 @@ thyns_filt_param_info(uint32_t                 index,
 static inline void
 thyns_filt_params_init(union clap_param_value *values)
 {
-  values[THYNS_FILT_PARAM_CUTOFF].f    = 10000;
-  values[THYNS_FILT_PARAM_RESONANCE].f = 0.7;
+  values[THYNS_FILT_PARAM_CUTOFF].f    = 4000;
+  values[THYNS_FILT_PARAM_RESONANCE].f = 1.5;
 }
 
 static inline void

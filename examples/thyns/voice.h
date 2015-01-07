@@ -4,6 +4,15 @@
 # include "env.h"
 # include "filt.h"
 # include "osc.h"
+
+enum thyns_voice_param_index
+{
+  THYNS_VOICE_PARAM_OSC_MIX = 0,
+  THYNS_VOICE_PARAM_FILT_ENV_DEPTH,
+  THYNS_VOICE_PARAM_AMP,
+  THYNS_VOICE_PARAM_COUNT,
+};
+
 # include "params.h"
 
 struct thyns_voice
@@ -31,9 +40,76 @@ struct thyns_voice
   struct thyns_env  amp_env;
   double            amp;
 
+  union clap_param_value *values[THYNS_VOICE_PARAM_COUNT];
+
   // voice parameters
   struct thyns_params params;
 };
+
+static inline void
+thyns_voice_param_info(uint32_t                 index,
+                       union clap_param_value   value,
+                       const char              *prefix,
+                       struct clap_param       *param)
+{
+#define P(Dst, Args...) snprintf(Dst, sizeof (Dst), Args);
+
+  switch (index) {
+  case THYNS_VOICE_PARAM_OSC_MIX:
+    P(param->id, "%s%s", prefix, "osc-mix");
+    P(param->name, "%s", "osc mix");
+    P(param->desc, "%s", "Oscillators mixer");
+    P(param->display, "%f", value.f);
+    param->type = CLAP_PARAM_FLOAT;
+    param->is_per_note = true;
+    param->is_used = true;
+    param->is_periodic = false;
+    param->value = value;
+    param->min.f = 0;
+    param->max.f = 1;
+    param->scale = CLAP_PARAM_LINEAR;
+    break;
+
+  case THYNS_VOICE_PARAM_FILT_ENV_DEPTH:
+    P(param->id, "%s%s", prefix, "filt-env-depth");
+    P(param->name, "%s", "filter env depth");
+    P(param->desc, "%s", "Filter's envelop");
+    P(param->display, "%f", value.f);
+    param->type = CLAP_PARAM_FLOAT;
+    param->is_per_note = true;
+    param->is_used = true;
+    param->is_periodic = false;
+    param->value = value;
+    param->min.f = -4;
+    param->max.f = 4;
+    param->scale = CLAP_PARAM_LINEAR;
+    break;
+
+  case THYNS_VOICE_PARAM_AMP:
+    P(param->id, "%s%s", prefix, "amp");
+    P(param->name, "%s", "output volume");
+    P(param->desc, "%s", "Output volume");
+    P(param->display, "%f", value.f);
+    param->type = CLAP_PARAM_FLOAT;
+    param->is_per_note = true;
+    param->is_used = true;
+    param->is_periodic = false;
+    param->value = value;
+    param->min.f = -1;
+    param->max.f = 1;
+    param->scale = CLAP_PARAM_LINEAR;
+    break;
+  }
+#undef P
+}
+
+static inline void
+thyns_voice_params_init(union clap_param_value *values)
+{
+  values[THYNS_VOICE_PARAM_OSC_MIX].f        = 0.5;
+  values[THYNS_VOICE_PARAM_FILT_ENV_DEPTH].f = 0.2;
+  values[THYNS_VOICE_PARAM_AMP].f            = 0.2;
+}
 
 static inline void
 thyns_voice_init(struct thyns_voice *voice, uint32_t sr)
@@ -51,18 +127,14 @@ thyns_voice_init(struct thyns_voice *voice, uint32_t sr)
 
   // filter
   thyns_filt_init(&voice->filt, sr);
-  voice->filt.cutoff = 4000;
-  voice->filt.resonance = 1.5;
   thyns_env_init(&voice->filt_env, sr);
-  voice->filt_env_depth = 0.2;
 
   // amp
   thyns_env_init(&voice->amp_env, sr);
-  voice->amp = 0.2;
 }
 
 static inline void
-thyns_voice_params_init(struct thyns_voice  *voice,
+thyns_voice_values_init(struct thyns_voice  *voice,
                         struct thyns_params *params)
 {
   uint32_t off = 0;
@@ -91,10 +163,15 @@ thyns_voice_params_init(struct thyns_voice  *voice,
   for (int i = 0; i < THYNS_ENV_PARAM_COUNT; ++i)
     voice->filt_env.values[i] = params->values + off + i;
   off += THYNS_ENV_PARAM_COUNT;
+
+  // voice
+  for (int i = 0; i < THYNS_VOICE_PARAM_COUNT; ++i)
+    voice->values[i] = params->values + off + i;
+  off += THYNS_VOICE_PARAM_COUNT;
 }
 
 static inline void
-thyns_voice_use_param(struct thyns_voice  *voice,
+thyns_voice_use_value(struct thyns_voice  *voice,
                       struct thyns_params *params,
                       uint32_t             index)
 {
@@ -126,6 +203,12 @@ thyns_voice_use_param(struct thyns_voice  *voice,
 
   if (index < i + THYNS_ENV_PARAM_COUNT) {
     voice->filt_env.values[index - i] = params->values + index;
+    return;
+  }
+  i += THYNS_ENV_PARAM_COUNT;
+
+  if (index < i + THYNS_VOICE_PARAM_COUNT) {
+    voice->values[index - i] = params->values + index;
     return;
   }
   i += THYNS_ENV_PARAM_COUNT;

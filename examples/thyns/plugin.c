@@ -127,14 +127,21 @@ thyns_params_get(struct clap_plugin *plugin,
 
   if (index < i + THYNS_ENV_PARAM_COUNT) {
     thyns_env_param_info(index - i, p->thyns.params.amp_env[index - i],
-                         "amp_env:", param);
+                         "amp-env:", param);
     return true;
   }
   i += THYNS_ENV_PARAM_COUNT;
 
   if (index < i + THYNS_ENV_PARAM_COUNT) {
     thyns_env_param_info(index - i, p->thyns.params.filt_env[index - i],
-                         "filt_env:", param);
+                         "filt-env:", param);
+    return true;
+  }
+  i += THYNS_ENV_PARAM_COUNT;
+
+  if (index < i + THYNS_VOICE_PARAM_COUNT) {
+    thyns_env_param_info(index - i, p->thyns.params.voice[index - i],
+                         "", param);
     return true;
   }
   i += THYNS_ENV_PARAM_COUNT;
