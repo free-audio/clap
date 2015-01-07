@@ -2,6 +2,7 @@
 #include <dlfcn.h>
 
 #include <clap/clap.h>
+#include <clap/ext/params.h>
 
 static void host_events(struct clap_host   *host,
                         struct clap_plugin *plugin,
@@ -25,6 +26,66 @@ static void initialize_host(struct clap_host *host)
   host->events       = host_events;
   host->steady_time  = host_steady_time;
   host->extension    = host_extension;
+}
+
+static void print_attr(struct clap_plugin *plugin)
+{
+  char buffer[256];
+
+#define prt_attr(Attr)                                          \
+  do {                                                          \
+    int size = plugin->get_attribute(                           \
+      plugin, CLAP_ATTR_##Attr, buffer, sizeof (buffer));       \
+    if (size > 0)                                               \
+      fprintf(stdout, " %s: %s\n", CLAP_ATTR_##Attr, buffer);   \
+  } while (0)
+
+  fprintf(stdout, "Attributes:\n");
+  prt_attr(ID);
+  prt_attr(NAME);
+  prt_attr(DESCRIPTION);
+  prt_attr(MANUFACTURER);
+  prt_attr(VERSION);
+  prt_attr(URL);
+  prt_attr(SUPPORT);
+  prt_attr(LICENSE);
+  prt_attr(CATEGORIES);
+  prt_attr(TYPE);
+  prt_attr(CHUNK_SIZE);
+  prt_attr(LATENCY);
+  prt_attr(SUPPORTS_TUNING);
+  prt_attr(SUPPORTS_IN_PLACE_PROCESSING);
+  prt_attr(IS_REMOTE_PROCESSING);
+
+  fprintf(stdout, "-------------------\n");
+
+#undef print_attr
+}
+
+static void print_params(struct clap_plugin *plugin)
+{
+  struct clap_plugin_params *params = plugin->extension(plugin, CLAP_EXT_PARAMS);
+
+  if (!params) {
+    fprintf(stdout, "no parameter extension\n");
+    return;
+  }
+
+  uint32_t count = params->count(plugin);
+  fprintf(stdout, "parameters count: %d\n", count);
+
+  struct clap_param param;
+  for (uint32_t i = 0; i < count; ++i) {
+    if (!params->get(plugin, i, &param))
+      continue;
+
+    fprintf(stdout, " => {id: %s, name: %s, desc: %s, display: %s, type: %d, "
+            "is_per_note: %d, is_used: %d, is_periodic: %d}\n",
+            param.id, param.name, param.desc, param.display, param.type,
+            param.is_per_note, param.is_used, param.is_periodic);
+  }
+
+  fprintf(stdout, "-------------------\n");
 }
 
 int main(int argc, char **argv)
@@ -59,33 +120,8 @@ int main(int argc, char **argv)
       continue;
     }
 
-    char buffer[256];
-
-#define print_attr(Attr)                                                \
-    do {                                                                \
-      int size = plugin->get_attribute(                                 \
-        plugin, CLAP_ATTR_##Attr, buffer, sizeof (buffer));             \
-      if (size > 0)                                                     \
-        fprintf(stdout, " %s: %s\n", CLAP_ATTR_##Attr, buffer);         \
-    } while (0)
-
-    print_attr(ID);
-    print_attr(NAME);
-    print_attr(DESCRIPTION);
-    print_attr(MANUFACTURER);
-    print_attr(VERSION);
-    print_attr(URL);
-    print_attr(SUPPORT);
-    print_attr(LICENSE);
-    print_attr(CATEGORIES);
-    print_attr(TYPE);
-    print_attr(CHUNK_SIZE);
-    print_attr(LATENCY);
-    print_attr(SUPPORTS_TUNING);
-    print_attr(SUPPORTS_IN_PLACE_PROCESSING);
-    print_attr(IS_REMOTE_PROCESSING);
-
-#undef print_attr
+    print_attr(plugin);
+    print_params(plugin);
 
     // destroy the plugin
     plugin->destroy(plugin);

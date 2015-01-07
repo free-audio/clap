@@ -101,32 +101,45 @@ thyns_params_get(struct clap_plugin *plugin,
   struct thyns_plugin *p = plugin->plugin_data;
   uint32_t i = 0;
 
-  if (index < i + THYNS_OSC_PARAM_COUNT)
+  param->index  = index;
+  param->parent = -1;
+
+  if (index < i + THYNS_OSC_PARAM_COUNT) {
     thyns_osc_param_info(index - i, p->thyns.params.osc1[index - i],
                          "osc1:", param);
+    return true;
+  }
   i += THYNS_OSC_PARAM_COUNT;
 
-  if (index < i + THYNS_OSC_PARAM_COUNT)
+  if (index < i + THYNS_OSC_PARAM_COUNT) {
     thyns_osc_param_info(index - i, p->thyns.params.osc2[index - i],
                          "osc2:", param);
+    return true;
+  }
   i += THYNS_OSC_PARAM_COUNT;
 
-  if (index < i + THYNS_FILT_PARAM_COUNT)
+  if (index < i + THYNS_FILT_PARAM_COUNT) {
     thyns_filt_param_info(index - i, p->thyns.params.filt[index - i],
                           "filt:", param);
+    return true;
+  }
   i += THYNS_FILT_PARAM_COUNT;
 
-  if (index < i + THYNS_ENV_PARAM_COUNT)
+  if (index < i + THYNS_ENV_PARAM_COUNT) {
     thyns_env_param_info(index - i, p->thyns.params.amp_env[index - i],
                          "amp_env:", param);
+    return true;
+  }
   i += THYNS_ENV_PARAM_COUNT;
 
-  if (index < i + THYNS_ENV_PARAM_COUNT)
+  if (index < i + THYNS_ENV_PARAM_COUNT) {
     thyns_env_param_info(index - i, p->thyns.params.filt_env[index - i],
                          "filt_env:", param);
+    return true;
+  }
   i += THYNS_ENV_PARAM_COUNT;
 
-  return true;
+  return false;
 }
 
 struct thyns_plugin *

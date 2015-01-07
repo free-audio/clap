@@ -102,26 +102,31 @@ thyns_voice_use_param(struct thyns_voice  *voice,
 
   if (index < i + THYNS_OSC_PARAM_COUNT) {
     voice->osc1.values[index - i] = params->values + index;
+    return;
   }
   i += THYNS_OSC_PARAM_COUNT;
 
   if (index < i + THYNS_OSC_PARAM_COUNT) {
     voice->osc2.values[index - i] = params->values + index;
+    return;
   }
   i += THYNS_OSC_PARAM_COUNT;
 
   if (index < i + THYNS_FILT_PARAM_COUNT) {
     voice->filt.values[index - i] = params->values + index;
+    return;
   }
   i += THYNS_FILT_PARAM_COUNT;
 
   if (index < i + THYNS_ENV_PARAM_COUNT) {
     voice->amp_env.values[index - i] = params->values + index;
+    return;
   }
   i += THYNS_ENV_PARAM_COUNT;
 
   if (index < i + THYNS_ENV_PARAM_COUNT) {
     voice->filt_env.values[index - i] = params->values + index;
+    return;
   }
   i += THYNS_ENV_PARAM_COUNT;
 }
