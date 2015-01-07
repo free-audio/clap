@@ -1,11 +1,17 @@
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/mman.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <dlfcn.h>
 #include <unistd.h>
+#include <fcntl.h>
+#include <signal.h>
 
 #include <clap/clap.h>
 #include <clap/midi/parser.h>
 #include <clap/ext/gui.h>
+#include <clap/ext/state.h>
 
 #include <jack/jack.h>
 #include <jack/midiport.h>
@@ -26,7 +32,15 @@ struct clap_jack_host
   jack_port_t   *input_ports[2];
   jack_port_t   *output_ports[2];
   jack_port_t   *midi_in;
+
+  /* config */
+  const char *state_path;
+
+  /* state */
+  bool quit;
 };
+
+struct clap_jack_host *g_app = NULL;
 
 static void deinitialize(struct clap_jack_host *app);
 
@@ -126,13 +140,14 @@ int process(jack_nframes_t nframes, void *arg)
 
 void shutdown(void *arg)
 {
-  deinitialize(arg);
 }
 
 static bool initialize(struct clap_jack_host *app,
                        const char            *plugin_path,
                        uint32_t               plugin_index)
 {
+  app->quit = false;
+
   /* jack */
   jack_status_t jack_status;
   app->client = jack_client_open("clap-host", JackNullOption, &jack_status, NULL);
@@ -204,9 +219,76 @@ fail_jack:
   return false;
 }
 
+static void load_state(struct clap_jack_host *app)
+{
+  struct stat st;
+  struct clap_plugin_state *state = app->plugin->extension(
+    app->plugin, CLAP_EXT_STATE);
+
+  if (!state)
+    return;
+
+  if (!app->state_path)
+    return;
+
+  int fd = open(app->state_path, O_RDONLY);
+  if (fd < 0)
+    return;
+
+  if (fstat(fd, &st)) {
+    close(fd);
+    return;
+  }
+
+  void *mem = mmap(NULL, st.st_size, PROT_READ, MAP_SHARED, fd, 0);
+  if (mem == MAP_FAILED) {
+    close(fd);
+    return;
+  }
+
+  state->restore(app->plugin, mem, st.st_size);
+
+  munmap(mem, st.st_size);
+  close(fd);
+}
+
+static void save_state(struct clap_jack_host *app)
+{
+  struct clap_plugin_state *state = app->plugin->extension(
+    app->plugin, CLAP_EXT_STATE);
+
+  if (!state) {
+    fprintf(stdout, "no state extension\n");
+    return;
+  }
+
+  if (!app->state_path) {
+    fprintf(stdout, "no state path\n");
+    return;
+  }
+
+  void     *buffer = NULL;
+  uint32_t  size   = 0;
+  if (!state->save(app->plugin, &buffer, &size)) {
+    fprintf(stdout, "failed to save the state\n");
+    return;
+  }
+
+  int fd = open(app->state_path, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+  if (fd < 0) {
+    fprintf(stdout, "open(%s): %m\n", app->state_path);
+    return;
+  }
+
+  write(fd, buffer, size);
+  close(fd);
+}
+
 static void deinitialize(struct clap_jack_host *app)
 {
   /* clap */
+  save_state(app);
+  app->plugin->deactivate(app->plugin);
   app->plugin->destroy(app->plugin);
   dlclose(app->library_handle);
 
@@ -214,12 +296,21 @@ static void deinitialize(struct clap_jack_host *app)
   jack_client_close(app->client);
 }
 
+void sig_int(int sig)
+{
+  g_app->quit = true;
+}
+
 int main(int argc, char **argv)
 {
   struct clap_jack_host app;
 
-  if (argc != 3) {
-    fprintf(stderr, "usage: %s plugin.so index\n", argv[0]);
+  g_app = &app;
+
+  signal(SIGINT, sig_int);
+
+  if (argc < 3) {
+    fprintf(stderr, "usage: %s plugin.so index [state]\n", argv[0]);
     return 2;
   }
 
@@ -230,6 +321,12 @@ int main(int argc, char **argv)
     fprintf(stderr, "can't activate the plugin\n");
     return 1;
   }
+
+  if (argc == 4) {
+    app.state_path = argv[3];
+    load_state(&app);
+  } else
+    app.state_path = NULL;
 
   struct clap_plugin_gui *gui = app.plugin->extension(app.plugin, CLAP_EXT_GUI);
   if (gui)

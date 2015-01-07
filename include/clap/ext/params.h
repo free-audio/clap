@@ -2,6 +2,7 @@
 # define CLAP_EXT_PARAMS_H
 
 # include "../clap.h"
+# include "../serialize/serialize.h"
 
 # define CLAP_EXT_PARAMS "clap/params"
 
@@ -52,5 +53,22 @@ struct clap_plugin_params
               uint32_t            index,
               struct clap_param  *param);
 };
+
+/* Helper that will serialize the plugin's parameters value into the buffer.
+ * (*size) must be set to the size of the buffer.
+ * At return, (*size) contains the number of bytes used and returns true on
+ * success, the only possible error is that the buffer is too small.
+ */
+static inline bool
+clap_plugin_params_save(struct clap_plugin *plugin,
+                        uint8_t            *buffer,
+                        uint32_t           *size);
+
+static inline void
+clap_plugin_params_restore(struct clap_plugin *plugin,
+                           const uint8_t      *buffer,
+                           uint32_t            size);
+
+# include "params.c"
 
 #endif /* !CLAP_EXT_PARAMS_H */

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <clap/clap.h>
 #include <clap/ext/params.h>
+#include <clap/ext/state.h>
 
 #include "thyns.h"
 
@@ -11,6 +12,10 @@ struct thyns_plugin
   struct clap_plugin        plugin;
   struct clap_host         *host;
   struct clap_plugin_params params;
+  struct clap_plugin_state  state;
+
+  // buffer to save the synthesizer state
+  uint8_t state_buffer[2048];
 };
 
 void
@@ -70,6 +75,8 @@ thyns_plugin_extension(struct clap_plugin *plugin, const char *extension)
 
   if (!strcmp(extension, CLAP_EXT_PARAMS))
     return &p->params;
+  if (!strcmp(extension, CLAP_EXT_STATE))
+    return &p->state;
   return NULL;
 }
 
@@ -149,6 +156,23 @@ thyns_params_get(struct clap_plugin *plugin,
   return false;
 }
 
+bool
+thyns_state_save(struct clap_plugin *plugin, void **buffer, uint32_t *size)
+{
+  struct thyns_plugin *p = plugin->plugin_data;
+
+  *buffer = p->state_buffer;
+  *size   = sizeof (p->state_buffer);
+  return clap_plugin_params_save(plugin, *buffer, size);
+}
+
+bool
+thyns_state_restore(struct clap_plugin *plugin, const void *buffer, uint32_t size)
+{
+  clap_plugin_params_restore(plugin, buffer, size);
+  return true;
+}
+
 struct thyns_plugin *
 thyns_plugin_create(struct clap_host *host,
                     uint32_t          sample_rate)
@@ -174,6 +198,8 @@ thyns_plugin_create(struct clap_host *host,
   p->plugin.deactivate = thyns_plugin_deactivate;
   p->params.count = thyns_params_count;
   p->params.get = thyns_params_get;
+  p->state.save = thyns_state_save;
+  p->state.restore = thyns_state_restore;
 
   return p;
 }
