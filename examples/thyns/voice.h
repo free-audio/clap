@@ -13,6 +13,14 @@ enum thyns_voice_param_index
   THYNS_VOICE_PARAM_COUNT,
 };
 
+static inline void
+thyns_voice_params_init(union clap_param_value *values)
+{
+  values[THYNS_VOICE_PARAM_OSC_MIX].f        = 0.5;
+  values[THYNS_VOICE_PARAM_FILT_ENV_DEPTH].f = 0.2;
+  values[THYNS_VOICE_PARAM_AMP].f            = 0.2;
+}
+
 # include "params.h"
 
 struct thyns_voice
@@ -29,16 +37,13 @@ struct thyns_voice
   // osc part
   struct thyns_osc  osc1;
   struct thyns_osc  osc2;
-  double            osc_mix;
 
   // filter
   struct thyns_filt filt;
   struct thyns_env  filt_env;
-  double            filt_env_depth;
 
   // amp
   struct thyns_env  amp_env;
-  double            amp;
 
   union clap_param_value *values[THYNS_VOICE_PARAM_COUNT];
 
@@ -104,14 +109,6 @@ thyns_voice_param_info(uint32_t                 index,
 }
 
 static inline void
-thyns_voice_params_init(union clap_param_value *values)
-{
-  values[THYNS_VOICE_PARAM_OSC_MIX].f        = 0.5;
-  values[THYNS_VOICE_PARAM_FILT_ENV_DEPTH].f = 0.2;
-  values[THYNS_VOICE_PARAM_AMP].f            = 0.2;
-}
-
-static inline void
 thyns_voice_init(struct thyns_voice *voice, uint32_t sr)
 {
   voice->prev = NULL;
@@ -123,7 +120,6 @@ thyns_voice_init(struct thyns_voice *voice, uint32_t sr)
   // osc
   thyns_osc_init(&voice->osc1, sr);
   thyns_osc_init(&voice->osc2, sr);
-  voice->osc_mix = 0;
 
   // filter
   thyns_filt_init(&voice->filt, sr);
@@ -239,12 +235,15 @@ thyns_voice_step(struct thyns_voice *voice)
 {
   double osc1 = thyns_osc_step(&voice->osc1);
   double osc2 = thyns_osc_step(&voice->osc2);
-  double oscm = osc1 * (1 - voice->osc_mix) + osc2 * voice->osc_mix;
-  double fenv   = thyns_env_step(&voice->filt_env) * voice->filt_env_depth;
+  double oscm = voice->values[THYNS_VOICE_PARAM_OSC_MIX]->f;
+  double osc  = osc1 * (1 - oscm) + osc2 * oscm;
+  double fenv   = thyns_env_step(&voice->filt_env) *
+    voice->values[THYNS_VOICE_PARAM_FILT_ENV_DEPTH]->f;
   double cutoff = exp(log(voice->filt.values[THYNS_FILT_PARAM_CUTOFF]->f) + fenv);
-  double filtered = thyns_filt_step(&voice->filt, oscm, cutoff,
+  double filtered = thyns_filt_step(&voice->filt, osc, cutoff,
                                     voice->filt.values[THYNS_FILT_PARAM_RESONANCE]->f);
-  double amp = voice->amp * thyns_env_step(&voice->amp_env);
+  double amp = voice->values[THYNS_VOICE_PARAM_AMP]->f
+    * thyns_env_step(&voice->amp_env);
 
   return filtered * amp;
 }

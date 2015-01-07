@@ -79,10 +79,38 @@ static void print_params(struct clap_plugin *plugin)
     if (!params->get(plugin, i, &param))
       continue;
 
-    fprintf(stdout, " => {id: %s, name: %s, desc: %s, display: %s, type: %d, "
-            "is_per_note: %d, is_used: %d, is_periodic: %d}\n",
-            param.id, param.name, param.desc, param.display, param.type,
+    fprintf(stdout, " => {id: %s, name: %s, desc: %s, display: %s, "
+            "is_per_note: %d, is_used: %d, is_periodic: %d",
+            param.id, param.name, param.desc, param.display,
             param.is_per_note, param.is_used, param.is_periodic);
+
+    switch (param.type) {
+    case CLAP_PARAM_FLOAT:
+      fprintf(stdout, ", type: float, value: %f, min: %f, max: %f",
+              param.value.f, param.min.f, param.max.f);
+      break;
+
+    case CLAP_PARAM_INT:
+      fprintf(stdout, ", type: int, value: %d, min: %d, max: %d",
+              param.value.i, param.min.i, param.max.i);
+      break;
+
+    case CLAP_PARAM_ENUM:
+      fprintf(stdout, ", type: enum, value: %d, min: %d, max: %d",
+              param.value.i, param.min.i, param.max.i);
+      break;
+
+    case CLAP_PARAM_BOOL:
+      fprintf(stdout, ", type: bool, value: %d, min: %d, max: %d",
+              param.value.i, param.min.i, param.max.i);
+      break;
+
+    case CLAP_PARAM_GROUP:
+      fprintf(stdout, ", type: group");
+      break;
+    }
+
+    fprintf(stdout, "}\n");
   }
 
   fprintf(stdout, "-------------------\n");

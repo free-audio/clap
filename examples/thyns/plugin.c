@@ -140,7 +140,7 @@ thyns_params_get(struct clap_plugin *plugin,
   i += THYNS_ENV_PARAM_COUNT;
 
   if (index < i + THYNS_VOICE_PARAM_COUNT) {
-    thyns_env_param_info(index - i, p->thyns.params.voice[index - i],
+    thyns_voice_param_info(index - i, p->thyns.params.voice[index - i],
                          "", param);
     return true;
   }

@@ -20,6 +20,7 @@ thyns_params_init(struct thyns_params *params)
   thyns_filt_params_init(params->filt);
   thyns_env_params_init(params->amp_env);
   thyns_env_params_init(params->filt_env);
+  thyns_voice_params_init(params->voice);
 }
 
 #endif /* !PARAMS_H */
