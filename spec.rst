@@ -577,7 +577,7 @@ Events sent to the host should be stamped:
 
   struct clap_event ev;
   // ...
-  ev.steady_time = host->steady_time(host);
+  ev.steady_time = *host->steady_time;
   host->events(host, plugin, &ev);
 
 Hiding the GUI
@@ -592,7 +592,7 @@ send an event ``CLAP_EVENT_GUI_CLOSED`` to the host.
   struct clap_event ev;
   ev.next = NULL;
   ev.type = CLAP_EVENT_GUI_CLOSED;
-  ev.sample_offset = host->steady_time(host);
+  ev.sample_offset = *host->steady_time;
   host->events(host, plugin, &ev);
 
 Embedding

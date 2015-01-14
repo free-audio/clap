@@ -173,8 +173,7 @@ thyns_state_restore(struct clap_plugin *plugin,
 {
   struct thyns_plugin *p = plugin->plugin_data;
 
-  clap_plugin_params_restore(
-    plugin, buffer, size, p->host->steady_time(p->host));
+  clap_plugin_params_restore(plugin, buffer, size, *p->host->steady_time);
   return true;
 }
 

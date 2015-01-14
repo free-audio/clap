@@ -859,7 +859,7 @@ otherwise.</p>
 <pre class="code c literal-block">
 <span class="k">struct</span> <span class="n">clap_event</span> <span class="n">ev</span><span class="p">;</span>
 <span class="c1">// ...
-</span><span class="n">ev</span><span class="p">.</span><span class="n">steady_time</span> <span class="o">=</span> <span class="n">host</span><span class="o">-&gt;</span><span class="n">steady_time</span><span class="p">(</span><span class="n">host</span><span class="p">);</span>
+</span><span class="n">ev</span><span class="p">.</span><span class="n">steady_time</span> <span class="o">=</span> <span class="o">*</span><span class="n">host</span><span class="o">-&gt;</span><span class="n">steady_time</span><span class="p">;</span>
 <span class="n">host</span><span class="o">-&gt;</span><span class="n">events</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">plugin</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ev</span><span class="p">);</span>
 </pre>
 </div>
@@ -872,7 +872,7 @@ send an event <tt class="docutils literal">CLAP_EVENT_GUI_CLOSED</tt> to the hos
 <span class="k">struct</span> <span class="n">clap_event</span> <span class="n">ev</span><span class="p">;</span>
 <span class="n">ev</span><span class="p">.</span><span class="n">next</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
 <span class="n">ev</span><span class="p">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">CLAP_EVENT_GUI_CLOSED</span><span class="p">;</span>
-<span class="n">ev</span><span class="p">.</span><span class="n">sample_offset</span> <span class="o">=</span> <span class="n">host</span><span class="o">-&gt;</span><span class="n">steady_time</span><span class="p">(</span><span class="n">host</span><span class="p">);</span>
+<span class="n">ev</span><span class="p">.</span><span class="n">sample_offset</span> <span class="o">=</span> <span class="o">*</span><span class="n">host</span><span class="o">-&gt;</span><span class="n">steady_time</span><span class="p">;</span>
 <span class="n">host</span><span class="o">-&gt;</span><span class="n">events</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">plugin</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ev</span><span class="p">);</span>
 </pre>
 </div>
@@ -1444,9 +1444,9 @@ plugin's parameters and restore them.</p>
                  <span class="k">struct</span> <span class="n">clap_event</span>  <span class="o">*</span><span class="n">events</span><span class="p">);</span>
 
   <span class="cm">/* The time in samples, this clock is monotonicaly increasing,
-   * it means that each time you call this function, the return
-   * value must be greater or equal to the previous one. */</span>
-  <span class="kt">uint64_t</span> <span class="p">(</span><span class="o">*</span><span class="n">steady_time</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">);</span>
+   * it means that each time you read the value, it must be greater
+   * or equal to the previous one. */</span>
+  <span class="k">const</span> <span class="kt">uint64_t</span> <span class="o">*</span><span class="n">steady_time</span><span class="p">;</span>
 
   <span class="cm">/* Log a message through the host. */</span>
   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">log</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span>       <span class="o">*</span><span class="n">host</span><span class="p">,</span>

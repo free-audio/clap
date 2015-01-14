@@ -260,9 +260,9 @@ struct clap_host
                  struct clap_event  *events);
 
   /* The time in samples, this clock is monotonicaly increasing,
-   * it means that each time you call this function, the return
-   * value must be greater or equal to the previous one. */
-  uint64_t (*steady_time)(struct clap_host *host);
+   * it means that each time you read the value, it must be greater
+   * or equal to the previous one. */
+  const uint64_t *steady_time;
 
   /* Log a message through the host. */
   void (*log)(struct clap_host       *host,
