@@ -1004,6 +1004,8 @@ the plugin.</p>
 plugin state on a little endian machine and send it through the network to a
 big endian machine, it should load again successfully.</p>
 <p>See <a class="reference internal" href="#clap-ext-state-h">clap/ext/state.h</a>.</p>
+<p>Note: if the plugin do not have the state extension, the host can save the
+plugin's parameters and restore them.</p>
 </div>
 </div>
 <div class="section" id="examples">
@@ -1015,6 +1017,7 @@ big endian machine, it should load again successfully.</p>
 #include &lt;dlfcn.h&gt;
 </span>
 <span class="cp">#include &lt;clap/clap.h&gt;
+#include &lt;clap/ext/params.h&gt;
 </span>
 <span class="k">static</span> <span class="kt">void</span> <span class="nf">host_events</span><span class="p">(</span><span class="k">struct</span> <span class="n">clap_host</span>   <span class="o">*</span><span class="n">host</span><span class="p">,</span>
                         <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
@@ -1038,6 +1041,94 @@ big endian machine, it should load again successfully.</p>
   <span class="n">host</span><span class="o">-&gt;</span><span class="n">events</span>       <span class="o">=</span> <span class="n">host_events</span><span class="p">;</span>
   <span class="n">host</span><span class="o">-&gt;</span><span class="n">steady_time</span>  <span class="o">=</span> <span class="n">host_steady_time</span><span class="p">;</span>
   <span class="n">host</span><span class="o">-&gt;</span><span class="n">extension</span>    <span class="o">=</span> <span class="n">host_extension</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">print_attr</span><span class="p">(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="kt">char</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">256</span><span class="p">];</span>
+
+<span class="cp">#define prt_attr(Attr)                                          \
+  do {                                                          \
+    int size = plugin-&gt;get_attribute(                           \
+      plugin, CLAP_ATTR_##Attr, buffer, sizeof (buffer));       \
+    if (size &gt; 0)                                               \
+      fprintf(stdout, &quot; %s: %s\n&quot;, CLAP_ATTR_##Attr, buffer);   \
+  } while (0)
+</span>
+  <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot;Attributes:</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+  <span class="n">prt_attr</span><span class="p">(</span><span class="n">ID</span><span class="p">);</span>
+  <span class="n">prt_attr</span><span class="p">(</span><span class="n">NAME</span><span class="p">);</span>
+  <span class="n">prt_attr</span><span class="p">(</span><span class="n">DESCRIPTION</span><span class="p">);</span>
+  <span class="n">prt_attr</span><span class="p">(</span><span class="n">MANUFACTURER</span><span class="p">);</span>
+  <span class="n">prt_attr</span><span class="p">(</span><span class="n">VERSION</span><span class="p">);</span>
+  <span class="n">prt_attr</span><span class="p">(</span><span class="n">URL</span><span class="p">);</span>
+  <span class="n">prt_attr</span><span class="p">(</span><span class="n">SUPPORT</span><span class="p">);</span>
+  <span class="n">prt_attr</span><span class="p">(</span><span class="n">LICENSE</span><span class="p">);</span>
+  <span class="n">prt_attr</span><span class="p">(</span><span class="n">CATEGORIES</span><span class="p">);</span>
+  <span class="n">prt_attr</span><span class="p">(</span><span class="n">TYPE</span><span class="p">);</span>
+  <span class="n">prt_attr</span><span class="p">(</span><span class="n">CHUNK_SIZE</span><span class="p">);</span>
+  <span class="n">prt_attr</span><span class="p">(</span><span class="n">LATENCY</span><span class="p">);</span>
+  <span class="n">prt_attr</span><span class="p">(</span><span class="n">SUPPORTS_TUNING</span><span class="p">);</span>
+  <span class="n">prt_attr</span><span class="p">(</span><span class="n">SUPPORTS_IN_PLACE_PROCESSING</span><span class="p">);</span>
+  <span class="n">prt_attr</span><span class="p">(</span><span class="n">IS_REMOTE_PROCESSING</span><span class="p">);</span>
+
+  <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot;-------------------</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+
+<span class="cp">#undef print_attr
+</span><span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">print_params</span><span class="p">(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">struct</span> <span class="n">clap_plugin_params</span> <span class="o">*</span><span class="n">params</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">extension</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">CLAP_EXT_PARAMS</span><span class="p">);</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">params</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot;no parameter extension</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+    <span class="k">return</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kt">uint32_t</span> <span class="n">count</span> <span class="o">=</span> <span class="n">params</span><span class="o">-&gt;</span><span class="n">count</span><span class="p">(</span><span class="n">plugin</span><span class="p">);</span>
+  <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot;parameters count: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">count</span><span class="p">);</span>
+
+  <span class="k">struct</span> <span class="n">clap_param</span> <span class="n">param</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">uint32_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">params</span><span class="o">-&gt;</span><span class="n">get</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">param</span><span class="p">))</span>
+      <span class="k">continue</span><span class="p">;</span>
+
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot; =&gt; {id: %s, name: %s, desc: %s, display: %s, &quot;</span>
+            <span class="s">&quot;is_per_note: %d, is_used: %d, is_periodic: %d&quot;</span><span class="p">,</span>
+            <span class="n">param</span><span class="p">.</span><span class="n">id</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">name</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">desc</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">display</span><span class="p">,</span>
+            <span class="n">param</span><span class="p">.</span><span class="n">is_per_note</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">is_used</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">is_periodic</span><span class="p">);</span>
+
+    <span class="k">switch</span> <span class="p">(</span><span class="n">param</span><span class="p">.</span><span class="n">type</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="nl">CLAP_PARAM_FLOAT</span><span class="p">:</span>
+      <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot;, type: float, value: %f, min: %f, max: %f&quot;</span><span class="p">,</span>
+              <span class="n">param</span><span class="p">.</span><span class="n">value</span><span class="p">.</span><span class="n">f</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">min</span><span class="p">.</span><span class="n">f</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">max</span><span class="p">.</span><span class="n">f</span><span class="p">);</span>
+      <span class="k">break</span><span class="p">;</span>
+
+    <span class="k">case</span> <span class="nl">CLAP_PARAM_INT</span><span class="p">:</span>
+      <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot;, type: int, value: %d, min: %d, max: %d&quot;</span><span class="p">,</span>
+              <span class="n">param</span><span class="p">.</span><span class="n">value</span><span class="p">.</span><span class="n">i</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">min</span><span class="p">.</span><span class="n">i</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">max</span><span class="p">.</span><span class="n">i</span><span class="p">);</span>
+      <span class="k">break</span><span class="p">;</span>
+
+    <span class="k">case</span> <span class="nl">CLAP_PARAM_ENUM</span><span class="p">:</span>
+      <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot;, type: enum, value: %d, min: %d, max: %d&quot;</span><span class="p">,</span>
+              <span class="n">param</span><span class="p">.</span><span class="n">value</span><span class="p">.</span><span class="n">i</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">min</span><span class="p">.</span><span class="n">i</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">max</span><span class="p">.</span><span class="n">i</span><span class="p">);</span>
+      <span class="k">break</span><span class="p">;</span>
+
+    <span class="k">case</span> <span class="nl">CLAP_PARAM_BOOL</span><span class="p">:</span>
+      <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot;, type: bool, value: %d, min: %d, max: %d&quot;</span><span class="p">,</span>
+              <span class="n">param</span><span class="p">.</span><span class="n">value</span><span class="p">.</span><span class="n">i</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">min</span><span class="p">.</span><span class="n">i</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">max</span><span class="p">.</span><span class="n">i</span><span class="p">);</span>
+      <span class="k">break</span><span class="p">;</span>
+
+    <span class="k">case</span> <span class="nl">CLAP_PARAM_GROUP</span><span class="p">:</span>
+      <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot;, type: group&quot;</span><span class="p">);</span>
+      <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot;}</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot;-------------------</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 
 <span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
@@ -1072,33 +1163,9 @@ big endian machine, it should load again successfully.</p>
       <span class="k">continue</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="kt">char</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">256</span><span class="p">];</span>
+    <span class="n">print_attr</span><span class="p">(</span><span class="n">plugin</span><span class="p">);</span>
+    <span class="n">print_params</span><span class="p">(</span><span class="n">plugin</span><span class="p">);</span>
 
-<span class="cp">#define print_attr(Attr)                                                \
-    do {                                                                \
-      plugin-&gt;get_attribute(                                            \
-        plugin, CLAP_ATTR_##Attr, buffer, sizeof (buffer));             \
-      fprintf(stdout, &quot; %s: %s\n&quot;, CLAP_ATTR_##Attr, buffer);           \
-    } while (0)
-</span>
-    <span class="n">print_attr</span><span class="p">(</span><span class="n">ID</span><span class="p">);</span>
-    <span class="n">print_attr</span><span class="p">(</span><span class="n">NAME</span><span class="p">);</span>
-    <span class="n">print_attr</span><span class="p">(</span><span class="n">DESCRIPTION</span><span class="p">);</span>
-    <span class="n">print_attr</span><span class="p">(</span><span class="n">MANUFACTURER</span><span class="p">);</span>
-    <span class="n">print_attr</span><span class="p">(</span><span class="n">VERSION</span><span class="p">);</span>
-    <span class="n">print_attr</span><span class="p">(</span><span class="n">URL</span><span class="p">);</span>
-    <span class="n">print_attr</span><span class="p">(</span><span class="n">SUPPORT</span><span class="p">);</span>
-    <span class="n">print_attr</span><span class="p">(</span><span class="n">LICENSE</span><span class="p">);</span>
-    <span class="n">print_attr</span><span class="p">(</span><span class="n">CATEGORIES</span><span class="p">);</span>
-    <span class="n">print_attr</span><span class="p">(</span><span class="n">TYPE</span><span class="p">);</span>
-    <span class="n">print_attr</span><span class="p">(</span><span class="n">CHUNK_SIZE</span><span class="p">);</span>
-    <span class="n">print_attr</span><span class="p">(</span><span class="n">LATENCY</span><span class="p">);</span>
-    <span class="n">print_attr</span><span class="p">(</span><span class="n">SUPPORTS_TUNING</span><span class="p">);</span>
-    <span class="n">print_attr</span><span class="p">(</span><span class="n">SUPPORTS_IN_PLACE_PROCESSING</span><span class="p">);</span>
-    <span class="n">print_attr</span><span class="p">(</span><span class="n">IS_REMOTE_PROCESSING</span><span class="p">);</span>
-
-<span class="cp">#undef print_attr
-</span>
     <span class="c1">// destroy the plugin
 </span>    <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">destroy</span><span class="p">(</span><span class="n">plugin</span><span class="p">);</span>
   <span class="p">}</span>
@@ -1346,8 +1413,8 @@ big endian machine, it should load again successfully.</p>
 <span class="k">struct</span> <span class="n">clap_process</span>
 <span class="p">{</span>
   <span class="cm">/* audio buffers */</span>
-  <span class="kt">float</span>    <span class="o">**</span><span class="n">input</span><span class="p">;</span>
-  <span class="kt">float</span>    <span class="o">**</span><span class="n">output</span><span class="p">;</span>
+  <span class="kt">float</span>    <span class="o">**</span><span class="n">inputs</span><span class="p">;</span>
+  <span class="kt">float</span>    <span class="o">**</span><span class="n">outputs</span><span class="p">;</span>
   <span class="kt">uint32_t</span>   <span class="n">samples_count</span><span class="p">;</span>
 
   <span class="cm">/* process info */</span>
@@ -1571,6 +1638,7 @@ big endian machine, it should load again successfully.</p>
 # define CLAP_EXT_PARAMS_H
 </span>
 <span class="cp"># include &quot;../clap.h&quot;
+# include &quot;../serialize/serialize.h&quot;
 </span>
 <span class="cp"># define CLAP_EXT_PARAMS &quot;clap/params&quot;
 </span>
@@ -1622,6 +1690,29 @@ big endian machine, it should load again successfully.</p>
               <span class="k">struct</span> <span class="n">clap_param</span>  <span class="o">*</span><span class="n">param</span><span class="p">);</span>
 <span class="p">};</span>
 
+<span class="cm">/* Helper that will serialize the plugin's parameters value into the buffer.
+ * (*size) must be set to the size of the buffer.
+ * At return, (*size) contains the number of bytes used and returns true on
+ * success, the only possible error is that the buffer is too small.
+ */</span>
+<span class="k">static</span> <span class="kr">inline</span> <span class="kt">bool</span>
+<span class="nf">clap_plugin_params_save</span><span class="p">(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
+                        <span class="kt">uint8_t</span>            <span class="o">*</span><span class="n">buffer</span><span class="p">,</span>
+                        <span class="kt">uint32_t</span>           <span class="o">*</span><span class="n">size</span><span class="p">);</span>
+
+<span class="cm">/* Helper that will deserialize parameters value from the buffer
+ * and send CLAP_EVENT_PARAM_SET to the plugin to restore them.
+ * The steady_time is required because the plugin can discard
+ * events from the past.
+ */</span>
+<span class="k">static</span> <span class="kr">inline</span> <span class="kt">void</span>
+<span class="nf">clap_plugin_params_restore</span><span class="p">(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
+                           <span class="k">const</span> <span class="kt">uint8_t</span>      <span class="o">*</span><span class="n">buffer</span><span class="p">,</span>
+                           <span class="kt">uint32_t</span>            <span class="n">size</span><span class="p">,</span>
+                           <span class="kt">uint64_t</span>            <span class="n">steady_time</span><span class="p">);</span>
+
+<span class="cp"># include &quot;params.c&quot;
+</span>
 <span class="cp">#endif </span><span class="cm">/* !CLAP_EXT_PARAMS_H */</span>
 </pre>
 </div>
