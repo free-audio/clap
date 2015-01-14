@@ -1,6 +1,10 @@
 #ifndef CLAP_SERIALIZE_H
 # define CLAP_SERIALIZE_H
 
+# ifdef __cplusplus
+extern "C" {
+# endif
+
 # include <stdint.h>
 
 enum clap_serialize_type
@@ -78,5 +82,9 @@ static inline bool
 clap_deserialize(struct clap_deserializer *d);
 
 # include "serialize.c"
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif /* !CLAP_SERIALIZE_H */

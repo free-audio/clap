@@ -4,6 +4,10 @@
 # include "../clap.h"
 # include "../serialize/serialize.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 # define CLAP_EXT_PARAMS "clap/params"
 
 enum clap_param_type
@@ -36,9 +40,12 @@ struct clap_param
   bool                    is_per_note;
   bool                    is_used; // is this parameter used by the patch?
   bool                    is_periodic;
+  bool                    is_locked; // if true, the parameter can't be changed by
+                                     // the host
   union clap_param_value  value;
   union clap_param_value  min;
   union clap_param_value  max;
+  union clap_param_value  deflt; // default value
   enum clap_param_scale   scale;
 };
 
@@ -76,5 +83,9 @@ clap_plugin_params_restore(struct clap_plugin *plugin,
 			   uint64_t            steady_time);
 
 # include "params.c"
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* !CLAP_EXT_PARAMS_H */

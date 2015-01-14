@@ -10,11 +10,6 @@ static void host_events(struct clap_host   *host,
 {
 }
 
-static uint64_t host_steady_time(struct clap_host *host)
-{
-  return 0;
-}
-
 static void *host_extension(struct clap_host *host, const char *extension_id)
 {
   return NULL;
@@ -22,9 +17,11 @@ static void *host_extension(struct clap_host *host, const char *extension_id)
 
 static void initialize_host(struct clap_host *host)
 {
+  static uint64_t steady_time = 0;
+
   host->clap_version = CLAP_VERSION;
   host->events       = host_events;
-  host->steady_time  = host_steady_time;
+  host->steady_time  = &steady_time;
   host->extension    = host_extension;
 }
 
@@ -86,23 +83,23 @@ static void print_params(struct clap_plugin *plugin)
 
     switch (param.type) {
     case CLAP_PARAM_FLOAT:
-      fprintf(stdout, ", type: float, value: %f, min: %f, max: %f",
-              param.value.f, param.min.f, param.max.f);
+      fprintf(stdout, ", type: float, value: %f, min: %f, max: %f, default: %f",
+              param.value.f, param.min.f, param.max.f, param.deflt.f);
       break;
 
     case CLAP_PARAM_INT:
-      fprintf(stdout, ", type: int, value: %d, min: %d, max: %d",
-              param.value.i, param.min.i, param.max.i);
+      fprintf(stdout, ", type: int, value: %d, min: %d, max: %d, default: %d",
+              param.value.i, param.min.i, param.max.i, param.deflt.i);
       break;
 
     case CLAP_PARAM_ENUM:
-      fprintf(stdout, ", type: enum, value: %d, min: %d, max: %d",
-              param.value.i, param.min.i, param.max.i);
+      fprintf(stdout, ", type: enum, value: %d, min: %d, max: %d, default: %d",
+              param.value.i, param.min.i, param.max.i, param.deflt.i);
       break;
 
     case CLAP_PARAM_BOOL:
-      fprintf(stdout, ", type: bool, value: %d, min: %d, max: %d",
-              param.value.i, param.min.i, param.max.i);
+      fprintf(stdout, ", type: bool, value: %d, min: %d, max: %d, default: %d",
+              param.value.i, param.min.i, param.max.i, param.deflt.i);
       break;
 
     case CLAP_PARAM_GROUP:

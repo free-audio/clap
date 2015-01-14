@@ -1025,11 +1025,6 @@ plugin's parameters and restore them.</p>
 <span class="p">{</span>
 <span class="p">}</span>
 
-<span class="k">static</span> <span class="kt">uint64_t</span> <span class="nf">host_steady_time</span><span class="p">(</span><span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-
 <span class="k">static</span> <span class="kt">void</span> <span class="o">*</span><span class="nf">host_extension</span><span class="p">(</span><span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">extension_id</span><span class="p">)</span>
 <span class="p">{</span>
   <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
@@ -1037,9 +1032,11 @@ plugin's parameters and restore them.</p>
 
 <span class="k">static</span> <span class="kt">void</span> <span class="nf">initialize_host</span><span class="p">(</span><span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">)</span>
 <span class="p">{</span>
+  <span class="k">static</span> <span class="kt">uint64_t</span> <span class="n">steady_time</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
   <span class="n">host</span><span class="o">-&gt;</span><span class="n">clap_version</span> <span class="o">=</span> <span class="n">CLAP_VERSION</span><span class="p">;</span>
   <span class="n">host</span><span class="o">-&gt;</span><span class="n">events</span>       <span class="o">=</span> <span class="n">host_events</span><span class="p">;</span>
-  <span class="n">host</span><span class="o">-&gt;</span><span class="n">steady_time</span>  <span class="o">=</span> <span class="n">host_steady_time</span><span class="p">;</span>
+  <span class="n">host</span><span class="o">-&gt;</span><span class="n">steady_time</span>  <span class="o">=</span> <span class="o">&amp;</span><span class="n">steady_time</span><span class="p">;</span>
   <span class="n">host</span><span class="o">-&gt;</span><span class="n">extension</span>    <span class="o">=</span> <span class="n">host_extension</span><span class="p">;</span>
 <span class="p">}</span>
 
@@ -1101,23 +1098,23 @@ plugin's parameters and restore them.</p>
 
     <span class="k">switch</span> <span class="p">(</span><span class="n">param</span><span class="p">.</span><span class="n">type</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">case</span> <span class="nl">CLAP_PARAM_FLOAT</span><span class="p">:</span>
-      <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot;, type: float, value: %f, min: %f, max: %f&quot;</span><span class="p">,</span>
-              <span class="n">param</span><span class="p">.</span><span class="n">value</span><span class="p">.</span><span class="n">f</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">min</span><span class="p">.</span><span class="n">f</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">max</span><span class="p">.</span><span class="n">f</span><span class="p">);</span>
+      <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot;, type: float, value: %f, min: %f, max: %f, default: %f&quot;</span><span class="p">,</span>
+              <span class="n">param</span><span class="p">.</span><span class="n">value</span><span class="p">.</span><span class="n">f</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">min</span><span class="p">.</span><span class="n">f</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">max</span><span class="p">.</span><span class="n">f</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">deflt</span><span class="p">.</span><span class="n">f</span><span class="p">);</span>
       <span class="k">break</span><span class="p">;</span>
 
     <span class="k">case</span> <span class="nl">CLAP_PARAM_INT</span><span class="p">:</span>
-      <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot;, type: int, value: %d, min: %d, max: %d&quot;</span><span class="p">,</span>
-              <span class="n">param</span><span class="p">.</span><span class="n">value</span><span class="p">.</span><span class="n">i</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">min</span><span class="p">.</span><span class="n">i</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">max</span><span class="p">.</span><span class="n">i</span><span class="p">);</span>
+      <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot;, type: int, value: %d, min: %d, max: %d, default: %d&quot;</span><span class="p">,</span>
+              <span class="n">param</span><span class="p">.</span><span class="n">value</span><span class="p">.</span><span class="n">i</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">min</span><span class="p">.</span><span class="n">i</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">max</span><span class="p">.</span><span class="n">i</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">deflt</span><span class="p">.</span><span class="n">i</span><span class="p">);</span>
       <span class="k">break</span><span class="p">;</span>
 
     <span class="k">case</span> <span class="nl">CLAP_PARAM_ENUM</span><span class="p">:</span>
-      <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot;, type: enum, value: %d, min: %d, max: %d&quot;</span><span class="p">,</span>
-              <span class="n">param</span><span class="p">.</span><span class="n">value</span><span class="p">.</span><span class="n">i</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">min</span><span class="p">.</span><span class="n">i</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">max</span><span class="p">.</span><span class="n">i</span><span class="p">);</span>
+      <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot;, type: enum, value: %d, min: %d, max: %d, default: %d&quot;</span><span class="p">,</span>
+              <span class="n">param</span><span class="p">.</span><span class="n">value</span><span class="p">.</span><span class="n">i</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">min</span><span class="p">.</span><span class="n">i</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">max</span><span class="p">.</span><span class="n">i</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">deflt</span><span class="p">.</span><span class="n">i</span><span class="p">);</span>
       <span class="k">break</span><span class="p">;</span>
 
     <span class="k">case</span> <span class="nl">CLAP_PARAM_BOOL</span><span class="p">:</span>
-      <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot;, type: bool, value: %d, min: %d, max: %d&quot;</span><span class="p">,</span>
-              <span class="n">param</span><span class="p">.</span><span class="n">value</span><span class="p">.</span><span class="n">i</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">min</span><span class="p">.</span><span class="n">i</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">max</span><span class="p">.</span><span class="n">i</span><span class="p">);</span>
+      <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot;, type: bool, value: %d, min: %d, max: %d, default: %d&quot;</span><span class="p">,</span>
+              <span class="n">param</span><span class="p">.</span><span class="n">value</span><span class="p">.</span><span class="n">i</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">min</span><span class="p">.</span><span class="n">i</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">max</span><span class="p">.</span><span class="n">i</span><span class="p">,</span> <span class="n">param</span><span class="p">.</span><span class="n">deflt</span><span class="p">.</span><span class="n">i</span><span class="p">);</span>
       <span class="k">break</span><span class="p">;</span>
 
     <span class="k">case</span> <span class="nl">CLAP_PARAM_GROUP</span><span class="p">:</span>
@@ -1640,6 +1637,10 @@ plugin's parameters and restore them.</p>
 <span class="cp"># include &quot;../clap.h&quot;
 # include &quot;../serialize/serialize.h&quot;
 </span>
+<span class="cp">#ifdef __cplusplus
+</span><span class="k">extern</span> <span class="s">&quot;C&quot;</span> <span class="p">{</span>
+<span class="cp">#endif
+</span>
 <span class="cp"># define CLAP_EXT_PARAMS &quot;clap/params&quot;
 </span>
 <span class="k">enum</span> <span class="n">clap_param_type</span>
@@ -1672,10 +1673,13 @@ plugin's parameters and restore them.</p>
   <span class="kt">bool</span>                    <span class="n">is_per_note</span><span class="p">;</span>
   <span class="kt">bool</span>                    <span class="n">is_used</span><span class="p">;</span> <span class="c1">// is this parameter used by the patch?
 </span>  <span class="kt">bool</span>                    <span class="n">is_periodic</span><span class="p">;</span>
-  <span class="k">union</span> <span class="n">clap_param_value</span>  <span class="n">value</span><span class="p">;</span>
+  <span class="kt">bool</span>                    <span class="n">is_locked</span><span class="p">;</span> <span class="c1">// if true, the parameter can't be changed by
+</span>                                     <span class="c1">// the host
+</span>  <span class="k">union</span> <span class="n">clap_param_value</span>  <span class="n">value</span><span class="p">;</span>
   <span class="k">union</span> <span class="n">clap_param_value</span>  <span class="n">min</span><span class="p">;</span>
   <span class="k">union</span> <span class="n">clap_param_value</span>  <span class="n">max</span><span class="p">;</span>
-  <span class="k">enum</span> <span class="n">clap_param_scale</span>   <span class="n">scale</span><span class="p">;</span>
+  <span class="k">union</span> <span class="n">clap_param_value</span>  <span class="n">deflt</span><span class="p">;</span> <span class="c1">// default value
+</span>  <span class="k">enum</span> <span class="n">clap_param_scale</span>   <span class="n">scale</span><span class="p">;</span>
 <span class="p">};</span>
 
 <span class="k">struct</span> <span class="n">clap_plugin_params</span>
@@ -1712,6 +1716,10 @@ plugin's parameters and restore them.</p>
                            <span class="kt">uint64_t</span>            <span class="n">steady_time</span><span class="p">);</span>
 
 <span class="cp"># include &quot;params.c&quot;
+</span>
+<span class="cp">#ifdef __cplusplus
+</span><span class="p">}</span>
+<span class="cp">#endif
 </span>
 <span class="cp">#endif </span><span class="cm">/* !CLAP_EXT_PARAMS_H */</span>
 </pre>

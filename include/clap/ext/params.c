@@ -3,7 +3,8 @@ clap_plugin_params_save(struct clap_plugin *plugin,
                         uint8_t            *buffer,
                         uint32_t           *size)
 {
-  struct clap_plugin_params *params = plugin->extension(plugin, CLAP_EXT_PARAMS);
+  struct clap_plugin_params *params = (struct clap_plugin_params *)
+          plugin->extension(plugin, CLAP_EXT_PARAMS);
   if (!params) {
     *size = 0;
     return true;
@@ -62,7 +63,8 @@ clap_plugin_params_restore(struct clap_plugin *plugin,
                            uint32_t            size,
                            uint64_t            steady_time)
 {
-  struct clap_plugin_params *params = plugin->extension(plugin, CLAP_EXT_PARAMS);
+  struct clap_plugin_params *params = (struct clap_plugin_params *)
+          plugin->extension(plugin, CLAP_EXT_PARAMS);
   if (!params)
     return;
 

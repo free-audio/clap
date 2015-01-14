@@ -103,7 +103,7 @@ clap_deserialize(struct clap_deserializer *d)
     return false;
   }
 
-  d->type = *d->in;
+  d->type = (enum clap_serialize_type)*d->in;
   switch (d->type) {
   case CLAP_SERIALIZE_DICT:
     ++d->in;
