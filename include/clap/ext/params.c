@@ -59,7 +59,8 @@ clap_plugin_params_save(struct clap_plugin *plugin,
 static inline void
 clap_plugin_params_restore(struct clap_plugin *plugin,
                            const uint8_t      *buffer,
-                           uint32_t            size)
+                           uint32_t            size,
+                           uint64_t            steady_time)
 {
   struct clap_plugin_params *params = plugin->extension(plugin, CLAP_EXT_PARAMS);
   if (!params)
@@ -104,7 +105,7 @@ clap_plugin_params_restore(struct clap_plugin *plugin,
     struct clap_event ev;
     ev.next        = NULL;
     ev.type        = CLAP_EVENT_PARAM_SET;
-    ev.steady_time = 0;
+    ev.steady_time = steady_time;
     ev.param.is_global = true;
     ev.param.key = 0;
     ev.param.index = index;
@@ -113,7 +114,7 @@ clap_plugin_params_restore(struct clap_plugin *plugin,
     process.inputs        = NULL;
     process.outputs       = NULL;
     process.samples_count = 0;
-    process.steady_time   = 0;
+    process.steady_time   = steady_time;
     process.events        = &ev;
 
     switch (d.type) {

@@ -64,10 +64,16 @@ clap_plugin_params_save(struct clap_plugin *plugin,
                         uint8_t            *buffer,
                         uint32_t           *size);
 
+/* Helper that will deserialize parameters value from the buffer
+ * and send CLAP_EVENT_PARAM_SET to the plugin to restore them.
+ * The steady_time is required because the plugin can discard
+ * events from the past.
+ */
 static inline void
 clap_plugin_params_restore(struct clap_plugin *plugin,
                            const uint8_t      *buffer,
-                           uint32_t            size);
+                           uint32_t            size,
+			   uint64_t            steady_time);
 
 # include "params.c"
 

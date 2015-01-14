@@ -167,9 +167,14 @@ thyns_state_save(struct clap_plugin *plugin, void **buffer, uint32_t *size)
 }
 
 bool
-thyns_state_restore(struct clap_plugin *plugin, const void *buffer, uint32_t size)
+thyns_state_restore(struct clap_plugin *plugin,
+                    const void         *buffer,
+                    uint32_t            size)
 {
-  clap_plugin_params_restore(plugin, buffer, size);
+  struct thyns_plugin *p = plugin->plugin_data;
+
+  clap_plugin_params_restore(
+    plugin, buffer, size, p->host->steady_time(p->host));
   return true;
 }
 
