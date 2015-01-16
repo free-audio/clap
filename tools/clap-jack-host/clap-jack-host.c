@@ -50,11 +50,6 @@ static void host_events(struct clap_host   *host,
 {
 }
 
-static uint64_t host_steady_time(struct clap_host *host)
-{
-  return 0;
-}
-
 static void *host_extension(struct clap_host *host, const char *extension_id)
 {
   return NULL;
@@ -178,7 +173,7 @@ static bool initialize(struct clap_jack_host *app,
   /* host initialization */
   app->host.clap_version  = CLAP_VERSION;
   app->host.events        = host_events;
-  app->host.steady_time   = host_steady_time;
+  app->host.steady_time   = &app->steady_time;
   app->host.extension     = host_extension;
   app->host.get_attribute = host_attribute;
   app->host.log           = host_log;
