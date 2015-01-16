@@ -12,6 +12,23 @@ struct thyns_params
   union clap_param_value voice[THYNS_VOICE_PARAM_COUNT];
 };
 
+# define THYNS_PARAMS_VALUES_COUNT                                      \
+  (sizeof (struct thyns_params) / sizeof (union clap_param_value))
+
+struct thyns_ramp
+{
+  struct thyns_ramp *prev;
+  struct thyns_ramp *next;
+
+  float                   increment;
+  union clap_param_value *target;
+};
+
+struct thyns_ramps
+{
+  struct thyns_ramp *ramps[THYNS_PARAMS_VALUES_COUNT];
+};
+
 static void
 thyns_params_init(struct thyns_params *params)
 {

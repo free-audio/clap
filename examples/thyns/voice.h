@@ -48,7 +48,9 @@ struct thyns_voice
   union clap_param_value *values[THYNS_VOICE_PARAM_COUNT];
 
   // voice parameters
-  struct thyns_params params;
+  struct thyns_params  params;
+  struct thyns_ramps   ramps;
+  struct thyns_ramp   *ramping; // list
 };
 
 static inline void
@@ -127,6 +129,10 @@ thyns_voice_init(struct thyns_voice *voice, uint32_t sr)
 
   // amp
   thyns_env_init(&voice->amp_env, sr);
+
+  // parameters ramps
+  memset(&voice->ramps, 0, sizeof (voice->ramps));
+  voice->ramping = NULL;
 }
 
 static inline void
