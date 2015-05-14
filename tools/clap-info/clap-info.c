@@ -17,7 +17,7 @@ static void *host_extension(struct clap_host *host, const char *extension_id)
 
 static void initialize_host(struct clap_host *host)
 {
-  static uint64_t steady_time = 0;
+  static int64_t steady_time = 0;
 
   host->clap_version = CLAP_VERSION;
   host->events       = host_events;
@@ -68,11 +68,11 @@ static void print_params(struct clap_plugin *plugin)
     return;
   }
 
-  uint32_t count = params->count(plugin);
+  int32_t count = params->count(plugin);
   fprintf(stdout, "parameters count: %d\n", count);
 
   struct clap_param param;
-  for (uint32_t i = 0; i < count; ++i) {
+  for (int32_t i = 0; i < count; ++i) {
     if (!params->get(plugin, i, &param))
       continue;
 
@@ -135,8 +135,8 @@ int main(int argc, char **argv)
     return 1;
   }
 
-  uint32_t plugin_count = -1;
-  for (uint32_t index = 0; index < plugin_count; ++index) {
+  int32_t plugin_count = -1;
+  for (int32_t index = 0; index < plugin_count; ++index) {
     struct clap_plugin *plugin = symbol.clap_create(
       index, &host, 48000, &plugin_count);
 

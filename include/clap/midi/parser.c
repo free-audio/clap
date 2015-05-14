@@ -155,10 +155,10 @@ clap_midi_parse_be32(const uint8_t *in)
 }
 
 static inline uint32_t
-clap_midi_parse_variable_length(struct clap_midi_parser *parser, uint32_t *offset)
+clap_midi_parse_variable_length(struct clap_midi_parser *parser, int32_t *offset)
 {
   uint32_t value = 0;
-  uint32_t i     = *offset;
+  int32_t i     = *offset;
 
   for (; i < parser->size; ++i) {
     value = (value << 7) | (parser->in[i] & 0x7f);
@@ -229,7 +229,7 @@ clap_midi_parse_meta_event(struct clap_midi_parser *parser)
     return CLAP_MIDI_PARSER_EOB;
 
   parser->meta.type = parser->in[1];
-  uint32_t offset   = 2;
+  int32_t offset   = 2;
   parser->meta.length = clap_midi_parse_variable_length(parser, &offset);
 
   // check buffer size
@@ -281,7 +281,7 @@ clap_midi_parse(struct clap_midi_parser *parser)
 
 static inline void
 clap_midi_convert(const uint8_t     *in,
-                  uint32_t           size,
+                  int32_t           size,
                   struct clap_event *event)
 {
   struct clap_midi_parser parser;

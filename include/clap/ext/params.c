@@ -1,7 +1,7 @@
 static inline bool
 clap_plugin_params_save(struct clap_plugin *plugin,
                         uint8_t            *buffer,
-                        uint32_t           *size)
+                        int32_t           *size)
 {
   struct clap_plugin_params *params = (struct clap_plugin_params *)
           plugin->extension(plugin, CLAP_EXT_PARAMS);
@@ -17,8 +17,8 @@ clap_plugin_params_save(struct clap_plugin *plugin,
   if (!clap_serializer_dict(&s))
     return false;
 
-  uint32_t count = params->count(plugin);
-  for (uint32_t i = 0; i < count; ++i) {
+  int32_t count = params->count(plugin);
+  for (int32_t i = 0; i < count; ++i) {
     struct clap_param param;
 
     if (!params->get(plugin, i, &param))
@@ -60,8 +60,8 @@ clap_plugin_params_save(struct clap_plugin *plugin,
 static inline void
 clap_plugin_params_restore(struct clap_plugin *plugin,
                            const uint8_t      *buffer,
-                           uint32_t            size,
-                           uint64_t            steady_time)
+                           int32_t            size,
+                           int64_t            steady_time)
 {
   struct clap_plugin_params *params = (struct clap_plugin_params *)
           plugin->extension(plugin, CLAP_EXT_PARAMS);
@@ -69,12 +69,12 @@ clap_plugin_params_restore(struct clap_plugin *plugin,
     return;
 
   // allocate the ids
-  uint32_t count = params->count(plugin);
+  int32_t count = params->count(plugin);
   char     ids[count][CLAP_ID_SIZE];
   memset(ids, 0, sizeof (ids));
 
   // fill ids
-  for (uint32_t i = 0; i < count; ++i) {
+  for (int32_t i = 0; i < count; ++i) {
     struct clap_param param;
     if (params->get(plugin, i, &param))
       memcpy(ids[i], param.id, sizeof (param.id));
@@ -93,7 +93,7 @@ clap_plugin_params_restore(struct clap_plugin *plugin,
       return;
 
     // find param index
-    uint32_t index;
+    int32_t index;
     for (index = 0; index < count; ++index)
       if (!strncmp(ids[index], d.s, d.slen))
         break;
