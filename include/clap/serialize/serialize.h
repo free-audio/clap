@@ -44,7 +44,7 @@ clap_serializer_end(struct clap_serializer *s);
 static inline bool
 clap_serializer_str(struct clap_serializer *s,
                     const char             *str,
-                    uint32_t                len);
+                    int32_t                len);
 
 /* Pushes an 32 bits integer. Returns false on EOB. */
 static inline bool
@@ -72,7 +72,7 @@ struct clap_deserializer
     float                   f;
     const char             *s;
   };
-  uint32_t                  slen;
+  int32_t                  slen;
 };
 
 /* Decodes one token into *d.

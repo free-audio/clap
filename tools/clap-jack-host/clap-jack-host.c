@@ -24,8 +24,8 @@ struct clap_jack_host
   void               *library_handle;
 
   /* host */
-  uint32_t sample_rate;
-  uint64_t steady_time;
+  int32_t sample_rate;
+  int64_t steady_time;
 
   /* jack */
   jack_client_t *client;
@@ -71,10 +71,10 @@ static void host_log(struct clap_host       *host,
   fprintf(stdout, "[%s] %s\n", severities[severity], msg);
 }
 
-static uint32_t host_attribute(struct clap_host *host,
+static int32_t host_attribute(struct clap_host *host,
                                const char       *attr,
                                char             *buffer,
-                               uint32_t          size)
+                               int32_t          size)
 {
   return 0;
 }
@@ -90,7 +90,7 @@ int process(jack_nframes_t nframes, void *arg)
     out[i] = jack_port_get_buffer(app->output_ports[i], nframes);
   }
   void *midi_in_buf = jack_port_get_buffer(app->midi_in, nframes);
-  uint32_t midi_in_count = jack_midi_get_event_count(midi_in_buf);
+  int32_t midi_in_count = jack_midi_get_event_count(midi_in_buf);
 
   struct clap_process p;
   p.inputs  = in;
@@ -102,7 +102,7 @@ int process(jack_nframes_t nframes, void *arg)
   /* convert midi events */
   p.events = NULL;
   struct clap_event *last_event = NULL;
-  for (uint32_t i = 0; i < midi_in_count; ++i) {
+  for (int32_t i = 0; i < midi_in_count; ++i) {
     jack_midi_event_t midi;
     jack_midi_event_get(&midi, midi_in_buf, i);
 
@@ -139,7 +139,7 @@ void shutdown(void *arg)
 
 static bool initialize(struct clap_jack_host *app,
                        const char            *plugin_path,
-                       uint32_t               plugin_index)
+                       int32_t               plugin_index)
 {
   app->quit = false;
 
@@ -198,7 +198,7 @@ static bool initialize(struct clap_jack_host *app,
     goto fail_dlclose;
   }
 
-  uint32_t plugin_count;
+  int32_t plugin_count;
   app->plugin = symbol.clap_create(plugin_index, &app->host, app->sample_rate, &plugin_count);
   if (!app->plugin) {
     fprintf(stderr, "failed to create plugin\n");
@@ -263,7 +263,7 @@ static void save_state(struct clap_jack_host *app)
   }
 
   void     *buffer = NULL;
-  uint32_t  size   = 0;
+  int32_t  size   = 0;
   if (!state->save(app->plugin, &buffer, &size)) {
     fprintf(stdout, "failed to save the state\n");
     return;

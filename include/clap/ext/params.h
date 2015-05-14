@@ -28,8 +28,8 @@ enum clap_param_scale
 struct clap_param
 {
   /* tree fields */
-  uint32_t index;  // parameter's index
-  uint32_t parent; // parent's index, -1 for no parent
+  int32_t index;  // parameter's index
+  int32_t parent; // parent's index, -1 for no parent
 
   /* param info */
   char                    id[CLAP_ID_SIZE]; // a string which identify the param
@@ -52,12 +52,12 @@ struct clap_param
 struct clap_plugin_params
 {
   /* Returns the number of parameters. */
-  uint32_t (*count)(struct clap_plugin *plugin);
+  int32_t (*count)(struct clap_plugin *plugin);
 
   /* Copies the parameter's info to param and returns true.
    * If index is greater or equal to the number then return false. */
   bool (*get)(struct clap_plugin *plugin,
-              uint32_t            index,
+              int32_t            index,
               struct clap_param  *param);
 };
 
@@ -69,7 +69,7 @@ struct clap_plugin_params
 static inline bool
 clap_plugin_params_save(struct clap_plugin *plugin,
                         uint8_t            *buffer,
-                        uint32_t           *size);
+                        int32_t           *size);
 
 /* Helper that will deserialize parameters value from the buffer
  * and send CLAP_EVENT_PARAM_SET to the plugin to restore them.
@@ -79,8 +79,8 @@ clap_plugin_params_save(struct clap_plugin *plugin,
 static inline void
 clap_plugin_params_restore(struct clap_plugin *plugin,
                            const uint8_t      *buffer,
-                           uint32_t            size,
-			   uint64_t            steady_time);
+                           int32_t            size,
+			   int64_t            steady_time);
 
 # include "params.c"
 

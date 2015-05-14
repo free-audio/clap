@@ -83,7 +83,7 @@ clap_serializer_float(struct clap_serializer *s, float value)
 static inline bool
 clap_serializer_str(struct clap_serializer *s,
                     const char             *str,
-                    uint32_t                len)
+                    int32_t                len)
 {
   if (!s->out || s->out + 5 + len >= s->out_end)
     return false;

@@ -28,11 +28,11 @@ thyns_plugin_destroy(struct clap_plugin *plugin)
   free(p);
 }
 
-uint32_t
+int32_t
 thyns_plugin_get_attribute(struct clap_plugin *plugin,
                            const char         *attr,
                            char               *buffer,
-                           uint32_t            size)
+                           int32_t            size)
 {
 #define attr(Attr, Value)                       \
   do {                                          \
@@ -91,7 +91,7 @@ thyns_plugin_deactivate(struct clap_plugin *plugin)
 {
 }
 
-uint32_t
+int32_t
 thyns_params_count(struct clap_plugin *plugin)
 {
   return sizeof (struct thyns_params) / sizeof (union clap_param_value);
@@ -99,14 +99,14 @@ thyns_params_count(struct clap_plugin *plugin)
 
 bool
 thyns_params_get(struct clap_plugin *plugin,
-                 uint32_t            index,
+                 int32_t            index,
                  struct clap_param  *param)
 {
   if (index >= thyns_params_count(plugin))
     return false;
 
   struct thyns_plugin *p = plugin->plugin_data;
-  uint32_t i = 0;
+  int32_t i = 0;
 
   param->index  = index;
   param->parent = -1;
@@ -157,7 +157,7 @@ thyns_params_get(struct clap_plugin *plugin,
 }
 
 bool
-thyns_state_save(struct clap_plugin *plugin, void **buffer, uint32_t *size)
+thyns_state_save(struct clap_plugin *plugin, void **buffer, int32_t *size)
 {
   struct thyns_plugin *p = plugin->plugin_data;
 
@@ -169,7 +169,7 @@ thyns_state_save(struct clap_plugin *plugin, void **buffer, uint32_t *size)
 bool
 thyns_state_restore(struct clap_plugin *plugin,
                     const void         *buffer,
-                    uint32_t            size)
+                    int32_t            size)
 {
   struct thyns_plugin *p = plugin->plugin_data;
 
@@ -179,7 +179,7 @@ thyns_state_restore(struct clap_plugin *plugin,
 
 struct thyns_plugin *
 thyns_plugin_create(struct clap_host *host,
-                    uint32_t          sample_rate)
+                    int32_t          sample_rate)
 {
   struct thyns_plugin *p = calloc(sizeof (*p), 1);
   if (!p)
@@ -209,10 +209,10 @@ thyns_plugin_create(struct clap_host *host,
 }
 
 struct clap_plugin *
-clap_create(uint32_t          plugin_index,
+clap_create(int32_t          plugin_index,
             struct clap_host *host,
-            uint32_t          sample_rate,
-            uint32_t         *plugins_count)
+            int32_t          sample_rate,
+            int32_t         *plugins_count)
 {
   if (plugins_count)
     *plugins_count = 1;

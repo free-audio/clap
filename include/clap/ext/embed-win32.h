@@ -10,7 +10,7 @@
 
 struct clap_plugin_embed_win32
 {
-  void (*get_size)(uint32_t *width, uint32_t *height);
+  void (*get_size)(int32_t *width, int32_t *height);
   bool (*attach)(struct clap_plugin *plugin, HWND window);
   bool (*detach)(struct clap_plugin *plugin);
 };

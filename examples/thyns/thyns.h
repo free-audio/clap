@@ -10,10 +10,10 @@
 
 struct thyns
 {
-  uint32_t sr;    // sample rate
+  int32_t sr;    // sample rate
   double   pi_sr; // M_PI / sample_rate
 
-  uint64_t steady_time;
+  int64_t steady_time;
 
   struct thyns_voice *voices_singing; // list
   struct thyns_voice *voices_idle;    // list
@@ -30,7 +30,7 @@ struct thyns
   struct thyns_ramp   ramps_buffer[THYNS_RAMPS_COUNT];
 };
 
-static inline void thyns_init(struct thyns *thyns, uint32_t sr)
+static inline void thyns_init(struct thyns *thyns, int32_t sr)
 {
   memset(thyns, 0, sizeof (*thyns));
 
@@ -39,12 +39,12 @@ static inline void thyns_init(struct thyns *thyns, uint32_t sr)
 
   thyns_params_init(&thyns->params);
 
-  for (uint32_t i = 0; i < THYNS_VOICES_COUNT; ++i) {
+  for (int32_t i = 0; i < THYNS_VOICES_COUNT; ++i) {
     thyns_voice_init(thyns->voices_buffer + i, sr);
     thyns_dlist_push_back(thyns->voices_idle, thyns->voices_buffer + i);
   }
 
-  for (uint32_t i = 0; i < THYNS_RAMPS_COUNT; ++i)
+  for (int32_t i = 0; i < THYNS_RAMPS_COUNT; ++i)
     thyns_dlist_push_back(thyns->ramps_idle, thyns->ramps_buffer + i);
 }
 
@@ -229,7 +229,7 @@ thyns_process(struct thyns *thyns, struct clap_process *process)
   struct clap_event *ev = process->events;
 
   thyns->steady_time = process->steady_time;
-  for (uint32_t i = 0; i < process->samples_count; ++i, ++thyns->steady_time) {
+  for (int32_t i = 0; i < process->samples_count; ++i, ++thyns->steady_time) {
 
     // handle events
     for (; ev; ev = ev->next) {

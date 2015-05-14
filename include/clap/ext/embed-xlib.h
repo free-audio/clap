@@ -10,7 +10,7 @@
 
 struct clap_plugin_embed_xlib
 {
-  void (*get_size)(uint32_t *width, uint32_t *height);
+  void (*get_size)(int32_t *width, int32_t *height);
 
   /* Note for the client, you can get a Display* by calling
    * XOpenDisplay(display_name).
