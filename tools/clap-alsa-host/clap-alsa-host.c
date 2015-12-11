@@ -360,7 +360,7 @@ int main(int argc, char **argv)
     return 2;
   }
 
-  if (!initialize(&app, "default", argv[1], atoi(argv[2])))
+  if (!initialize(&app, "plug:default", argv[1], atoi(argv[2])))
     return 1;
 
   if (!app.plugin->activate(app.plugin)) {
