@@ -1,4 +1,4 @@
-#ifndef VOICE_H
+﻿#ifndef VOICE_H
 # define VOICE_H
 
 # include "env.h"
@@ -74,7 +74,7 @@ thyns_voice_param_info(uint32_t                 index,
     param->value = value;
     param->min.f = 0;
     param->max.f = 1;
-    param->scale = CLAP_PARAM_LINEAR;
+    param->scale = CLAP_PARAM_SCALE_LINEAR;
     break;
 
   case THYNS_VOICE_PARAM_FILT_ENV_DEPTH:
@@ -89,7 +89,7 @@ thyns_voice_param_info(uint32_t                 index,
     param->value = value;
     param->min.f = -4;
     param->max.f = 4;
-    param->scale = CLAP_PARAM_LINEAR;
+    param->scale = CLAP_PARAM_SCALE_LINEAR;
     break;
 
   case THYNS_VOICE_PARAM_AMP:
@@ -104,7 +104,7 @@ thyns_voice_param_info(uint32_t                 index,
     param->value = value;
     param->min.f = -1;
     param->max.f = 1;
-    param->scale = CLAP_PARAM_LINEAR;
+    param->scale = CLAP_PARAM_SCALE_LINEAR;
     break;
   }
 #undef P

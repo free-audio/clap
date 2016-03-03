@@ -1,7 +1,7 @@
-static inline bool
+﻿static inline bool
 clap_plugin_params_save(struct clap_plugin *plugin,
                         uint8_t            *buffer,
-                        int32_t           *size)
+                        int32_t            *size)
 {
   struct clap_plugin_params *params = (struct clap_plugin_params *)
           plugin->extension(plugin, CLAP_EXT_PARAMS);
@@ -21,10 +21,7 @@ clap_plugin_params_save(struct clap_plugin *plugin,
   for (int32_t i = 0; i < count; ++i) {
     struct clap_param param;
 
-    if (!params->get(plugin, i, &param))
-      continue;
-
-    if (param.type == CLAP_PARAM_GROUP)
+    if (!params->get_param(plugin, i, &param))
       continue;
 
     clap_serializer_str(&s, param.id, strlen(param.id));
@@ -60,8 +57,8 @@ clap_plugin_params_save(struct clap_plugin *plugin,
 static inline void
 clap_plugin_params_restore(struct clap_plugin *plugin,
                            const uint8_t      *buffer,
-                           int32_t            size,
-                           int64_t            steady_time)
+                           int32_t             size,
+                           int64_t             steady_time)
 {
   struct clap_plugin_params *params = (struct clap_plugin_params *)
           plugin->extension(plugin, CLAP_EXT_PARAMS);
@@ -76,7 +73,7 @@ clap_plugin_params_restore(struct clap_plugin *plugin,
   // fill ids
   for (int32_t i = 0; i < count; ++i) {
     struct clap_param param;
-    if (params->get(plugin, i, &param))
+    if (params->get_param(plugin, i, &param))
       memcpy(ids[i], param.id, sizeof (param.id));
   }
 

@@ -1,4 +1,4 @@
-#ifndef CLAP_EXT_PORTS_H
+﻿#ifndef CLAP_EXT_PORTS_H
 # define CLAP_EXT_PORTS_H
 
 # include "../clap.h"
@@ -7,28 +7,38 @@
 
 enum clap_port_type
 {
-  CLAP_PORT_MONO     = 0,
-  CLAP_PORT_STEREO   = 1,
-  CLAP_PORT_SURROUND = 2,
+  CLAP_PORT_AUDIO = 0,
+  CLAP_PORT_EVENT = 1,
+};
+
+enum clap_port_channel_mapping
+{
+  CLAP_PORT_UNKNWN   = 0,
+  CLAP_PORT_MONO     = 1,
+  CLAP_PORT_STEREO   = 2,
+  CLAP_PORT_SURROUND = 3,
 };
 
 enum clap_port_role
 {
-  CLAP_PORT_INOUT     = 0,
-  CLAP_PORT_SIDECHAIN = 1,
+  CLAP_PORT_INOUT      = 0,
+  CLAP_PORT_SIDECHAIN  = 1,
+  CLAP_PORT_MODULATION = 2,
 };
 
 struct clap_port_info
 {
-  enum clap_port_type  type;
-  enum clap_port_role  role;
-  char                 name[CLAP_NAME_SIZE];
-  bool                 is_repeatable;
+  enum clap_port_type            type;
+  int                            channel_count;
+  enum clap_port_channel_mapping channel_mapping;
+  enum clap_port_role            role;
+  char                           name[CLAP_NAME_SIZE];
+  bool                           is_repeatable;
 };
 
 struct clap_ports_config
 {
-  char     name[CLAP_NAME_SIZE];
+  char    name[CLAP_NAME_SIZE];
   int32_t inputs_count;
   int32_t outputs_count;
 };
@@ -39,15 +49,19 @@ struct clap_plugin_ports
 {
   /* Returns the number of available configurations */
   int32_t (*get_configs_count)(struct clap_plugin *plugin);
+
   bool (*get_config)(struct clap_plugin       *plugin,
                      int32_t                  config_index,
                      struct clap_ports_config *config);
+
   bool (*get_info)(struct clap_plugin    *plugin,
                    int32_t               config_index,
                    int32_t               port_index,
                    struct clap_port_info *port);
+
   bool (*set_config)(struct clap_plugin *plugin,
                      int32_t            config_index);
+
   bool (*set_repeat)(struct clap_plugin  *plugin,
                      int32_t             port_index,
                      int32_t             count);

@@ -1,4 +1,4 @@
-#ifndef OSC_H
+﻿#ifndef OSC_H
 # define OSC_H
 
 # include "defs.h"
@@ -65,7 +65,7 @@ thyns_osc_param_info(uint32_t                 index,
     param->value = value;
     param->min.i = 0;
     param->max.i = THYNS_OSC_SINE;
-    param->scale = CLAP_PARAM_LINEAR;
+    param->scale = CLAP_PARAM_SCALE_LINEAR;
     break;
 
   case THYNS_OSC_PARAM_PHASE:
@@ -80,7 +80,7 @@ thyns_osc_param_info(uint32_t                 index,
     param->value = value;
     param->min.f = 0;
     param->max.f = 2 * M_PI;
-    param->scale = CLAP_PARAM_LINEAR;
+    param->scale = CLAP_PARAM_SCALE_LINEAR;
     break;
 
   case THYNS_OSC_PARAM_PWM:
@@ -95,7 +95,7 @@ thyns_osc_param_info(uint32_t                 index,
     param->value = value;
     param->min.f = 0;
     param->max.f = 1;
-    param->scale = CLAP_PARAM_LINEAR;
+    param->scale = CLAP_PARAM_SCALE_LINEAR;
     break;
 
   case THYNS_OSC_PARAM_TUNE:
@@ -110,7 +110,7 @@ thyns_osc_param_info(uint32_t                 index,
     param->value = value;
     param->min.f = -48;
     param->max.f = +48;
-    param->scale = CLAP_PARAM_LINEAR;
+    param->scale = CLAP_PARAM_SCALE_LINEAR;
     break;
   }
 

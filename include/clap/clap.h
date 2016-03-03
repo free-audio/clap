@@ -1,4 +1,4 @@
-/*
+﻿/*
  * CLAP - CLever Audio Plugin (<--- needs to find a marketing ok name)
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~
  *
@@ -50,12 +50,11 @@ struct clap_host;
 
 enum clap_string_size
 {
-  CLAP_ID_SIZE         = 48,
-  CLAP_NAME_SIZE       = 32,
+  CLAP_ID_SIZE         = 64,
+  CLAP_NAME_SIZE       = 64,
   CLAP_DESC_SIZE       = 256,
-  CLAP_DISPLAY_SIZE    = 32,
-  CLAP_TAGS_SIZE       = 128,
-  CLAP_URL_SIZE        = 256,
+  CLAP_DISPLAY_SIZE    = 64,
+  CLAP_TAGS_SIZE       = 256,
 };
 
 enum clap_log_severity
@@ -104,34 +103,34 @@ union clap_param_value
 
 enum clap_event_type
 {
-  CLAP_EVENT_NOTE_ON  = 0, // note attribute
-  CLAP_EVENT_NOTE_OFF = 1, // note attribute
+  CLAP_EVENT_NOTE_ON  = 0,    // note attribute
+  CLAP_EVENT_NOTE_OFF = 1,    // note attribute
+  CLAP_EVENT_NOTE_CHOKE = 16, // note attribute
 
   CLAP_EVENT_PARAM_SET  = 2,    // param attribute
   CLAP_EVENT_PARAM_RAMP = 3,    // param attribute
   CLAP_EVENT_PRESET_SET = 4,    // preset attribute
 
   CLAP_EVENT_MIDI    = 5,       // midi attribute
-  CLAP_EVENT_CONTROL = 6,       // control attribute
 
   CLAP_EVENT_GUI_OPENED = 7,   // plugin to host, no attribute
   CLAP_EVENT_GUI_CLOSED = 8,   // plugin to host, no attribute
 
-  CLAP_EVENT_NEW_PRESETS       = 9, // plugin to host, no attribute
   CLAP_EVENT_NEW_PORTS_CONFIGS = 10, // plugin to host, no attribute
+  CLAP_EVENT_NEW_PARAMS = 9, // plugin to host
 
   CLAP_EVENT_LATENCY_CHANGED = 11, // plugin to host, latency attribute
 
   CLAP_EVENT_PLAY  = 12, // no attribute
   CLAP_EVENT_PAUSE = 13, // no attribute
   CLAP_EVENT_STOP  = 14, // no attribute
-
-  CLAP_EVENT_JUMP = 15, // attribute jump
+  CLAP_EVENT_JUMP = 15,  // attribute jump
 };
 
 struct clap_event_note
 {
-  uint8_t key;
+  int8_t  key;
+  int8_t  channel;
   float   pitch;
   float   velocity; // 0..1
 };
@@ -140,10 +139,11 @@ struct clap_event_param
 {
   /* key/voice index */
   bool                    is_global; // is this event global?
-  uint8_t                 key;       // if !is_global, target key
+  int8_t                  key;       // if !is_global, target key
+  int8_t                  channel;
 
   /* parameter */
-  int32_t                index; // parameter index
+  int32_t                 index; // parameter index
   union clap_param_value  value;
   float                   increment;        // for param ramp
   char                    display_text[CLAP_DISPLAY_SIZE]; // use this for display.
@@ -152,31 +152,16 @@ struct clap_event_param
   bool                    is_used; // is the parameter used in the patch?
 };
 
-struct clap_event_control
-{
-  /* voice/key index */
-  bool     is_global; // is this event global?
-  uint8_t  key;       // if !is_global, target key
-
-  /* control */
-  int32_t index;
-  float    value; // 0 .. 1.0f
-};
-
 struct clap_event_preset
 {
-  char url[CLAP_URL_SIZE]; // the url to the preset
+  const char *url; // the url to the preset
 };
 
 struct clap_event_midi
 {
-  /* voice/key index */
-  bool           is_global; // is this event global?
-  uint8_t        key;       // if !is_global, target key
-
   /* midi event */
   const uint8_t *buffer;
-  int32_t       size;
+  int32_t        size;
 };
 
 struct clap_event_latency
@@ -188,7 +173,7 @@ struct clap_event_jump
 {
   int32_t tempo;      // tempo in samples
   int32_t bar;        // the bar number
-  int32_t bar_offset; // 0 <= cycle_offset < tsig_denom * tempo
+  int32_t bar_offset; // 0 <= bar_offset < tsig_denom * tempo
   int32_t tsig_num;   // time signature numerator
   int32_t tsig_denom; // time signature denominator
 };
@@ -197,14 +182,15 @@ struct clap_event
 {
   struct clap_event    *next; // linked list, NULL on end
   enum clap_event_type  type;
-  int64_t              steady_time; // steady_time of the event, see host->steady_time(host)
+  int32_t               type_space;  // the space to which belongs the event
+                                     // see host->get_event_type_space();
+  int64_t               steady_time; // steady_time of the event, see host->steady_time(host)
 
   union {
     struct clap_event_note        note;
     struct clap_event_param       param;
     struct clap_event_preset      preset;
     struct clap_event_midi        midi;
-    struct clap_event_control     control;
     struct clap_event_latency     latency;
     struct clap_event_jump	  jump;
   };
@@ -231,7 +217,7 @@ struct clap_process
   /* audio buffers */
   float    **inputs;
   float    **outputs;
-  int32_t   samples_count;
+  int32_t    samples_count;
 
   /* process info */
   int64_t steady_time; // the steady time in samples
@@ -270,6 +256,9 @@ struct clap_host
               enum clap_log_severity  severity,
               const char             *msg);
 
+  /* Request for the event type space for space_id. */
+  int32_t (*get_event_type_space)(struct clap_host *host, const char *space_id);
+
   /* feature extensions */
   void *(*extension)(struct clap_host *host, const char *extention_id);
 };
@@ -289,7 +278,7 @@ enum clap_plugin_type
 
 struct clap_plugin
 {
-  int32_t clap_version; // initialized to CALP_VERSION
+  int32_t clap_version; // initialized to CLAP_VERSION
 
   void *host_data;   // reserved pointer for the host
   void *plugin_data; // reserved pointer for the plugin
@@ -303,9 +292,9 @@ struct clap_plugin
    * Returns the size of the original string or 0 if there is no
    * value for this attributes. */
   int32_t (*get_attribute)(struct clap_plugin *plugin,
-                            const char         *attr,
-                            char               *buffer,
-                            int32_t            size);
+                           const char         *attr,
+                           char               *buffer,
+                           int32_t             size);
 
   /* activation */
   bool (*activate)(struct clap_plugin *plugin);
@@ -320,22 +309,25 @@ struct clap_plugin
 };
 
 /* typedef for dlsym() cast */
-typedef struct clap_plugin *(*clap_create_f)(int32_t          plugin_index,
+typedef struct clap_plugin *(*clap_create_f)(int32_t           plugin_index,
 			                     struct clap_host *host,
-                                             int32_t          sample_rate,
-                                             int32_t         *plugins_count);
+                                             int32_t           sample_rate,
+                                             int32_t          *plugins_count);
 
 /* Plugin entry point. If plugins_count is not null, then clap_create has
  * to store the number of plugins available in *plugins_count.
  * If clap_create failed to create a plugin, it returns NULL.
  * The return value has to be freed by calling plugin->destroy(plugin).
  *
+ * Common sample rate values are: 44100, 48000, 88200, 96000,
+ * 176400, 192000.
+ *
  * This function must be thread-safe. */
 struct clap_plugin *
-clap_create(int32_t          plugin_index,
+clap_create(int32_t           plugin_index,
             struct clap_host *host,
-            int32_t          sample_rate,
-            int32_t         *plugins_count);
+            int32_t           sample_rate,
+            int32_t          *plugins_count);
 
 # ifdef __cplusplus
 }

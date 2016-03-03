@@ -1,4 +1,4 @@
-#ifndef ENV_H
+﻿#ifndef ENV_H
 # define ENV_H
 
 # include "defs.h"
@@ -52,7 +52,7 @@ thyns_env_param_info(uint32_t                 index,
     param->value = value;
     param->min.f = 0;
     param->max.f = 10000;
-    param->scale = CLAP_PARAM_LOG;
+    param->scale = CLAP_PARAM_SCALE_LOG;
     break;
 
   case THYNS_ENV_PARAM_DECAY:
@@ -67,7 +67,7 @@ thyns_env_param_info(uint32_t                 index,
     param->value = value;
     param->min.f = 0;
     param->max.f = 10000;
-    param->scale = CLAP_PARAM_LOG;
+    param->scale = CLAP_PARAM_SCALE_LOG;
     break;
 
   case THYNS_ENV_PARAM_SUSTAIN:
@@ -82,7 +82,7 @@ thyns_env_param_info(uint32_t                 index,
     param->value = value;
     param->min.f = 0;
     param->max.f = 1;
-    param->scale = CLAP_PARAM_LINEAR;
+    param->scale = CLAP_PARAM_SCALE_LINEAR;
     break;
 
   case THYNS_ENV_PARAM_RELEASE:
@@ -97,7 +97,7 @@ thyns_env_param_info(uint32_t                 index,
     param->value = value;
     param->min.f = 0;
     param->max.f = 10000;
-    param->scale = CLAP_PARAM_LOG;
+    param->scale = CLAP_PARAM_SCALE_LOG;
     break;
   }
 #undef P

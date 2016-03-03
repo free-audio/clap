@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Basic filter adapted from Urs Heckman's code:
  * http://www.kvraudio.com/forum/viewtopic.php?f=33&t=412944#p5766724
  */
@@ -55,7 +55,7 @@ thyns_filt_param_info(uint32_t                 index,
     param->value = value;
     param->min.f = 0;
     param->max.f = 28000;
-    param->scale = CLAP_PARAM_LOG;
+    param->scale = CLAP_PARAM_SCALE_LOG;
     break;
 
   case THYNS_FILT_PARAM_RESONANCE:
@@ -70,7 +70,7 @@ thyns_filt_param_info(uint32_t                 index,
     param->value = value;
     param->min.f = 0;
     param->max.f = 2;
-    param->scale = CLAP_PARAM_LINEAR;
+    param->scale = CLAP_PARAM_SCALE_LINEAR;
     break;
   }
 #undef P

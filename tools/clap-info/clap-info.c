@@ -1,4 +1,4 @@
-#include <stdio.h>
+﻿#include <stdio.h>
 #include <dlfcn.h>
 
 #include <clap/clap.h>
@@ -73,7 +73,7 @@ static void print_params(struct clap_plugin *plugin)
 
   struct clap_param param;
   for (int32_t i = 0; i < count; ++i) {
-    if (!params->get(plugin, i, &param))
+    if (!params->get_param(plugin, i, &param))
       continue;
 
     fprintf(stdout, " => {id: %s, name: %s, desc: %s, display: %s, "
@@ -100,10 +100,6 @@ static void print_params(struct clap_plugin *plugin)
     case CLAP_PARAM_BOOL:
       fprintf(stdout, ", type: bool, value: %d, min: %d, max: %d, default: %d",
               param.value.i, param.min.i, param.max.i, param.deflt.i);
-      break;
-
-    case CLAP_PARAM_GROUP:
-      fprintf(stdout, ", type: group");
       break;
     }
 

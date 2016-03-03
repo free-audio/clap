@@ -1,4 +1,4 @@
-#include <stdlib.h>
+﻿#include <stdlib.h>
 #include <stdio.h>
 #include <clap/clap.h>
 #include <clap/ext/params.h>
@@ -109,7 +109,6 @@ thyns_params_get(struct clap_plugin *plugin,
   int32_t i = 0;
 
   param->index  = index;
-  param->parent = -1;
 
   if (index < i + THYNS_OSC_PARAM_COUNT) {
     thyns_osc_param_info(index - i, p->thyns.params.osc1[index - i],
@@ -201,7 +200,7 @@ thyns_plugin_create(struct clap_host *host,
   p->plugin.activate = thyns_plugin_activate;
   p->plugin.deactivate = thyns_plugin_deactivate;
   p->params.count = thyns_params_count;
-  p->params.get = thyns_params_get;
+  p->params.get_param = thyns_params_get;
   p->state.save = thyns_state_save;
   p->state.restore = thyns_state_restore;
 
