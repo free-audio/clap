@@ -12,6 +12,10 @@ struct clap_plugin_state
    * next call to save() or when the plugin is destroyed. */
   bool (*save)(struct clap_plugin *plugin, void **buffer, int32_t *size);
   bool (*restore)(struct clap_plugin *plugin, const void *buffer, int32_t size);
+
+  /* Same as above except this one focus on a parameter group. */
+  bool (*save_group)(struct clap_plugin *plugin, const char *group_id, void **buffer, int32_t *size);
+  bool (*restore_group)(struct clap_plugin *plugin, const char *group_id, const void *buffer, int32_t size);
 };
 
 #endif /* !CLAP_EXT_STATE_H */
