@@ -41,6 +41,20 @@ extern "C" {
 # define CLAP_VERSION_MIN(Version) (((Version) >> 8) & 0xff)
 # define CLAP_VERSION_REV(Version) ((Version) & 0xff)
 
+#if defined _WIN32 || defined __CYGWIN__
+# ifdef __GNUC__
+#  define CLAP_EXPORT __attribute__ ((dllexport))
+# else
+#  define CLAP_EXPORT __declspec(dllexport) // Note: actually gcc seems to also supports this syntax.
+# endif
+#else
+# if __GNUC__ >= 4
+#  define CLAP_EXPORT __attribute__ ((visibility ("default")))
+# else
+#  define CLAP_EXPORT
+# endif
+#endif
+
 ///////////////////////////
 // FORWARD DELCLARATIONS //
 ///////////////////////////
@@ -323,7 +337,7 @@ typedef struct clap_plugin *(*clap_create_f)(int32_t           plugin_index,
  * 176400, 192000.
  *
  * This function must be thread-safe. */
-struct clap_plugin *
+CLAP_EXPORT struct clap_plugin *
 clap_create(int32_t           plugin_index,
             struct clap_host *host,
             int32_t           sample_rate,
