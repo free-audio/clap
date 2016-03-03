@@ -1,14 +1,12 @@
-#ifndef CLAP_EXT_EMBED_XLIB_H
-# define CLAP_EXT_EMBED_XLIB_H
-
-# include <X11/Xlib.h>
+#ifndef CLAP_EXT_EMBED_X11_H
+# define CLAP_EXT_EMBED_X11_H
 
 # include "../clap.h"
 # include "embed.h"
 
-# define CLAP_EXT_EMBED_XLIB "clap/embed/xlib"
+# define CLAP_EXT_EMBED_X11 "clap/embed/x11"
 
-struct clap_plugin_embed_xlib
+struct clap_plugin_embed_x11
 {
   void (*get_size)(int32_t *width, int32_t *height);
 
@@ -18,7 +16,7 @@ struct clap_plugin_embed_xlib
    * Note for the host, the display_name can be retrieved from your own
    * display->display_name. */
   bool (*attach)(struct clap_plugin *plugin,
-                 Window              window,
+                 unsigned long       window,
                  const char         *display_name);
   bool (*detach)(struct clap_plugin *plugin);
 };
