@@ -28,11 +28,15 @@ struct clap_plugin_presets
                         char                       *path,
                         int32_t                    *path_size);
 
-  /* Get a preset info by its URL and returns true.
+  /* Get a preset info from its path and returns true.
+   * In case of a preset bank file, index is used, and *has_next
+   * should be set to false when index reaches the last preset.
    * If the preset is not found, then it should return false. */
   bool (*get_preset)(struct clap_plugin *plugin,
                      const char         *path,
-                     struct clap_preset *preset);
+                     struct clap_preset *preset,
+                     int32_t             index,
+                     bool               *has_next);
 };
 
 #endif /* !CLAP_EXT_PRESETS_H */

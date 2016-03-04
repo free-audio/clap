@@ -4,8 +4,8 @@
  * http://www.sonicspot.com/guide/midifiles.html
  */
 
-#ifndef CLAP_MIDI_PARSER_H
-# define CLAP_MIDI_PARSER_H
+#ifndef CLAP_HELPERS_MIDI_PARSER_H
+# define CLAP_HELPERS_MIDI_PARSER_H
 
 # include <stdint.h>
 # include <string.h>

@@ -1,5 +1,5 @@
-#ifndef CLAP_SERIALIZE_H
-# define CLAP_SERIALIZE_H
+#ifndef CLAP_HELPERS_SERIALIZE_H
+# define CLAP_HELPERS_SERIALIZE_H
 
 # ifdef __cplusplus
 extern "C" {
@@ -87,4 +87,4 @@ clap_deserialize(struct clap_deserializer *d);
 }
 # endif
 
-#endif /* !CLAP_SERIALIZE_H */
+#endif /* !CLAP_HELPERS_SERIALIZE_H */

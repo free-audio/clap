@@ -36,7 +36,7 @@ extern "C" {
 
 # define CLAP_VERSION_MAKE(Major, Minor, Revision) \
   ((((Major) & 0xff) << 16) | (((Minor) & 0xff) << 8) | ((Revision) & 0xff))
-# define CLAP_VERSION CLAP_VERSION_MAKE(0, 1, 0)
+# define CLAP_VERSION CLAP_VERSION_MAKE(0, 2, 0)
 # define CLAP_VERSION_MAJ(Version) (((Version) >> 16) & 0xff)
 # define CLAP_VERSION_MIN(Version) (((Version) >> 8) & 0xff)
 # define CLAP_VERSION_REV(Version) ((Version) & 0xff)
@@ -45,7 +45,7 @@ extern "C" {
 # ifdef __GNUC__
 #  define CLAP_EXPORT __attribute__ ((dllexport))
 # else
-#  define CLAP_EXPORT __declspec(dllexport) // Note: actually gcc seems to also supports this syntax.
+#  define CLAP_EXPORT __declspec(dllexport)
 # endif
 #else
 # if __GNUC__ >= 4
@@ -94,11 +94,14 @@ enum clap_log_severity
 # define CLAP_ATTR_LATENCY         "clap/latency"
 // Should be "1" if the plugin supports tunning.
 # define CLAP_ATTR_SUPPORTS_TUNING "clap/supports_tuning"
-// Shoudl be "1" if the plugin is doing remote processing.
+// Should be "1" if the plugin is doing remote processing.
 // This is a hint for the host to optimize task scheduling.
 # define CLAP_ATTR_IS_REMOTE_PROCESSING "clap/is_remote_processing"
 // Should be "1" if the plugin supports in place processing.
 # define CLAP_ATTR_SUPPORTS_IN_PLACE_PROCESSING "clap/supports_in_place_processing"
+
+# define CLAP_EVENT_TYPE_SPACE    0
+# define CLAP_EVENT_TYPE_SPACE_ID "clap/events"
 
 ////////////////
 // PARAMETERS //
@@ -152,8 +155,7 @@ struct clap_event_note
 struct clap_event_param
 {
   /* key/voice index */
-  bool                    is_global; // is this event global?
-  int8_t                  key;       // if !is_global, target key
+  int8_t                  key;
   int8_t                  channel;
 
   /* parameter */
@@ -198,6 +200,7 @@ struct clap_event
   enum clap_event_type  type;
   int32_t               type_space;  // the space to which belongs the event
                                      // see host->get_event_type_space();
+                                     // see CLAP_EVENT_TYPE_SPACE_ID
   int64_t               steady_time; // steady_time of the event, see host->steady_time(host)
 
   union {
