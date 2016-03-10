@@ -130,12 +130,6 @@ enum clap_event_type
 
   CLAP_EVENT_MIDI    = 5,       // midi attribute
 
-  CLAP_EVENT_GUI_OPENED = 7,   // plugin to host, no attribute
-  CLAP_EVENT_GUI_CLOSED = 8,   // plugin to host, no attribute
-
-  CLAP_EVENT_NEW_PORTS_CONFIGS = 10, // plugin to host, no attribute
-  CLAP_EVENT_NEW_PARAMS = 9, // plugin to host
-
   CLAP_EVENT_LATENCY_CHANGED = 11, // plugin to host, latency attribute
 
   CLAP_EVENT_PLAY  = 12, // no attribute
@@ -232,9 +226,7 @@ enum clap_process_status
 struct clap_process
 {
   /* audio buffers */
-  float    **inputs;
-  float    **outputs;
-  int32_t    samples_count;
+  int32_t frames_count;
 
   /* process info */
   int64_t steady_time; // the steady time in samples

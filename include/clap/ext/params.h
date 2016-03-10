@@ -71,6 +71,21 @@ struct clap_plugin_params
                      struct clap_param_module *module);
 };
 
+struct clap_host_params
+{
+  void (*touch_begin)(struct clap_host   *host,
+                      struct clap_plugin *plugin,
+                      int32_t             index);
+
+  void (*touch_end)(struct clap_host   *host,
+                    struct clap_plugin *plugin,
+                    int32_t             index);
+
+  void (*touched)(struct clap_host   *host,
+                  struct clap_plugin *plugin,
+                  int32_t             index);
+};
+
 #ifdef __cplusplus
 }
 #endif

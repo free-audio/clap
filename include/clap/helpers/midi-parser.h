@@ -50,7 +50,7 @@ enum clap_midi_channel_event_type
 
 struct clap_midi_channel_event
 {
-  int64_t delta_time;
+  int64_t  delta_time;
   unsigned event_type : 4;
   unsigned channel : 4;
   uint8_t  param1;
@@ -60,7 +60,7 @@ struct clap_midi_channel_event
 struct clap_midi_meta_event
 {
   uint8_t        type;
-  int32_t       length;
+  int32_t        length;
   const uint8_t *bytes;  // reference to the input buffer
 };
 
@@ -68,7 +68,7 @@ struct clap_midi_sysex_event
 {
   uint8_t        sysex;
   uint8_t        type;
-  int32_t       length;
+  int32_t        length;
   const uint8_t *bytes;  // reference to the input buffer
 };
 
@@ -78,7 +78,7 @@ struct clap_midi_parser
 
   /* input buffer */
   const uint8_t *in;
-  int32_t       size;
+  int32_t        size;
 
   /* result */
   struct clap_midi_header        header;
@@ -96,7 +96,7 @@ clap_midi_parse(struct clap_midi_parser *parser);
  * converted as a clap_midi_event. */
 static inline void
 clap_midi_convert(const uint8_t     *in,
-                  int32_t           size,
+                  int32_t            size,
                   struct clap_event *event);
 
 # include "parser.c"

@@ -5,7 +5,7 @@
 
 # define CLAP_EXT_PRESETS "clap/presets"
 
-struct clap_preset
+struct clap_preset_info
 {
   char     name[CLAP_NAME_SIZE];       // display name
   char     desc[CLAP_DESC_SIZE];       // desc and how to use it
@@ -32,14 +32,21 @@ struct clap_plugin_presets
    * In case of a preset bank file, index is used, and *has_next
    * should be set to false when index reaches the last preset.
    * If the preset is not found, then it should return false. */
-  bool (*get_preset)(struct clap_plugin *plugin,
-                     const char         *path,
-                     struct clap_preset *preset,
-                     int32_t             index,
-                     bool               *has_next);
+  bool (*get_preset_info)(struct clap_plugin_presets *presets,
+                          const char                 *path,
+                          struct clap_preset_info    *preset_info,
+                          int32_t                     index,
+                          bool                       *has_next);
 
-  bool (*get_current_preset)(struct clap_plugin *plugin,
-                             struct clap_preset *preset);
+  /* Get the current preset info */
+  bool (*get_current_preset_info)(struct clap_plugin      *plugin,
+                                  struct clap_preset_info *preset);
+
+  /* Loads the preset at path, and in case of a preset bank,
+   * the one at index. */
+  bool (*load_preset)(struct clap_plugin *plugin,
+                      const char         *path,
+                      int32_t             index);
 };
 
 #endif /* !CLAP_EXT_PRESETS_H */

@@ -1,65 +1,82 @@
-﻿#ifndef CLAP_EXT_PORTS_H
-# define CLAP_EXT_PORTS_H
+﻿#ifndef CLAP_EXT_AUDIO_PORTS_H
+# define CLAP_EXT_AUDIO_PORTS_H
 
 # include "../clap.h"
 
-# define CLAP_EXT_PORTS "clap/ports"
+# define CLAP_EXT_AUDIO_PORTS "clap/audio-ports"
 
-enum clap_port_channel_mapping
+enum clap_audio_port_channel_mapping
 {
-  CLAP_PORT_UNKNWN   = 0,
-  CLAP_PORT_MONO     = 1,
+  CLAP_AUDIO_PORT_UNSPECIFIED = 0,
+  CLAP_AUDIO_PORT_MONO = 1,
 
-  // left - right
-  CLAP_PORT_STEREO   = 2,
-  CLAP_PORT_SURROUND = 3,
+  // left, right
+  CLAP_AUDIO_PORT_STEREO = 2,
+
+  // front left, front right, center, low, surround left, surround right
+  // surround back left, surround back right
+  CLAP_AUDIO_PORT_SURROUND = 3,
 };
 
-enum clap_port_role
+enum clap_audio_port_role
 {
-  CLAP_PORT_INOUT      = 0,
-  CLAP_PORT_SIDECHAIN  = 1,
-  CLAP_PORT_MODULATION = 2,
+  CLAP_AUDIO_PORT_INOUT      = 0,
+  CLAP_AUDIO_PORT_SIDECHAIN  = 1,
+  CLAP_AUDIO_PORT_MODULATION = 2,
 };
 
-struct clap_port_info
+struct clap_audio_port_info
 {
-  int                            channel_count;
-  enum clap_port_channel_mapping channel_mapping;
-  enum clap_port_role            role;
-  char                           name[CLAP_NAME_SIZE];
-  bool                           is_repeatable;
+  bool                                 is_input;
+  int                                  channel_count;
+  enum clap_audio_port_channel_mapping channel_mapping;
+  enum clap_audio_port_role            role;
+  char                                 name[CLAP_NAME_SIZE];
+
+  /* If false, then the port can be connected only once.
+   * If true, then the port can be connected multiple times. */
+  bool                                 is_repeatable;
 };
 
-struct clap_ports_config
+struct clap_audio_port
 {
-  char    name[CLAP_NAME_SIZE];
-  int32_t inputs_count;
-  int32_t outputs_count;
+  float **data;
 };
 
 /* The audio ports configuration has to be done while the plugin is
  * deactivated. */
-struct clap_plugin_ports
+struct clap_plugin_audio_ports
 {
-  /* Returns the number of available configurations */
-  int32_t (*get_configs_count)(struct clap_plugin *plugin);
+  /* number of ports, including inputs and outputs */
+  int32_t (*get_count)(struct clap_plugin *plugin);
 
-  bool (*get_config)(struct clap_plugin       *plugin,
-                     int32_t                   config_index,
-                     struct clap_ports_config *config);
+  void (*get_info)(struct clap_plugin    *plugin,
+                   int32_t                index,
+                   struct clap_port_info *info);
 
-  bool (*get_info)(struct clap_plugin    *plugin,
-                   int32_t                config_index,
-                   int32_t                port_index,
-                   struct clap_port_info *port);
+  int32_t (*connect)(struct clap_plugin     *plugin,
+                     int32_t                 index,
+                     struct clap_audio_port *port,
+                     const char             *host_name);
 
-  bool (*set_config)(struct clap_plugin *plugin,
-                     int32_t             config_index);
+  void (*disconnect)(struct clap_plugin *plugin,
+                     int32_t             port_id);
 
-  bool (*set_repeat)(struct clap_plugin  *plugin,
-                     int32_t              port_index,
-                     int32_t              count);
+  int32_t (*get_latency)(struct clap_plugin *plugin,
+                         int32_t             port_id);
+};
+
+struct clap_host_audio_ports
+{
+  /* Tell the host that the plugin ports has changed.
+   * The host shall */
+  void (*changed)(struct clap_host   *host,
+                  struct clap_plugin *plugin);
+
+  /* Tell the host that the latency changed. The host should
+   * call get_port_latency on each ports. */
+  void (*latency_changed)(struct clap_host *host,
+                          struct clap_plugin *plugin);
 };
 
 #endif /* !CLAP_EXT_PORT_H */
