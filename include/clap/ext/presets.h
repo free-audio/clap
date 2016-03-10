@@ -37,6 +37,9 @@ struct clap_plugin_presets
                      struct clap_preset *preset,
                      int32_t             index,
                      bool               *has_next);
+
+  bool (*get_current_preset)(struct clap_plugin *plugin,
+                             struct clap_preset *preset);
 };
 
 #endif /* !CLAP_EXT_PRESETS_H */
