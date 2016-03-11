@@ -77,13 +77,18 @@ struct clap_host_params
                       struct clap_plugin *plugin,
                       int32_t             index);
 
-  void (*touch_end)(struct clap_host   *host,
-                    struct clap_plugin *plugin,
-                    int32_t             index);
+  void (*touch_end)(struct clap_host     *host,
+                    struct clap_plugin   *plugin,
+                    int32_t               index);
 
-  void (*touched)(struct clap_host   *host,
-                  struct clap_plugin *plugin,
-                  int32_t             index);
+  void (*changed)(struct clap_host       *host,
+                  struct clap_plugin     *plugin,
+                  int32_t                 index,
+                  union clap_param_value  value,
+                  bool                    is_recordable);
+
+  void (*rescan)(struct clap_host   *host,
+                 struct clap_plugin *plugin);
 };
 
 #ifdef __cplusplus

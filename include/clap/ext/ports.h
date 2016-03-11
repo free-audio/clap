@@ -48,22 +48,22 @@ struct clap_audio_port
 struct clap_plugin_audio_ports
 {
   /* number of ports, including inputs and outputs */
-  int32_t (*get_count)(struct clap_plugin *plugin);
+  int32_t (*get_count)(struct clap_plugin         *plugin);
 
-  void (*get_info)(struct clap_plugin    *plugin,
-                   int32_t                index,
-                   struct clap_port_info *info);
+  void (*get_info)(struct clap_plugin             *plugin,
+                   int32_t                         index,
+                   struct clap_port_info          *info);
 
-  int32_t (*connect)(struct clap_plugin     *plugin,
-                     int32_t                 index,
-                     struct clap_audio_port *port,
-                     const char             *host_name);
+  int32_t (*connect)(struct clap_plugin           *plugin,
+                     int32_t                       index,
+                     const struct clap_audio_port *port,
+                     const char                   *user_name);
 
-  void (*disconnect)(struct clap_plugin *plugin,
-                     int32_t             port_id);
+  void (*disconnect)(struct clap_plugin           *plugin,
+                     int32_t                       port_id);
 
-  int32_t (*get_latency)(struct clap_plugin *plugin,
-                         int32_t             port_id);
+  int32_t (*get_latency)(struct clap_plugin       *plugin,
+                         int32_t                   port_id);
 };
 
 struct clap_host_audio_ports

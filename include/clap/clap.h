@@ -91,7 +91,6 @@ enum clap_log_severity
 # define CLAP_ATTR_CATEGORIES      "clap/categories"
 # define CLAP_ATTR_TYPE            "clap/type"
 # define CLAP_ATTR_CHUNK_SIZE      "clap/chunk_size"
-# define CLAP_ATTR_LATENCY         "clap/latency"
 // Should be "1" if the plugin supports tunning.
 # define CLAP_ATTR_SUPPORTS_TUNING "clap/supports_tuning"
 // Should be "1" if the plugin is doing remote processing.
@@ -120,22 +119,32 @@ union clap_param_value
 
 enum clap_event_type
 {
-  CLAP_EVENT_NOTE_ON  = 0,    // note attribute
-  CLAP_EVENT_NOTE_OFF = 1,    // note attribute
-  CLAP_EVENT_NOTE_CHOKE = 16, // note attribute
+  CLAP_EVENT_NOTE_ON    = 0,    // note attribute
+  CLAP_EVENT_NOTE_OFF   = 1,    // note attribute
+  CLAP_EVENT_NOTE_CHOKE = 2,    // note attribute
 
-  CLAP_EVENT_PARAM_SET  = 2,    // param attribute
-  CLAP_EVENT_PARAM_RAMP = 3,    // param attribute
-  CLAP_EVENT_PRESET_SET = 4,    // preset attribute
+  CLAP_EVENT_PARAM_SET  = 3,    // param attribute
+  CLAP_EVENT_PARAM_RAMP = 4,    // param attribute
 
-  CLAP_EVENT_MIDI    = 5,       // midi attribute
-
-  CLAP_EVENT_LATENCY_CHANGED = 11, // plugin to host, latency attribute
+  CLAP_EVENT_CONTROL    = 5,    // control attribute
+  CLAP_EVENT_MIDI       = 6,    // midi attribute
 
   CLAP_EVENT_PLAY  = 12, // no attribute
   CLAP_EVENT_PAUSE = 13, // no attribute
   CLAP_EVENT_STOP  = 14, // no attribute
-  CLAP_EVENT_JUMP = 15,  // attribute jump
+  CLAP_EVENT_JUMP  = 15,  // attribute jump
+};
+
+struct clap_param_event
+{
+  /* key/voice index */
+  int8_t                  key;
+  int8_t                  channel;
+
+  /* parameter */
+  int32_t                 index; // parameter index
+  union clap_param_value  value;
+  float                   increment;        // for param ramp
 };
 
 struct clap_event_note
@@ -146,25 +155,12 @@ struct clap_event_note
   float   velocity; // 0..1
 };
 
-struct clap_event_param
+struct clap_event_control
 {
-  /* key/voice index */
-  int8_t                  key;
-  int8_t                  channel;
-
-  /* parameter */
-  int32_t                 index; // parameter index
-  union clap_param_value  value;
-  float                   increment;        // for param ramp
-  char                    display_text[CLAP_DISPLAY_SIZE]; // use this for display.
-  bool                    is_recordable;    // used to tell the host if this event
-                                            // can be recorded
-  bool                    is_used; // is the parameter used in the patch?
-};
-
-struct clap_event_preset
-{
-  const char *url; // the url to the preset
+  int8_t key;
+  int8_t channel;
+  int8_t control;
+  float  value; // 0..1
 };
 
 struct clap_event_midi
@@ -172,11 +168,6 @@ struct clap_event_midi
   /* midi event */
   const uint8_t *buffer;
   int32_t        size;
-};
-
-struct clap_event_latency
-{
-  int32_t latency;
 };
 
 struct clap_event_jump
@@ -192,17 +183,13 @@ struct clap_event
 {
   struct clap_event    *next; // linked list, NULL on end
   enum clap_event_type  type;
-  int32_t               type_space;  // the space to which belongs the event
-                                     // see host->get_event_type_space();
-                                     // see CLAP_EVENT_TYPE_SPACE_ID
   int64_t               steady_time; // steady_time of the event, see host->steady_time(host)
 
   union {
     struct clap_event_note        note;
+    struct clap_event_control     control;
     struct clap_event_param       param;
-    struct clap_event_preset      preset;
     struct clap_event_midi        midi;
-    struct clap_event_latency     latency;
     struct clap_event_jump	  jump;
   };
 };
@@ -220,7 +207,7 @@ enum clap_process_status
   CLAP_PROCESS_CONTINUE = 1,
 
   /* Processing succeed, but no more processing is required, until next event. */
-  CLAP_PROCESS_STOP     = 2,
+  CLAP_PROCESS_SLEEP    = 2,
 };
 
 struct clap_process
@@ -264,9 +251,6 @@ struct clap_host
               struct clap_plugin     *plugin,
               enum clap_log_severity  severity,
               const char             *msg);
-
-  /* Request for the event type space for space_id. */
-  int32_t (*get_event_type_space)(struct clap_host *host, const char *space_id);
 
   /* feature extensions */
   void *(*extension)(struct clap_host *host, const char *extention_id);
