@@ -27,8 +27,9 @@ enum clap_audio_port_role
 
 struct clap_audio_port_info
 {
+  int32_t                              id;
   bool                                 is_input;
-  int                                  channel_count;
+  int32_t                              channel_count;
   enum clap_audio_port_channel_mapping channel_mapping;
   enum clap_audio_port_role            role;
   char                                 name[CLAP_NAME_SIZE];
@@ -40,7 +41,8 @@ struct clap_audio_port_info
 
 struct clap_audio_port
 {
-  float **data;
+  int32_t   channel_count;
+  float   **data;
 };
 
 /* The audio ports configuration has to be done while the plugin is
@@ -52,16 +54,23 @@ struct clap_plugin_audio_ports
 
   void (*get_info)(struct clap_plugin             *plugin,
                    int32_t                         index,
-                   struct clap_port_info          *info);
+                   struct clap_audio_port_info    *info);
 
+  /* Connect the given port to the plugin's port at index.
+   * user_name is the name of the peer port given by the host/user.
+   * It can be useful especialy for repeatable ports.
+   * Returns the id of the port. In case of repeatable port,
+   * make sure that each connected port has a different id.
+   * Returns -1 if the connection failed. */
   int32_t (*connect)(struct clap_plugin           *plugin,
-                     int32_t                       index,
+                     int32_t                       port_id,
                      const struct clap_audio_port *port,
                      const char                   *user_name);
 
   void (*disconnect)(struct clap_plugin           *plugin,
                      int32_t                       port_id);
 
+  /* Returns the absolute port latency in samples. */
   int32_t (*get_latency)(struct clap_plugin       *plugin,
                          int32_t                   port_id);
 };
@@ -69,7 +78,7 @@ struct clap_plugin_audio_ports
 struct clap_host_audio_ports
 {
   /* Tell the host that the plugin ports has changed.
-   * The host shall */
+   * The host shall scan the ports again. */
   void (*changed)(struct clap_host   *host,
                   struct clap_plugin *plugin);
 
