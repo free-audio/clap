@@ -99,6 +99,6 @@ clap_midi_convert(const uint8_t     *in,
                   int32_t            size,
                   struct clap_event *event);
 
-# include "parser.c"
+# include "midi-parser.c"
 
 #endif /* !CLAP_MIDI_PARSER_H */
