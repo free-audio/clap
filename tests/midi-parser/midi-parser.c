@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 
-#include <clap/midi/parser.h>
+#include <clap/helpers/midi-parser.h>
 
 void usage(const char *prog)
 {

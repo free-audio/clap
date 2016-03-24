@@ -9,7 +9,7 @@
 #include <signal.h>
 
 #include <clap/clap.h>
-#include <clap/midi/parser.h>
+#include <clap/helpers/midi-parser.h>
 #include <clap/ext/gui.h>
 #include <clap/ext/state.h>
 

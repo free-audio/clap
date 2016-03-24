@@ -183,7 +183,7 @@ struct clap_event
 {
   struct clap_event    *next; // linked list, NULL on end
   enum clap_event_type  type;
-  int64_t               steady_time; // steady_time of the event, see host->steady_time(host)
+  int64_t               time; // offset from the first sample in the process block
 
   union {
     struct clap_event_note        note;

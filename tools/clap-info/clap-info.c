@@ -49,7 +49,6 @@ static void print_attr(struct clap_plugin *plugin)
   prt_attr(CATEGORIES);
   prt_attr(TYPE);
   prt_attr(CHUNK_SIZE);
-  prt_attr(LATENCY);
   prt_attr(SUPPORTS_TUNING);
   prt_attr(SUPPORTS_IN_PLACE_PROCESSING);
   prt_attr(IS_REMOTE_PROCESSING);
