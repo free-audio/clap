@@ -18,8 +18,8 @@ struct clap_plugin_embed_x11
    * Note for the host, the display_name can be retrieved from your own
    * display->display_name. */
   bool (*attach)(struct clap_plugin *plugin,
-                 unsigned long       window,
-                 const char         *display_name);
+                 const char         *display_name,
+                 unsigned long       window);
   bool (*detach)(struct clap_plugin *plugin);
 };
 
