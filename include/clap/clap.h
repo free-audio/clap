@@ -230,8 +230,6 @@ struct clap_host
 {
   int32_t clap_version; // initialized to CLAP_VERSION
 
-  void *host_data; // private pointer for the host
-
   /* returns the size of the original string, 0 if not string */
   int32_t (*get_attribute)(struct clap_host *host,
                            const char       *attr,
