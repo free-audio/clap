@@ -6,7 +6,7 @@
 
 # define CLAP_EXT_EMBED_COCOA "clap/embed/cocoa"
 
-struct clap_plugin_embed_cooca
+struct clap_plugin_embed_cococa
 {
   void (*get_size)(struct clap_plugin *plugin,
                    int32_t            *width,
