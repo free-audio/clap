@@ -189,6 +189,12 @@ struct clap_event_jump
  * program goes into program
  *
  * Clap is not limited to 127.
+ *
+ * The main advantage of setting a program instead of loading
+ * a preset, is that the program should already be in the plugin's
+ * memory, and can be set instantly. If the plugin has to load
+ * a preset from the filesystem, then parse it, do memory allocation,
+ * there is no guarentee that the preset will be loaded in time.
  */
 struct clap_event_program
 {
