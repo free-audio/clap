@@ -133,6 +133,8 @@ enum clap_event_type
   CLAP_EVENT_PAUSE = 13, // no attribute
   CLAP_EVENT_STOP  = 14, // no attribute
   CLAP_EVENT_JUMP  = 15,  // attribute jump
+
+  CLAP_EVENT_PROGRAM = 16, // program attribute
 };
 
 struct clap_event_param
@@ -177,6 +179,22 @@ struct clap_event_jump
   int32_t bar_offset; // 0 <= bar_offset < tsig_denom * tempo
   int32_t tsig_num;   // time signature numerator
   int32_t tsig_denom; // time signature denominator
+};
+
+/**
+ * Asks the plugin to load a program.
+ * This is analogue to the midi program set:
+ * bank msb goes into bank0
+ * bank lsb goes into bank1
+ * program goes into program
+ *
+ * Clap is not limited to 127.
+ */
+struct clap_event_program
+{
+  int32_t bank0;
+  int32_t bank1;
+  int32_t program;
 };
 
 struct clap_event
