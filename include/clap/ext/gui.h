@@ -9,12 +9,16 @@ struct clap_plugin_gui
 {
   /* gui */
   bool (*open)(struct clap_plugin *plugin);
+  void (*hide)(struct clap_plugin *plugin);
   void (*close)(struct clap_plugin *plugin);
 };
 
 struct clap_host_gui
 {
   void (*gui_opened)(struct clap_host   *host,
+                     struct clap_plugin *plugin);
+
+  void (*gui_hidden)(struct clap_host   *host,
                      struct clap_plugin *plugin);
 
   void (*gui_closed)(struct clap_host   *host,
