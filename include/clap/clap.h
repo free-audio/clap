@@ -99,9 +99,6 @@ enum clap_log_severity
 // Should be "1" if the plugin supports in place processing.
 # define CLAP_ATTR_SUPPORTS_IN_PLACE_PROCESSING "clap/supports_in_place_processing"
 
-# define CLAP_EVENT_TYPE_SPACE    0
-# define CLAP_EVENT_TYPE_SPACE_ID "clap/events"
-
 ////////////////
 // PARAMETERS //
 ////////////////
