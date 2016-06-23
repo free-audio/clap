@@ -45,7 +45,7 @@ enum clap_midi_channel_event_type
   CLAP_MIDI_CHANNEL_CC         = 0xB, // control change
   CLAP_MIDI_CHANNEL_PGM_CHANGE = 0xC,
   CLAP_MIDI_CHANNEL_CHANNEL_AT = 0xD, // after touch
-  CLAP_MIDI_CHANNEL_PITCH_BEND = 0xF,
+  CLAP_MIDI_CHANNEL_PITCH_BEND = 0xE,
 };
 
 struct clap_midi_channel_event
