@@ -38,6 +38,8 @@ clap_midi_file_format_name(int fmt)
   case CLAP_MIDI_FILE_FORMAT_SINGLE_TRACK: return "single track";
   case CLAP_MIDI_FILE_FORMAT_MULTIPLE_TRACKS: return "multiple tracks";
   case CLAP_MIDI_FILE_FORMAT_MULTIPLE_SONGS: return "multiple songs";
+
+  default: return "(unknown)";
   }
 }
 
@@ -54,16 +56,32 @@ struct clap_midi_track
   int32_t size;
 };
 
-enum clap_midi_channel_event_type
+enum clap_midi_status
 {
-  CLAP_MIDI_CHANNEL_NOTE_OFF   = 0x8,
-  CLAP_MIDI_CHANNEL_NOTE_ON    = 0x9,
-  CLAP_MIDI_CHANNEL_NOTE_AT    = 0xA, // after touch
-  CLAP_MIDI_CHANNEL_CC         = 0xB, // control change
-  CLAP_MIDI_CHANNEL_PGM_CHANGE = 0xC,
-  CLAP_MIDI_CHANNEL_CHANNEL_AT = 0xD, // after touch
-  CLAP_MIDI_CHANNEL_PITCH_BEND = 0xE,
+  CLAP_MIDI_STATUS_NOTE_OFF   = 0x8,
+  CLAP_MIDI_STATUS_NOTE_ON    = 0x9,
+  CLAP_MIDI_STATUS_NOTE_AT    = 0xA, // after touch
+  CLAP_MIDI_STATUS_CC         = 0xB, // control change
+  CLAP_MIDI_STATUS_PGM_CHANGE = 0xC,
+  CLAP_MIDI_STATUS_CHANNEL_AT = 0xD, // after touch
+  CLAP_MIDI_STATUS_PITCH_BEND = 0xE,
 };
+
+static const char *
+clap_midi_status_name(int type)
+{
+  switch (type) {
+  case CLAP_MIDI_STATUS_NOTE_OFF: return "Note Off";
+  case CLAP_MIDI_STATUS_NOTE_ON: return "Note On";
+  case CLAP_MIDI_STATUS_NOTE_AT: return "Note Aftertouch";
+  case CLAP_MIDI_STATUS_CC: return "CC";
+  case CLAP_MIDI_STATUS_PGM_CHANGE: return "Program Change";
+  case CLAP_MIDI_STATUS_CHANNEL_AT: return "Channel Aftertouch";
+  case CLAP_MIDI_STATUS_PITCH_BEND: return "Pitch Bend";
+
+  default: return "(unknown)";
+  }
+}
 
 struct clap_midi_channel_event
 {

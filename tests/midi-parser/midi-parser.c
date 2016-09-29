@@ -14,7 +14,7 @@ void usage(const char *prog)
 
 void parse_and_dump(struct clap_midi_parser *parser)
 {
-  enum clap_midi_channel_event_type status;
+  enum clap_midi_status status;
 
   while (1) {
     status = clap_midi_parse(parser);

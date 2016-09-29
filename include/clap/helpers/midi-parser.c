@@ -320,14 +320,14 @@ clap_midi_convert(const uint8_t     *in,
   switch (status) {
   case CLAP_MIDI_PARSER_TRACK_MIDI:
     switch (parser.channel.event_type) {
-    case CLAP_MIDI_CHANNEL_NOTE_OFF:
+    case CLAP_MIDI_STATUS_NOTE_OFF:
       event->type          = CLAP_EVENT_NOTE_OFF;
       event->note.key      = parser.channel.param1;
       event->note.velocity = ((float)parser.channel.param2) / 127.0f;
       event->note.pitch    = clap_midi_pitches[event->note.key];
       return;
 
-    case CLAP_MIDI_CHANNEL_NOTE_ON:
+    case CLAP_MIDI_STATUS_NOTE_ON:
       event->type          = CLAP_EVENT_NOTE_ON;
       event->note.key      = parser.channel.param1;
       event->note.velocity = ((float)parser.channel.param2) / 127.0f;
