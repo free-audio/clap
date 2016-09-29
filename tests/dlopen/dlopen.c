@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <dlfcn.h>
 
-#ifndef RLTD_DEEPBIND
+#ifndef RTLD_DEEPBIND
 # define RTLD_DEEPBIND 0
 #endif
 
