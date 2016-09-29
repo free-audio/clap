@@ -24,6 +24,23 @@ enum clap_midi_parser_status
   CLAP_MIDI_PARSER_TRACK_SYSEX = 5,
 };
 
+enum clap_midi_file_format
+{
+  CLAP_MIDI_FILE_FORMAT_SINGLE_TRACK = 0,
+  CLAP_MIDI_FILE_FORMAT_MULTIPLE_TRACKS = 1,
+  CLAP_MIDI_FILE_FORMAT_MULTIPLE_SONGS = 2,
+};
+
+static const char *
+clap_midi_file_format_name(int fmt)
+{
+  switch (fmt) {
+  case CLAP_MIDI_FILE_FORMAT_SINGLE_TRACK: return "single track";
+  case CLAP_MIDI_FILE_FORMAT_MULTIPLE_TRACKS: return "multiple tracks";
+  case CLAP_MIDI_FILE_FORMAT_MULTIPLE_SONGS: return "multiple songs";
+  }
+}
+
 struct clap_midi_header
 {
   int32_t size;
@@ -50,7 +67,6 @@ enum clap_midi_channel_event_type
 
 struct clap_midi_channel_event
 {
-  int64_t  delta_time;
   unsigned event_type : 4;
   unsigned channel : 4;
   uint8_t  param1;
@@ -81,6 +97,7 @@ struct clap_midi_parser
   int32_t        size;
 
   /* result */
+  int64_t                        vtime;
   struct clap_midi_header        header;
   struct clap_midi_track         track;
   struct clap_midi_channel_event channel;

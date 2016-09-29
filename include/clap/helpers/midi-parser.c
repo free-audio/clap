@@ -154,15 +154,15 @@ clap_midi_parse_be32(const uint8_t *in)
   return (in[0] << 24) | (in[1] << 16) | (in[2] << 8) | in[3];
 }
 
-static inline uint32_t
+static inline uint64_t
 clap_midi_parse_variable_length(struct clap_midi_parser *parser, int32_t *offset)
 {
-  uint32_t value = 0;
-  int32_t i     = *offset;
+  uint64_t value = 0;
+  int32_t  i     = *offset;
 
   for (; i < parser->size; ++i) {
     value = (value << 7) | (parser->in[i] & 0x7f);
-    if (!(parser->in[i] & 0x8f))
+    if (!(parser->in[i] & 0x80))
       break;
   }
   *offset = i + 1;
@@ -200,6 +200,29 @@ clap_midi_parse_track(struct clap_midi_parser *parser)
   parser->in         += 8;
   parser->size       -= 8;
   return CLAP_MIDI_PARSER_TRACK;
+}
+
+static inline bool
+clap_midi_parse_vtime(struct clap_midi_parser * restrict parser)
+{
+  uint8_t nbytes = 0;
+  bool    cont   = false; // continue flag
+
+  parser->vtime = 0;
+  for (nbytes = 0; cont; ++nbytes) {
+    if (parser->size < 1 + nbytes)
+      return false;
+
+    uint8_t b = parser->in[nbytes];
+    parser->vtime = (parser->vtime << 7) | (b & 0x7f);
+
+    cont = b & 0x80;
+  }
+
+  parser->in += nbytes;
+  parser->size -= nbytes;
+
+  return true;
 }
 
 static inline enum clap_midi_parser_status
@@ -246,7 +269,10 @@ clap_midi_parse_meta_event(struct clap_midi_parser *parser)
 static inline enum clap_midi_parser_status
 clap_midi_parse_event(struct clap_midi_parser *parser)
 {
-  if ((parser->in[0] >> 4) <= 0xe)
+  if (!clap_midi_parse_vtime(parser))
+    return CLAP_MIDI_PARSER_EOB;
+
+  if (parser->in[0] < 0xf0)
     return clap_midi_parse_channel_event(parser);
   if (parser->in[0] == 0xff)
     return clap_midi_parse_meta_event(parser);

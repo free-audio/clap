@@ -34,18 +34,20 @@ void parse_and_dump(struct clap_midi_parser *parser)
     case CLAP_MIDI_PARSER_HEADER:
       printf("header\n");
       printf("  size: %d\n", parser->header.size);
-      printf("  format: %d\n", parser->header.format);
+      printf("  format: %d [%s]\n", parser->header.format, clap_midi_file_format_name(parser->header.format));
       printf("  tracks count: %d\n", parser->header.tracks_count);
       printf("  time division: %d\n", parser->header.time_division);
       break;
 
     case CLAP_MIDI_PARSER_TRACK:
       puts("track");
+      printf("  length: %d\n", parser->track.size);
       break;
 
     case CLAP_MIDI_PARSER_TRACK_MIDI:
       puts("track-midi");
-      printf("  event type: %d\n", parser->channel.event_type);
+      printf("  time: %d\n", parser->vtime);
+      printf("  type: %d\n", parser->channel.event_type);
       printf("  channel: %d\n", parser->channel.channel);
       printf("  param1: %d\n", parser->channel.param1);
       printf("  param2: %d\n", parser->channel.param2);
@@ -53,12 +55,14 @@ void parse_and_dump(struct clap_midi_parser *parser)
 
     case CLAP_MIDI_PARSER_TRACK_META:
       printf("track-meta\n");
+      printf("  time: %d\n", parser->vtime);
       printf("  type: %d\n", parser->meta.type);
       printf("  length: %d\n", parser->meta.length);
       break;
 
     case CLAP_MIDI_PARSER_TRACK_SYSEX:
       puts("track-sysex");
+      printf("  time: %d\n", parser->vtime);
       break;
 
     default:
