@@ -206,14 +206,16 @@ static inline bool
 clap_midi_parse_vtime(struct clap_midi_parser *parser)
 {
   uint8_t nbytes = 0;
-  bool    cont   = false; // continue flag
+  uint8_t cont   = 1; // continue flag
 
   parser->vtime = 0;
-  for (nbytes = 0; cont; ++nbytes) {
-    if (parser->size < 1 + nbytes)
+  while (cont) {
+    ++nbytes;
+
+    if (parser->size < nbytes)
       return false;
 
-    uint8_t b = parser->in[nbytes];
+    uint8_t b = parser->in[nbytes - 1];
     parser->vtime = (parser->vtime << 7) | (b & 0x7f);
 
     cont = b & 0x80;
@@ -221,6 +223,7 @@ clap_midi_parse_vtime(struct clap_midi_parser *parser)
 
   parser->in += nbytes;
   parser->size -= nbytes;
+  parser->track.size -= nbytes;
 
   return true;
 }
