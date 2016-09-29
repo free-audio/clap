@@ -112,9 +112,6 @@ int process(struct clap_alsa_host *app)
   float *out[2] = { app->out[0], app->out[1] };
 
   struct clap_process p;
-  p.inputs        = in;
-  p.outputs       = out;
-  p.samples_count = SAMPLES_COUNT;
   p.steady_time   = app->steady_time;
   p.events        = NULL;
   // XXX add time info
@@ -137,7 +134,6 @@ int process(struct clap_alsa_host *app)
       else
         p.events = event;
       last_event = event;
-      event->steady_time = app->steady_time;// seq_ev->time;
     }
     else
     {

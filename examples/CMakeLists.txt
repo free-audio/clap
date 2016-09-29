@@ -1,1 +1,2 @@
-add_subdirectory(thyns)
+# Currently broken
+# add_subdirectory(thyns)
