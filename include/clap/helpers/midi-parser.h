@@ -7,6 +7,10 @@
 #ifndef CLAP_HELPERS_MIDI_PARSER_H
 # define CLAP_HELPERS_MIDI_PARSER_H
 
+# ifdef __cplusplus
+extern "C" {
+# endif
+
 # include <stdint.h>
 # include <string.h>
 
@@ -68,9 +72,9 @@ enum clap_midi_status
 };
 
 static const char *
-clap_midi_status_name(int type)
+clap_midi_status_name(int status)
 {
-  switch (type) {
+  switch (status) {
   case CLAP_MIDI_STATUS_NOTE_OFF: return "Note Off";
   case CLAP_MIDI_STATUS_NOTE_ON: return "Note On";
   case CLAP_MIDI_STATUS_NOTE_AT: return "Note Aftertouch";
@@ -85,7 +89,7 @@ clap_midi_status_name(int type)
 
 struct clap_midi_channel_event
 {
-  unsigned event_type : 4;
+  unsigned status : 4;
   unsigned channel : 4;
   uint8_t  param1;
   uint8_t  param2;
@@ -135,5 +139,9 @@ clap_midi_convert(const uint8_t     *in,
                   struct clap_event *event);
 
 # include "midi-parser.c"
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif /* !CLAP_MIDI_PARSER_H */

@@ -203,7 +203,7 @@ clap_midi_parse_track(struct clap_midi_parser *parser)
 }
 
 static inline bool
-clap_midi_parse_vtime(struct clap_midi_parser * restrict parser)
+clap_midi_parse_vtime(struct clap_midi_parser *parser)
 {
   uint8_t nbytes = 0;
   bool    cont   = false; // continue flag
@@ -231,10 +231,10 @@ clap_midi_parse_channel_event(struct clap_midi_parser *parser)
   if (parser->size < 3)
     return CLAP_MIDI_PARSER_EOB;
 
-  parser->channel.event_type = parser->in[0] >> 4;
-  parser->channel.channel    = parser->in[0] & 0xf;
-  parser->channel.param1     = parser->in[1];
-  parser->channel.param2     = parser->in[2];
+  parser->channel.status  = parser->in[0] >> 4;
+  parser->channel.channel = parser->in[0] & 0xf;
+  parser->channel.param1  = parser->in[1];
+  parser->channel.param2  = parser->in[2];
 
   parser->in         += 3;
   parser->size       -= 3;
@@ -319,7 +319,7 @@ clap_midi_convert(const uint8_t     *in,
   enum clap_midi_parser_status status = clap_midi_parse(&parser);
   switch (status) {
   case CLAP_MIDI_PARSER_TRACK_MIDI:
-    switch (parser.channel.event_type) {
+    switch (parser.channel.status) {
     case CLAP_MIDI_STATUS_NOTE_OFF:
       event->type          = CLAP_EVENT_NOTE_OFF;
       event->note.key      = parser.channel.param1;
