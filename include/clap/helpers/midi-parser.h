@@ -87,6 +87,50 @@ clap_midi_status_name(int status)
   }
 }
 
+enum clap_midi_meta
+{
+  CLAP_MIDI_META_SEQ_NUM         = 0x00,
+  CLAP_MIDI_META_TEXT            = 0x01,
+  CLAP_MIDI_META_COPYRIGHT       = 0x02,
+  CLAP_MIDI_META_TRACK_NAME      = 0x03,
+  CLAP_MIDI_META_INSTRUMENT_NAME = 0x04,
+  CLAP_MIDI_META_LYRICS          = 0x05,
+  CLAP_MIDI_META_MAKER           = 0x06,
+  CLAP_MIDI_META_CUE_POINT       = 0x07,
+  CLAP_MIDI_META_CHANNEL_PREFIX  = 0x20,
+  CLAP_MIDI_META_END_OF_TRACK    = 0x2F,
+  CLAP_MIDI_META_SET_TEMPO       = 0x51,
+  CLAP_MIDI_META_SMPTE_OFFSET    = 0x54,
+  CLAP_MIDI_META_TIME_SIGNATURE  = 0x58,
+  CLAP_MIDI_META_KEY_SIGNATURE   = 0x59,
+  CLAP_MIDI_META_SEQ_SPECIFIC    = 0x7F,
+};
+
+static const char *
+clap_midi_meta_name(int type)
+{
+  switch (type) {
+  case CLAP_MIDI_META_SEQ_NUM: return "Sequence Number";
+  case CLAP_MIDI_META_TEXT: return "Text";
+  case CLAP_MIDI_META_COPYRIGHT: return "Copyright";
+  case CLAP_MIDI_META_TRACK_NAME: return "Track Name";
+  case CLAP_MIDI_META_INSTRUMENT_NAME: return "Instrument Name";
+  case CLAP_MIDI_META_LYRICS: return "Lyrics";
+  case CLAP_MIDI_META_MAKER: return "Maker";
+  case CLAP_MIDI_META_CUE_POINT: return "Cue Point";
+  case CLAP_MIDI_META_CHANNEL_PREFIX: return "Channel Prefix";
+  case CLAP_MIDI_META_END_OF_TRACK: return "End of Track";
+  case CLAP_MIDI_META_SET_TEMPO: return "Set Tempo";
+  case CLAP_MIDI_META_SMPTE_OFFSET: return "SMPTE Offset";
+  case CLAP_MIDI_META_TIME_SIGNATURE: return "Time Signature";
+  case CLAP_MIDI_META_KEY_SIGNATURE: return "Key Signature";
+  case CLAP_MIDI_META_SEQ_SPECIFIC: return "Sequencer Specific";
+
+  default: return "(unknown)";
+  }
+}
+
+
 struct clap_midi_channel_event
 {
   unsigned status : 4;

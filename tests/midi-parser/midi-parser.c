@@ -56,7 +56,7 @@ void parse_and_dump(struct clap_midi_parser *parser)
     case CLAP_MIDI_PARSER_TRACK_META:
       printf("track-meta\n");
       printf("  time: %d\n", parser->vtime);
-      printf("  type: %d\n", parser->meta.type);
+      printf("  type: %d [%s]\n", parser->meta.type, clap_midi_meta_name(parser->meta.type));
       printf("  length: %d\n", parser->meta.length);
       break;
 
