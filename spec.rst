@@ -11,15 +11,15 @@ A free audio plugin format
 Goals
 =====
 
-- Make a free digital instrument and effect plugin format
+- Make a free digital instrument and effect plugin interface
 - Be easy to understand and implement
-- Bring new features missed in VST 2.4
+- Don't require alien technology
 - Designed to work on any operating system and processor architecture
 - Be event oriented
 - Be extensible
 - Be easy to bridge
-- Support dynamic configuration: let a modular plugin dynamically
-  add new parameters, new outputs/inputs, etc...
+- Support dynamic configuration: let a plugin dynamically
+  add new parameters, io ports, etc...
 
 Design choice
 -------------
