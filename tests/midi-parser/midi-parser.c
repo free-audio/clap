@@ -43,21 +43,26 @@ void parse_and_dump(struct clap_midi_parser *parser)
       puts("track");
       break;
 
-    case CLAP_MIDI_PARSER_CHANNEL:
-      puts("channel");
+    case CLAP_MIDI_PARSER_TRACK_MIDI:
+      puts("track-midi");
+      printf("  event type: %d\n", parser->channel.event_type);
+      printf("  channel: %d\n", parser->channel.channel);
+      printf("  param1: %d\n", parser->channel.param1);
+      printf("  param2: %d\n", parser->channel.param2);
       break;
 
-    case CLAP_MIDI_PARSER_META:
-      printf("meta\n");
+    case CLAP_MIDI_PARSER_TRACK_META:
+      printf("track-meta\n");
       printf("  type: %d\n", parser->meta.type);
       printf("  length: %d\n", parser->meta.length);
       break;
 
-    case CLAP_MIDI_PARSER_SYSEX:
-      puts("sysex");
+    case CLAP_MIDI_PARSER_TRACK_SYSEX:
+      puts("track-sysex");
       break;
 
     default:
+      printf("unhandled state: %d\n", status);
       return;
     }
   }

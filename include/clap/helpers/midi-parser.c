@@ -217,7 +217,7 @@ clap_midi_parse_channel_event(struct clap_midi_parser *parser)
   parser->size       -= 3;
   parser->track.size -= 3;
 
-  return CLAP_MIDI_PARSER_CHANNEL;
+  return CLAP_MIDI_PARSER_TRACK_MIDI;
 }
 
 static inline enum clap_midi_parser_status
@@ -240,7 +240,7 @@ clap_midi_parse_meta_event(struct clap_midi_parser *parser)
   parser->in += offset;
   parser->size -= offset;
   parser->track.size -= offset;
-  return CLAP_MIDI_PARSER_META;
+  return CLAP_MIDI_PARSER_TRACK_META;
 }
 
 static inline enum clap_midi_parser_status
@@ -292,7 +292,7 @@ clap_midi_convert(const uint8_t     *in,
 
   enum clap_midi_parser_status status = clap_midi_parse(&parser);
   switch (status) {
-  case CLAP_MIDI_PARSER_CHANNEL:
+  case CLAP_MIDI_PARSER_TRACK_MIDI:
     switch (parser.channel.event_type) {
     case CLAP_MIDI_CHANNEL_NOTE_OFF:
       event->type          = CLAP_EVENT_NOTE_OFF;
