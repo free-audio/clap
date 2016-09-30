@@ -4,12 +4,6 @@
 #include <clap/clap.h>
 #include <clap/ext/params.h>
 
-static void host_events(struct clap_host   *host,
-                        struct clap_plugin *plugin,
-                        struct clap_event  *events)
-{
-}
-
 static void *host_extension(struct clap_host *host, const char *extension_id)
 {
   return NULL;
@@ -20,8 +14,6 @@ static void initialize_host(struct clap_host *host)
   static int64_t steady_time = 0;
 
   host->clap_version = CLAP_VERSION;
-  host->events       = host_events;
-  host->steady_time  = &steady_time;
   host->extension    = host_extension;
 }
 

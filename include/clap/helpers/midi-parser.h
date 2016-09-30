@@ -166,7 +166,7 @@ struct clap_midi_parser
   int64_t                        vtime;
   struct clap_midi_header        header;
   struct clap_midi_track         track;
-  struct clap_midi_channel_event channel;
+  struct clap_midi_channel_event midi;
   struct clap_midi_meta_event    meta;
   struct clap_midi_sysex_event   sysex;
 };

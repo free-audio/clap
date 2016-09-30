@@ -47,10 +47,10 @@ void parse_and_dump(struct clap_midi_parser *parser)
     case CLAP_MIDI_PARSER_TRACK_MIDI:
       puts("track-midi");
       printf("  time: %d\n", parser->vtime);
-      printf("  status: %d [%s]\n", parser->channel.status, clap_midi_status_name(parser->channel.status));
-      printf("  channel: %d\n", parser->channel.channel);
-      printf("  param1: %d\n", parser->channel.param1);
-      printf("  param2: %d\n", parser->channel.param2);
+      printf("  status: %d [%s]\n", parser->midi.status, clap_midi_status_name(parser->midi.status));
+      printf("  channel: %d\n", parser->midi.channel);
+      printf("  param1: %d\n", parser->midi.param1);
+      printf("  param2: %d\n", parser->midi.param2);
       break;
 
     case CLAP_MIDI_PARSER_TRACK_META:

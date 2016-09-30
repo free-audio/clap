@@ -234,10 +234,10 @@ clap_midi_parse_channel_event(struct clap_midi_parser *parser)
   if (parser->size < 3)
     return CLAP_MIDI_PARSER_EOB;
 
-  parser->channel.status  = parser->in[0] >> 4;
-  parser->channel.channel = parser->in[0] & 0xf;
-  parser->channel.param1  = parser->in[1];
-  parser->channel.param2  = parser->in[2];
+  parser->midi.status  = parser->in[0] >> 4;
+  parser->midi.channel = parser->in[0] & 0xf;
+  parser->midi.param1  = parser->in[1];
+  parser->midi.param2  = parser->in[2];
 
   parser->in         += 3;
   parser->size       -= 3;
@@ -322,18 +322,18 @@ clap_midi_convert(const uint8_t     *in,
   enum clap_midi_parser_status status = clap_midi_parse(&parser);
   switch (status) {
   case CLAP_MIDI_PARSER_TRACK_MIDI:
-    switch (parser.channel.status) {
+    switch (parser.midi.status) {
     case CLAP_MIDI_STATUS_NOTE_OFF:
       event->type          = CLAP_EVENT_NOTE_OFF;
-      event->note.key      = parser.channel.param1;
-      event->note.velocity = ((float)parser.channel.param2) / 127.0f;
+      event->note.key      = parser.midi.param1;
+      event->note.velocity = ((float)parser.midi.param2) / 127.0f;
       event->note.pitch    = clap_midi_pitches[event->note.key];
       return;
 
     case CLAP_MIDI_STATUS_NOTE_ON:
       event->type          = CLAP_EVENT_NOTE_ON;
-      event->note.key      = parser.channel.param1;
-      event->note.velocity = ((float)parser.channel.param2) / 127.0f;
+      event->note.key      = parser.midi.param1;
+      event->note.velocity = ((float)parser.midi.param2) / 127.0f;
       event->note.pitch    = clap_midi_pitches[event->note.key];
       return;
     }
