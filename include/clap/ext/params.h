@@ -2,6 +2,7 @@
 # define CLAP_EXT_PARAMS_H
 
 # include "../clap.h"
+# include "ports.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -38,14 +39,18 @@ struct clap_param
   bool                    is_per_note;
   bool                    is_per_channel;
   bool                    is_used;   // is this parameter used by the patch?
-  bool                    is_periodic;
+  bool                    is_periodic; // after the last value, go back to the first one
   bool                    is_locked; // if true, the parameter can't be changed by
                                      // the host
-  union clap_param_value  value;
-  union clap_param_value  min;
-  union clap_param_value  max;
+
+  /* Can the parameter be automated at sample rate by an audio buffer? */
+  bool                    accepts_audio_buffer;
+
+  union clap_param_value  value; // current value
+  union clap_param_value  min;   // minimum value
+  union clap_param_value  max;   // maximum value
   union clap_param_value  deflt; // default value
-  enum  clap_param_scale  scale;
+  enum  clap_param_scale  scale; // scaling of the knob in the UI.
 };
 
 struct clap_param_module
@@ -69,6 +74,18 @@ struct clap_plugin_params
   bool (*get_module)(struct clap_plugin       *plugin,
                      const char               *module_id,
                      struct clap_param_module *module);
+
+  /* Use an audio buffer to automate a parameter at sample rate.
+   * Once a parameter is automated by an audio buffer, concurrent
+   * automation event shall be ignored in favor of the audio rate
+   * automation.
+   *
+   * To disconnect the automation, set buffer to NULL. */
+  bool (*set_param_buffer)(struct clap_plugin     *plugin,
+                           int32_t                 param_index,
+                           int32_t                 channel,
+                           int32_t                 note,
+                           struct clap_audio_port *port);
 };
 
 struct clap_host_params
