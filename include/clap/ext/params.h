@@ -44,7 +44,11 @@ struct clap_param
                                      // the host
 
   /* Can the parameter be automated at sample rate by an audio buffer? */
-  bool                    accepts_audio_buffer;
+  bool                    supports_audio_buffer;
+
+  /* Can the parameter be automated by automation events? */
+  bool                    supports_automation_events;
+  bool                    supports_ramp_events;
 
   union clap_param_value  value; // current value
   union clap_param_value  min;   // minimum value
@@ -71,6 +75,8 @@ struct clap_plugin_params
                     int32_t             index,
                     struct clap_param  *param);
 
+  /* Copies the module's info to module and returns true.
+   * If module_id is NULL or invalid then return false. */
   bool (*get_module)(struct clap_plugin       *plugin,
                      const char               *module_id,
                      struct clap_param_module *module);

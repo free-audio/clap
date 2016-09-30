@@ -146,6 +146,7 @@ struct clap_event_param
   float                   increment; // for param ramp
 };
 
+/** Note On/Off event. */
 struct clap_event_note
 {
   int8_t  key;      // 0..127
@@ -174,6 +175,7 @@ struct clap_event_jump
   int32_t tempo;      // tempo in samples
   int32_t bar;        // the bar number
   int32_t bar_offset; // 0 <= bar_offset < tsig_denom * tempo
+  int64_t song_time;  // song time in micro seconds
   int32_t tsig_num;   // time signature numerator
   int32_t tsig_denom; // time signature denominator
 };
@@ -195,9 +197,9 @@ struct clap_event_jump
  */
 struct clap_event_program
 {
-  int32_t bank0;   // 0..max
-  int32_t bank1;   // 0..max
-  int32_t program; // 0..max
+  int32_t bank0;   // 0..0x7FFFFFFF
+  int32_t bank1;   // 0..0x7FFFFFFF
+  int32_t program; // 0..0x7FFFFFFF
 };
 
 struct clap_event
@@ -252,6 +254,8 @@ struct clap_host
 {
   int32_t clap_version; // initialized to CLAP_VERSION
 
+  void *host_data; // reserved pointer for the host
+
   /* returns the size of the original string, 0 if not string */
   int32_t (*get_attribute)(struct clap_host *host,
                            const char       *attr,
@@ -264,11 +268,8 @@ struct clap_host
               enum clap_log_severity  severity,
               const char             *msg);
 
-  /* feature extensions */
+  /* query an extension */
   void *(*extension)(struct clap_host *host, const char *extention_id);
-
-  /* host private data */
-  void *host_data;
 };
 
 ////////////
@@ -314,7 +315,7 @@ struct clap_plugin
   enum clap_process_status (*process)(struct clap_plugin  *plugin,
                                       struct clap_process *process);
 
-  /* features extensions */
+  /* query an extension */
   void *(*extension)(struct clap_plugin *plugin, const char *id);
 };
 

@@ -15,25 +15,39 @@ struct clap_preset_info
   uint8_t  score;                      // 0 = garbage, ..., 100 = best
 };
 
+struct clap_preset_handle
+{
+  void *priv;
+  int32_t num_presets;
+  // TODO cookie for fast rescan of huge bank file
+};
+
 /* The principle behind this extension is that the host gets a list of
  * directories to scan recursively, and then for each files, it can ask
  * the interface to load the preset. */
-struct clap_plugin_presets
+struct clap_preset_library
 {
   /* Copies at most *path_size bytes into path.
    * If directory_index is bigger than the number of directories,
    * then return false. */
-  bool (*get_directory)(struct clap_plugin_presets *presets,
+  bool (*get_directory)(struct clap_preset_library *reader,
                         int                         directory_index,
                         char                       *path,
                         int32_t                    *path_size);
+
+  bool (*open_bank)(struct clap_plugin_preset_reader *reader,
+                      const char *path,
+                      struct clap_preset_handle *handle);
+
+  void (*close_bank)(struct clap_plugin_preset_reader *reader,
+                     struct clap_preset_handle *handle);
 
   /* Get a preset info from its path and returns true.
    * In case of a preset bank file, index is used, and *has_next
    * should be set to false when index reaches the last preset.
    * If the preset is not found, then it should return false. */
   bool (*get_preset_info)(struct clap_plugin_presets *presets,
-                          const char                 *path,
+                          void *cookie,
                           struct clap_preset_info    *preset_info,
                           int32_t                     index,
                           bool                       *has_next);
