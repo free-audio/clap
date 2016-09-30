@@ -131,7 +131,7 @@ clap_midi_meta_name(int type)
 }
 
 
-struct clap_midi_channel_event
+struct clap_midi_midi_event
 {
   unsigned status : 4;
   unsigned channel : 4;
@@ -163,12 +163,12 @@ struct clap_midi_parser
   int32_t        size;
 
   /* result */
-  int64_t                        vtime;
-  struct clap_midi_header        header;
-  struct clap_midi_track         track;
-  struct clap_midi_channel_event midi;
-  struct clap_midi_meta_event    meta;
-  struct clap_midi_sysex_event   sysex;
+  int64_t                      vtime;
+  struct clap_midi_header      header;
+  struct clap_midi_track       track;
+  struct clap_midi_midi_event  midi;
+  struct clap_midi_meta_event  meta;
+  struct clap_midi_sysex_event sysex;
 };
 
 static inline enum clap_midi_parser_status
