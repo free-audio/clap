@@ -9,6 +9,7 @@ enum clap_plugin_render_mode
 {
   /* Default setting, used to play "realtime". */
   CLAP_RENDER_REALTIME = 0,
+
   /* Render setting, used while rendering the song. */
   CLAP_RENDER_OFFLINE  = 1,
 };
