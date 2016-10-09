@@ -35,14 +35,16 @@ struct clap_audio_port_info
   char                                 name[CLAP_NAME_SIZE];
 
   /* If false, then the port can be connected only once.
-   * If true, then the port can be connected multiple times. */
+   * If true, then this is a virtual port which can be cloned
+   * and connected multiple times. */
   bool                                 is_repeatable;
 };
 
 struct clap_audio_port
 {
-  int32_t   channel_count;
-  float   **data;
+  int32_t                                channel_count;
+  enum clap_audio_port_channel_mapping   channel_mapping;
+  float                                **data;
 };
 
 /* The audio ports configuration has to be done while the plugin is
