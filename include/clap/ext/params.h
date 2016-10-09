@@ -25,6 +25,7 @@ enum clap_param_scale
   CLAP_PARAM_SCALE_EXP    = 2,
 };
 
+/* This describes the parameter and provides the current value */
 struct clap_param
 {
   int32_t index;  // parameter's index
@@ -35,7 +36,6 @@ struct clap_param
   char                    name[CLAP_NAME_SIZE]; // the display name
   char                    desc[CLAP_DESC_SIZE];
   char                    display[CLAP_DISPLAY_SIZE]; // the text used to display the value
-  enum clap_param_type    type;
   bool                    is_per_note;
   bool                    is_per_channel;
   bool                    is_used;   // is this parameter used by the patch?
@@ -44,12 +44,14 @@ struct clap_param
                                      // the host
 
   /* Can the parameter be automated at sample rate by an audio buffer? */
-  bool                    supports_audio_buffer;
+  bool                    supports_audio_automation;
 
   /* Can the parameter be automated by automation events? */
-  bool                    supports_automation_events;
+  bool                    supports_events_automation;
   bool                    supports_ramp_events;
 
+  /* value */
+  enum clap_param_type    type;
   union clap_param_value  value; // current value
   union clap_param_value  min;   // minimum value
   union clap_param_value  max;   // maximum value
@@ -60,6 +62,7 @@ struct clap_param
 struct clap_param_module
 {
   char id[CLAP_ID_SIZE];
+  char parent_id[CLAP_ID_SIZE];
   char name[CLAP_NAME_SIZE];
   char desc[CLAP_DESC_SIZE];
 };
