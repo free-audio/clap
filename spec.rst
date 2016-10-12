@@ -118,46 +118,7 @@ a few methods. This attribute must be initialized by the plugin with
 
 Then to get plugin's attribute, you have to use ``plugin->get_attribute(plugin, ...)``.
 
-+--------------------------------+---------------------------------------------------------------+
-| Attribute                      | Description                                                   |
-+================================+===============================================================+
-| CLAP_ATTR_ID                   | Unique identifier of the plugin. It should never change. It   |
-|                                | should be the same on any plateform.                          |
-+--------------------------------+---------------------------------------------------------------+
-| CLAP_ATTR_NAME                 | The name of the product.                                      |
-+--------------------------------+---------------------------------------------------------------+
-| CLAP_ATTR_DESCRIPTION          | A brief description of the product.                           |
-+--------------------------------+---------------------------------------------------------------+
-| CLAP_ATTR_MANUFACTURER         | Which company made the plugin.                                |
-+--------------------------------+---------------------------------------------------------------+
-| CLAP_ATTR_VERSION              | A string describing the product version.                      |
-+--------------------------------+---------------------------------------------------------------+
-| CLAP_ATTR_URL                  | An URL to the product homepage.                               |
-+--------------------------------+---------------------------------------------------------------+
-| CLAP_ATTR_LICENSE              | The plugin license type, Custom, GPLv3, MIT, ...              |
-+--------------------------------+---------------------------------------------------------------+
-| CLAP_ATTR_SUPPORT              | A link to the support, it can be                              |
-|                                | ``mailto:support@company.com`` or                             |
-|                                | ``http://company.com/support``.                               |
-+--------------------------------+---------------------------------------------------------------+
-| CLAP_ATTR_CATEGORIES           | A string containing a list of categories, joined with ``;``.  |
-|                                | For example: ``fm;analogue;delay``.                           |
-+--------------------------------+---------------------------------------------------------------+
-| CLAP_ATTR_TYPE                 | Bitfield describing what the plugin does. See                 |
-|                                | ``enum clap_plugin_type``.                                    |
-+--------------------------------+---------------------------------------------------------------+
-| CLAP_ATTR_CHUNK_SIZE           | The process buffer must have a number of sample multiple of   |
-|                                | ``chunk_size``.                                               |
-+--------------------------------+---------------------------------------------------------------+
-| CLAP_ATTR_LATENCY              | The latency introduced by the plugin.                         |
-+--------------------------------+---------------------------------------------------------------+
-| CLAP_ATTR_SUPPORTS_TUNING      | ``1`` if the plugin supports tuning.                          |
-+--------------------------------+---------------------------------------------------------------+
-| CLAP_ATTR_IS_REMOTE_PROCESSING | ``1`` if the plugin is doing remote processing. This can help |
-|                                | the DAW's task scheduling.                                    |
-+--------------------------------+---------------------------------------------------------------+
-| ..._IN_PLACE_PROCESSING        | ``1`` if the plugin supports in place processing.             |
-+--------------------------------+---------------------------------------------------------------+
+See the ``#include <clap/clap.h>`` for more information.
 
 Extension system
 ~~~~~~~~~~~~~~~~

@@ -80,17 +80,22 @@ enum clap_log_severity
   CLAP_LOG_FATAL   = 4,
 };
 
+// Id of the plugin
 # define CLAP_ATTR_ID              "clap/id"
+// Name of the plugin
 # define CLAP_ATTR_NAME            "clap/name"
+// Description of the plugin
 # define CLAP_ATTR_DESCRIPTION     "clap/description"
+// Product version string
 # define CLAP_ATTR_VERSION         "clap/version"
+// Manufacturer name
 # define CLAP_ATTR_MANUFACTURER    "clap/manufacturer"
+// Url to product
 # define CLAP_ATTR_URL             "clap/url"
+// Url to support page, or mail to support
 # define CLAP_ATTR_SUPPORT         "clap/support"
-# define CLAP_ATTR_LICENSE         "clap/license"
+// A string containing a list of categories, joined with `;'. For example: `fm;analogue;delay'.
 # define CLAP_ATTR_CATEGORIES      "clap/categories"
-# define CLAP_ATTR_TYPE            "clap/type"
-# define CLAP_ATTR_CHUNK_SIZE      "clap/chunk_size"
 // Should be "1" if the plugin supports tunning.
 # define CLAP_ATTR_SUPPORTS_TUNING "clap/supports_tuning"
 // Should be "1" if the plugin is doing remote processing.
@@ -294,6 +299,8 @@ struct clap_plugin
   void *host_data;   // reserved pointer for the host
   void *plugin_data; // reserved pointer for the plugin
 
+  enum clap_plugin_type plugin_type;
+  
   /* Free the plugin and its resources.
    * It is not required to deactivate the plugin prior to this call. */
   void (*destroy)(struct clap_plugin *plugin);
