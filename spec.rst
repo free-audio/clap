@@ -79,44 +79,27 @@ Instantiate a plugin
 
 Plugin instantiation can be done in a few steps:
 
-- load the plugin library with ``dlopen`` or symilar functions
-- find the symbol ``clap_create``
-- instantiate the plugin by calling ``clap_create``
-
-Precautions
-~~~~~~~~~~~
-
-- The function ``clap_create`` must be thread-safe.
-- It must not throw exceptions.
-- It can return ``NULL``.
+- load the dynamic library with ``dlopen`` or symilar functions
+- find the symbol ``clap_plugin_factory``
+- use the factory to get the number of plugins available and
+  create plugins by index to enumerate the collection
+  or create plugins by identifier to create a specific one
 
 Release a plugin
 ~~~~~~~~~~~~~~~~
 
 To release a plugin, call ``plugin->destroy(plugin);``.
-It is required to deactivate the plugin prior to destroy it.
-
-Plugins collection
-~~~~~~~~~~~~~~~~~~
-
-A single shared library can contains multiple clap plugins.
-To list them, you have to call ``clap_create`` with an index of 0.
-``clap_create`` will store the number of plugins in the collection
-into the parameter ``*plugins_count``. After that you can create any
-of them by using an ``index`` between ``0`` and ``*plugins_count``.
-
-``clap_create`` returns ``NULL`` if the plugin creation failed or if
-``plugin_index >= plugin_count``.
 
 Plugin description
 ~~~~~~~~~~~~~~~~~~
 
 ``struct clap_plugin`` only contains a interger ``clap_version`` which
 indicates which version of the clap interface has been used to build the plugin, and
-a few methods. This attribute must be initialized by the plugin with
+a few methods. The attribute ``clap_version`` must be initialized by the plugin with
 ``CLAP_PLUGIN_VERSION``.
 
-Then to get plugin's attribute, you have to use ``plugin->get_attribute(plugin, ...)``.
+Then to get plugin's attribute, you have to use
+``plugin->get_attribute(plugin, CLAP_ATTR_NAME, ...);``.
 
 See the ``#include <clap/clap.h>`` for more information.
 
@@ -132,19 +115,32 @@ To extend clap's functionnality, there is a pretty simple mechanism:
 
 If the extension is not supported, the plugin should return ``NULL``.
 
+By convention, extensions should provide a define for the extension name.
+
+.. code:: c
+
+  # define CLAP_EXT_AUDIO_PORTS "clap/audio-ports"
+
 Audio ports configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A plugin may have multiple audio ports, and so multiple audio ports
-layout or configurations.
+A plugin may have multiple audio ports, and multiple configurations
+(mono, stereo, quad, surround, ...). Yet we want to keep things simple,
+flexible and dynamic.
 
-An audio port has a type: mono, stereo, surround and a role: main
-input/output or sidechain. We might add a feedback role in the futur
-if there is a need for it. Also, an instrument/effect can load and host
-clap effects for its feedback loops.
-
-Pin layout
-``````````
+An audio port has:
+ - a direction (input or output)
+ - a channel count
+ - a channel mapping (eg: stereo left then right)
+ - a role (input or output, sidechain input, audio rate modulation signal)
+ - a name
+ - repeatable: can be used as a template to create multiple instance of the
+   same port and so connect multiple signals to it. For example you have an
+   analyzer and you want a repeatable input port, so the user can connect
+   an arbitrary number of signals.
+ 
+Standard channel mappings
+`````````````````````````
 
 +----------+-----+---------------------+
 | type     | pin | description         |
@@ -171,93 +167,6 @@ Pin layout
 |          +-----+---------------------+
 |          | 7   | surround back right |
 +----------+-----+---------------------+
-
-Configurations
-``````````````
-
-After the call to ``clap_create()`` the new plugin uses the default ports
-configuration: 1 stereo input and 1 stereo output. So if you're fine with
-it, there is nothing more to do.
-
-If a plugins wants to offer more ports configuration to the host/user, it
-has to use ports extension. See `clap/ext/ports.h`_.
-
-The host can select a ports configuration only if the plugin is in
-the deactivated state.
-
-Note that if the plugin does not support the default configuration
-which is stereo input and stereo output, then it must return false
-during the plugin activation (``plugin->activate(plugin)``).
-
-Here is a configuration for a stereo sidechain compressor:
-
-+--------+----------+------------+---------------------+-----------------+
-| in/out | type     | role       | buffer              | desc            |
-+========+==========+============+=====================+=================+
-| input  | stereo   | inout      | process->inputs[0]  | left input      |
-|        |          |            +---------------------+-----------------+
-|        |          |            | process->inputs[1]  | right input     |
-+--------+----------+------------+---------------------+-----------------+
-| input  | stereo   | sidechain  | process->inputs[2]  | left sidechain  |
-|        |          |            +---------------------+-----------------+
-|        |          |            | process->inputs[3]  | right sidechain |
-+--------+----------+------------+---------------------+-----------------+
-| output | stereo   | inout      | process->outputs[0] | left input      |
-|        |          |            +---------------------+-----------------+
-|        |          |            | process->outputs[1] | right input     |
-+--------+----------+------------+---------------------+-----------------+
-
-Getting the ports configurations
-````````````````````````````````
-
-.. code:: c
-
-  #include <clap/ext/ports.h>
-
-  struct clap_plugin_ports *ports = plugin->extension(plugin, CLAP_EXT_PORTS);
-  if (!ports)
-    return; // no ports extension
-  uint32_t count = ports->get_configs_count(plugin);
-  for (uint32_t i = 0; i < count; ++i) {
-    struct clap_ports_config config;
-    if (!ports->get_config(plugin, i, &config))
-      continue;
-    // ...
-  }
-
-It is possible to discover a plugin's port configurations by calling
-``ports->get_configs_count(plugin);``. It returns the number of
-configurations. Then for each configuration you have to call
-``ports->get_config(plugin, config_index, &config);`` which will
-tell you the number of input and output ports. Then to get the port details,
-you have to call
-``ports->get_info(plugin, config_index, port_index, &port);``.
-
-Selecting a configuration
-`````````````````````````
-
-Selecting an audio configuration has to be done when the plugin is deactivated.
-It is done by calling ``plugin->set_port_config(plugin, config_index)``.
-If the call returns false, then the plugin is in failed state.
-
-Repeatable channels
-```````````````````
-
-Repeatable channels are a special case. A channel can be identified as
-repeatable if ``channel->is_repeatable == true``.
-
-A useful case is for an analyzer. Imagine a spectroscope, to which you want to
-plug any number of inputs. Each of those inputs can be named and displayed in
-the spectrograph, so it is a convinient way analyze many tracks in the same
-spectroscope.
-
-For the special case of repeatable side chain input, the host
-has to tell the plugin how many times the port should be repeated.
-To do that it has to call ``plugin->set_repeat(plugin, port_index, count)``.
-If it returns ``false`` then the plugin is in the same state as before
-the call.
-
-Only inputs can be repeatable.
 
 Activation
 ----------
