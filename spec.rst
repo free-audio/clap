@@ -13,20 +13,22 @@ Goals
 
 - Make a free digital instrument and effect plugin interface
 - Be easy to understand and implement
-- Don't require alien technology
+- Don't require alien technology, or masoshist design
+  - Based on C, not Objective-C or C++
+  - No dependancy on external libraries
+  - No serialization format
+  - No C++ multiple inheritence
+  - No macro obfuscation
+  - No object file to compile in the SDK, CLAP is an interface only.
+  - Simple resource management mechanism
 - Designed to work on any operating system and processor architecture
 - Be event oriented
 - Be extensible
 - Be easy to bridge
-- Support dynamic configuration: let a plugin dynamically
-  add new parameters, io ports, etc...
-
-Design choice
--------------
-
-- Use the C language for the interface.
-- The host interface must be thread-safe.
-- The plugin interface is not thread-safe.
+- Dynamics
+  - dynamic ports
+  - dynamic parameters
+- Full MIDI
 
 Specification
 =============
@@ -40,8 +42,13 @@ https://free-audio.github.io/clap/ gives a convinient view for that.
 Encoding
 --------
 
-All the strings exchanged through the CLAP interface must be encoded in UTF-8
-and must be valid.
+All the strings exchanged through the CLAP interface must be encoded
+in valid UTF-8.
+
+C++ execptions
+--------------
+
+A CLAP interface must not send exception.
 
 Plugins location
 ----------------
@@ -54,50 +61,18 @@ Common
 Linux
 ~~~~~
 
-- Plugins distributed with packages should be installed to: ``/usr/lib/clap/``
+- Plugins distributed with packages should be installed to: ``/usr/lib/clap/`` or ``/usr/local/lib/clap/``
 - Plugins installed in the user's home should be installed to: ``${HOME}/.clap/``
 
 Windows
 ~~~~~~~
 
-TBD
+- Plugins installed in the user's home should be installed to: ``C:\Program Files\clap\``
 
 Mac
 ~~~
 
 TBD
-
-Multi-architecture conventions
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Let's say that we have a plugin called ``DigitalDragon``. If we distribute
-it for multiple architecture, then the host should be able to identify which
-version is suited for the current architecture by reading its name.
-
-For example:
-
-+-------------+---------------------------+
-| Archtecture | Filename                  |
-+=============+===========================+
-| x86         | DigitalDragon.x86.so      |
-+-------------+---------------------------+
-| x86_64      | DigitalDragon.x86_64.so   |
-+-------------+---------------------------+
-| alpha       | DigitalDragon.alpha.so    |
-+-------------+---------------------------+
-| arm         | DigitalDragon.arm.so      |
-+-------------+---------------------------+
-| sparc       | DigitalDragon.sparc.so    |
-+-------------+---------------------------+
-| hppa        | DigitalDragon.hppa.so     |
-+-------------+---------------------------+
-| ppc         | DigitalDragon.ppc.so      |
-+-------------+---------------------------+
-| ppc64       | DigitalDragon.ppc64.so    |
-+-------------+---------------------------+
-
-If the name does not contain an indicator, then the plugin should be
-built for the native/current architecture.
 
 Instantiate a plugin
 --------------------
