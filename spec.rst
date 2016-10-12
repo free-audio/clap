@@ -133,11 +133,6 @@ of them by using an ``index`` between ``0`` and ``*plugins_count``.
 ``clap_create`` returns ``NULL`` if the plugin creation failed or if
 ``plugin_index >= plugin_count``.
 
-Sample plugin loader
-````````````````````
-
-See `examples/clap-info/clap-info.c`_
-
 Plugin description
 ~~~~~~~~~~~~~~~~~~
 
@@ -609,7 +604,9 @@ an extension.
 +------------+---------------------------+----------------------+----------------+
 | Windows    | `clap/ext/embed-win32.h`_ | ``CLAP_EMBED_WIN32`` | For the plugin |
 +------------+---------------------------+----------------------+----------------+
-| X11        | `clap/ext/embed-xlib.h`_  | ``CLAP_EMBED_XLIB``  | For the plugin |
+| X11        | `clap/ext/embed-x11.h`_   | ``CLAP_EMBED_X11``   | For the plugin |
++------------+---------------------------+----------------------+----------------+
+| Cocoa      | `clap/ext/embed-cocoa.h`_ | ``CLAP_EMBED_COCOA`` | For the plugin |
 +------------+---------------------------+----------------------+----------------+
 
 Example on Windows
@@ -719,15 +716,6 @@ See `clap/ext/state.h`_.
 Note: if the plugin do not have the state extension, the host can save the
 plugin's parameters and restore them.
 
-Examples
-========
-
-examples/clap-info/clap-info.c
-------------------------------
-
-.. include:: tools/clap-info/clap-info.c
-   :code: c
-
 References
 ==========
 
@@ -737,22 +725,16 @@ clap/clap.h
 .. include:: include/clap/clap.h
    :code: c
 
-clap/ext/ports.h
-----------------
-
-.. include:: include/clap/ext/ports.h
-   :code: c
-
-clap/ext/gui.h
---------------
-
-.. include:: include/clap/ext/gui.h
-   :code: c
-
 clap/ext/state.h
 ----------------
 
 .. include:: include/clap/ext/state.h
+   :code: c
+
+clap/ext/ports.h
+----------------
+
+.. include:: include/clap/ext/ports.h
    :code: c
 
 clap/ext/params.h
@@ -761,10 +743,10 @@ clap/ext/params.h
 .. include:: include/clap/ext/params.h
    :code: c
 
-clap/ext/presets.h
-------------------
+clap/ext/gui.h
+--------------
 
-.. include:: include/clap/ext/presets.h
+.. include:: include/clap/ext/gui.h
    :code: c
 
 clap/ext/embed.h
@@ -779,8 +761,20 @@ clap/ext/embed-win32.h
 .. include:: include/clap/ext/embed-win32.h
    :code: c
 
-clap/ext/embed-xlib.h
+clap/ext/embed-x11.h
 ---------------------
 
-.. include:: include/clap/ext/embed-xlib.h
+.. include:: include/clap/ext/embed-x11.h
+   :code: c
+
+clap/ext/embed-cocoa.h
+----------------------
+
+.. include:: include/clap/ext/embed-cocoa.h
+   :code: c
+
+clap/ext/presets.h
+------------------
+
+.. include:: include/clap/ext/presets.h
    :code: c
