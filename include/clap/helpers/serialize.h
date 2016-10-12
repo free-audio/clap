@@ -17,8 +17,14 @@ enum clap_serialize_type
   CLAP_SERIALIZE_END   = 'e',
   CLAP_SERIALIZE_STR   = 's',
   CLAP_SERIALIZE_BOOL  = 'b',
+  CLAP_SERIALIZE_INT8  = 'c',
+  CLAP_SERIALIZE_INT16 = 'j',
   CLAP_SERIALIZE_INT32 = 'i',
+  CLAP_SERIALIZE_INT64 = 'l',
+
+  /* IEEE 754 format */
   CLAP_SERIALIZE_FLOAT = 'f',
+  CLAP_SERIALIZE_DOUBLE = 'g',
 };
 
 struct clap_serializer
@@ -40,23 +46,40 @@ clap_serializer_array(struct clap_serializer *s);
 static inline bool
 clap_serializer_end(struct clap_serializer *s);
 
-/* Pushes a string. Returns false on EOB. */
+/* Pushes a string. Returns false on EOB.
+ * The string might not be null terminated. */
 static inline bool
 clap_serializer_str(struct clap_serializer *s,
                     const char             *str,
                     int32_t                len);
 
-/* Pushes an 32 bits integer. Returns false on EOB. */
+/* Pushes an 8 bits integer. Returns false on EOB. */
 static inline bool
 clap_serializer_bool(struct clap_serializer *s, bool value);
+
+/* Pushes an 8 bits integer. Returns false on EOB. */
+static inline bool
+clap_serializer_int8(struct clap_serializer *s, int16_t value);
+
+/* Pushes an 16 bits integer. Returns false on EOB. */
+static inline bool
+clap_serializer_int16(struct clap_serializer *s, int16_t value);
 
 /* Pushes an 32 bits integer. Returns false on EOB. */
 static inline bool
 clap_serializer_int32(struct clap_serializer *s, int32_t value);
 
+/* Pushes an 64 bits integer. Returns false on EOB. */
+static inline bool
+clap_serializer_int64(struct clap_serializer *s, int64_t value);
+
 /* Pushes a float. Returns false on EOB. */
 static inline bool
 clap_serializer_float(struct clap_serializer *s, float value);
+
+/* Pushes a double. Returns false on EOB. */
+static inline bool
+clap_serializer_double(struct clap_serializer *s, double value);
 
 struct clap_deserializer
 {
@@ -68,8 +91,12 @@ struct clap_deserializer
   enum clap_serialize_type  type;
   union {
     bool                    b;
-    int                     i;
+    int8_t                  i8;
+    int16_t                 i16;
+    int32_t                 i32;
+    int64_t                 i64;
     float                   f;
+    double                  d;
     const char             *s;
   };
   int32_t                  slen;
