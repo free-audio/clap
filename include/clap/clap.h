@@ -300,7 +300,7 @@ struct clap_plugin
   void *plugin_data; // reserved pointer for the plugin
 
   enum clap_plugin_type plugin_type;
-  
+
   /* Free the plugin and its resources.
    * It is not required to deactivate the plugin prior to this call. */
   void (*destroy)(struct clap_plugin *plugin);
@@ -326,26 +326,35 @@ struct clap_plugin
   void *(*extension)(struct clap_plugin *plugin, const char *id);
 };
 
-/* typedef for dlsym() cast */
-typedef struct clap_plugin *(*clap_create_f)(int32_t           plugin_index,
-			                     struct clap_host *host,
-                                             int32_t           sample_rate,
-                                             int32_t          *plugins_count);
-
-/* Plugin entry point. If plugins_count is not null, then clap_create has
- * to store the number of plugins available in *plugins_count.
- * If clap_create failed to create a plugin, it returns NULL.
- * The return value has to be freed by calling plugin->destroy(plugin).
+/* This interface is the entry point of the dynamic library.
+ *
+ * Every methods must be thread-safe.
  *
  * Common sample rate values are: 44100, 48000, 88200, 96000,
- * 176400, 192000.
- *
- * This function must be thread-safe. */
-CLAP_EXPORT struct clap_plugin *
-clap_create(int32_t           plugin_index,
-            struct clap_host *host,
-            int32_t           sample_rate,
-            int32_t          *plugins_count);
+ * 176400, 192000. */
+struct clap_plugin_factory
+{
+  /* Get the number of plugins available. */
+  int32_t get_plugin_count(struct clap_plugin_factory *factory);
+
+  /* Create a clap_plugin by its index.
+   * Valid indexes are from 0 to get_plugin_count() - 1.
+   * Returns null in case of error. */
+  struct clap_plugin *create_plugin_by_index(struct clap_plugin_factory *factory,
+                                             struct clap_host           *host,
+                                             int32_t                     sample_rate,
+                                             int32_t                     index);
+
+  /* Create a clap_plugin by its plugin_id.
+   * Returns null in case of error. */
+  struct clap_plugin *create_plugin_by_id(struct clap_plugin_factory *factory,
+                                          struct clap_host           *host,
+                                          int32_t                     sample_rate,
+                                          const char                 *plugin_id);
+};
+
+/* Entry point */
+CLAP_EXPORT extern struct clap_plugin_factory *clap_plugin_factory;
 
 # ifdef __cplusplus
 }
