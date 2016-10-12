@@ -1,1 +1,0 @@
-add_executable(midi-parser midi-parser.c)
