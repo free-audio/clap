@@ -111,7 +111,7 @@ tt.docutils {
 <li><a class="reference internal" href="#specification" id="id3">Specification</a><ul>
 <li><a class="reference internal" href="#how-to-read-the-specification" id="id4">How to read the specification</a></li>
 <li><a class="reference internal" href="#encoding" id="id5">Encoding</a></li>
-<li><a class="reference internal" href="#c-execptions" id="id6">C++ execptions</a></li>
+<li><a class="reference internal" href="#c-exceptions" id="id6">C++ exceptions</a></li>
 <li><a class="reference internal" href="#plugins-location" id="id7">Plugins location</a><ul>
 <li><a class="reference internal" href="#common" id="id8">Common</a></li>
 <li><a class="reference internal" href="#linux" id="id9">Linux</a></li>
@@ -184,21 +184,25 @@ tt.docutils {
 <ul class="simple">
 <li>Make a free digital instrument and effect plugin interface</li>
 <li>Be easy to understand and implement</li>
-<li>Don't require alien technology, or masoshist design
-- Based on C, not Objective-C or C++
-- No dependancy on external libraries
-- No serialization format
-- No C++ multiple inheritence
-- No macro obfuscation
-- No object file to compile in the SDK, CLAP is an interface only.
-- Simple resource management mechanism</li>
+<li>Don't require alien technology, or masoshist design<ul>
+<li>Based on C, not Objective-C or C++</li>
+<li>No dependancy on external libraries</li>
+<li>No serialization format</li>
+<li>No C++ multiple inheritence</li>
+<li>No macro obfuscation</li>
+<li>No object file to compile in the SDK, CLAP is an interface only.</li>
+<li>Simple resource management mechanism</li>
+</ul>
+</li>
 <li>Designed to work on any operating system and processor architecture</li>
 <li>Be event oriented</li>
 <li>Be extensible</li>
 <li>Be easy to bridge</li>
-<li>Dynamics
-- dynamic ports
-- dynamic parameters</li>
+<li>Dynamics<ul>
+<li>dynamic ports</li>
+<li>dynamic parameters</li>
+</ul>
+</li>
 <li>Full MIDI</li>
 </ul>
 </div>
@@ -214,8 +218,8 @@ tt.docutils {
 <p>All the strings exchanged through the CLAP interface must be encoded
 in valid UTF-8.</p>
 </div>
-<div class="section" id="c-execptions">
-<h2><a class="toc-backref" href="#id6">C++ execptions</a></h2>
+<div class="section" id="c-exceptions">
+<h2><a class="toc-backref" href="#id6">C++ exceptions</a></h2>
 <p>A CLAP interface must not send exception.</p>
 </div>
 <div class="section" id="plugins-location">
@@ -236,7 +240,7 @@ in valid UTF-8.</p>
 <div class="section" id="windows">
 <h3><a class="toc-backref" href="#id10">Windows</a></h3>
 <ul class="simple">
-<li>Plugins installed in the user's home should be installed to: <tt class="docutils literal"><span class="pre">C:\Program</span> Files\clap\</tt></li>
+<li>Plugins should be installed to: <tt class="docutils literal"><span class="pre">C:\Program</span> Files\clap\</tt></li>
 </ul>
 </div>
 <div class="section" id="mac">
@@ -250,9 +254,12 @@ in valid UTF-8.</p>
 <ul class="simple">
 <li>load the dynamic library with <tt class="docutils literal">dlopen</tt> or symilar functions</li>
 <li>find the symbol <tt class="docutils literal">clap_plugin_factory</tt></li>
-<li>use the factory to get the number of plugins available and
-create plugins by index to enumerate the collection
-or create plugins by identifier to create a specific one</li>
+<li>use the factory to:<ul>
+<li>get the number of plugins available <tt class="docutils literal"><span class="pre">factory-&gt;get_plugin_count(...);</span></tt></li>
+<li>create plugins by index to enumerate the collection <tt class="docutils literal"><span class="pre">factory-&gt;create_plugin_by_index(...);</span></tt></li>
+<li>create plugins by identifier to create a specific one <tt class="docutils literal"><span class="pre">factory-&gt;create_plugin_by_id(...);</span></tt></li>
+</ul>
+</li>
 </ul>
 <div class="section" id="release-a-plugin">
 <h3><a class="toc-backref" href="#id13">Release a plugin</a></h3>
@@ -260,25 +267,39 @@ or create plugins by identifier to create a specific one</li>
 </div>
 <div class="section" id="plugin-description">
 <h3><a class="toc-backref" href="#id14">Plugin description</a></h3>
-<p><tt class="docutils literal">struct clap_plugin</tt> only contains a interger <tt class="docutils literal">clap_version</tt> which
+<p><tt class="docutils literal">struct clap_plugin</tt> contains an interger <tt class="docutils literal">clap_version</tt> which
 indicates which version of the clap interface has been used to build the plugin, and
 a few methods. The attribute <tt class="docutils literal">clap_version</tt> must be initialized by the plugin with
 <tt class="docutils literal">CLAP_PLUGIN_VERSION</tt>.</p>
-<p>Then to get plugin's attribute, you have to use
+<p>Then to get the plugin's name, you have to use
 <tt class="docutils literal"><span class="pre">plugin-&gt;get_attribute(plugin,</span> CLAP_ATTR_NAME, <span class="pre">...);</span></tt>.</p>
-<p>See the <tt class="docutils literal">#include &lt;clap/clap.h&gt;</tt> for more information.</p>
+<p>See <tt class="docutils literal">#include &lt;clap/clap.h&gt;</tt> for more information.</p>
 </div>
 <div class="section" id="extension-system">
 <h3><a class="toc-backref" href="#id15">Extension system</a></h3>
 <p>To extend clap's functionnality, there is a pretty simple mechanism:</p>
 <pre class="code c literal-block">
-<span class="kt">void</span> <span class="o">*</span><span class="n">plug_ext</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">extension</span><span class="p">(</span><span class="n">plug</span><span class="p">,</span> <span class="s">&quot;company/ext-name&quot;</span><span class="p">);</span>
-<span class="kt">void</span> <span class="o">*</span><span class="n">host_ext</span> <span class="o">=</span> <span class="n">host</span><span class="o">-&gt;</span><span class="n">extension</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="s">&quot;company/ext-name&quot;</span><span class="p">);</span>
+<span class="c1">// query a plugin extension
+</span><span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">plug_ext</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">extension</span><span class="p">(</span><span class="n">plug</span><span class="p">,</span> <span class="s">&quot;company/ext-name&quot;</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">plug_ext</span><span class="p">)</span> <span class="c1">// check if the interface was implemented
+</span><span class="p">{</span>
+  <span class="c1">// cast to the concrete type
+</span>  <span class="k">const</span> <span class="k">struct</span> <span class="n">interface_type</span> <span class="o">*</span><span class="n">plug_ext1</span> <span class="o">=</span> <span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">interface_type</span> <span class="o">*</span><span class="p">)</span><span class="n">plug_ext</span><span class="p">;</span>
+
+  <span class="c1">// use the interface ...
+</span>  <span class="n">plug_ext1</span><span class="o">-&gt;</span><span class="n">my_fct</span><span class="p">(</span><span class="n">plug</span><span class="p">,</span> <span class="p">...);</span>
+<span class="p">}</span>
+
+<span class="c1">// For the host, this is similar:
+</span><span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">host_ext</span> <span class="o">=</span> <span class="n">host</span><span class="o">-&gt;</span><span class="n">extension</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="s">&quot;company/ext-name&quot;</span><span class="p">);</span>
+<span class="p">...</span>
 </pre>
 <p>If the extension is not supported, the plugin should return <tt class="docutils literal">NULL</tt>.</p>
+<p>Extensions are interface, and <strong>there is no need for the caller to free the pointer</strong>.</p>
 <p>By convention, extensions should provide a define for the extension name.</p>
 <pre class="code c literal-block">
-<span class="cp"># define CLAP_EXT_AUDIO_PORTS &quot;clap/audio-ports&quot;</span>
+<span class="c1">// defined in &lt;clap/ext/ports.h&gt;
+</span><span class="cp"># define CLAP_EXT_AUDIO_PORTS &quot;clap/audio-ports&quot;</span>
 </pre>
 </div>
 <div class="section" id="audio-ports-configuration">
@@ -290,11 +311,11 @@ flexible and dynamic.</p>
 <dt>An audio port has:</dt>
 <dd><ul class="first last simple">
 <li>a direction (input or output)</li>
-<li>a channel count</li>
+<li>a channel count: the number of pin in the bus</li>
 <li>a channel mapping (eg: stereo left then right)</li>
 <li>a role (input or output, sidechain input, audio rate modulation signal)</li>
 <li>a name</li>
-<li>repeatable: can be used as a template to create multiple instance of the
+<li>is repeatable: can be used as a template to create multiple instance of the
 same port and so connect multiple signals to it. For example you have an
 analyzer and you want a repeatable input port, so the user can connect
 an arbitrary number of signals.</li>
@@ -371,15 +392,18 @@ So the host should not activate plugins in the audio processing thread.</p>
 <p>To deactivate the plugin, just call <tt class="docutils literal"><span class="pre">plugin-&gt;deactivate(plugin)</span></tt>. Like
 <tt class="docutils literal">activate()</tt>, <tt class="docutils literal">deactivate()</tt> should not be called from the audio processing
 thread as it may take time.</p>
-<p><tt class="docutils literal">deactivate()</tt> must not be called if the plugin is not activated.</p>
-<p>The host must de-activate the plugin before destroying it.</p>
+<p><tt class="docutils literal">deactivate()</tt> must not be called if the plugin is not activated. Yet the
+plugin should handle this mis-usage.</p>
+<p>The host must de-activate the plugin before destroying it. Again, if
+deactivate was not called before destroy(), the plugin should handle it
+gracefully.</p>
 </div>
 <div class="section" id="processing">
 <h2><a class="toc-backref" href="#id19">Processing</a></h2>
 <p>The processing is done in one call: <tt class="docutils literal"><span class="pre">plugin-&gt;process(plugin,</span> process);</tt>.
 The data structure process regroup everything needed by the plugin:</p>
 <ul class="simple">
-<li>audio buffers (in, out)</li>
+<li>number of frames</li>
 <li>events (in)</li>
 <li>some time info</li>
 </ul>
@@ -397,36 +421,32 @@ which can be:</p>
 </thead>
 <tbody valign="top">
 <tr><td><tt class="docutils literal">CLAP_PROCESS_ERROR</tt></td>
-<td>An error happened, and the buffers should be discarded</td>
+<td>An error happened, and the output should be discarded</td>
 </tr>
 <tr><td><tt class="docutils literal">CLAP_PROCESS_CONTINUE</tt></td>
 <td>Succeed, the plugins wants to process the next block</td>
 </tr>
-<tr><td><tt class="docutils literal">CLAP_PROCESS_STOP</tt></td>
+<tr><td><tt class="docutils literal">CLAP_PROCESS_SLEEP</tt></td>
 <td>Succeed, every voices terminated, wake me up on a new event</td>
 </tr>
 </tbody>
 </table>
-<p>If <tt class="docutils literal">process()</tt> returns <tt class="docutils literal">CLAP_PROCESS_STOP</tt> and some parameters were ramping
+<p>If <tt class="docutils literal">process()</tt> returns <tt class="docutils literal">CLAP_PROCESS_SLEEP</tt> and some parameters were ramping
 (see <tt class="docutils literal">CLAP_EVENT_PARAM_RAMP</tt> event), then the host must send a <tt class="docutils literal">CLAP_EVENT_PARAM_SET</tt>
 or  <tt class="docutils literal">CLAP_EVENT_PARAM_RAMP</tt> for those parameters at the next call to process.</p>
 <div class="section" id="audio-buffers">
 <h3><a class="toc-backref" href="#id20">Audio buffers</a></h3>
 <ul class="simple">
-<li>The audio buffers are allocated by the host. They must be aligned by the
-maximum requirement of the vector instructions currently available.</li>
+<li>The audio buffers are allocated by the host.</li>
 <li>In-place processing is not supported by default, yet the host can use it
 if the plugin has the attribute <tt class="docutils literal">CLAP_ATTR_SUPPORTS_IN_PLACE_PROCESSING</tt>.</li>
-<li>The number of samples must be a multiple of the plugin chunk_size.</li>
-<li>See <a href="#id50"><span class="problematic" id="id51">`Pin layout`_</span></a>.</li>
-<li>See <a class="reference internal" href="#plugin-description">Plugin description</a></li>
+<li>See <a class="reference internal" href="#standard-channel-mappings">Standard channel mappings</a>.</li>
 </ul>
 </div>
 <div class="section" id="events">
 <h3><a class="toc-backref" href="#id21">Events</a></h3>
 <ul class="simple">
-<li>Event's time must be within the process duration:
-<tt class="docutils literal"><span class="pre">[process-&gt;steady_time</span> .. <span class="pre">process-&gt;steady_time</span> + <span class="pre">process-&gt;nb_sambles]</span></tt>.</li>
+<li>Event's time is relative to the first sample of the processing block.</li>
 <li>The plugin must not modify the events.</li>
 </ul>
 <div class="section" id="notes">
@@ -462,10 +482,11 @@ it can quickly figure which voice is playing the given key.</p>
 <div class="section" id="parameters">
 <h4><a class="toc-backref" href="#id23">Parameters</a></h4>
 <p>Parameters can be automated by the host using <tt class="docutils literal">CLAP_EVENT_PARAM_SET</tt> or
-<tt class="docutils literal">CLAP_EVENT_PARAM_RAMP</tt>.</p>
+<tt class="docutils literal">CLAP_EVENT_PARAM_RAMP</tt>. Or they can be automated at audio rate by using
+an audio buffer.</p>
 <p>When using <tt class="docutils literal">CLAP_EVENT_PARAM_RAMP</tt>, the parameter is set to <tt class="docutils literal"><span class="pre">ev-&gt;param.value</span></tt>
 and has to be incremented by <tt class="docutils literal"><span class="pre">event-&gt;param.increment</span></tt> for each samples, except
-for the sample at <tt class="docutils literal"><span class="pre">ev-&gt;steady_time</span></tt>, until an event <tt class="docutils literal">CLAP_EVENT_PARAM_SET</tt> or
+for the time of the event, and until an event <tt class="docutils literal">CLAP_EVENT_PARAM_SET</tt> or
 <tt class="docutils literal">CLAP_EVENT_PARAM_RAMP</tt> occur for this parameter.</p>
 </div>
 </div>
@@ -475,7 +496,7 @@ for the sample at <tt class="docutils literal"><span class="pre">ev-&gt;steady_t
 <p>The host can get the plugin's parameters tree by using the params extension:</p>
 <ul class="simple">
 <li><tt class="docutils literal"><span class="pre">params-&gt;count(plugin);</span></tt> to know the number of parameters</li>
-<li><tt class="docutils literal"><span class="pre">params-&gt;get(plugin,</span> param_index, &amp;param);</tt> to get the parameter
+<li><tt class="docutils literal"><span class="pre">params-&gt;get_param(plugin,</span> param_index, &amp;param);</tt> to get the parameter
 value and description</li>
 </ul>
 <pre class="code c literal-block">
@@ -487,66 +508,12 @@ value and description</li>
 </span><span class="kt">uint32_t</span> <span class="n">count</span> <span class="o">=</span> <span class="n">ports</span><span class="o">-&gt;</span><span class="n">count</span><span class="p">(</span><span class="n">plugin</span><span class="p">);</span>
 <span class="k">for</span> <span class="p">(</span><span class="kt">uint32_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">struct</span> <span class="n">clap_param</span> <span class="n">param</span><span class="p">;</span>
-  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">ports</span><span class="o">-&gt;</span><span class="n">get</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">param</span><span class="p">))</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">ports</span><span class="o">-&gt;</span><span class="n">get_param</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">param</span><span class="p">))</span>
     <span class="k">continue</span><span class="p">;</span>
   <span class="c1">// ...
 </span><span class="p">}</span>
 </pre>
 <p>See <a class="reference internal" href="#clap-ext-params-h">clap/ext/params.h</a>.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="24%" />
-<col width="76%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">Attribute</th>
-<th class="head">Description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td><tt class="docutils literal">type</tt></td>
-<td>The type of parameter. Must never change.</td>
-</tr>
-<tr><td><tt class="docutils literal">id</tt></td>
-<td>What identifies the parameter. Must never change.
-This field must be saved along automation.</td>
-</tr>
-<tr><td><tt class="docutils literal">name</tt></td>
-<td>The name of the parameter. This can change.
-Meant to be displayed.</td>
-</tr>
-<tr><td><tt class="docutils literal">desc</tt></td>
-<td>The description of the parameter. This can change.
-Meant to be displayed.</td>
-</tr>
-<tr><td><tt class="docutils literal">is_per_note</tt></td>
-<td><tt class="docutils literal">true</tt> if the parameter can be automated per voice.</td>
-</tr>
-<tr><td><tt class="docutils literal">display_text</tt></td>
-<td>How the value should be displayed. Only used for enum
-types.</td>
-</tr>
-<tr><td><tt class="docutils literal">is_used</tt></td>
-<td>True if the parameter is used by the current patch.</td>
-</tr>
-<tr><td><tt class="docutils literal">is_periodic</tt></td>
-<td>Means that the parameter is periodic, so
-<tt class="docutils literal">value = value % max</tt>.</td>
-</tr>
-<tr><td><tt class="docutils literal">value</tt></td>
-<td>The current value of the parameter.</td>
-</tr>
-<tr><td><tt class="docutils literal">min</tt></td>
-<td>The minimum value of the parameter.</td>
-</tr>
-<tr><td><tt class="docutils literal">max</tt></td>
-<td>The maximum value of the parameter.</td>
-</tr>
-<tr><td><tt class="docutils literal">scale</tt></td>
-<td>The scale to use when exposing the parameter to the user.</td>
-</tr>
-</tbody>
-</table>
 <div class="section" id="types">
 <h3><a class="toc-backref" href="#id25">Types</a></h3>
 <p>There are a few parameter types:</p>
@@ -1067,7 +1034,7 @@ plugin's parameters and restore them.</p>
               <span class="k">const</span> <span class="kt">char</span>             <span class="o">*</span><span class="n">msg</span><span class="p">);</span>
 
   <span class="cm">/* query an extension */</span>
-  <span class="kt">void</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">extension</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">extention_id</span><span class="p">);</span>
+  <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">extension</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">extention_id</span><span class="p">);</span>
 <span class="p">};</span>
 
 <span class="c1">////////////
@@ -1116,7 +1083,7 @@ plugin's parameters and restore them.</p>
                                       <span class="k">struct</span> <span class="n">clap_process</span> <span class="o">*</span><span class="n">process</span><span class="p">);</span>
 
   <span class="cm">/* query an extension */</span>
-  <span class="kt">void</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">extension</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">id</span><span class="p">);</span>
+  <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">extension</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">id</span><span class="p">);</span>
 <span class="p">};</span>
 
 <span class="cm">/* This interface is the entry point of the dynamic library.
@@ -1147,7 +1114,7 @@ plugin's parameters and restore them.</p>
 <span class="p">};</span>
 
 <span class="cm">/* Entry point */</span>
-<span class="n">CLAP_EXPORT</span> <span class="k">extern</span> <span class="k">struct</span> <span class="n">clap_plugin_factory</span> <span class="o">*</span><span class="n">clap_plugin_factory</span><span class="p">;</span>
+<span class="n">CLAP_EXPORT</span> <span class="k">extern</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">clap_plugin_factory</span> <span class="o">*</span><span class="n">clap_plugin_factory</span><span class="p">;</span>
 
 <span class="cp"># ifdef __cplusplus
 </span><span class="p">}</span>
@@ -1624,12 +1591,6 @@ plugin's parameters and restore them.</p>
 <span class="cp">#endif </span><span class="cm">/* !CLAP_EXT_PRESETS_H */</span>
 </pre>
 </div>
-</div>
-<div class="system-messages section">
-<h1>Docutils System Messages</h1>
-<div class="system-message" id="id50">
-<p class="system-message-title">System Message: ERROR/3 (<tt class="docutils">spec.rst</tt>, line 231); <em><a href="#id51">backlink</a></em></p>
-Unknown target name: &quot;pin layout&quot;.</div>
 </div>
 </div>
 </body>

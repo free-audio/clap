@@ -14,6 +14,7 @@ Goals
 - Make a free digital instrument and effect plugin interface
 - Be easy to understand and implement
 - Don't require alien technology, or masoshist design
+
   - Based on C, not Objective-C or C++
   - No dependancy on external libraries
   - No serialization format
@@ -21,13 +22,16 @@ Goals
   - No macro obfuscation
   - No object file to compile in the SDK, CLAP is an interface only.
   - Simple resource management mechanism
+
 - Designed to work on any operating system and processor architecture
 - Be event oriented
 - Be extensible
 - Be easy to bridge
 - Dynamics
+
   - dynamic ports
   - dynamic parameters
+
 - Full MIDI
 
 Specification
@@ -45,7 +49,7 @@ Encoding
 All the strings exchanged through the CLAP interface must be encoded
 in valid UTF-8.
 
-C++ execptions
+C++ exceptions
 --------------
 
 A CLAP interface must not send exception.
@@ -67,7 +71,7 @@ Linux
 Windows
 ~~~~~~~
 
-- Plugins installed in the user's home should be installed to: ``C:\Program Files\clap\``
+- Plugins should be installed to: ``C:\Program Files\clap\``
 
 Mac
 ~~~
@@ -81,9 +85,11 @@ Plugin instantiation can be done in a few steps:
 
 - load the dynamic library with ``dlopen`` or symilar functions
 - find the symbol ``clap_plugin_factory``
-- use the factory to get the number of plugins available and
-  create plugins by index to enumerate the collection
-  or create plugins by identifier to create a specific one
+- use the factory to:
+
+  - get the number of plugins available ``factory->get_plugin_count(...);``
+  - create plugins by index to enumerate the collection ``factory->create_plugin_by_index(...);``
+  - create plugins by identifier to create a specific one ``factory->create_plugin_by_id(...);``
 
 Release a plugin
 ~~~~~~~~~~~~~~~~
@@ -93,15 +99,15 @@ To release a plugin, call ``plugin->destroy(plugin);``.
 Plugin description
 ~~~~~~~~~~~~~~~~~~
 
-``struct clap_plugin`` only contains a interger ``clap_version`` which
+``struct clap_plugin`` contains an interger ``clap_version`` which
 indicates which version of the clap interface has been used to build the plugin, and
 a few methods. The attribute ``clap_version`` must be initialized by the plugin with
 ``CLAP_PLUGIN_VERSION``.
 
-Then to get plugin's attribute, you have to use
+Then to get the plugin's name, you have to use
 ``plugin->get_attribute(plugin, CLAP_ATTR_NAME, ...);``.
 
-See the ``#include <clap/clap.h>`` for more information.
+See ``#include <clap/clap.h>`` for more information.
 
 Extension system
 ~~~~~~~~~~~~~~~~
@@ -110,15 +116,31 @@ To extend clap's functionnality, there is a pretty simple mechanism:
 
 .. code:: c
 
-  void *plug_ext = plugin->extension(plug, "company/ext-name");
-  void *host_ext = host->extension(host, "company/ext-name");
+  // query a plugin extension
+  const void *plug_ext = plugin->extension(plug, "company/ext-name");
+  if (plug_ext) // check if the interface was implemented
+  {
+    // cast to the concrete type
+    const struct interface_type *plug_ext1 = (const struct interface_type *)plug_ext;
+
+    // use the interface ...
+    plug_ext1->my_fct(plug, ...);
+  }
+
+  // For the host, this is similar:
+  const void *host_ext = host->extension(host, "company/ext-name");
+  ...
+
 
 If the extension is not supported, the plugin should return ``NULL``.
+
+Extensions are interface, and **there is no need for the caller to free the pointer**.
 
 By convention, extensions should provide a define for the extension name.
 
 .. code:: c
 
+  // defined in <clap/ext/ports.h>
   # define CLAP_EXT_AUDIO_PORTS "clap/audio-ports"
 
 Audio ports configuration
@@ -130,11 +152,11 @@ flexible and dynamic.
 
 An audio port has:
  - a direction (input or output)
- - a channel count
+ - a channel count: the number of pin in the bus
  - a channel mapping (eg: stereo left then right)
  - a role (input or output, sidechain input, audio rate modulation signal)
  - a name
- - repeatable: can be used as a template to create multiple instance of the
+ - is repeatable: can be used as a template to create multiple instance of the
    same port and so connect multiple signals to it. For example you have an
    analyzer and you want a repeatable input port, so the user can connect
    an arbitrary number of signals.
@@ -188,9 +210,12 @@ To deactivate the plugin, just call ``plugin->deactivate(plugin)``. Like
 ``activate()``, ``deactivate()`` should not be called from the audio processing
 thread as it may take time.
 
-``deactivate()`` must not be called if the plugin is not activated.
+``deactivate()`` must not be called if the plugin is not activated. Yet the
+plugin should handle this mis-usage.
 
-The host must de-activate the plugin before destroying it.
+The host must de-activate the plugin before destroying it. Again, if
+deactivate was not called before destroy(), the plugin should handle it
+gracefully.
 
 Processing
 ----------
@@ -198,7 +223,7 @@ Processing
 The processing is done in one call: ``plugin->process(plugin, process);``.
 The data structure process regroup everything needed by the plugin:
 
-- audio buffers (in, out)
+- number of frames
 - events (in)
 - some time info
 
@@ -209,33 +234,29 @@ which can be:
 +---------------------------+-------------------------------------------------------------+
 | Status                    | Meaning                                                     |
 +===========================+=============================================================+
-| ``CLAP_PROCESS_ERROR``    | An error happened, and the buffers should be discarded      |
+| ``CLAP_PROCESS_ERROR``    | An error happened, and the output should be discarded       |
 +---------------------------+-------------------------------------------------------------+
 | ``CLAP_PROCESS_CONTINUE`` | Succeed, the plugins wants to process the next block        |
 +---------------------------+-------------------------------------------------------------+
-| ``CLAP_PROCESS_STOP``     | Succeed, every voices terminated, wake me up on a new event |
+| ``CLAP_PROCESS_SLEEP``    | Succeed, every voices terminated, wake me up on a new event |
 +---------------------------+-------------------------------------------------------------+
 
-If ``process()`` returns ``CLAP_PROCESS_STOP`` and some parameters were ramping
+If ``process()`` returns ``CLAP_PROCESS_SLEEP`` and some parameters were ramping
 (see ``CLAP_EVENT_PARAM_RAMP`` event), then the host must send a ``CLAP_EVENT_PARAM_SET``
 or  ``CLAP_EVENT_PARAM_RAMP`` for those parameters at the next call to process.
 
 Audio buffers
 ~~~~~~~~~~~~~
 
-- The audio buffers are allocated by the host. They must be aligned by the
-  maximum requirement of the vector instructions currently available.
+- The audio buffers are allocated by the host.
 - In-place processing is not supported by default, yet the host can use it
   if the plugin has the attribute ``CLAP_ATTR_SUPPORTS_IN_PLACE_PROCESSING``.
-- The number of samples must be a multiple of the plugin chunk_size.
-- See `Pin layout`_.
-- See `Plugin description`_
+- See `Standard channel mappings`_.
 
 Events
 ~~~~~~
 
-- Event's time must be within the process duration:
-  ``[process->steady_time .. process->steady_time + process->nb_sambles]``.
+- Event's time is relative to the first sample of the processing block.
 - The plugin must not modify the events.
 
 Notes
@@ -276,11 +297,12 @@ Parameters
 ``````````
 
 Parameters can be automated by the host using ``CLAP_EVENT_PARAM_SET`` or
-``CLAP_EVENT_PARAM_RAMP``.
+``CLAP_EVENT_PARAM_RAMP``. Or they can be automated at audio rate by using
+an audio buffer.
 
 When using ``CLAP_EVENT_PARAM_RAMP``, the parameter is set to ``ev->param.value``
 and has to be incremented by ``event->param.increment`` for each samples, except
-for the sample at ``ev->steady_time``, until an event ``CLAP_EVENT_PARAM_SET`` or
+for the time of the event, and until an event ``CLAP_EVENT_PARAM_SET`` or
 ``CLAP_EVENT_PARAM_RAMP`` occur for this parameter.
 
 Parameters
@@ -289,7 +311,7 @@ Parameters
 The host can get the plugin's parameters tree by using the params extension:
 
 - ``params->count(plugin);`` to know the number of parameters
-- ``params->get(plugin, param_index, &param);`` to get the parameter
+- ``params->get_param(plugin, param_index, &param);`` to get the parameter
   value and description
 
 .. code:: c
@@ -302,46 +324,13 @@ The host can get the plugin's parameters tree by using the params extension:
   uint32_t count = ports->count(plugin);
   for (uint32_t i = 0; i < count; ++i) {
     struct clap_param param;
-    if (!ports->get(plugin, i, &param))
+    if (!ports->get_param(plugin, i, &param))
       continue;
     // ...
   }
 
 See `clap/ext/params.h`_.
  
-+------------------+----------------------------------------------------------+
-| Attribute        | Description                                              |
-+==================+==========================================================+
-| ``type``         | The type of parameter. Must never change.                |
-+------------------+----------------------------------------------------------+
-| ``id``           | What identifies the parameter. Must never change.        |
-|                  | This field must be saved along automation.               |
-+------------------+----------------------------------------------------------+
-| ``name``         | The name of the parameter. This can change.              |
-|                  | Meant to be displayed.                                   |
-+------------------+----------------------------------------------------------+
-| ``desc``         | The description of the parameter. This can change.       |
-|                  | Meant to be displayed.                                   |
-+------------------+----------------------------------------------------------+
-| ``is_per_note``  | ``true`` if the parameter can be automated per voice.    |
-+------------------+----------------------------------------------------------+
-| ``display_text`` | How the value should be displayed. Only used for enum    |
-|                  | types.                                                   |
-+------------------+----------------------------------------------------------+
-| ``is_used``      | True if the parameter is used by the current patch.      |
-+------------------+----------------------------------------------------------+
-| ``is_periodic``  | Means that the parameter is periodic, so                 |
-|                  | ``value = value % max``.                                 |
-+------------------+----------------------------------------------------------+
-| ``value``        | The current value of the parameter.                      |
-+------------------+----------------------------------------------------------+
-| ``min``          | The minimum value of the parameter.                      |
-+------------------+----------------------------------------------------------+
-| ``max``          | The maximum value of the parameter.                      |
-+------------------+----------------------------------------------------------+
-| ``scale``        | The scale to use when exposing the parameter to the user.|
-+------------------+----------------------------------------------------------+
-
 Types
 ~~~~~
 

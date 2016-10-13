@@ -274,7 +274,7 @@ struct clap_host
               const char             *msg);
 
   /* query an extension */
-  void *(*extension)(struct clap_host *host, const char *extention_id);
+  const void *(*extension)(struct clap_host *host, const char *extention_id);
 };
 
 ////////////
@@ -323,7 +323,7 @@ struct clap_plugin
                                       struct clap_process *process);
 
   /* query an extension */
-  void *(*extension)(struct clap_plugin *plugin, const char *id);
+  const void *(*extension)(struct clap_plugin *plugin, const char *id);
 };
 
 /* This interface is the entry point of the dynamic library.
@@ -354,7 +354,7 @@ struct clap_plugin_factory
 };
 
 /* Entry point */
-CLAP_EXPORT extern struct clap_plugin_factory *clap_plugin_factory;
+CLAP_EXPORT extern const struct clap_plugin_factory *clap_plugin_factory;
 
 # ifdef __cplusplus
 }
