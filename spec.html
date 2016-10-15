@@ -1230,7 +1230,8 @@ plugin's parameters and restore them.</p>
 <span class="k">struct</span> <span class="n">clap_host_audio_ports</span>
 <span class="p">{</span>
   <span class="cm">/* Tell the host that the plugin ports has changed.
-   * The host shall scan the ports again. */</span>
+   * The host shall deactivate the plugin and then
+   * scan the ports again. */</span>
   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">changed</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span>   <span class="o">*</span><span class="n">host</span><span class="p">,</span>
                   <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 
@@ -1257,6 +1258,7 @@ plugin's parameters and restore them.</p>
 <span class="cp">#endif
 </span>
 <span class="cp"># define CLAP_EXT_PARAMS &quot;clap/params&quot;
+# define CLAP_ROOT_MODULE_ID &quot;&quot;
 </span>
 <span class="k">enum</span> <span class="n">clap_param_type</span>
 <span class="p">{</span>
@@ -1266,6 +1268,7 @@ plugin's parameters and restore them.</p>
 </span>  <span class="n">CLAP_PARAM_ENUM</span>  <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="c1">// uses value.i
 </span><span class="p">};</span>
 
+<span class="cm">/* This is useful for the knob scaling. */</span>
 <span class="k">enum</span> <span class="n">clap_param_scale</span>
 <span class="p">{</span>
   <span class="n">CLAP_PARAM_SCALE_LINEAR</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
@@ -1338,11 +1341,11 @@ plugin's parameters and restore them.</p>
    * automation.
    *
    * To disconnect the automation, set buffer to NULL. */</span>
-  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">set_param_buffer</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>     <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
-                           <span class="kt">int32_t</span>                 <span class="n">param_index</span><span class="p">,</span>
-                           <span class="kt">int32_t</span>                 <span class="n">channel</span><span class="p">,</span>
-                           <span class="kt">int32_t</span>                 <span class="n">note</span><span class="p">,</span>
-                           <span class="k">struct</span> <span class="n">clap_audio_port</span> <span class="o">*</span><span class="n">port</span><span class="p">);</span>
+  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">set_param_port</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>     <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
+                         <span class="kt">int32_t</span>                 <span class="n">param_index</span><span class="p">,</span>
+                         <span class="kt">int32_t</span>                 <span class="n">channel</span><span class="p">,</span>
+                         <span class="kt">int32_t</span>                 <span class="n">note</span><span class="p">,</span>
+                         <span class="k">struct</span> <span class="n">clap_audio_port</span> <span class="o">*</span><span class="n">port</span><span class="p">);</span>
 <span class="p">};</span>
 
 <span class="k">struct</span> <span class="n">clap_host_params</span>
@@ -1521,19 +1524,22 @@ plugin's parameters and restore them.</p>
 </span>
 <span class="cp"># define CLAP_EXT_PRESETS &quot;clap/presets&quot;
 </span>
+<span class="cm">/* describes a single preset */</span>
 <span class="k">struct</span> <span class="n">clap_preset_info</span>
 <span class="p">{</span>
   <span class="kt">char</span>     <span class="n">plugin_id</span><span class="p">[</span><span class="n">CLAP_ID_SIZE</span><span class="p">];</span>    <span class="c1">// used to identify which plugin can load the preset
 </span>  <span class="kt">char</span>     <span class="n">id</span><span class="p">[</span><span class="n">CLAP_ID_SIZE</span><span class="p">];</span>           <span class="c1">// used to identify a preset in a preset bank
-</span>  <span class="kt">char</span>     <span class="n">name</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>       <span class="c1">// display name
+</span>  <span class="kt">char</span>     <span class="n">name</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>       <span class="c1">// preset name
 </span>  <span class="kt">char</span>     <span class="n">desc</span><span class="p">[</span><span class="n">CLAP_DESC_SIZE</span><span class="p">];</span>       <span class="c1">// desc and how to use it
-</span>  <span class="kt">char</span>     <span class="n">author</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>
-  <span class="kt">char</span>     <span class="n">categories</span><span class="p">[</span><span class="n">CLAP_TAGS_SIZE</span><span class="p">];</span> <span class="c1">// &quot;cat1;cat2;cat3;...&quot;
+</span>  <span class="kt">char</span>     <span class="n">author</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>     <span class="c1">// author's name
+</span>  <span class="kt">char</span>     <span class="n">categories</span><span class="p">[</span><span class="n">CLAP_TAGS_SIZE</span><span class="p">];</span> <span class="c1">// &quot;cat1;cat2;cat3;...&quot;
 </span>  <span class="kt">char</span>     <span class="n">tags</span><span class="p">[</span><span class="n">CLAP_TAGS_SIZE</span><span class="p">];</span>       <span class="c1">// &quot;tag1;tag2;tag3;...&quot;
 </span>  <span class="kt">int8_t</span>   <span class="n">score</span><span class="p">;</span>                      <span class="c1">// 0 = garbage, ..., 100 = best, -1 = no score
 </span><span class="p">};</span>
 
-<span class="cm">/* Interface implemented by the plugin */</span>
+<span class="cm">/* Interface implemented by the plugin.
+ * Used to create a preset library, get info about the current preset and
+ * load a preset. */</span>
 <span class="k">struct</span> <span class="n">clap_plugin_preset</span>
 <span class="p">{</span>
   <span class="cm">/* Create a preset library for this plugin */</span>
@@ -1560,6 +1566,15 @@ plugin's parameters and restore them.</p>
  * 0 and many presets. */</span>
 <span class="k">struct</span> <span class="n">clap_preset_library</span>
 <span class="p">{</span>
+  <span class="cm">/* The identifier of the preset library.
+   * As one preset library might be able to parse the presets for
+   * multiple different plugins, it is useful to identify a
+   * preset library by an id and a version, so the DAW can use
+   * the most recent version of every preset library which share
+   * the same id, and scan only once. */</span>
+  <span class="kt">char</span>    <span class="n">id</span><span class="p">[</span><span class="n">CLAP_ID_SIZE</span><span class="p">];</span>
+  <span class="kt">int32_t</span> <span class="n">version</span><span class="p">;</span> <span class="c1">// version of the preset library
+</span>
   <span class="cm">/* Copies at most *path_size bytes into path.
    * If directory_index is bigger than the number of directories,
    * then return false. */</span>
@@ -1568,13 +1583,16 @@ plugin's parameters and restore them.</p>
                         <span class="kt">char</span>                       <span class="o">*</span><span class="n">path</span><span class="p">,</span>
                         <span class="kt">int32_t</span>                    <span class="o">*</span><span class="n">path_size</span><span class="p">);</span>
 
-  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">open_bank</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_preset_library</span> <span class="o">*</span><span class="n">library</span><span class="p">,</span>
-                    <span class="k">const</span> <span class="kt">char</span>                 <span class="o">*</span><span class="n">path</span><span class="p">,</span>
-                    <span class="k">struct</span> <span class="n">clap_bank_handle</span>    <span class="o">*</span><span class="n">handle</span><span class="p">);</span>
+  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">open_bank</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_preset_library</span>  <span class="o">*</span><span class="n">library</span><span class="p">,</span>
+                    <span class="k">const</span> <span class="kt">char</span>                  <span class="o">*</span><span class="n">path</span><span class="p">,</span>
+                    <span class="k">struct</span> <span class="n">clap_bank_handle</span>    <span class="o">**</span><span class="n">handle</span><span class="p">);</span>
 
   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">close_bank</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_preset_library</span> <span class="o">*</span><span class="n">library</span><span class="p">,</span>
                      <span class="k">struct</span> <span class="n">clap_bank_handle</span>    <span class="o">*</span><span class="n">handle</span><span class="p">);</span>
 
+  <span class="cm">/* Returns the number of presets in the bank.
+   * If it is not known, return -2.
+   * On error return -1. */</span>
   <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">get_bank_size</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_preset_library</span> <span class="o">*</span><span class="n">library</span><span class="p">,</span>
                            <span class="k">struct</span> <span class="n">clap_bank_handle</span>    <span class="o">*</span><span class="n">handle</span><span class="p">);</span>
 
