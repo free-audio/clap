@@ -9,6 +9,7 @@ extern "C" {
 #endif
 
 # define CLAP_EXT_PARAMS "clap/params"
+# define CLAP_ROOT_MODULE_ID ""
 
 enum clap_param_type
 {
@@ -18,6 +19,7 @@ enum clap_param_type
   CLAP_PARAM_ENUM  = 3, // uses value.i
 };
 
+/* This is useful for the knob scaling. */
 enum clap_param_scale
 {
   CLAP_PARAM_SCALE_LINEAR = 0,
@@ -90,11 +92,11 @@ struct clap_plugin_params
    * automation.
    *
    * To disconnect the automation, set buffer to NULL. */
-  bool (*set_param_buffer)(struct clap_plugin     *plugin,
-                           int32_t                 param_index,
-                           int32_t                 channel,
-                           int32_t                 note,
-                           struct clap_audio_port *port);
+  bool (*set_param_port)(struct clap_plugin     *plugin,
+                         int32_t                 param_index,
+                         int32_t                 channel,
+                         int32_t                 note,
+                         struct clap_audio_port *port);
 };
 
 struct clap_host_params

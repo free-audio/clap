@@ -80,7 +80,8 @@ struct clap_plugin_audio_ports
 struct clap_host_audio_ports
 {
   /* Tell the host that the plugin ports has changed.
-   * The host shall scan the ports again. */
+   * The host shall deactivate the plugin and then
+   * scan the ports again. */
   void (*changed)(struct clap_host   *host,
                   struct clap_plugin *plugin);
 

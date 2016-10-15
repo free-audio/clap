@@ -5,19 +5,22 @@
 
 # define CLAP_EXT_PRESETS "clap/presets"
 
+/* describes a single preset */
 struct clap_preset_info
 {
   char     plugin_id[CLAP_ID_SIZE];    // used to identify which plugin can load the preset
   char     id[CLAP_ID_SIZE];           // used to identify a preset in a preset bank
-  char     name[CLAP_NAME_SIZE];       // display name
+  char     name[CLAP_NAME_SIZE];       // preset name
   char     desc[CLAP_DESC_SIZE];       // desc and how to use it
-  char     author[CLAP_NAME_SIZE];
+  char     author[CLAP_NAME_SIZE];     // author's name
   char     categories[CLAP_TAGS_SIZE]; // "cat1;cat2;cat3;..."
   char     tags[CLAP_TAGS_SIZE];       // "tag1;tag2;tag3;..."
   int8_t   score;                      // 0 = garbage, ..., 100 = best, -1 = no score
 };
 
-/* Interface implemented by the plugin */
+/* Interface implemented by the plugin.
+ * Used to create a preset library, get info about the current preset and
+ * load a preset. */
 struct clap_plugin_preset
 {
   /* Create a preset library for this plugin */
@@ -44,6 +47,15 @@ struct clap_bank_handle;
  * 0 and many presets. */
 struct clap_preset_library
 {
+  /* The identifier of the preset library.
+   * As one preset library might be able to parse the presets for
+   * multiple different plugins, it is useful to identify a
+   * preset library by an id and a version, so the DAW can use
+   * the most recent version of every preset library which share
+   * the same id, and scan only once. */
+  char    id[CLAP_ID_SIZE];
+  int32_t version; // version of the preset library
+
   /* Copies at most *path_size bytes into path.
    * If directory_index is bigger than the number of directories,
    * then return false. */
@@ -52,13 +64,16 @@ struct clap_preset_library
                         char                       *path,
                         int32_t                    *path_size);
 
-  bool (*open_bank)(struct clap_preset_library *library,
-                    const char                 *path,
-                    struct clap_bank_handle    *handle);
+  bool (*open_bank)(struct clap_preset_library  *library,
+                    const char                  *path,
+                    struct clap_bank_handle    **handle);
 
   void (*close_bank)(struct clap_preset_library *library,
                      struct clap_bank_handle    *handle);
 
+  /* Returns the number of presets in the bank.
+   * If it is not known, return -2.
+   * On error return -1. */
   int32_t (*get_bank_size)(struct clap_preset_library *library,
                            struct clap_bank_handle    *handle);
 
