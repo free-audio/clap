@@ -188,8 +188,8 @@ struct clap_event_jump
 /**
  * Asks the plugin to load a program.
  * This is analogue to the midi program set:
- * bank msb goes into bank0
- * bank lsb goes into bank1
+ * bank msb goes into bank_msb
+ * bank lsb goes into bank_lsb
  * program goes into program
  *
  * Clap is not limited to 127.
@@ -202,9 +202,9 @@ struct clap_event_jump
  */
 struct clap_event_program
 {
-  int32_t bank0;   // 0..0x7FFFFFFF
-  int32_t bank1;   // 0..0x7FFFFFFF
-  int32_t program; // 0..0x7FFFFFFF
+  int32_t bank_msb; // 0..0x7FFFFFFF
+  int32_t bank_lsb; // 0..0x7FFFFFFF
+  int32_t program;  // 0..0x7FFFFFFF
 };
 
 struct clap_event
