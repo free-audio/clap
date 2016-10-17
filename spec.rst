@@ -566,13 +566,13 @@ clap/ext/state.h
    :code: c
 
 clap/ext/audio-ports.h
-----------------
+----------------------
 
 .. include:: include/clap/ext/audio-ports.h
    :code: c
 
 clap/ext/event-ports.h
-----------------
+----------------------
 
 .. include:: include/clap/ext/event-ports.h
    :code: c

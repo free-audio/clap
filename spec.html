@@ -167,14 +167,15 @@ tt.docutils {
 <li><a class="reference internal" href="#references" id="id39">References</a><ul>
 <li><a class="reference internal" href="#clap-clap-h" id="id40">clap/clap.h</a></li>
 <li><a class="reference internal" href="#clap-ext-state-h" id="id41">clap/ext/state.h</a></li>
-<li><a class="reference internal" href="#clap-ext-ports-h" id="id42">clap/ext/ports.h</a></li>
-<li><a class="reference internal" href="#clap-ext-params-h" id="id43">clap/ext/params.h</a></li>
-<li><a class="reference internal" href="#clap-ext-gui-h" id="id44">clap/ext/gui.h</a></li>
-<li><a class="reference internal" href="#clap-ext-embed-h" id="id45">clap/ext/embed.h</a></li>
-<li><a class="reference internal" href="#clap-ext-embed-win32-h" id="id46">clap/ext/embed-win32.h</a></li>
-<li><a class="reference internal" href="#clap-ext-embed-x11-h" id="id47">clap/ext/embed-x11.h</a></li>
-<li><a class="reference internal" href="#clap-ext-embed-cocoa-h" id="id48">clap/ext/embed-cocoa.h</a></li>
-<li><a class="reference internal" href="#clap-ext-presets-h" id="id49">clap/ext/presets.h</a></li>
+<li><a class="reference internal" href="#clap-ext-audio-ports-h" id="id42">clap/ext/audio-ports.h</a></li>
+<li><a class="reference internal" href="#clap-ext-event-ports-h" id="id43">clap/ext/event-ports.h</a></li>
+<li><a class="reference internal" href="#clap-ext-params-h" id="id44">clap/ext/params.h</a></li>
+<li><a class="reference internal" href="#clap-ext-gui-h" id="id45">clap/ext/gui.h</a></li>
+<li><a class="reference internal" href="#clap-ext-embed-h" id="id46">clap/ext/embed.h</a></li>
+<li><a class="reference internal" href="#clap-ext-embed-win32-h" id="id47">clap/ext/embed-win32.h</a></li>
+<li><a class="reference internal" href="#clap-ext-embed-x11-h" id="id48">clap/ext/embed-x11.h</a></li>
+<li><a class="reference internal" href="#clap-ext-embed-cocoa-h" id="id49">clap/ext/embed-cocoa.h</a></li>
+<li><a class="reference internal" href="#clap-ext-presets-h" id="id50">clap/ext/presets.h</a></li>
 </ul>
 </li>
 </ul>
@@ -972,6 +973,7 @@ plugin's parameters and restore them.</p>
   <span class="k">struct</span> <span class="n">clap_event</span>    <span class="o">*</span><span class="n">next</span><span class="p">;</span> <span class="c1">// linked list, NULL on end
 </span>  <span class="k">enum</span> <span class="n">clap_event_type</span>  <span class="n">type</span><span class="p">;</span>
   <span class="kt">int64_t</span>               <span class="n">time</span><span class="p">;</span> <span class="c1">// offset from the first sample in the process block
+</span>  <span class="kt">int32_t</span>               <span class="n">port</span><span class="p">;</span> <span class="c1">// event port id
 </span>
   <span class="k">union</span> <span class="p">{</span>
     <span class="k">struct</span> <span class="n">clap_event_note</span>        <span class="n">note</span><span class="p">;</span>
@@ -1008,7 +1010,8 @@ plugin's parameters and restore them.</p>
 </span>
   <span class="cm">/* Linked list of events
    * The plugin must not modify those events. */</span>
-  <span class="k">struct</span> <span class="n">clap_event</span> <span class="o">*</span><span class="n">events</span><span class="p">;</span>
+  <span class="k">struct</span> <span class="n">clap_event</span> <span class="o">*</span><span class="n">in_events</span><span class="p">;</span>
+  <span class="k">struct</span> <span class="n">clap_event</span> <span class="o">*</span><span class="n">out_events</span><span class="p">;</span>
 <span class="p">};</span>
 
 <span class="c1">//////////
@@ -1145,8 +1148,8 @@ plugin's parameters and restore them.</p>
 <span class="cp">#endif </span><span class="cm">/* !CLAP_EXT_STATE_H */</span>
 </pre>
 </div>
-<div class="section" id="clap-ext-ports-h">
-<h2><a class="toc-backref" href="#id42">clap/ext/ports.h</a></h2>
+<div class="section" id="clap-ext-audio-ports-h">
+<h2><a class="toc-backref" href="#id42">clap/ext/audio-ports.h</a></h2>
 <pre class="code c literal-block">
 <span class="cp">#ifndef CLAP_EXT_AUDIO_PORTS_H
 # define CLAP_EXT_AUDIO_PORTS_H
@@ -1184,10 +1187,10 @@ plugin's parameters and restore them.</p>
   <span class="k">enum</span> <span class="n">clap_audio_port_role</span>            <span class="n">role</span><span class="p">;</span>
   <span class="kt">char</span>                                 <span class="n">name</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>
 
-  <span class="cm">/* If false, then the port can be connected only once.
-   * If true, then this is a virtual port which can be cloned
-   * and connected multiple times. */</span>
-  <span class="kt">bool</span>                                 <span class="n">is_repeatable</span><span class="p">;</span>
+  <span class="cm">/* If true, then this is a virtual port which can be cloned
+   * and connected multiple times.
+   * Only useful for input ports.  */</span>
+  <span class="kt">bool</span>                                 <span class="n">is_cloneable</span><span class="p">;</span>
 <span class="p">};</span>
 
 <span class="k">struct</span> <span class="n">clap_audio_port</span>
@@ -1204,6 +1207,7 @@ plugin's parameters and restore them.</p>
   <span class="cm">/* number of ports, including inputs and outputs */</span>
   <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">get_count</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>         <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 
+  <span class="cm">/* get info about about an audio port. */</span>
   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">get_info</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>             <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
                    <span class="kt">int32_t</span>                         <span class="n">index</span><span class="p">,</span>
                    <span class="k">struct</span> <span class="n">clap_audio_port_info</span>    <span class="o">*</span><span class="n">info</span><span class="p">);</span>
@@ -1244,8 +1248,69 @@ plugin's parameters and restore them.</p>
 <span class="cp">#endif </span><span class="cm">/* !CLAP_EXT_PORT_H */</span>
 </pre>
 </div>
+<div class="section" id="clap-ext-event-ports-h">
+<h2><a class="toc-backref" href="#id43">clap/ext/event-ports.h</a></h2>
+<pre class="code c literal-block">
+<span class="cp">#ifndef CLAP_EVENT_PORTS_H
+# define CLAP_EVENT_PORTS_H
+</span>
+<span class="cp"># include &quot;../clap.h&quot;
+</span>
+<span class="cp"># define CLAP_EXT_EVENT_PORTS &quot;clap/event-ports&quot;
+</span>
+<span class="cp"># define CLAP_MAIN_EVENT_PORT_ID 0
+</span>
+<span class="k">struct</span> <span class="n">clap_audio_port_info</span>
+<span class="p">{</span>
+  <span class="cm">/* This number uniquely identify the port.
+   * There are two id space, one for the input event ports,
+   * and one for the output event ports.
+   * Valid ids are greater than 0.
+   * Every clap plugins always have one input event port and
+   * one output event port, their id is 0 (CLAP_MAIN_EVENT_PORT_ID).
+   *
+   * So one plugin only need this extension for additional ports. */</span>
+  <span class="kt">int32_t</span> <span class="n">id</span><span class="p">;</span>
+  <span class="kt">bool</span>    <span class="n">is_input</span><span class="p">;</span>
+  <span class="kt">char</span>    <span class="n">name</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>
+
+  <span class="cm">/* If true, then this is a virtual port which can be cloned
+   * and connected multiple times.
+   * Only useful for input ports. */</span>
+  <span class="kt">bool</span> <span class="n">is_cloneable</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">clap_plugin_event_ports</span>
+<span class="p">{</span>
+  <span class="cm">/* number of ports, including inputs and outputs */</span>
+  <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">get_count</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>         <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
+
+  <span class="cm">/* get info about about an event port. */</span>
+  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">get_info</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>             <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
+                   <span class="kt">int32_t</span>                         <span class="n">index</span><span class="p">,</span>
+                   <span class="k">struct</span> <span class="n">clap_event_port_info</span>    <span class="o">*</span><span class="n">info</span><span class="p">);</span>
+
+  <span class="cm">/* Clones a clonable port.
+   * On success returns a unique port id, for the cloned port.
+   * On failure, returns -1.
+   * user_name is a string provided by the host to tell the
+   * plugin how to name the new cloned port.
+   */</span>
+  <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">clone_port</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
+                        <span class="kt">int32_t</span>             <span class="n">port_id</span><span class="p">,</span>
+                        <span class="k">const</span> <span class="kt">char</span>         <span class="o">*</span><span class="n">user_name</span><span class="p">);</span>
+
+  <span class="cm">/* When the host is done with a cloned port, it can call
+   * release_port() to release the resources. */</span>
+  <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">release_port</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
+                          <span class="kt">int32_t</span>             <span class="n">port_id</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="cp">#endif </span><span class="cm">/* !EVENT_PORTS_H */</span>
+</pre>
+</div>
 <div class="section" id="clap-ext-params-h">
-<h2><a class="toc-backref" href="#id43">clap/ext/params.h</a></h2>
+<h2><a class="toc-backref" href="#id44">clap/ext/params.h</a></h2>
 <pre class="code c literal-block">
 <span class="cp">#ifndef CLAP_EXT_PARAMS_H
 # define CLAP_EXT_PARAMS_H
@@ -1376,7 +1441,7 @@ plugin's parameters and restore them.</p>
 </pre>
 </div>
 <div class="section" id="clap-ext-gui-h">
-<h2><a class="toc-backref" href="#id44">clap/ext/gui.h</a></h2>
+<h2><a class="toc-backref" href="#id45">clap/ext/gui.h</a></h2>
 <pre class="code c literal-block">
 <span class="cp">#ifndef CLAP_EXT_GUI_H
 # define CLAP_EXT_GUI_H
@@ -1409,7 +1474,7 @@ plugin's parameters and restore them.</p>
 </pre>
 </div>
 <div class="section" id="clap-ext-embed-h">
-<h2><a class="toc-backref" href="#id45">clap/ext/embed.h</a></h2>
+<h2><a class="toc-backref" href="#id46">clap/ext/embed.h</a></h2>
 <pre class="code c literal-block">
 <span class="cp">#ifndef CLAP_EXT_EMBED_H
 # define CLAP_EXT_EMBED_H
@@ -1429,7 +1494,7 @@ plugin's parameters and restore them.</p>
 </pre>
 </div>
 <div class="section" id="clap-ext-embed-win32-h">
-<h2><a class="toc-backref" href="#id46">clap/ext/embed-win32.h</a></h2>
+<h2><a class="toc-backref" href="#id47">clap/ext/embed-win32.h</a></h2>
 <pre class="code c literal-block">
 <span class="cp">#ifndef CLAP_EXT_EMBED_WIN32_H
 # define CLAP_EXT_EMBED_WIN32_H
@@ -1454,7 +1519,7 @@ plugin's parameters and restore them.</p>
 </pre>
 </div>
 <div class="section" id="clap-ext-embed-x11-h">
-<h2><a class="toc-backref" href="#id47">clap/ext/embed-x11.h</a></h2>
+<h2><a class="toc-backref" href="#id48">clap/ext/embed-x11.h</a></h2>
 <pre class="code c literal-block">
 <span class="cp">#ifndef CLAP_EXT_EMBED_X11_H
 # define CLAP_EXT_EMBED_X11_H
@@ -1485,7 +1550,7 @@ plugin's parameters and restore them.</p>
 </pre>
 </div>
 <div class="section" id="clap-ext-embed-cocoa-h">
-<h2><a class="toc-backref" href="#id48">clap/ext/embed-cocoa.h</a></h2>
+<h2><a class="toc-backref" href="#id49">clap/ext/embed-cocoa.h</a></h2>
 <pre class="code c literal-block">
 <span class="cp">#ifndef CLAP_EXT_EMBED_COCOA_H
 # define CLAP_EXT_EMBED_COCOA_H
@@ -1515,7 +1580,7 @@ plugin's parameters and restore them.</p>
 </pre>
 </div>
 <div class="section" id="clap-ext-presets-h">
-<h2><a class="toc-backref" href="#id49">clap/ext/presets.h</a></h2>
+<h2><a class="toc-backref" href="#id50">clap/ext/presets.h</a></h2>
 <pre class="code c literal-block">
 <span class="cp">#ifndef CLAP_EXT_PRESETS_H
 # define CLAP_EXT_PRESETS_H
