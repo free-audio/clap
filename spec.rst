@@ -27,12 +27,12 @@ Goals
 - Be event oriented
 - Be extensible
 - Be easy to bridge
-- Dynamics
+- More and more advanced modular systems are showing up, things should be dynamics
 
   - dynamic ports
   - dynamic parameters
 
-- Full MIDI
+- Full MIDI access
 
 Specification
 =============
@@ -41,7 +41,8 @@ How to read the specification
 -----------------------------
 
 The specification should be read along the reference headers.
-https://free-audio.github.io/clap/ gives a convinient view for that.
+https://free-audio.github.io/clap/ gives a convinient splet
+view for that.
 
 Encoding
 --------

@@ -80,10 +80,6 @@ enum clap_log_severity
   CLAP_LOG_FATAL   = 4,
 };
 
-// Id of the plugin
-# define CLAP_ATTR_ID              "clap/id"
-// Name of the plugin
-# define CLAP_ATTR_NAME            "clap/name"
 // Description of the plugin
 # define CLAP_ATTR_DESCRIPTION     "clap/description"
 // Product version string
@@ -94,15 +90,9 @@ enum clap_log_severity
 # define CLAP_ATTR_URL             "clap/url"
 // Url to support page, or mail to support
 # define CLAP_ATTR_SUPPORT         "clap/support"
-// A string containing a list of categories, joined with `;'. For example: `fm;analogue;delay'.
-# define CLAP_ATTR_CATEGORIES      "clap/categories"
+
 // Should be "1" if the plugin supports tunning.
 # define CLAP_ATTR_SUPPORTS_TUNING "clap/supports_tuning"
-// Should be "1" if the plugin is doing remote processing.
-// This is a hint for the host to optimize task scheduling.
-# define CLAP_ATTR_IS_REMOTE_PROCESSING "clap/is_remote_processing"
-// Should be "1" if the plugin supports in place processing.
-# define CLAP_ATTR_SUPPORTS_IN_PLACE_PROCESSING "clap/supports_in_place_processing"
 
 ////////////////
 // PARAMETERS //
@@ -220,6 +210,7 @@ struct clap_event
     struct clap_event_param       param;
     struct clap_event_midi        midi;
     struct clap_event_jump	  jump;
+    struct clap_event_program     program;
   };
 };
 
@@ -283,15 +274,41 @@ struct clap_host
 // PLUGIN //
 ////////////
 
-// bitfield
+/* bitfield
+ * This gives an hint to the host what the plugin might do. */
 enum clap_plugin_type
 {
+  /* Instruments can play notes, and generate audio */
   CLAP_PLUGIN_INSTRUMENT   = (1 << 0),
+
+  /* Audio effects, process audio input and produces audio.
+   * Exemple: delay, reverb, compressor. */
   CLAP_PLUGIN_AUDIO_EFFECT = (1 << 1),
+
+  /* Event effects, takes events as input and produces events.
+   * Exemple: arpegiator */
   CLAP_PLUGIN_EVENT_EFFECT = (1 << 2), // can be seen as midi effect
+
+  /* Analyze audio and/or events, and produces analysis results */
   CLAP_PLUGIN_ANALYZER     = (1 << 3),
+
+  /* This plugin is a modular system, so it can load "modules",
+   * have dynamic number of ports and parameters.
+   * In short it could do anything. */
   CLAP_PLUGIN_PATCHER      = (1 << 4),
+
+  /* This plugin streams the audio signal.
+   * For example it can stream to a web radio.
+   * This is important to not block the process loop. */
   CLAP_PLUGIN_STREAMER     = (1 << 5),
+
+  /* This plugin act as a proxy, so it forwards the events/audio
+   * to an other program on the same machine or on the network.
+   *
+   * For example a wine bridge which runs Windows plugins on Linux,
+   * is a proxy. A plugin which sends the data to an hardware device
+   * is a proxy as well. */
+  CLAP_PLUGIN_PROXY        = (1 << 6),
 };
 
 struct clap_plugin
@@ -300,6 +317,10 @@ struct clap_plugin
 
   void *host_data;   // reserved pointer for the host
   void *plugin_data; // reserved pointer for the plugin
+
+  char name[CLAP_NAME_SIZE]; // plugin name, eg: "Diva"
+  char id[CLAP_ID_SIZE]; // plugin id, eg: "u-he/diva"
+  char version[CLAP_VERSION_SIZE]; // the plugin version, eg: "1.3.2"
 
   enum clap_plugin_type plugin_type;
 
