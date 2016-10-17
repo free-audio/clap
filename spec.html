@@ -199,12 +199,12 @@ tt.docutils {
 <li>Be event oriented</li>
 <li>Be extensible</li>
 <li>Be easy to bridge</li>
-<li>Dynamics<ul>
+<li>More and more advanced modular systems are showing up, things should be dynamics<ul>
 <li>dynamic ports</li>
 <li>dynamic parameters</li>
 </ul>
 </li>
-<li>Full MIDI</li>
+<li>Full MIDI access</li>
 </ul>
 </div>
 <div class="section" id="specification">
@@ -212,7 +212,8 @@ tt.docutils {
 <div class="section" id="how-to-read-the-specification">
 <h2><a class="toc-backref" href="#id4">How to read the specification</a></h2>
 <p>The specification should be read along the reference headers.
-<a class="reference external" href="https://free-audio.github.io/clap/">https://free-audio.github.io/clap/</a> gives a convinient view for that.</p>
+<a class="reference external" href="https://free-audio.github.io/clap/">https://free-audio.github.io/clap/</a> gives a convinient splet
+view for that.</p>
 </div>
 <div class="section" id="encoding">
 <h2><a class="toc-backref" href="#id5">Encoding</a></h2>
@@ -841,11 +842,7 @@ plugin's parameters and restore them.</p>
   <span class="n">CLAP_LOG_FATAL</span>   <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
 <span class="p">};</span>
 
-<span class="c1">// Id of the plugin
-</span><span class="cp"># define CLAP_ATTR_ID              &quot;clap/id&quot;
-</span><span class="c1">// Name of the plugin
-</span><span class="cp"># define CLAP_ATTR_NAME            &quot;clap/name&quot;
-</span><span class="c1">// Description of the plugin
+<span class="c1">// Description of the plugin
 </span><span class="cp"># define CLAP_ATTR_DESCRIPTION     &quot;clap/description&quot;
 </span><span class="c1">// Product version string
 </span><span class="cp"># define CLAP_ATTR_VERSION         &quot;clap/version&quot;
@@ -855,15 +852,9 @@ plugin's parameters and restore them.</p>
 </span><span class="cp"># define CLAP_ATTR_URL             &quot;clap/url&quot;
 </span><span class="c1">// Url to support page, or mail to support
 </span><span class="cp"># define CLAP_ATTR_SUPPORT         &quot;clap/support&quot;
-</span><span class="c1">// A string containing a list of categories, joined with `;'. For example: `fm;analogue;delay'.
-</span><span class="cp"># define CLAP_ATTR_CATEGORIES      &quot;clap/categories&quot;
-</span><span class="c1">// Should be &quot;1&quot; if the plugin supports tunning.
+</span>
+<span class="c1">// Should be &quot;1&quot; if the plugin supports tunning.
 </span><span class="cp"># define CLAP_ATTR_SUPPORTS_TUNING &quot;clap/supports_tuning&quot;
-</span><span class="c1">// Should be &quot;1&quot; if the plugin is doing remote processing.
-// This is a hint for the host to optimize task scheduling.
-</span><span class="cp"># define CLAP_ATTR_IS_REMOTE_PROCESSING &quot;clap/is_remote_processing&quot;
-</span><span class="c1">// Should be &quot;1&quot; if the plugin supports in place processing.
-</span><span class="cp"># define CLAP_ATTR_SUPPORTS_IN_PLACE_PROCESSING &quot;clap/supports_in_place_processing&quot;
 </span>
 <span class="c1">////////////////
 // PARAMETERS //
@@ -949,8 +940,8 @@ plugin's parameters and restore them.</p>
 <span class="cm">/**
  * Asks the plugin to load a program.
  * This is analogue to the midi program set:
- * bank msb goes into bank0
- * bank lsb goes into bank1
+ * bank msb goes into bank_msb
+ * bank lsb goes into bank_lsb
  * program goes into program
  *
  * Clap is not limited to 127.
@@ -963,9 +954,9 @@ plugin's parameters and restore them.</p>
  */</span>
 <span class="k">struct</span> <span class="n">clap_event_program</span>
 <span class="p">{</span>
-  <span class="kt">int32_t</span> <span class="n">bank0</span><span class="p">;</span>   <span class="c1">// 0..0x7FFFFFFF
-</span>  <span class="kt">int32_t</span> <span class="n">bank1</span><span class="p">;</span>   <span class="c1">// 0..0x7FFFFFFF
-</span>  <span class="kt">int32_t</span> <span class="n">program</span><span class="p">;</span> <span class="c1">// 0..0x7FFFFFFF
+  <span class="kt">int32_t</span> <span class="n">bank_msb</span><span class="p">;</span> <span class="c1">// 0..0x7FFFFFFF
+</span>  <span class="kt">int32_t</span> <span class="n">bank_lsb</span><span class="p">;</span> <span class="c1">// 0..0x7FFFFFFF
+</span>  <span class="kt">int32_t</span> <span class="n">program</span><span class="p">;</span>  <span class="c1">// 0..0x7FFFFFFF
 </span><span class="p">};</span>
 
 <span class="k">struct</span> <span class="n">clap_event</span>
@@ -981,6 +972,7 @@ plugin's parameters and restore them.</p>
     <span class="k">struct</span> <span class="n">clap_event_param</span>       <span class="n">param</span><span class="p">;</span>
     <span class="k">struct</span> <span class="n">clap_event_midi</span>        <span class="n">midi</span><span class="p">;</span>
     <span class="k">struct</span> <span class="n">clap_event_jump</span>        <span class="n">jump</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">clap_event_program</span>     <span class="n">program</span><span class="p">;</span>
   <span class="p">};</span>
 <span class="p">};</span>
 
@@ -1044,15 +1036,41 @@ plugin's parameters and restore them.</p>
 // PLUGIN //
 ////////////
 </span>
-<span class="c1">// bitfield
-</span><span class="k">enum</span> <span class="n">clap_plugin_type</span>
+<span class="cm">/* bitfield
+ * This gives an hint to the host what the plugin might do. */</span>
+<span class="k">enum</span> <span class="n">clap_plugin_type</span>
 <span class="p">{</span>
+  <span class="cm">/* Instruments can play notes, and generate audio */</span>
   <span class="n">CLAP_PLUGIN_INSTRUMENT</span>   <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span><span class="p">),</span>
+
+  <span class="cm">/* Audio effects, process audio input and produces audio.
+   * Exemple: delay, reverb, compressor. */</span>
   <span class="n">CLAP_PLUGIN_AUDIO_EFFECT</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">),</span>
+
+  <span class="cm">/* Event effects, takes events as input and produces events.
+   * Exemple: arpegiator */</span>
   <span class="n">CLAP_PLUGIN_EVENT_EFFECT</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">),</span> <span class="c1">// can be seen as midi effect
-</span>  <span class="n">CLAP_PLUGIN_ANALYZER</span>     <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span><span class="p">),</span>
+</span>
+  <span class="cm">/* Analyze audio and/or events, and produces analysis results */</span>
+  <span class="n">CLAP_PLUGIN_ANALYZER</span>     <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span><span class="p">),</span>
+
+  <span class="cm">/* This plugin is a modular system, so it can load &quot;modules&quot;,
+   * have dynamic number of ports and parameters.
+   * In short it could do anything. */</span>
   <span class="n">CLAP_PLUGIN_PATCHER</span>      <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">),</span>
+
+  <span class="cm">/* This plugin streams the audio signal.
+   * For example it can stream to a web radio.
+   * This is important to not block the process loop. */</span>
   <span class="n">CLAP_PLUGIN_STREAMER</span>     <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">5</span><span class="p">),</span>
+
+  <span class="cm">/* This plugin act as a proxy, so it forwards the events/audio
+   * to an other program on the same machine or on the network.
+   *
+   * For example a wine bridge which runs Windows plugins on Linux,
+   * is a proxy. A plugin which sends the data to an hardware device
+   * is a proxy as well. */</span>
+  <span class="n">CLAP_PLUGIN_PROXY</span>        <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">6</span><span class="p">),</span>
 <span class="p">};</span>
 
 <span class="k">struct</span> <span class="n">clap_plugin</span>
@@ -1061,6 +1079,10 @@ plugin's parameters and restore them.</p>
 </span>
   <span class="kt">void</span> <span class="o">*</span><span class="n">host_data</span><span class="p">;</span>   <span class="c1">// reserved pointer for the host
 </span>  <span class="kt">void</span> <span class="o">*</span><span class="n">plugin_data</span><span class="p">;</span> <span class="c1">// reserved pointer for the plugin
+</span>
+  <span class="kt">char</span> <span class="n">name</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span> <span class="c1">// plugin name, eg: &quot;Diva&quot;
+</span>  <span class="kt">char</span> <span class="n">id</span><span class="p">[</span><span class="n">CLAP_ID_SIZE</span><span class="p">];</span> <span class="c1">// plugin id, eg: &quot;u-he/diva&quot;
+</span>  <span class="kt">char</span> <span class="n">version</span><span class="p">[</span><span class="n">CLAP_VERSION_SIZE</span><span class="p">];</span> <span class="c1">// the plugin version, eg: &quot;1.3.2&quot;
 </span>
   <span class="k">enum</span> <span class="n">clap_plugin_type</span> <span class="n">plugin_type</span><span class="p">;</span>
 
