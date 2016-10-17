@@ -5,8 +5,18 @@
 
 # define CLAP_EXT_EVENT_PORTS "clap/event-ports"
 
+# define CLAP_MAIN_EVENT_PORT_ID 0
+
 struct clap_audio_port_info
 {
+  /* This number uniquely identify the port.
+   * There are two id space, one for the input event ports,
+   * and one for the output event ports.
+   * Valid ids are greater than 0.
+   * Every clap plugins always have one input event port and
+   * one output event port, their id is 0 (CLAP_MAIN_EVENT_PORT_ID).
+   *
+   * So one plugin only need this extension for additional ports. */
   int32_t id;
   bool    is_input;
   char    name[CLAP_NAME_SIZE];
