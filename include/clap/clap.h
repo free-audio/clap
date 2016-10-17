@@ -212,6 +212,7 @@ struct clap_event
   struct clap_event    *next; // linked list, NULL on end
   enum clap_event_type  type;
   int64_t               time; // offset from the first sample in the process block
+  int32_t               port; // event port id
 
   union {
     struct clap_event_note        note;
@@ -248,7 +249,8 @@ struct clap_process
 
   /* Linked list of events
    * The plugin must not modify those events. */
-  struct clap_event *events;
+  struct clap_event *in_events;
+  struct clap_event *out_events;
 };
 
 //////////

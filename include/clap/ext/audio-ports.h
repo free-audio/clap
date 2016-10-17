@@ -34,10 +34,10 @@ struct clap_audio_port_info
   enum clap_audio_port_role            role;
   char                                 name[CLAP_NAME_SIZE];
 
-  /* If false, then the port can be connected only once.
-   * If true, then this is a virtual port which can be cloned
-   * and connected multiple times. */
-  bool                                 is_repeatable;
+  /* If true, then this is a virtual port which can be cloned
+   * and connected multiple times.
+   * Only useful for input ports.  */
+  bool                                 is_cloneable;
 };
 
 struct clap_audio_port
@@ -54,6 +54,7 @@ struct clap_plugin_audio_ports
   /* number of ports, including inputs and outputs */
   int32_t (*get_count)(struct clap_plugin         *plugin);
 
+  /* get info about about an audio port. */
   void (*get_info)(struct clap_plugin             *plugin,
                    int32_t                         index,
                    struct clap_audio_port_info    *info);
