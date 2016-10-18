@@ -1,7 +1,7 @@
 #ifndef CLAP_EXT_LOCALE_H
 # define CLAP_EXT_LOCALE_H
 
-# include "../clap.h"
+# include "../../clap.h"
 
 # define CLAP_EXT_LOCALE "clap/locale"
 

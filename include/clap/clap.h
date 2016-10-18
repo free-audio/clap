@@ -315,6 +315,10 @@ enum clap_plugin_type
    * is a proxy. A plugin which sends the data to an hardware device
    * is a proxy as well. */
   CLAP_PLUGIN_PROXY        = (1 << 6),
+
+  /* This plugin is a sampler, and can be used to load generic
+   * audio files. */
+  CLAP_PLUGIN_SAMPLER      = (1 << 7),
 };
 
 struct clap_plugin

@@ -1,7 +1,7 @@
 ﻿#ifndef CLAP_EXT_PRESETS_H
 # define CLAP_EXT_PRESETS_H
 
-# include "../clap.h"
+# include "../../clap.h"
 
 # define CLAP_EXT_PRESETS "clap/presets"
 
