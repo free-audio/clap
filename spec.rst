@@ -55,6 +55,26 @@ C++ exceptions
 
 A CLAP interface must not send exception.
 
+Multi-Threading
+---------------
+
+Every function should have a specifier which tells you if it is thread safe,
+and if it is not, from which thread it can be used then.
+
+The design is pretty simple. Every thing which is closely related to the
+audio processing, has to be realtime; **so it can't block!**
+
+Functions marked with **[audio-thread]**, can only be called from the audio
+processing context and can not lock mutexes, or use any non deterministic
+synchronization method. It is implicit that calling a **[thread-safe]**
+might lead to wait on synchronization and is forbidden.
+
+Then the other functions, shall be marked as **[thread-safe]**, which indicates
+that it can be called from multiple threads concurrently.
+
+Tips: while reading the header, you can set in your editor some highlight for
+**[thread-safe]** and **[audio-thread]**.
+
 Plugins location
 ----------------
 
