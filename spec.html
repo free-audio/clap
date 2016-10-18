@@ -175,7 +175,8 @@ tt.docutils {
 <li><a class="reference internal" href="#clap-ext-embed-win32-h" id="id47">clap/ext/embed-win32.h</a></li>
 <li><a class="reference internal" href="#clap-ext-embed-x11-h" id="id48">clap/ext/embed-x11.h</a></li>
 <li><a class="reference internal" href="#clap-ext-embed-cocoa-h" id="id49">clap/ext/embed-cocoa.h</a></li>
-<li><a class="reference internal" href="#clap-ext-presets-h" id="id50">clap/ext/presets.h</a></li>
+<li><a class="reference internal" href="#clap-ext-draft-presets-h" id="id50">clap/ext/draft/presets.h</a></li>
+<li><a class="reference internal" href="#clap-ext-draft-drum-map-h" id="id51">clap/ext/draft/drum-map.h</a></li>
 </ul>
 </li>
 </ul>
@@ -698,7 +699,7 @@ an extension.</p>
 <p>The host can browse the plugin's presets by using the preset extension:</p>
 <pre class="code c literal-block">
 <span class="cp">#include</span> <span class="cpf">&lt;clap/clap.h&gt;</span><span class="cp">
-#include</span> <span class="cpf">&lt;clap/ext/presets.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;clap/ext/draft/presets.h&gt;</span><span class="cp">
 </span>
 <span class="k">struct</span> <span class="n">clap_plugin_presets</span> <span class="o">*</span><span class="n">presets</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">get_extension</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">CLAP_PRESETS</span><span class="p">);</span>
 <span class="k">struct</span> <span class="n">clap_preset_iterator</span> <span class="o">*</span><span class="n">iter</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
@@ -716,7 +717,7 @@ an extension.</p>
 </span>  <span class="n">presets</span><span class="o">-&gt;</span><span class="n">iter_destroy</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">iter</span><span class="p">);</span>
 <span class="p">}</span>
 </pre>
-<p>See <a class="reference internal" href="#clap-ext-presets-h">clap/ext/presets.h</a>.</p>
+<p>See <a class="reference internal" href="#clap-ext-draft-presets-h">clap/ext/draft/presets.h</a>.</p>
 </div>
 <div class="section" id="load-a-preset">
 <h3><a class="toc-backref" href="#id37">Load a preset</a></h3>
@@ -1016,19 +1017,25 @@ plugin's parameters and restore them.</p>
 </span>
   <span class="kt">void</span> <span class="o">*</span><span class="n">host_data</span><span class="p">;</span> <span class="c1">// reserved pointer for the host
 </span>
-  <span class="cm">/* returns the size of the original string, 0 if not string */</span>
+  <span class="kt">char</span> <span class="n">name</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span> <span class="c1">// plugin name, eg: &quot;BitwigStudio&quot;
+</span>  <span class="kt">char</span> <span class="n">version</span><span class="p">[</span><span class="n">CLAP_VERSION_SIZE</span><span class="p">];</span> <span class="c1">// the plugin version, eg: &quot;1.3.14&quot;
+</span>
+  <span class="cm">/* returns the size of the original string, 0 if not string
+   * [thread-safe] */</span>
   <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">get_attribute</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span>
                            <span class="k">const</span> <span class="kt">char</span>       <span class="o">*</span><span class="n">attr</span><span class="p">,</span>
                            <span class="kt">char</span>             <span class="o">*</span><span class="n">buffer</span><span class="p">,</span>
                            <span class="kt">int32_t</span>           <span class="n">size</span><span class="p">);</span>
 
-  <span class="cm">/* Log a message through the host. */</span>
+  <span class="cm">/* Log a message through the host.
+   * [thread-safe] */</span>
   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">log</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span>       <span class="o">*</span><span class="n">host</span><span class="p">,</span>
               <span class="k">struct</span> <span class="n">clap_plugin</span>     <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
               <span class="k">enum</span> <span class="n">clap_log_severity</span>  <span class="n">severity</span><span class="p">,</span>
               <span class="k">const</span> <span class="kt">char</span>             <span class="o">*</span><span class="n">msg</span><span class="p">);</span>
 
-  <span class="cm">/* query an extension */</span>
+  <span class="cm">/* query an extension
+   * [thread-safe] */</span>
   <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">extension</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">extention_id</span><span class="p">);</span>
 <span class="p">};</span>
 
@@ -1071,6 +1078,10 @@ plugin's parameters and restore them.</p>
    * is a proxy. A plugin which sends the data to an hardware device
    * is a proxy as well. */</span>
   <span class="n">CLAP_PLUGIN_PROXY</span>        <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">6</span><span class="p">),</span>
+
+  <span class="cm">/* This plugin is a sampler, and can be used to load generic
+   * audio files. */</span>
+  <span class="n">CLAP_PLUGIN_SAMPLER</span>      <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">7</span><span class="p">),</span>
 <span class="p">};</span>
 
 <span class="k">struct</span> <span class="n">clap_plugin</span>
@@ -1093,21 +1104,25 @@ plugin's parameters and restore them.</p>
   <span class="cm">/* Copy at most size of the attribute's value into buffer.
    * This function must place a '\0' byte at the end of the string.
    * Returns the size of the original string or 0 if there is no
-   * value for this attributes. */</span>
+   * value for this attributes.
+   * [thread-safe] */</span>
   <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">get_attribute</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
                            <span class="k">const</span> <span class="kt">char</span>         <span class="o">*</span><span class="n">attr</span><span class="p">,</span>
                            <span class="kt">char</span>               <span class="o">*</span><span class="n">buffer</span><span class="p">,</span>
                            <span class="kt">int32_t</span>             <span class="n">size</span><span class="p">);</span>
 
-  <span class="cm">/* activation */</span>
+  <span class="cm">/* activation/deactivation
+   * [audio-thread] */</span>
   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">activate</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">deactivate</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 
-  <span class="cm">/* process audio, events, ... */</span>
+  <span class="cm">/* process audio, events, ...
+   * [audio-thread] */</span>
   <span class="k">enum</span> <span class="nf">clap_process_status</span> <span class="p">(</span><span class="o">*</span><span class="n">process</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>  <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
                                       <span class="k">struct</span> <span class="n">clap_process</span> <span class="o">*</span><span class="n">process</span><span class="p">);</span>
 
-  <span class="cm">/* query an extension */</span>
+  <span class="cm">/* query an extension
+   * [thread-safe] */</span>
   <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">extension</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">id</span><span class="p">);</span>
 <span class="p">};</span>
 
@@ -1119,19 +1134,22 @@ plugin's parameters and restore them.</p>
  * 176400, 192000. */</span>
 <span class="k">struct</span> <span class="n">clap_plugin_factory</span>
 <span class="p">{</span>
-  <span class="cm">/* Get the number of plugins available. */</span>
+  <span class="cm">/* Get the number of plugins available.
+   * [thread-safe] */</span>
   <span class="kt">int32_t</span> <span class="n">get_plugin_count</span><span class="p">(</span><span class="k">struct</span> <span class="n">clap_plugin_factory</span> <span class="o">*</span><span class="n">factory</span><span class="p">);</span>
 
   <span class="cm">/* Create a clap_plugin by its index.
    * Valid indexes are from 0 to get_plugin_count() - 1.
-   * Returns null in case of error. */</span>
+   * Returns null in case of error.
+   * [thread-safe] */</span>
   <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="nf">create_plugin_by_index</span><span class="p">(</span><span class="k">struct</span> <span class="n">clap_plugin_factory</span> <span class="o">*</span><span class="n">factory</span><span class="p">,</span>
                                              <span class="k">struct</span> <span class="n">clap_host</span>           <span class="o">*</span><span class="n">host</span><span class="p">,</span>
                                              <span class="kt">int32_t</span>                     <span class="n">sample_rate</span><span class="p">,</span>
                                              <span class="kt">int32_t</span>                     <span class="n">index</span><span class="p">);</span>
 
   <span class="cm">/* Create a clap_plugin by its plugin_id.
-   * Returns null in case of error. */</span>
+   * Returns null in case of error.
+   * [thread-safe] */</span>
   <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="nf">create_plugin_by_id</span><span class="p">(</span><span class="k">struct</span> <span class="n">clap_plugin_factory</span> <span class="o">*</span><span class="n">factory</span><span class="p">,</span>
                                           <span class="k">struct</span> <span class="n">clap_host</span>           <span class="o">*</span><span class="n">host</span><span class="p">,</span>
                                           <span class="kt">int32_t</span>                     <span class="n">sample_rate</span><span class="p">,</span>
@@ -1162,8 +1180,11 @@ plugin's parameters and restore them.</p>
 <span class="p">{</span>
   <span class="cm">/* The plugin has to allocate and save its state into *buffer.
    * The plugin is also responsible to free the buffer on the
-   * next call to save() or when the plugin is destroyed. */</span>
+   * next call to save() or when the plugin is destroyed.
+   * [audio-thread] */</span>
   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">save</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="kt">void</span> <span class="o">**</span><span class="n">buffer</span><span class="p">,</span> <span class="kt">int32_t</span> <span class="o">*</span><span class="n">size</span><span class="p">);</span>
+
+  <span class="cm">/* [audio-thread] */</span>
   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">restore</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buffer</span><span class="p">,</span> <span class="kt">int32_t</span> <span class="n">size</span><span class="p">);</span>
 <span class="p">};</span>
 
@@ -1226,10 +1247,12 @@ plugin's parameters and restore them.</p>
  * deactivated. */</span>
 <span class="k">struct</span> <span class="n">clap_plugin_audio_ports</span>
 <span class="p">{</span>
-  <span class="cm">/* number of ports, including inputs and outputs */</span>
+  <span class="cm">/* number of ports, including inputs and outputs
+   * [audio-thread] */</span>
   <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">get_count</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>         <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 
-  <span class="cm">/* get info about about an audio port. */</span>
+  <span class="cm">/* get info about about an audio port.
+   * [audio-thread] */</span>
   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">get_info</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>             <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
                    <span class="kt">int32_t</span>                         <span class="n">index</span><span class="p">,</span>
                    <span class="k">struct</span> <span class="n">clap_audio_port_info</span>    <span class="o">*</span><span class="n">info</span><span class="p">);</span>
@@ -1239,16 +1262,20 @@ plugin's parameters and restore them.</p>
    * It can be useful especialy for repeatable ports.
    * Returns the id of the port. In case of repeatable port,
    * make sure that each connected port has a different id.
-   * Returns -1 if the connection failed. */</span>
+   * Returns -1 if the connection failed.
+   * [audio-thread] */</span>
   <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">connect</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>           <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
                      <span class="kt">int32_t</span>                       <span class="n">port_id</span><span class="p">,</span>
                      <span class="k">const</span> <span class="k">struct</span> <span class="n">clap_audio_port</span> <span class="o">*</span><span class="n">port</span><span class="p">,</span>
                      <span class="k">const</span> <span class="kt">char</span>                   <span class="o">*</span><span class="n">user_name</span><span class="p">);</span>
 
+  <span class="cm">/* Disconnects a port.
+   * [audio-thread] */</span>
   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">disconnect</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>           <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
                      <span class="kt">int32_t</span>                       <span class="n">port_id</span><span class="p">);</span>
 
-  <span class="cm">/* Returns the absolute port latency in samples. */</span>
+  <span class="cm">/* Returns the absolute port latency in samples.
+   * [audio-thread] */</span>
   <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">get_latency</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>       <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
                          <span class="kt">int32_t</span>                   <span class="n">port_id</span><span class="p">);</span>
 <span class="p">};</span>
@@ -1257,12 +1284,14 @@ plugin's parameters and restore them.</p>
 <span class="p">{</span>
   <span class="cm">/* Tell the host that the plugin ports has changed.
    * The host shall deactivate the plugin and then
-   * scan the ports again. */</span>
+   * scan the ports again.
+   * [thread-safe] */</span>
   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">changed</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span>   <span class="o">*</span><span class="n">host</span><span class="p">,</span>
                   <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 
   <span class="cm">/* Tell the host that the latency changed. The host should
-   * call get_port_latency on each ports. */</span>
+   * call get_port_latency on each ports.
+   * [thread-safe] */</span>
   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">latency_changed</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span>
                           <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 <span class="p">};</span>
@@ -1304,10 +1333,12 @@ plugin's parameters and restore them.</p>
 
 <span class="k">struct</span> <span class="n">clap_plugin_event_ports</span>
 <span class="p">{</span>
-  <span class="cm">/* number of ports, including inputs and outputs */</span>
+  <span class="cm">/* number of ports, including inputs and outputs
+   * [audio-thread] */</span>
   <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">get_count</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>         <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 
-  <span class="cm">/* get info about about an event port. */</span>
+  <span class="cm">/* get info about about an event port.
+   * [audio-thread] */</span>
   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">get_info</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>             <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
                    <span class="kt">int32_t</span>                         <span class="n">index</span><span class="p">,</span>
                    <span class="k">struct</span> <span class="n">clap_event_port_info</span>    <span class="o">*</span><span class="n">info</span><span class="p">);</span>
@@ -1317,13 +1348,16 @@ plugin's parameters and restore them.</p>
    * On failure, returns -1.
    * user_name is a string provided by the host to tell the
    * plugin how to name the new cloned port.
+   *
+   * [audio-thread]
    */</span>
   <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">clone_port</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
                         <span class="kt">int32_t</span>             <span class="n">port_id</span><span class="p">,</span>
                         <span class="k">const</span> <span class="kt">char</span>         <span class="o">*</span><span class="n">user_name</span><span class="p">);</span>
 
   <span class="cm">/* When the host is done with a cloned port, it can call
-   * release_port() to release the resources. */</span>
+   * release_port() to release the resources.
+   * [audio-thread]*/</span>
   <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">release_port</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
                           <span class="kt">int32_t</span>             <span class="n">port_id</span><span class="p">);</span>
 <span class="p">};</span>
@@ -1407,17 +1441,20 @@ plugin's parameters and restore them.</p>
 
 <span class="k">struct</span> <span class="n">clap_plugin_params</span>
 <span class="p">{</span>
-  <span class="cm">/* Returns the number of parameters. */</span>
+  <span class="cm">/* Returns the number of parameters.
+   * [audio-thread] */</span>
   <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">count</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 
   <span class="cm">/* Copies the parameter's info to param and returns true.
-   * If index is greater or equal to the number then return false. */</span>
+   * If index is greater or equal to the number then return false.
+   * [audio-thread] */</span>
   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">get_param</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
                     <span class="kt">int32_t</span>             <span class="n">index</span><span class="p">,</span>
                     <span class="k">struct</span> <span class="n">clap_param</span>  <span class="o">*</span><span class="n">param</span><span class="p">);</span>
 
   <span class="cm">/* Copies the module's info to module and returns true.
-   * If module_id is NULL or invalid then return false. */</span>
+   * If module_id is NULL or invalid then return false.
+   * [audio-thread] */</span>
   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">get_module</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>       <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
                      <span class="k">const</span> <span class="kt">char</span>               <span class="o">*</span><span class="n">module_id</span><span class="p">,</span>
                      <span class="k">struct</span> <span class="n">clap_param_module</span> <span class="o">*</span><span class="n">module</span><span class="p">);</span>
@@ -1427,7 +1464,8 @@ plugin's parameters and restore them.</p>
    * automation event shall be ignored in favor of the audio rate
    * automation.
    *
-   * To disconnect the automation, set buffer to NULL. */</span>
+   * To disconnect the automation, set buffer to NULL.
+   * [audio-thread] */</span>
   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">set_param_port</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>     <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
                          <span class="kt">int32_t</span>                 <span class="n">param_index</span><span class="p">,</span>
                          <span class="kt">int32_t</span>                 <span class="n">channel</span><span class="p">,</span>
@@ -1437,20 +1475,24 @@ plugin's parameters and restore them.</p>
 
 <span class="k">struct</span> <span class="n">clap_host_params</span>
 <span class="p">{</span>
+  <span class="cm">/* [thread-safe] */</span>
   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">touch_begin</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span>   <span class="o">*</span><span class="n">host</span><span class="p">,</span>
                       <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
                       <span class="kt">int32_t</span>             <span class="n">index</span><span class="p">);</span>
 
+  <span class="cm">/* [thread-safe] */</span>
   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">touch_end</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span>     <span class="o">*</span><span class="n">host</span><span class="p">,</span>
                     <span class="k">struct</span> <span class="n">clap_plugin</span>   <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
                     <span class="kt">int32_t</span>               <span class="n">index</span><span class="p">);</span>
 
+  <span class="cm">/* [thread-safe] */</span>
   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">changed</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span>       <span class="o">*</span><span class="n">host</span><span class="p">,</span>
                   <span class="k">struct</span> <span class="n">clap_plugin</span>     <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
                   <span class="kt">int32_t</span>                 <span class="n">index</span><span class="p">,</span>
                   <span class="k">union</span> <span class="n">clap_param_value</span>  <span class="n">value</span><span class="p">,</span>
                   <span class="kt">bool</span>                    <span class="n">is_recordable</span><span class="p">);</span>
 
+  <span class="cm">/* [thread-safe] */</span>
   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">rescan</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span>   <span class="o">*</span><span class="n">host</span><span class="p">,</span>
                  <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 <span class="p">};</span>
@@ -1474,20 +1516,28 @@ plugin's parameters and restore them.</p>
 </span>
 <span class="k">struct</span> <span class="n">clap_plugin_gui</span>
 <span class="p">{</span>
-  <span class="cm">/* gui */</span>
+  <span class="cm">/* Open the GUI
+   * [thread-safe] */</span>
   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">open</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
+
+  <span class="cm">/* [thread-safe] */</span>
   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">hide</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
+
+  <span class="cm">/* [thread-safe] */</span>
   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">close</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 <span class="p">};</span>
 
 <span class="k">struct</span> <span class="n">clap_host_gui</span>
 <span class="p">{</span>
+  <span class="cm">/* [thread-safe] */</span>
   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">gui_opened</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span>   <span class="o">*</span><span class="n">host</span><span class="p">,</span>
                      <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 
+  <span class="cm">/* [thread-safe] */</span>
   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">gui_hidden</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span>   <span class="o">*</span><span class="n">host</span><span class="p">,</span>
                      <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 
+  <span class="cm">/* [thread-safe] */</span>
   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">gui_closed</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span>   <span class="o">*</span><span class="n">host</span><span class="p">,</span>
                      <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 <span class="p">};</span>
@@ -1508,7 +1558,8 @@ plugin's parameters and restore them.</p>
 <span class="k">struct</span> <span class="n">clap_host_embed</span>
 <span class="p">{</span>
   <span class="cm">/* Request the host to resize the client area to width, height.
-   * Return true on success, false otherwise. */</span>
+   * Return true on success, false otherwise.
+   * [thread-safe] */</span>
   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">resize</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span> <span class="kt">int32_t</span> <span class="n">width</span><span class="p">,</span> <span class="kt">int32_t</span> <span class="n">height</span><span class="p">);</span>
 <span class="p">};</span>
 
@@ -1530,10 +1581,18 @@ plugin's parameters and restore them.</p>
 </span>
 <span class="k">struct</span> <span class="n">clap_plugin_embed_win32</span>
 <span class="p">{</span>
+  <span class="cm">/* Get the size of the plugin UI.
+   * [thread-safe] */</span>
   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">get_size</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
                    <span class="kt">int32_t</span>            <span class="o">*</span><span class="n">width</span><span class="p">,</span>
                    <span class="kt">int32_t</span>            <span class="o">*</span><span class="n">height</span><span class="p">);</span>
+
+  <span class="cm">/* Attach the plugin UI.
+   * [thread-safe] */</span>
   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">attach</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="n">HWND</span> <span class="n">window</span><span class="p">);</span>
+
+  <span class="cm">/* Detach the plugin UI.
+   * [thread-safe] */</span>
   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">detach</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 <span class="p">};</span>
 
@@ -1553,6 +1612,8 @@ plugin's parameters and restore them.</p>
 </span>
 <span class="k">struct</span> <span class="n">clap_plugin_embed_x11</span>
 <span class="p">{</span>
+  <span class="cm">/* Get the size of the plugin UI.
+   * [thread-safe] */</span>
   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">get_size</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
                    <span class="kt">int32_t</span>            <span class="o">*</span><span class="n">width</span><span class="p">,</span>
                    <span class="kt">int32_t</span>            <span class="o">*</span><span class="n">height</span><span class="p">);</span>
@@ -1561,10 +1622,15 @@ plugin's parameters and restore them.</p>
    * XOpenDisplay(display_name).
    *
    * Note for the host, the display_name can be retrieved from your own
-   * display-&gt;display_name. */</span>
+   * display-&gt;display_name.
+   *
+   * [thread-safe] */</span>
   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">attach</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
                  <span class="k">const</span> <span class="kt">char</span>         <span class="o">*</span><span class="n">display_name</span><span class="p">,</span>
                  <span class="kt">unsigned</span> <span class="kt">long</span>       <span class="n">window</span><span class="p">);</span>
+
+  <span class="cm">/* Detach the plugin UI.
+   * [thread-safe] */</span>
   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">detach</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 <span class="p">};</span>
 
@@ -1584,30 +1650,32 @@ plugin's parameters and restore them.</p>
 </span>
 <span class="k">struct</span> <span class="n">clap_plugin_embed_cocoa</span>
 <span class="p">{</span>
+  <span class="cm">/* Get the size of the plugin UI.
+   * [thread-safe] */</span>
   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">get_size</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
                    <span class="kt">int32_t</span>            <span class="o">*</span><span class="n">width</span><span class="p">,</span>
                    <span class="kt">int32_t</span>            <span class="o">*</span><span class="n">height</span><span class="p">);</span>
 
-  <span class="cm">/* Note for the client, you can get a Display* by calling
-   * XOpenDisplay(display_name).
-   *
-   * Note for the host, the display_name can be retrieved from your own
-   * display-&gt;display_name. */</span>
+  <span class="cm">/* Attach the plugin UI.
+   * [thread-safe] */</span>
   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">attach</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
                  <span class="kt">void</span>               <span class="o">*</span><span class="n">nsView</span><span class="p">);</span>
+
+  <span class="cm">/* Detach the plugin UI.
+   * [thread-safe] */</span>
   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">detach</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 <span class="p">};</span>
 
 <span class="cp">#endif </span><span class="cm">/* !CLAP_EXT_EMBED_COCOA_H */</span>
 </pre>
 </div>
-<div class="section" id="clap-ext-presets-h">
-<h2><a class="toc-backref" href="#id50">clap/ext/presets.h</a></h2>
+<div class="section" id="clap-ext-draft-presets-h">
+<h2><a class="toc-backref" href="#id50">clap/ext/draft/presets.h</a></h2>
 <pre class="code c literal-block">
 <span class="cp">#ifndef CLAP_EXT_PRESETS_H
 # define CLAP_EXT_PRESETS_H
 </span>
-<span class="cp"># include &quot;../clap.h&quot;
+<span class="cp"># include &quot;../../clap.h&quot;
 </span>
 <span class="cp"># define CLAP_EXT_PRESETS &quot;clap/presets&quot;
 </span>
@@ -1629,14 +1697,17 @@ plugin's parameters and restore them.</p>
  * load a preset. */</span>
 <span class="k">struct</span> <span class="n">clap_plugin_preset</span>
 <span class="p">{</span>
-  <span class="cm">/* Create a preset library for this plugin */</span>
+  <span class="cm">/* Create a preset library for this plugin
+   * [thread-safe] */</span>
   <span class="k">struct</span> <span class="n">clap_preset_library</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">create_preset_library</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 
-  <span class="cm">/* Get the current preset info */</span>
+  <span class="cm">/* Get the current preset info
+   * [thread-safe] */</span>
   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">get_current_preset_info</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>      <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
                                   <span class="k">struct</span> <span class="n">clap_preset_info</span> <span class="o">*</span><span class="n">preset</span><span class="p">);</span>
 
-  <span class="cm">/* Load a preset from a bank file */</span>
+  <span class="cm">/* Load a preset from a bank file
+   * [audio-thread] */</span>
   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">load_preset</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
                       <span class="k">const</span> <span class="kt">char</span>         <span class="o">*</span><span class="n">path</span><span class="p">,</span>
                       <span class="k">const</span> <span class="kt">char</span>         <span class="o">*</span><span class="n">preset_id</span><span class="p">);</span>
@@ -1664,29 +1735,34 @@ plugin's parameters and restore them.</p>
 </span>
   <span class="cm">/* Copies at most *path_size bytes into path.
    * If directory_index is bigger than the number of directories,
-   * then return false. */</span>
+   * then return false.
+   * [thread-safe] */</span>
   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">get_directory</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_preset_library</span> <span class="o">*</span><span class="n">library</span><span class="p">,</span>
                         <span class="kt">int</span>                         <span class="n">directory_index</span><span class="p">,</span>
                         <span class="kt">char</span>                       <span class="o">*</span><span class="n">path</span><span class="p">,</span>
                         <span class="kt">int32_t</span>                    <span class="o">*</span><span class="n">path_size</span><span class="p">);</span>
 
+  <span class="cm">/* [thread-safe] */</span>
   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">open_bank</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_preset_library</span>  <span class="o">*</span><span class="n">library</span><span class="p">,</span>
                     <span class="k">const</span> <span class="kt">char</span>                  <span class="o">*</span><span class="n">path</span><span class="p">,</span>
                     <span class="k">struct</span> <span class="n">clap_bank_handle</span>    <span class="o">**</span><span class="n">handle</span><span class="p">);</span>
 
+  <span class="cm">/* [thread-safe] */</span>
   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">close_bank</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_preset_library</span> <span class="o">*</span><span class="n">library</span><span class="p">,</span>
                      <span class="k">struct</span> <span class="n">clap_bank_handle</span>    <span class="o">*</span><span class="n">handle</span><span class="p">);</span>
 
   <span class="cm">/* Returns the number of presets in the bank.
    * If it is not known, return -2.
-   * On error return -1. */</span>
+   * On error return -1.
+   * [thread-safe] */</span>
   <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">get_bank_size</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_preset_library</span> <span class="o">*</span><span class="n">library</span><span class="p">,</span>
                            <span class="k">struct</span> <span class="n">clap_bank_handle</span>    <span class="o">*</span><span class="n">handle</span><span class="p">);</span>
 
   <span class="cm">/* Get a preset info from its path and returns true.
    * In case of a preset bank file, index is used, and *has_next
    * should be set to false when index reaches the last preset.
-   * If the preset is not found, then it should return false. */</span>
+   * If the preset is not found, then it should return false.
+   * [thread-safe] */</span>
   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">get_bank_preset</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_preset_library</span> <span class="o">*</span><span class="n">library</span><span class="p">,</span>
                           <span class="k">struct</span> <span class="n">clap_bank_handle</span>    <span class="o">*</span><span class="n">handle</span><span class="p">,</span>
                           <span class="k">struct</span> <span class="n">clap_preset_info</span>    <span class="o">*</span><span class="n">preset_info</span><span class="p">,</span>
@@ -1694,6 +1770,44 @@ plugin's parameters and restore them.</p>
 <span class="p">};</span>
 
 <span class="cp">#endif </span><span class="cm">/* !CLAP_EXT_PRESETS_H */</span>
+</pre>
+</div>
+<div class="section" id="clap-ext-draft-drum-map-h">
+<h2><a class="toc-backref" href="#id51">clap/ext/draft/drum-map.h</a></h2>
+<pre class="code c literal-block">
+<span class="cp">#ifndef CLAP_EXT_DRUM_MAP_H
+# define CLAP_EXT_DRUM_MAP_H
+</span>
+<span class="cp"># include &quot;../../clap.h&quot;
+</span>
+<span class="cp"># define CLAP_EXT_DRUM_MAP &quot;clap/drum-map&quot;
+</span>
+<span class="k">struct</span> <span class="n">clap_drum_map_key_info</span>
+<span class="p">{</span>
+  <span class="kt">char</span>   <span class="n">name</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>
+  <span class="kt">int8_t</span> <span class="n">key</span><span class="p">;</span>
+  <span class="kt">int8_t</span> <span class="n">channel</span><span class="p">;</span> <span class="c1">// -1 for every channels
+</span><span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">clap_plugin_drum_map</span>
+<span class="p">{</span>
+  <span class="cm">/* Get the number of keys which have a drum map info on
+   * the given port_id.
+   * [thread-safe] */</span>
+  <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">get_key_count</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
+                           <span class="kt">int32_t</span>             <span class="n">port_id</span><span class="p">);</span>
+
+  <span class="cm">/* Loads the info for the given event port and key index.
+   * Returns true on success, false if the info could not be
+   * loaded.
+   * [thread-safe] */</span>
+  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">get_key_info</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>            <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
+                       <span class="kt">int32_t</span>                        <span class="n">port_id</span><span class="p">,</span>
+                       <span class="kt">int32_t</span>                        <span class="n">index</span><span class="p">,</span>
+                       <span class="k">struct</span> <span class="n">clap_drum_map_key_info</span> <span class="o">*</span><span class="n">info</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="cp">#endif </span><span class="cm">/* !DRUM_MAP_H */</span>
 </pre>
 </div>
 </div>

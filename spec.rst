@@ -487,7 +487,7 @@ The host can browse the plugin's presets by using the preset extension:
 .. code:: c
 
   #include <clap/clap.h>
-  #include <clap/ext/presets.h>
+  #include <clap/ext/draft/presets.h>
 
   struct clap_plugin_presets *presets = plugin->get_extension(plugin, CLAP_PRESETS);
   struct clap_preset_iterator *iter = NULL;
@@ -505,7 +505,7 @@ The host can browse the plugin's presets by using the preset extension:
     presets->iter_destroy(plugin, iter);
   }
 
-See `clap/ext/presets.h`_.
+See `clap/ext/draft/presets.h`_.
 
 Load a preset
 ~~~~~~~~~~~~~
@@ -614,8 +614,14 @@ clap/ext/embed-cocoa.h
 .. include:: include/clap/ext/embed-cocoa.h
    :code: c
 
-clap/ext/presets.h
-------------------
+clap/ext/draft/presets.h
+------------------------
 
-.. include:: include/clap/ext/presets.h
+.. include:: include/clap/ext/draft/presets.h
+   :code: c
+
+clap/ext/draft/drum-map.h
+-------------------------
+
+.. include:: include/clap/ext/draft/drum-map.h
    :code: c
