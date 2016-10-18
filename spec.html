@@ -176,8 +176,9 @@ tt.docutils {
 <li><a class="reference internal" href="#clap-ext-embed-win32-h" id="id48">clap/ext/embed-win32.h</a></li>
 <li><a class="reference internal" href="#clap-ext-embed-x11-h" id="id49">clap/ext/embed-x11.h</a></li>
 <li><a class="reference internal" href="#clap-ext-embed-cocoa-h" id="id50">clap/ext/embed-cocoa.h</a></li>
-<li><a class="reference internal" href="#clap-ext-draft-presets-h" id="id51">clap/ext/draft/presets.h</a></li>
-<li><a class="reference internal" href="#clap-ext-draft-drum-map-h" id="id52">clap/ext/draft/drum-map.h</a></li>
+<li><a class="reference internal" href="#clap-ext-draft-locale-h" id="id51">clap/ext/draft/locale.h</a></li>
+<li><a class="reference internal" href="#clap-ext-draft-presets-h" id="id52">clap/ext/draft/presets.h</a></li>
+<li><a class="reference internal" href="#clap-ext-draft-drum-map-h" id="id53">clap/ext/draft/drum-map.h</a></li>
 </ul>
 </li>
 </ul>
@@ -238,7 +239,7 @@ synchronization method. It is implicit that calling a <strong>[thread-safe]</str
 might lead to wait on synchronization and is forbidden.</p>
 <p>Then the other functions, shall be marked as <strong>[thread-safe]</strong>, which indicates
 that it can be called from multiple threads concurrently.</p>
-<p>Tips: while reading the header, you can set in your editor some highlight for
+<p>Tips: while reading the headers, you can set your editor to highlight
 <strong>[thread-safe]</strong> and <strong>[audio-thread]</strong>.</p>
 </div>
 <div class="section" id="plugins-location">
@@ -1685,8 +1686,28 @@ plugin's parameters and restore them.</p>
 <span class="cp">#endif </span><span class="cm">/* !CLAP_EXT_EMBED_COCOA_H */</span>
 </pre>
 </div>
+<div class="section" id="clap-ext-draft-locale-h">
+<h2><a class="toc-backref" href="#id51">clap/ext/draft/locale.h</a></h2>
+<pre class="code c literal-block">
+<span class="cp">#ifndef CLAP_EXT_LOCALE_H
+# define CLAP_EXT_LOCALE_H
+</span>
+<span class="cp"># include &quot;../../clap.h&quot;
+</span>
+<span class="cp"># define CLAP_EXT_LOCALE &quot;clap/locale&quot;
+</span>
+<span class="k">struct</span> <span class="n">clap_plugin_locale</span>
+<span class="p">{</span>
+  <span class="cm">/* Sets the locale to use.
+   * [thread-safe] */</span>
+  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">set_locale</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">locale</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="cp">#endif </span><span class="cm">/* !CLAP_EXT_LOCALE_H */</span>
+</pre>
+</div>
 <div class="section" id="clap-ext-draft-presets-h">
-<h2><a class="toc-backref" href="#id51">clap/ext/draft/presets.h</a></h2>
+<h2><a class="toc-backref" href="#id52">clap/ext/draft/presets.h</a></h2>
 <pre class="code c literal-block">
 <span class="cp">#ifndef CLAP_EXT_PRESETS_H
 # define CLAP_EXT_PRESETS_H
@@ -1789,7 +1810,7 @@ plugin's parameters and restore them.</p>
 </pre>
 </div>
 <div class="section" id="clap-ext-draft-drum-map-h">
-<h2><a class="toc-backref" href="#id52">clap/ext/draft/drum-map.h</a></h2>
+<h2><a class="toc-backref" href="#id53">clap/ext/draft/drum-map.h</a></h2>
 <pre class="code c literal-block">
 <span class="cp">#ifndef CLAP_EXT_DRUM_MAP_H
 # define CLAP_EXT_DRUM_MAP_H

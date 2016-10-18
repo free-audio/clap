@@ -72,7 +72,7 @@ might lead to wait on synchronization and is forbidden.
 Then the other functions, shall be marked as **[thread-safe]**, which indicates
 that it can be called from multiple threads concurrently.
 
-Tips: while reading the header, you can set in your editor some highlight for
+Tips: while reading the headers, you can set your editor to highlight
 **[thread-safe]** and **[audio-thread]**.
 
 Plugins location
@@ -632,6 +632,12 @@ clap/ext/embed-cocoa.h
 ----------------------
 
 .. include:: include/clap/ext/embed-cocoa.h
+   :code: c
+
+clap/ext/draft/locale.h
+-----------------------
+
+.. include:: include/clap/ext/draft/locale.h
    :code: c
 
 clap/ext/draft/presets.h
