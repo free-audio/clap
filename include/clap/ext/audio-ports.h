@@ -51,10 +51,12 @@ struct clap_audio_port
  * deactivated. */
 struct clap_plugin_audio_ports
 {
-  /* number of ports, including inputs and outputs */
+  /* number of ports, including inputs and outputs
+   * [audio-thread] */
   int32_t (*get_count)(struct clap_plugin         *plugin);
 
-  /* get info about about an audio port. */
+  /* get info about about an audio port.
+   * [audio-thread] */
   void (*get_info)(struct clap_plugin             *plugin,
                    int32_t                         index,
                    struct clap_audio_port_info    *info);
@@ -64,16 +66,20 @@ struct clap_plugin_audio_ports
    * It can be useful especialy for repeatable ports.
    * Returns the id of the port. In case of repeatable port,
    * make sure that each connected port has a different id.
-   * Returns -1 if the connection failed. */
+   * Returns -1 if the connection failed.
+   * [audio-thread] */
   int32_t (*connect)(struct clap_plugin           *plugin,
                      int32_t                       port_id,
                      const struct clap_audio_port *port,
                      const char                   *user_name);
 
+  /* Disconnects a port.
+   * [audio-thread] */
   void (*disconnect)(struct clap_plugin           *plugin,
                      int32_t                       port_id);
 
-  /* Returns the absolute port latency in samples. */
+  /* Returns the absolute port latency in samples.
+   * [audio-thread] */
   int32_t (*get_latency)(struct clap_plugin       *plugin,
                          int32_t                   port_id);
 };
@@ -82,12 +88,14 @@ struct clap_host_audio_ports
 {
   /* Tell the host that the plugin ports has changed.
    * The host shall deactivate the plugin and then
-   * scan the ports again. */
+   * scan the ports again.
+   * [thread-safe] */
   void (*changed)(struct clap_host   *host,
                   struct clap_plugin *plugin);
 
   /* Tell the host that the latency changed. The host should
-   * call get_port_latency on each ports. */
+   * call get_port_latency on each ports.
+   * [thread-safe] */
   void (*latency_changed)(struct clap_host *host,
                           struct clap_plugin *plugin);
 };

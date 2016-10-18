@@ -7,7 +7,8 @@
 
 struct clap_plugin_locale
 {
-  /* Sets the locale to use */
+  /* Sets the locale to use.
+   * [thread-safe] */
   bool (*set_locale)(struct clap_plugin *plugin, const char *locale);
 };
 

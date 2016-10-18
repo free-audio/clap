@@ -8,6 +8,8 @@
 
 struct clap_plugin_embed_x11
 {
+  /* Get the size of the plugin UI.
+   * [thread-safe] */
   void (*get_size)(struct clap_plugin *plugin,
                    int32_t            *width,
                    int32_t            *height);
@@ -16,10 +18,15 @@ struct clap_plugin_embed_x11
    * XOpenDisplay(display_name).
    *
    * Note for the host, the display_name can be retrieved from your own
-   * display->display_name. */
+   * display->display_name.
+   *
+   * [thread-safe] */
   bool (*attach)(struct clap_plugin *plugin,
                  const char         *display_name,
                  unsigned long       window);
+
+  /* Detach the plugin UI.
+   * [thread-safe] */
   bool (*detach)(struct clap_plugin *plugin);
 };
 

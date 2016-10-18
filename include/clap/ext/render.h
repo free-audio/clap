@@ -27,11 +27,12 @@ struct clap_plugin_render
   /* Sets the plugin render mode, while the plugin is deactivated.
    * Returns true on success, false otherwise.
    * On failure the render mode is unchanged.
-   */
+   * [audio-thread] */
   bool (*set_render_mode)(struct clap_plugin           *plugin,
                           enum clap_plugin_render_mode  mode);
 
-  /* Gets the current rendering mode, can be set anytime. */
+  /* Gets the current rendering mode, can be set anytime.
+   * [audio-thread] */
   enum clap_plugin_render_mode (*get_render_mode)(struct clap_plugin *plugin);
 };
 

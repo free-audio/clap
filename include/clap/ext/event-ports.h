@@ -29,10 +29,12 @@ struct clap_audio_port_info
 
 struct clap_plugin_event_ports
 {
-  /* number of ports, including inputs and outputs */
+  /* number of ports, including inputs and outputs
+   * [audio-thread] */
   int32_t (*get_count)(struct clap_plugin         *plugin);
 
-  /* get info about about an event port. */
+  /* get info about about an event port.
+   * [audio-thread] */
   void (*get_info)(struct clap_plugin             *plugin,
                    int32_t                         index,
                    struct clap_event_port_info    *info);
@@ -42,13 +44,16 @@ struct clap_plugin_event_ports
    * On failure, returns -1.
    * user_name is a string provided by the host to tell the
    * plugin how to name the new cloned port.
+   *
+   * [audio-thread]
    */
   int32_t (*clone_port)(struct clap_plugin *plugin,
                         int32_t             port_id,
                         const char         *user_name);
 
   /* When the host is done with a cloned port, it can call
-   * release_port() to release the resources. */
+   * release_port() to release the resources.
+   * [audio-thread]*/
   int32_t (*release_port)(struct clap_plugin *plugin,
                           int32_t             port_id);
 };

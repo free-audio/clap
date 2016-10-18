@@ -8,7 +8,8 @@
 struct clap_host_embed
 {
   /* Request the host to resize the client area to width, height.
-   * Return true on success, false otherwise. */
+   * Return true on success, false otherwise.
+   * [thread-safe] */
   bool (*resize)(struct clap_host *host, int32_t width, int32_t height);
 };
 

@@ -71,17 +71,20 @@ struct clap_param_module
 
 struct clap_plugin_params
 {
-  /* Returns the number of parameters. */
+  /* Returns the number of parameters.
+   * [audio-thread] */
   int32_t (*count)(struct clap_plugin *plugin);
 
   /* Copies the parameter's info to param and returns true.
-   * If index is greater or equal to the number then return false. */
+   * If index is greater or equal to the number then return false.
+   * [audio-thread] */
   bool (*get_param)(struct clap_plugin *plugin,
                     int32_t             index,
                     struct clap_param  *param);
 
   /* Copies the module's info to module and returns true.
-   * If module_id is NULL or invalid then return false. */
+   * If module_id is NULL or invalid then return false.
+   * [audio-thread] */
   bool (*get_module)(struct clap_plugin       *plugin,
                      const char               *module_id,
                      struct clap_param_module *module);
@@ -91,7 +94,8 @@ struct clap_plugin_params
    * automation event shall be ignored in favor of the audio rate
    * automation.
    *
-   * To disconnect the automation, set buffer to NULL. */
+   * To disconnect the automation, set buffer to NULL.
+   * [audio-thread] */
   bool (*set_param_port)(struct clap_plugin     *plugin,
                          int32_t                 param_index,
                          int32_t                 channel,
@@ -101,20 +105,24 @@ struct clap_plugin_params
 
 struct clap_host_params
 {
+  /* [thread-safe] */
   void (*touch_begin)(struct clap_host   *host,
                       struct clap_plugin *plugin,
                       int32_t             index);
 
+  /* [thread-safe] */
   void (*touch_end)(struct clap_host     *host,
                     struct clap_plugin   *plugin,
                     int32_t               index);
 
+  /* [thread-safe] */
   void (*changed)(struct clap_host       *host,
                   struct clap_plugin     *plugin,
                   int32_t                 index,
                   union clap_param_value  value,
                   bool                    is_recordable);
 
+  /* [thread-safe] */
   void (*rescan)(struct clap_host   *host,
                  struct clap_plugin *plugin);
 };

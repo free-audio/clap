@@ -254,19 +254,25 @@ struct clap_host
 
   void *host_data; // reserved pointer for the host
 
-  /* returns the size of the original string, 0 if not string */
+  char name[CLAP_NAME_SIZE]; // plugin name, eg: "BitwigStudio"
+  char version[CLAP_VERSION_SIZE]; // the plugin version, eg: "1.3.14"
+
+  /* returns the size of the original string, 0 if not string
+   * [thread-safe] */
   int32_t (*get_attribute)(struct clap_host *host,
                            const char       *attr,
                            char             *buffer,
                            int32_t           size);
 
-  /* Log a message through the host. */
+  /* Log a message through the host.
+   * [thread-safe] */
   void (*log)(struct clap_host       *host,
               struct clap_plugin     *plugin,
               enum clap_log_severity  severity,
               const char             *msg);
 
-  /* query an extension */
+  /* query an extension
+   * [thread-safe] */
   const void *(*extension)(struct clap_host *host, const char *extention_id);
 };
 
@@ -331,21 +337,25 @@ struct clap_plugin
   /* Copy at most size of the attribute's value into buffer.
    * This function must place a '\0' byte at the end of the string.
    * Returns the size of the original string or 0 if there is no
-   * value for this attributes. */
+   * value for this attributes.
+   * [thread-safe] */
   int32_t (*get_attribute)(struct clap_plugin *plugin,
                            const char         *attr,
                            char               *buffer,
                            int32_t             size);
 
-  /* activation */
+  /* activation/deactivation
+   * [audio-thread] */
   bool (*activate)(struct clap_plugin *plugin);
   void (*deactivate)(struct clap_plugin *plugin);
 
-  /* process audio, events, ... */
+  /* process audio, events, ...
+   * [audio-thread] */
   enum clap_process_status (*process)(struct clap_plugin  *plugin,
                                       struct clap_process *process);
 
-  /* query an extension */
+  /* query an extension
+   * [thread-safe] */
   const void *(*extension)(struct clap_plugin *plugin, const char *id);
 };
 
@@ -357,19 +367,22 @@ struct clap_plugin
  * 176400, 192000. */
 struct clap_plugin_factory
 {
-  /* Get the number of plugins available. */
+  /* Get the number of plugins available.
+   * [thread-safe] */
   int32_t get_plugin_count(struct clap_plugin_factory *factory);
 
   /* Create a clap_plugin by its index.
    * Valid indexes are from 0 to get_plugin_count() - 1.
-   * Returns null in case of error. */
+   * Returns null in case of error.
+   * [thread-safe] */
   struct clap_plugin *create_plugin_by_index(struct clap_plugin_factory *factory,
                                              struct clap_host           *host,
                                              int32_t                     sample_rate,
                                              int32_t                     index);
 
   /* Create a clap_plugin by its plugin_id.
-   * Returns null in case of error. */
+   * Returns null in case of error.
+   * [thread-safe] */
   struct clap_plugin *create_plugin_by_id(struct clap_plugin_factory *factory,
                                           struct clap_host           *host,
                                           int32_t                     sample_rate,

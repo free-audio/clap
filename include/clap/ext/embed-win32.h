@@ -10,10 +10,18 @@
 
 struct clap_plugin_embed_win32
 {
+  /* Get the size of the plugin UI.
+   * [thread-safe] */
   void (*get_size)(struct clap_plugin *plugin,
                    int32_t            *width,
                    int32_t            *height);
+
+  /* Attach the plugin UI.
+   * [thread-safe] */
   bool (*attach)(struct clap_plugin *plugin, HWND window);
+
+  /* Detach the plugin UI.
+   * [thread-safe] */
   bool (*detach)(struct clap_plugin *plugin);
 };
 

@@ -9,8 +9,11 @@ struct clap_plugin_state
 {
   /* The plugin has to allocate and save its state into *buffer.
    * The plugin is also responsible to free the buffer on the
-   * next call to save() or when the plugin is destroyed. */
+   * next call to save() or when the plugin is destroyed.
+   * [audio-thread] */
   bool (*save)(struct clap_plugin *plugin, void **buffer, int32_t *size);
+
+  /* [audio-thread] */
   bool (*restore)(struct clap_plugin *plugin, const void *buffer, int32_t size);
 };
 
