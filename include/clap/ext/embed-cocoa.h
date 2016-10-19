@@ -1,6 +1,10 @@
 #ifndef CLAP_EXT_EMBED_COCOA_H
 # define CLAP_EXT_EMBED_COCOA_H
 
+# ifdef __cplusplus
+extern "C" {
+# endif
+
 # include "../clap.h"
 # include "embed.h"
 
@@ -23,5 +27,9 @@ struct clap_plugin_embed_cocoa
    * [thread-safe] */
   bool (*detach)(struct clap_plugin *plugin);
 };
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif /* !CLAP_EXT_EMBED_COCOA_H */

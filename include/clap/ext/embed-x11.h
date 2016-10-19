@@ -6,6 +6,10 @@
 
 # define CLAP_EXT_EMBED_X11 "clap/embed/x11"
 
+# ifdef __cplusplus
+extern "C" {
+# endif
+
 struct clap_plugin_embed_x11
 {
   /* Get the size of the plugin UI.
@@ -29,5 +33,9 @@ struct clap_plugin_embed_x11
    * [thread-safe] */
   bool (*detach)(struct clap_plugin *plugin);
 };
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif /* !CLAP_EMBED_XLIB_H */

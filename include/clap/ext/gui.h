@@ -5,6 +5,10 @@
 
 # define CLAP_EXT_GUI "clap/gui"
 
+# ifdef __cplusplus
+extern "C" {
+# endif
+
 struct clap_plugin_gui
 {
   /* Open the GUI
@@ -32,5 +36,9 @@ struct clap_host_gui
   void (*gui_closed)(struct clap_host   *host,
                      struct clap_plugin *plugin);
 };
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif /* !CLAP_EXT_GUI_H */

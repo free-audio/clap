@@ -5,6 +5,10 @@
 
 # define CLAP_EXT_RENDER "clap/render"
 
+# ifdef __cplusplus
+extern "C" {
+# endif
+
 enum clap_plugin_render_mode
 {
   /* Default setting, used to play "realtime". */
@@ -35,5 +39,9 @@ struct clap_plugin_render
    * [audio-thread] */
   enum clap_plugin_render_mode (*get_render_mode)(struct clap_plugin *plugin);
 };
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif /* !CLAP_EXT_RENDER_H */

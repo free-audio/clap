@@ -6,6 +6,10 @@
 # include "../clap.h"
 # include "embed.h"
 
+# ifdef __cplusplus
+extern "C" {
+# endif
+
 # define CLAP_EXT_EMBED_WIN32 "clap/embed/win32"
 
 struct clap_plugin_embed_win32
@@ -24,5 +28,9 @@ struct clap_plugin_embed_win32
    * [thread-safe] */
   bool (*detach)(struct clap_plugin *plugin);
 };
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif /* !CLAP_EXT_EMBED_WIN32_H */

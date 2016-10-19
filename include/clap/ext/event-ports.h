@@ -7,6 +7,10 @@
 
 # define CLAP_MAIN_EVENT_PORT_ID 0
 
+# ifdef __cplusplus
+extern "C" {
+# endif
+
 struct clap_audio_port_info
 {
   /* This number uniquely identify the port.
@@ -57,5 +61,9 @@ struct clap_plugin_event_ports
   int32_t (*release_port)(struct clap_plugin *plugin,
                           int32_t             port_id);
 };
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif /* !EVENT_PORTS_H */

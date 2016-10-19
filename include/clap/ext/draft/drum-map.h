@@ -1,6 +1,10 @@
 #ifndef CLAP_EXT_DRUM_MAP_H
 # define CLAP_EXT_DRUM_MAP_H
 
+# ifdef __cplusplus
+extern "C" {
+# endif
+
 # include "../../clap.h"
 
 # define CLAP_EXT_DRUM_MAP "clap/draft/drum-map"
@@ -29,5 +33,17 @@ struct clap_plugin_drum_map
                        int32_t                        index,
                        struct clap_drum_map_key_info *info);
 };
+
+struct clap_host_drum_map
+{
+  /* Inform the host that the drum map has changed.
+   * [thread-safe] */
+  void (*drum_map_changed)(struct clap_host   *host,
+                           struct clap_plugin *plugin);
+};
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif /* !CLAP_EXT_DRUM_MAP_H */

@@ -1,6 +1,10 @@
 ﻿#ifndef CLAP_EXT_PRESETS_H
 # define CLAP_EXT_PRESETS_H
 
+# ifdef __cplusplus
+extern "C" {
+# endif
+
 # include "../../clap.h"
 
 # define CLAP_EXT_PRESETS "clap/draft/presets"
@@ -94,5 +98,9 @@ struct clap_preset_library
                           struct clap_preset_info    *preset_info,
                           int32_t                     index);
 };
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif /* !CLAP_EXT_PRESETS_H */

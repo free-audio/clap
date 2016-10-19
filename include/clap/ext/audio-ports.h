@@ -1,6 +1,10 @@
 ﻿#ifndef CLAP_EXT_AUDIO_PORTS_H
 # define CLAP_EXT_AUDIO_PORTS_H
 
+# ifdef __cplusplus
+extern "C" {
+# endif
+
 # include "../clap.h"
 
 # define CLAP_EXT_AUDIO_PORTS "clap/audio-ports"
@@ -99,5 +103,9 @@ struct clap_host_audio_ports
   void (*latency_changed)(struct clap_host *host,
                           struct clap_plugin *plugin);
 };
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif /* !CLAP_EXT_PORT_H */
