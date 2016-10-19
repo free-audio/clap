@@ -75,6 +75,13 @@ that it can be called from multiple threads concurrently.
 Tips: while reading the headers, you can set your editor to highlight
 **[thread-safe]** and **[audio-thread]**.
 
+Naming conventions
+------------------
+
+Extensions name as ``struct clap_plugin_...`` are meant to be provided by the
+plugin, while extensions name as ``struct clap_host_...`` are meant to be
+provided by the host.
+
 Plugins location
 ----------------
 
