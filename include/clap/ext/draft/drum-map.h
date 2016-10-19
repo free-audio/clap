@@ -3,7 +3,7 @@
 
 # include "../../clap.h"
 
-# define CLAP_EXT_DRUM_MAP "clap/drum-map"
+# define CLAP_EXT_DRUM_MAP "clap/draft/drum-map"
 
 struct clap_drum_map_key_info
 {
@@ -30,4 +30,4 @@ struct clap_plugin_drum_map
                        struct clap_drum_map_key_info *info);
 };
 
-#endif /* !DRUM_MAP_H */
+#endif /* !CLAP_EXT_DRUM_MAP_H */

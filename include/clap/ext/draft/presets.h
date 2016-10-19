@@ -3,7 +3,7 @@
 
 # include "../../clap.h"
 
-# define CLAP_EXT_PRESETS "clap/presets"
+# define CLAP_EXT_PRESETS "clap/draft/presets"
 
 /* describes a single preset */
 struct clap_preset_info

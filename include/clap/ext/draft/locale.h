@@ -3,7 +3,7 @@
 
 # include "../../clap.h"
 
-# define CLAP_EXT_LOCALE "clap/locale"
+# define CLAP_EXT_LOCALE "clap/draft/locale"
 
 struct clap_plugin_locale
 {
