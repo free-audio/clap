@@ -328,6 +328,12 @@ struct clap_plugin
   void *host_data;   // reserved pointer for the host
   void *plugin_data; // reserved pointer for the plugin
 
+  /* The 3 following strings are here because:
+   * - they are mandatory
+   * - it is convenient when you debug, to be able to see
+   *   the plugin name, id and version by displaying
+   *   the structure.
+   */
   char name[CLAP_NAME_SIZE]; // plugin name, eg: "Diva"
   char id[CLAP_ID_SIZE]; // plugin id, eg: "u-he/diva"
   char version[CLAP_VERSION_SIZE]; // the plugin version, eg: "1.3.2"
