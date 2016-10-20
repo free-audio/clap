@@ -19,6 +19,7 @@ Goals
   - No dependancy on external libraries
   - No serialization format
   - No C++ multiple inheritence
+  - No C++ exceptions
   - No macro obfuscation
   - No object file to compile in the SDK, CLAP is an interface only.
   - Simple resource management mechanism
@@ -27,12 +28,25 @@ Goals
 - Be event oriented
 - Be extensible
 - Be easy to bridge
-- More and more advanced modular systems are showing up, things should be dynamics
+- Be dynamic
 
-  - dynamic ports
-  - dynamic parameters
+  - More and more advanced modular systems are showing up, they require
+
+    - dynamic ports
+    - dynamic parameters
 
 - Full MIDI access
+- Use flexible designs, give the option:
+
+  - Today most plugin and host manufacturer have their own ideas,
+    and supports multiple formats. CLAP should not force one into
+    a particular idea/design. For example, an host which do not
+    want to send MIDI data to the plugin, should be able to translate
+    MIDI CCs into parameter automation. On the other hand, an host
+    which wants to give full MIDI access to the plugins, should be
+    able to as well.
+  - 32 bits or 64 bits audio? 32 bits is mandatory and 64 bits is
+    an option.
 
 Specification
 =============
@@ -104,7 +118,7 @@ Windows
 Mac
 ~~~
 
-TBD
+- TBD
 
 Instantiate a plugin
 --------------------
@@ -385,8 +399,8 @@ Scales
 ~~~~~~
 
 The plugin can inform the host, which scale to use for the parameter's UI
-(knob, slider, ...). ``clap_param->scale`` can be set to ``CLAP_PARAM_LINEAR``
-or ``CLAP_PARAM_LOG``. A logarithmic scale is convinient for a frequency
+(knob, slider, ...). ``clap_param->scale`` can be set to ``CLAP_PARAM_LINEAR``,
+``CLAP_PARAM_LOG`` or ... A logarithmic scale is convinient for a frequency
 parameter.
 
 Automation
