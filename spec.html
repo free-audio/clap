@@ -194,6 +194,7 @@ tt.docutils {
 <li>No dependancy on external libraries</li>
 <li>No serialization format</li>
 <li>No C++ multiple inheritence</li>
+<li>No C++ exceptions</li>
 <li>No macro obfuscation</li>
 <li>No object file to compile in the SDK, CLAP is an interface only.</li>
 <li>Simple resource management mechanism</li>
@@ -203,12 +204,27 @@ tt.docutils {
 <li>Be event oriented</li>
 <li>Be extensible</li>
 <li>Be easy to bridge</li>
-<li>More and more advanced modular systems are showing up, things should be dynamics<ul>
+<li>Be dynamic<ul>
+<li>More and more advanced modular systems are showing up, they require<ul>
 <li>dynamic ports</li>
 <li>dynamic parameters</li>
 </ul>
 </li>
+</ul>
+</li>
 <li>Full MIDI access</li>
+<li>Use flexible designs, give the option:<ul>
+<li>Today most plugin and host manufacturer have their own ideas,
+and supports multiple formats. CLAP should not force one into
+a particular idea/design. For example, an host which do not
+want to send MIDI data to the plugin, should be able to translate
+MIDI CCs into parameter automation. On the other hand, an host
+which wants to give full MIDI access to the plugins, should be
+able to as well.</li>
+<li>32 bits or 64 bits audio? 32 bits is mandatory and 64 bits is
+an option.</li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="section" id="specification">
@@ -272,7 +288,9 @@ provided by the host.</p>
 </div>
 <div class="section" id="mac">
 <h3><a class="toc-backref" href="#id13">Mac</a></h3>
-<p>TBD</p>
+<ul class="simple">
+<li>TBD</li>
+</ul>
 </div>
 </div>
 <div class="section" id="instantiate-a-plugin">
@@ -586,8 +604,8 @@ should rely on <tt class="docutils literal">display_text</tt> to show its value.
 <div class="section" id="scales">
 <h3><a class="toc-backref" href="#id28">Scales</a></h3>
 <p>The plugin can inform the host, which scale to use for the parameter's UI
-(knob, slider, ...). <tt class="docutils literal"><span class="pre">clap_param-&gt;scale</span></tt> can be set to <tt class="docutils literal">CLAP_PARAM_LINEAR</tt>
-or <tt class="docutils literal">CLAP_PARAM_LOG</tt>. A logarithmic scale is convinient for a frequency
+(knob, slider, ...). <tt class="docutils literal"><span class="pre">clap_param-&gt;scale</span></tt> can be set to <tt class="docutils literal">CLAP_PARAM_LINEAR</tt>,
+<tt class="docutils literal">CLAP_PARAM_LOG</tt> or ... A logarithmic scale is convinient for a frequency
 parameter.</p>
 </div>
 <div class="section" id="automation">
