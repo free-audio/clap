@@ -255,7 +255,7 @@ struct clap_host
   void *host_data; // reserved pointer for the host
 
   char name[CLAP_NAME_SIZE]; // plugin name, eg: "BitwigStudio"
-  char version[CLAP_VERSION_SIZE]; // the plugin version, eg: "1.3.14"
+  char version[CLAP_NAME_SIZE]; // the plugin version, eg: "1.3.14"
 
   /* returns the size of the original string, 0 if not string
    * [thread-safe] */
@@ -336,7 +336,7 @@ struct clap_plugin
    */
   char name[CLAP_NAME_SIZE]; // plugin name, eg: "Diva"
   char id[CLAP_ID_SIZE]; // plugin id, eg: "u-he/diva"
-  char version[CLAP_VERSION_SIZE]; // the plugin version, eg: "1.3.2"
+  char version[CLAP_NAME_SIZE]; // the plugin version, eg: "1.3.2"
 
   enum clap_plugin_type plugin_type;
 
@@ -379,24 +379,24 @@ struct clap_plugin_factory
 {
   /* Get the number of plugins available.
    * [thread-safe] */
-  int32_t get_plugin_count(struct clap_plugin_factory *factory);
+  int32_t (*get_plugin_count)(struct clap_plugin_factory *factory);
 
   /* Create a clap_plugin by its index.
    * Valid indexes are from 0 to get_plugin_count() - 1.
    * Returns null in case of error.
    * [thread-safe] */
-  struct clap_plugin *create_plugin_by_index(struct clap_plugin_factory *factory,
-                                             struct clap_host           *host,
-                                             int32_t                     sample_rate,
-                                             int32_t                     index);
+  struct clap_plugin *(*create_plugin_by_index)(struct clap_plugin_factory *factory,
+                                                struct clap_host           *host,
+                                                int32_t                     sample_rate,
+                                                int32_t                     index);
 
   /* Create a clap_plugin by its plugin_id.
    * Returns null in case of error.
    * [thread-safe] */
-  struct clap_plugin *create_plugin_by_id(struct clap_plugin_factory *factory,
-                                          struct clap_host           *host,
-                                          int32_t                     sample_rate,
-                                          const char                 *plugin_id);
+  struct clap_plugin *(*create_plugin_by_id)(struct clap_plugin_factory *factory,
+                                            struct clap_host           *host,
+                                            int32_t                     sample_rate,
+                                            const char                 *plugin_id);
 };
 
 /* Entry point */
