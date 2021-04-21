@@ -1,36 +1,30 @@
-#ifndef CLAP_EXT_STATE_H
-# define CLAP_EXT_STATE_H
+#pragma once
 
-# include "../clap.h"
+#include "../clap.h"
+#include "stream.h"
 
-# define CLAP_EXT_STATE "clap/state"
+#define CLAP_EXT_STATE "clap/state"
 
-# ifdef __cplusplus
+#ifdef __cplusplus
 extern "C" {
-# endif
+#endif
 
-struct clap_plugin_state
-{
-  /* The plugin has to allocate and save its state into *buffer.
-   * The plugin is also responsible to free the buffer on the
-   * next call to save() or when the plugin is destroyed.
-   * [audio-thread] */
-  bool (*save)(struct clap_plugin *plugin, void **buffer, int32_t *size);
+struct clap_plugin_state {
+   /* Saves the plugin state into stream.
+    * [main-thread] */
+   bool (*save)(struct clap_plugin *plugin, struct clap_ostream *stream);
 
-  /* [audio-thread] */
-  bool (*restore)(struct clap_plugin *plugin, const void *buffer, int32_t size);
+   /* Loads the plugin state from stream.
+    * [main-thread] */
+   bool (*restore)(struct clap_plugin *plugin, struct clap_istream *stream);
 };
 
-struct clap_host_state
-{
-  /* Tell the host that the plugin state has changed.
-   * [thread-safe] */
-  void (*set_dirty)(struct clap_host   *host,
-                    struct clap_plugin *plugin);
+struct clap_host_state {
+   /* Tell the host that the plugin state has changed.
+    * [thread-safe] */
+   void (*set_dirty)(struct clap_host *host, struct clap_plugin *plugin);
 };
 
-# ifdef __cplusplus
+#ifdef __cplusplus
 }
-# endif
-
-#endif /* !CLAP_EXT_STATE_H */
+#endif
