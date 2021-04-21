@@ -202,7 +202,7 @@ An audio port has:
    same port and so connect multiple signals to it. For example you have an
    analyzer and you want a repeatable input port, so the user can connect
    an arbitrary number of signals.
- 
+
 Standard channel mappings
 `````````````````````````
 
@@ -372,7 +372,7 @@ The host can get the plugin's parameters tree by using the params extension:
   }
 
 See `clap/ext/params.h`_.
- 
+
 Types
 ~~~~~
 
@@ -476,13 +476,13 @@ an extension.
 +------------+---------------------------+----------------------+----------------+
 | GUI        | header                    | extension            | comment        |
 +============+===========================+======================+================+
-| Generic    | `clap/ext/embed.h`_       | ``CLAP_EMBED``       | For the host   |
+| Generic    | `clap/ext/gui.h`_         | ``CLAP_EMBED``       | For the host   |
 +------------+---------------------------+----------------------+----------------+
-| Windows    | `clap/ext/embed-win32.h`_ | ``CLAP_EMBED_WIN32`` | For the plugin |
+| Windows    | `clap/ext/gui-win32.h`_   | ``CLAP_EMBED_WIN32`` | For the plugin |
 +------------+---------------------------+----------------------+----------------+
-| X11        | `clap/ext/embed-x11.h`_   | ``CLAP_EMBED_X11``   | For the plugin |
+| X11        | `clap/ext/gui-x11.h`_     | ``CLAP_EMBED_X11``   | For the plugin |
 +------------+---------------------------+----------------------+----------------+
-| Cocoa      | `clap/ext/embed-cocoa.h`_ | ``CLAP_EMBED_COCOA`` | For the plugin |
+| Cocoa      | `clap/ext/gui-cocoa.h`_   | ``CLAP_EMBED_COCOA`` | For the plugin |
 +------------+---------------------------+----------------------+----------------+
 
 Example on Windows
@@ -515,47 +515,6 @@ Resizing the window
   if (embed && embed->resize(host, width, height)) {
     // resize succeed
   }
-
-
-Presets
--------
-
-List plugin's presets
-~~~~~~~~~~~~~~~~~~~~~
-
-The host can browse the plugin's presets by using the preset extension:
-
-.. code:: c
-
-  #include <clap/clap.h>
-  #include <clap/ext/draft/presets.h>
-
-  struct clap_plugin_presets *presets = plugin->get_extension(plugin, CLAP_PRESETS);
-  struct clap_preset_iterator *iter = NULL;
-  struct clap_preset;
-
-  if (presets && presets->iter_begin(plugin, &iter)) {
-    do {
-      if (!presets->iter_get(plugin, iter, &preset))
-        break;
-
-      // XXX: do your work with preset;
-    } while (presets->iter_next(plugin, iter));
-
-    // release the iterator
-    presets->iter_destroy(plugin, iter);
-  }
-
-See `clap/ext/draft/presets.h`_.
-
-Load a preset
-~~~~~~~~~~~~~
-
-To load a preset, the host have to send an event ``CLAP_EVENT_PRESET_SET`` to
-the plugin.
-
-When a preset is loaded from the plugin's GUI, the plugin must send a
-``CLAP_EVENT_PRESET_SET`` to the host.
 
 Save and restore plugin's state
 -------------------------------
@@ -613,12 +572,6 @@ clap/ext/audio-ports.h
 .. include:: include/clap/ext/audio-ports.h
    :code: c
 
-clap/ext/event-ports.h
-----------------------
-
-.. include:: include/clap/ext/event-ports.h
-   :code: c
-
 clap/ext/params.h
 -----------------
 
@@ -631,44 +584,27 @@ clap/ext/gui.h
 .. include:: include/clap/ext/gui.h
    :code: c
 
-clap/ext/embed.h
-----------------
+clap/ext/gui-win32.h
+--------------------
 
-.. include:: include/clap/ext/embed.h
+.. include:: include/clap/ext/gui-win32.h
    :code: c
 
-clap/ext/embed-win32.h
-----------------------
+clap/ext/gui-x11.h
+------------------
 
-.. include:: include/clap/ext/embed-win32.h
+.. include:: include/clap/ext/gui-x11.h
    :code: c
 
-clap/ext/embed-x11.h
----------------------
+clap/ext/gui-cocoa.h
+--------------------
 
-.. include:: include/clap/ext/embed-x11.h
+.. include:: include/clap/ext/gui-cocoa.h
    :code: c
 
-clap/ext/embed-cocoa.h
-----------------------
 
-.. include:: include/clap/ext/embed-cocoa.h
-   :code: c
-
-clap/ext/draft/locale.h
------------------------
-
-.. include:: include/clap/ext/draft/locale.h
-   :code: c
-
-clap/ext/draft/presets.h
-------------------------
-
-.. include:: include/clap/ext/draft/presets.h
-   :code: c
-
-clap/ext/draft/drum-map.h
+clap/ext/draft/key-name.h
 -------------------------
 
-.. include:: include/clap/ext/draft/drum-map.h
+.. include:: include/clap/ext/draft/key-name.h
    :code: c

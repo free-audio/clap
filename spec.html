@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.12: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.16: http://docutils.sourceforge.net/" />
 <title>CLAP (CLever Audio Plugin)</title>
 <style type="text/css">
 
@@ -105,7 +105,7 @@ tt.docutils {
 <h2 class="subtitle" id="a-free-audio-plugin-format">A free audio plugin format</h2>
 
 <div class="contents topic" id="contents">
-<p class="topic-title first">Contents</p>
+<p class="topic-title">Contents</p>
 <ul class="simple">
 <li><a class="reference internal" href="#goals" id="id2">Goals</a></li>
 <li><a class="reference internal" href="#specification" id="id3">Specification</a><ul>
@@ -158,28 +158,19 @@ tt.docutils {
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#presets" id="id37">Presets</a><ul>
-<li><a class="reference internal" href="#list-plugin-s-presets" id="id38">List plugin's presets</a></li>
-<li><a class="reference internal" href="#load-a-preset" id="id39">Load a preset</a></li>
+<li><a class="reference internal" href="#save-and-restore-plugin-s-state" id="id37">Save and restore plugin's state</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#save-and-restore-plugin-s-state" id="id40">Save and restore plugin's state</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#references" id="id41">References</a><ul>
-<li><a class="reference internal" href="#clap-clap-h" id="id42">clap/clap.h</a></li>
-<li><a class="reference internal" href="#clap-ext-state-h" id="id43">clap/ext/state.h</a></li>
-<li><a class="reference internal" href="#clap-ext-audio-ports-h" id="id44">clap/ext/audio-ports.h</a></li>
-<li><a class="reference internal" href="#clap-ext-event-ports-h" id="id45">clap/ext/event-ports.h</a></li>
-<li><a class="reference internal" href="#clap-ext-params-h" id="id46">clap/ext/params.h</a></li>
-<li><a class="reference internal" href="#clap-ext-gui-h" id="id47">clap/ext/gui.h</a></li>
-<li><a class="reference internal" href="#clap-ext-embed-h" id="id48">clap/ext/embed.h</a></li>
-<li><a class="reference internal" href="#clap-ext-embed-win32-h" id="id49">clap/ext/embed-win32.h</a></li>
-<li><a class="reference internal" href="#clap-ext-embed-x11-h" id="id50">clap/ext/embed-x11.h</a></li>
-<li><a class="reference internal" href="#clap-ext-embed-cocoa-h" id="id51">clap/ext/embed-cocoa.h</a></li>
-<li><a class="reference internal" href="#clap-ext-draft-locale-h" id="id52">clap/ext/draft/locale.h</a></li>
-<li><a class="reference internal" href="#clap-ext-draft-presets-h" id="id53">clap/ext/draft/presets.h</a></li>
-<li><a class="reference internal" href="#clap-ext-draft-drum-map-h" id="id54">clap/ext/draft/drum-map.h</a></li>
+<li><a class="reference internal" href="#references" id="id38">References</a><ul>
+<li><a class="reference internal" href="#clap-clap-h" id="id39">clap/clap.h</a></li>
+<li><a class="reference internal" href="#clap-ext-state-h" id="id40">clap/ext/state.h</a></li>
+<li><a class="reference internal" href="#clap-ext-audio-ports-h" id="id41">clap/ext/audio-ports.h</a></li>
+<li><a class="reference internal" href="#clap-ext-params-h" id="id42">clap/ext/params.h</a></li>
+<li><a class="reference internal" href="#clap-ext-gui-h" id="id43">clap/ext/gui.h</a></li>
+<li><a class="reference internal" href="#clap-ext-gui-win32-h" id="id44">clap/ext/gui-win32.h</a></li>
+<li><a class="reference internal" href="#clap-ext-gui-x11-h" id="id45">clap/ext/gui-x11.h</a></li>
+<li><a class="reference internal" href="#clap-ext-gui-cocoa-h" id="id46">clap/ext/gui-cocoa.h</a></li>
+<li><a class="reference internal" href="#clap-ext-draft-key-name-h" id="id47">clap/ext/draft/key-name.h</a></li>
 </ul>
 </li>
 </ul>
@@ -329,7 +320,7 @@ a few methods. The attribute <tt class="docutils literal">clap_version</tt> must
 <span class="k">if</span> <span class="p">(</span><span class="n">plug_ext</span><span class="p">)</span> <span class="c1">// check if the interface was implemented
 </span><span class="p">{</span>
   <span class="c1">// cast to the concrete type
-</span>  <span class="k">const</span> <span class="k">struct</span> <span class="n">interface_type</span> <span class="o">*</span><span class="n">plug_ext1</span> <span class="o">=</span> <span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">interface_type</span> <span class="o">*</span><span class="p">)</span><span class="n">plug_ext</span><span class="p">;</span>
+</span>  <span class="k">const</span> <span class="k">struct</span> <span class="nc">interface_type</span> <span class="o">*</span><span class="n">plug_ext1</span> <span class="o">=</span> <span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="nc">interface_type</span> <span class="o">*</span><span class="p">)</span><span class="n">plug_ext</span><span class="p">;</span>
 
   <span class="c1">// use the interface ...
 </span>  <span class="n">plug_ext1</span><span class="o">-&gt;</span><span class="n">my_fct</span><span class="p">(</span><span class="n">plug</span><span class="p">,</span> <span class="p">...);</span>
@@ -547,12 +538,12 @@ value and description</li>
 <pre class="code c literal-block">
 <span class="cp">#include</span> <span class="cpf">&lt;clap/ext/params.h&gt;</span><span class="cp">
 </span>
-<span class="k">struct</span> <span class="n">clap_plugin_params</span> <span class="o">*</span><span class="n">params</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">extension</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">CLAP_EXT_PARAMS</span><span class="p">);</span>
+<span class="k">struct</span> <span class="nc">clap_plugin_params</span> <span class="o">*</span><span class="n">params</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">extension</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">CLAP_EXT_PARAMS</span><span class="p">);</span>
 <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">params</span><span class="p">)</span>
   <span class="k">return</span><span class="p">;</span> <span class="c1">// no params extensions
 </span><span class="kt">uint32_t</span> <span class="n">count</span> <span class="o">=</span> <span class="n">ports</span><span class="o">-&gt;</span><span class="n">count</span><span class="p">(</span><span class="n">plugin</span><span class="p">);</span>
 <span class="k">for</span> <span class="p">(</span><span class="kt">uint32_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">struct</span> <span class="n">clap_param</span> <span class="n">param</span><span class="p">;</span>
+  <span class="k">struct</span> <span class="nc">clap_param</span> <span class="n">param</span><span class="p">;</span>
   <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">ports</span><span class="o">-&gt;</span><span class="n">get_param</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">param</span><span class="p">))</span>
     <span class="k">continue</span><span class="p">;</span>
   <span class="c1">// ...
@@ -630,7 +621,7 @@ otherwise.</p>
 <pre class="code c literal-block">
 <span class="cp">#include</span> <span class="cpf">&lt;clap/ext/gui.h&gt;</span><span class="cp">
 </span>
-<span class="k">struct</span> <span class="n">clap_plugin_gui</span> <span class="o">*</span><span class="n">gui</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">extension</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">CLAP_EXT_GUI</span><span class="p">);</span>
+<span class="k">struct</span> <span class="nc">clap_plugin_gui</span> <span class="o">*</span><span class="n">gui</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">extension</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">CLAP_EXT_GUI</span><span class="p">);</span>
 <span class="k">if</span> <span class="p">(</span><span class="n">gui</span><span class="p">)</span>
   <span class="n">gui</span><span class="o">-&gt;</span><span class="n">open</span><span class="p">(</span><span class="n">plugin</span><span class="p">);</span>
 </pre>
@@ -642,7 +633,7 @@ otherwise.</p>
 <tt class="docutils literal"><span class="pre">host-&gt;events(host,</span> plugin, events);</tt>.</p>
 <p>Events sent to the host should be stamped:</p>
 <pre class="code c literal-block">
-<span class="k">struct</span> <span class="n">clap_event</span> <span class="n">ev</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nc">clap_event</span> <span class="n">ev</span><span class="p">;</span>
 <span class="c1">// ...
 </span><span class="n">ev</span><span class="p">.</span><span class="n">steady_time</span> <span class="o">=</span> <span class="o">*</span><span class="n">host</span><span class="o">-&gt;</span><span class="n">steady_time</span><span class="p">;</span>
 <span class="n">host</span><span class="o">-&gt;</span><span class="n">events</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">plugin</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ev</span><span class="p">);</span>
@@ -654,7 +645,7 @@ otherwise.</p>
 If the plugin window has been closed by the user, then the plugin should
 send an event <tt class="docutils literal">CLAP_EVENT_GUI_CLOSED</tt> to the host.</p>
 <pre class="code c literal-block">
-<span class="k">struct</span> <span class="n">clap_event</span> <span class="n">ev</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nc">clap_event</span> <span class="n">ev</span><span class="p">;</span>
 <span class="n">ev</span><span class="p">.</span><span class="n">next</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
 <span class="n">ev</span><span class="p">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">CLAP_EVENT_GUI_CLOSED</span><span class="p">;</span>
 <span class="n">ev</span><span class="p">.</span><span class="n">sample_offset</span> <span class="o">=</span> <span class="o">*</span><span class="n">host</span><span class="o">-&gt;</span><span class="n">steady_time</span><span class="p">;</span>
@@ -682,22 +673,22 @@ an extension.</p>
 </thead>
 <tbody valign="top">
 <tr><td>Generic</td>
-<td><a class="reference internal" href="#clap-ext-embed-h">clap/ext/embed.h</a></td>
+<td><a class="reference internal" href="#clap-ext-gui-h">clap/ext/gui.h</a></td>
 <td><tt class="docutils literal">CLAP_EMBED</tt></td>
 <td>For the host</td>
 </tr>
 <tr><td>Windows</td>
-<td><a class="reference internal" href="#clap-ext-embed-win32-h">clap/ext/embed-win32.h</a></td>
+<td><a class="reference internal" href="#clap-ext-gui-win32-h">clap/ext/gui-win32.h</a></td>
 <td><tt class="docutils literal">CLAP_EMBED_WIN32</tt></td>
 <td>For the plugin</td>
 </tr>
 <tr><td>X11</td>
-<td><a class="reference internal" href="#clap-ext-embed-x11-h">clap/ext/embed-x11.h</a></td>
+<td><a class="reference internal" href="#clap-ext-gui-x11-h">clap/ext/gui-x11.h</a></td>
 <td><tt class="docutils literal">CLAP_EMBED_X11</tt></td>
 <td>For the plugin</td>
 </tr>
 <tr><td>Cocoa</td>
-<td><a class="reference internal" href="#clap-ext-embed-cocoa-h">clap/ext/embed-cocoa.h</a></td>
+<td><a class="reference internal" href="#clap-ext-gui-cocoa-h">clap/ext/gui-cocoa.h</a></td>
 <td><tt class="docutils literal">CLAP_EMBED_COCOA</tt></td>
 <td>For the plugin</td>
 </tr>
@@ -710,11 +701,11 @@ an extension.</p>
 #include</span> <span class="cpf">&lt;clap/ext/gui.h&gt;</span><span class="cp">
 #include</span> <span class="cpf">&lt;clap/ext/embed-win32.h&gt;</span><span class="cp">
 </span>
-<span class="k">struct</span> <span class="n">clap_plugin_embed_win32</span> <span class="o">*</span><span class="n">embed</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">get_extension</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">CLAP_EMBED_WIN32</span><span class="p">);</span>
+<span class="k">struct</span> <span class="nc">clap_plugin_embed_win32</span> <span class="o">*</span><span class="n">embed</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">get_extension</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">CLAP_EMBED_WIN32</span><span class="p">);</span>
 <span class="k">if</span> <span class="p">(</span><span class="n">embed</span><span class="p">)</span>
   <span class="n">embed</span><span class="o">-&gt;</span><span class="n">embed</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">window</span><span class="p">);</span>
 
-<span class="k">struct</span> <span class="n">clap_plugin_gui</span> <span class="o">*</span><span class="n">gui</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">get_extension</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">CLAP_EXT_GUI</span><span class="p">);</span>
+<span class="k">struct</span> <span class="nc">clap_plugin_gui</span> <span class="o">*</span><span class="n">gui</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">get_extension</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">CLAP_EXT_GUI</span><span class="p">);</span>
 <span class="k">if</span> <span class="p">(</span><span class="n">gui</span><span class="p">)</span>
   <span class="n">gui</span><span class="o">-&gt;</span><span class="n">open</span><span class="p">(</span><span class="n">plugin</span><span class="p">);</span>
 </pre>
@@ -726,7 +717,7 @@ an extension.</p>
 #include</span> <span class="cpf">&lt;clap/ext/embed.h&gt;</span><span class="cp">
 </span>
 <span class="c1">// plugin code
-</span><span class="k">struct</span> <span class="n">clap_host_embed</span> <span class="o">*</span><span class="n">embed</span> <span class="o">=</span> <span class="n">host</span><span class="o">-&gt;</span><span class="n">get_extension</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">CLAP_EMBED</span><span class="p">);</span>
+</span><span class="k">struct</span> <span class="nc">clap_host_embed</span> <span class="o">*</span><span class="n">embed</span> <span class="o">=</span> <span class="n">host</span><span class="o">-&gt;</span><span class="n">get_extension</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">CLAP_EMBED</span><span class="p">);</span>
 <span class="k">if</span> <span class="p">(</span><span class="n">embed</span> <span class="o">&amp;&amp;</span> <span class="n">embed</span><span class="o">-&gt;</span><span class="n">resize</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))</span> <span class="p">{</span>
   <span class="c1">// resize succeed
 </span><span class="p">}</span>
@@ -734,43 +725,8 @@ an extension.</p>
 </div>
 </div>
 </div>
-<div class="section" id="presets">
-<h2><a class="toc-backref" href="#id37">Presets</a></h2>
-<div class="section" id="list-plugin-s-presets">
-<h3><a class="toc-backref" href="#id38">List plugin's presets</a></h3>
-<p>The host can browse the plugin's presets by using the preset extension:</p>
-<pre class="code c literal-block">
-<span class="cp">#include</span> <span class="cpf">&lt;clap/clap.h&gt;</span><span class="cp">
-#include</span> <span class="cpf">&lt;clap/ext/draft/presets.h&gt;</span><span class="cp">
-</span>
-<span class="k">struct</span> <span class="n">clap_plugin_presets</span> <span class="o">*</span><span class="n">presets</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">get_extension</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">CLAP_PRESETS</span><span class="p">);</span>
-<span class="k">struct</span> <span class="n">clap_preset_iterator</span> <span class="o">*</span><span class="n">iter</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-<span class="k">struct</span> <span class="n">clap_preset</span><span class="p">;</span>
-
-<span class="k">if</span> <span class="p">(</span><span class="n">presets</span> <span class="o">&amp;&amp;</span> <span class="n">presets</span><span class="o">-&gt;</span><span class="n">iter_begin</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">iter</span><span class="p">))</span> <span class="p">{</span>
-  <span class="k">do</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">presets</span><span class="o">-&gt;</span><span class="n">iter_get</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">iter</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">preset</span><span class="p">))</span>
-      <span class="k">break</span><span class="p">;</span>
-
-    <span class="c1">// XXX: do your work with preset;
-</span>  <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">presets</span><span class="o">-&gt;</span><span class="n">iter_next</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">iter</span><span class="p">));</span>
-
-  <span class="c1">// release the iterator
-</span>  <span class="n">presets</span><span class="o">-&gt;</span><span class="n">iter_destroy</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">iter</span><span class="p">);</span>
-<span class="p">}</span>
-</pre>
-<p>See <a class="reference internal" href="#clap-ext-draft-presets-h">clap/ext/draft/presets.h</a>.</p>
-</div>
-<div class="section" id="load-a-preset">
-<h3><a class="toc-backref" href="#id39">Load a preset</a></h3>
-<p>To load a preset, the host have to send an event <tt class="docutils literal">CLAP_EVENT_PRESET_SET</tt> to
-the plugin.</p>
-<p>When a preset is loaded from the plugin's GUI, the plugin must send a
-<tt class="docutils literal">CLAP_EVENT_PRESET_SET</tt> to the host.</p>
-</div>
-</div>
 <div class="section" id="save-and-restore-plugin-s-state">
-<h2><a class="toc-backref" href="#id40">Save and restore plugin's state</a></h2>
+<h2><a class="toc-backref" href="#id37">Save and restore plugin's state</a></h2>
 <p>Saving the plugin's state is done by using the state extension:</p>
 <pre class="code c literal-block">
 <span class="cp">#include</span> <span class="cpf">&lt;clap/clap.h&gt;</span><span class="cp">
@@ -779,7 +735,7 @@ the plugin.</p>
 <span class="kt">void</span>   <span class="o">*</span><span class="n">buffer</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
 <span class="kt">size_t</span>  <span class="n">size</span>   <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 
-<span class="k">struct</span> <span class="n">clap_plugin_state</span> <span class="o">*</span><span class="n">state</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">get_extension</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">CLAP_EXT_STATE</span><span class="p">);</span>
+<span class="k">struct</span> <span class="nc">clap_plugin_state</span> <span class="o">*</span><span class="n">state</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">-&gt;</span><span class="n">get_extension</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">CLAP_EXT_STATE</span><span class="p">);</span>
 <span class="k">if</span> <span class="p">(</span><span class="n">state</span> <span class="o">&amp;&amp;</span> <span class="n">state</span><span class="o">-&gt;</span><span class="n">save</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">buffer</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">size</span><span class="p">))</span> <span class="p">{</span>
   <span class="c1">// save succeed
 </span><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
@@ -799,15 +755,15 @@ plugin's parameters and restore them.</p>
 </div>
 </div>
 <div class="section" id="references">
-<h1><a class="toc-backref" href="#id41">References</a></h1>
+<h1><a class="toc-backref" href="#id38">References</a></h1>
 <div class="section" id="clap-clap-h">
-<h2><a class="toc-backref" href="#id42">clap/clap.h</a></h2>
+<h2><a class="toc-backref" href="#id39">clap/clap.h</a></h2>
 <pre class="code c literal-block">
 <span class="cm">/*
  * CLAP - CLever Audio Plugin
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~
  *
- * Copyright (c) 2014...2016 Alexandre BIQUE &lt;bique.alexandre&#64;gmail.com&gt;
+ * Copyright (c) 2014...2021 Alexandre BIQUE &lt;bique.alexandre&#64;gmail.com&gt;
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the &quot;Software&quot;), to deal
@@ -828,157 +784,132 @@ plugin's parameters and restore them.</p>
  * THE SOFTWARE.
  */</span>
 
-<span class="cp">#ifndef CLAP_H
-# define CLAP_H
+<span class="cp">#pragma once
 </span>
-<span class="cp"># ifdef __cplusplus
+<span class="cp">#ifdef __cplusplus
 </span><span class="k">extern</span> <span class="s">&quot;C&quot;</span> <span class="p">{</span>
-<span class="cp"># endif
+<span class="cp">#endif
 </span>
-<span class="cp"># include &lt;stddef.h&gt;
-# include &lt;stdbool.h&gt;
-# include &lt;stdint.h&gt;
+<span class="cp">#include</span> <span class="cpf">&lt;stdbool.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;stddef.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp">
 </span>
-<span class="cp"># define CLAP_VERSION_MAKE(Major, Minor, Revision) \
-  ((((Major) &amp; 0xff) &lt;&lt; 16) | (((Minor) &amp; 0xff) &lt;&lt; 8) | ((Revision) &amp; 0xff))
-# define CLAP_VERSION CLAP_VERSION_MAKE(0, 2, 0)
-# define CLAP_VERSION_MAJ(Version) (((Version) &gt;&gt; 16) &amp; 0xff)
-# define CLAP_VERSION_MIN(Version) (((Version) &gt;&gt; 8) &amp; 0xff)
-# define CLAP_VERSION_REV(Version) ((Version) &amp; 0xff)
+<span class="cp">#define CLAP_VERSION_MAKE(Major, Minor, Revision)                              \
+   ((((Major)&amp;0xff) &lt;&lt; 16) | (((Minor)&amp;0xff) &lt;&lt; 8) | ((Revision)&amp;0xff))
+#define CLAP_VERSION CLAP_VERSION_MAKE(0, 2, 0)
+#define CLAP_VERSION_MAJ(Version) (((Version) &gt;&gt; 16) &amp; 0xff)
+#define CLAP_VERSION_MIN(Version) (((Version) &gt;&gt; 8) &amp; 0xff)
+#define CLAP_VERSION_REV(Version) ((Version)&amp;0xff)
 </span>
 <span class="cp">#if defined _WIN32 || defined __CYGWIN__
-# ifdef __GNUC__
-#  define CLAP_EXPORT __attribute__ ((dllexport))
-# else
-#  define CLAP_EXPORT __declspec(dllexport)
-# endif
+#   ifdef __GNUC__
+#      define CLAP_EXPORT __attribute__((dllexport))
+#   else
+#      define CLAP_EXPORT __declspec(dllexport)
+#   endif
 #else
-# if __GNUC__ &gt;= 4
-#  define CLAP_EXPORT __attribute__ ((visibility (&quot;default&quot;)))
-# else
-#  define CLAP_EXPORT
-# endif
+#   if __GNUC__ &gt;= 4
+#      define CLAP_EXPORT __attribute__((visibility(&quot;default&quot;)))
+#   else
+#      define CLAP_EXPORT
+#   endif
 #endif
 </span>
 <span class="c1">///////////////////////////
 // FORWARD DELCLARATIONS //
 ///////////////////////////
 </span>
-<span class="k">struct</span> <span class="n">clap_plugin</span><span class="p">;</span>
-<span class="k">struct</span> <span class="n">clap_host</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nc">clap_plugin</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nc">clap_host</span><span class="p">;</span>
 
-<span class="k">enum</span> <span class="n">clap_string_size</span>
-<span class="p">{</span>
-  <span class="n">CLAP_ID_SIZE</span>         <span class="o">=</span> <span class="mi">64</span><span class="p">,</span>
-  <span class="n">CLAP_NAME_SIZE</span>       <span class="o">=</span> <span class="mi">64</span><span class="p">,</span>
-  <span class="n">CLAP_DESC_SIZE</span>       <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
-  <span class="n">CLAP_DISPLAY_SIZE</span>    <span class="o">=</span> <span class="mi">64</span><span class="p">,</span>
-  <span class="n">CLAP_TAGS_SIZE</span>       <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
+<span class="k">enum</span> <span class="n">clap_string_size</span> <span class="p">{</span>
+   <span class="n">CLAP_ID_SIZE</span> <span class="o">=</span> <span class="mi">128</span><span class="p">,</span>
+   <span class="n">CLAP_NAME_SIZE</span> <span class="o">=</span> <span class="mi">64</span><span class="p">,</span>
+   <span class="n">CLAP_DESC_SIZE</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
+   <span class="n">CLAP_DISPLAY_SIZE</span> <span class="o">=</span> <span class="mi">64</span><span class="p">,</span>
+   <span class="n">CLAP_TAGS_SIZE</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
 <span class="p">};</span>
 
-<span class="k">enum</span> <span class="n">clap_log_severity</span>
-<span class="p">{</span>
-  <span class="n">CLAP_LOG_DEBUG</span>   <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-  <span class="n">CLAP_LOG_INFO</span>    <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-  <span class="n">CLAP_LOG_WARNING</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
-  <span class="n">CLAP_LOG_ERROR</span>   <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
-  <span class="n">CLAP_LOG_FATAL</span>   <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+<span class="k">enum</span> <span class="n">clap_log_severity</span> <span class="p">{</span>
+   <span class="n">CLAP_LOG_DEBUG</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+   <span class="n">CLAP_LOG_INFO</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+   <span class="n">CLAP_LOG_WARNING</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+   <span class="n">CLAP_LOG_ERROR</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+   <span class="n">CLAP_LOG_FATAL</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
 <span class="p">};</span>
 
 <span class="c1">// Description of the plugin
-</span><span class="cp"># define CLAP_ATTR_DESCRIPTION     &quot;clap/description&quot;
+</span><span class="cp">#define CLAP_ATTR_DESCRIPTION &quot;clap/description&quot;
 </span><span class="c1">// Product version string
-</span><span class="cp"># define CLAP_ATTR_VERSION         &quot;clap/version&quot;
+</span><span class="cp">#define CLAP_ATTR_VERSION &quot;clap/version&quot;
 </span><span class="c1">// Manufacturer name
-</span><span class="cp"># define CLAP_ATTR_MANUFACTURER    &quot;clap/manufacturer&quot;
+</span><span class="cp">#define CLAP_ATTR_MANUFACTURER &quot;clap/manufacturer&quot;
 </span><span class="c1">// Url to product
-</span><span class="cp"># define CLAP_ATTR_URL             &quot;clap/url&quot;
+</span><span class="cp">#define CLAP_ATTR_URL &quot;clap/url&quot;
 </span><span class="c1">// Url to support page, or mail to support
-</span><span class="cp"># define CLAP_ATTR_SUPPORT         &quot;clap/support&quot;
+</span><span class="cp">#define CLAP_ATTR_SUPPORT &quot;clap/support&quot;
 </span>
 <span class="c1">// Should be &quot;1&quot; if the plugin supports tunning.
-</span><span class="cp"># define CLAP_ATTR_SUPPORTS_TUNING &quot;clap/supports_tuning&quot;
+</span><span class="cp">#define CLAP_ATTR_SUPPORTS_TUNING &quot;clap/supports_tuning&quot;
 </span>
 <span class="c1">////////////////
 // PARAMETERS //
 ////////////////
 </span>
-<span class="k">union</span> <span class="n">clap_param_value</span>
-<span class="p">{</span>
-  <span class="kt">bool</span>    <span class="n">b</span><span class="p">;</span>
-  <span class="kt">float</span>   <span class="n">f</span><span class="p">;</span>
-  <span class="kt">int32_t</span> <span class="n">i</span><span class="p">;</span>
+<span class="k">union</span> <span class="nc">clap_param_value</span> <span class="p">{</span>
+   <span class="kt">bool</span>    <span class="n">b</span><span class="p">;</span>
+   <span class="kt">double</span>  <span class="n">d</span><span class="p">;</span>
+   <span class="kt">int64_t</span> <span class="n">i</span><span class="p">;</span>
 <span class="p">};</span>
 
 <span class="c1">////////////
 // EVENTS //
 ////////////
 </span>
-<span class="k">enum</span> <span class="n">clap_event_type</span>
-<span class="p">{</span>
-  <span class="n">CLAP_EVENT_NOTE_ON</span>    <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>    <span class="c1">// note attribute
-</span>  <span class="n">CLAP_EVENT_NOTE_OFF</span>   <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>    <span class="c1">// note attribute
-</span>  <span class="n">CLAP_EVENT_NOTE_CHOKE</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>    <span class="c1">// note attribute
+<span class="k">enum</span> <span class="n">clap_event_type</span> <span class="p">{</span>
+   <span class="n">CLAP_EVENT_NOTE_ON</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>  <span class="c1">// note attribute
+</span>   <span class="n">CLAP_EVENT_NOTE_OFF</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="c1">// note attribute
 </span>
-  <span class="n">CLAP_EVENT_PARAM_SET</span>  <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>    <span class="c1">// param attribute
-</span>  <span class="n">CLAP_EVENT_PARAM_RAMP</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>    <span class="c1">// param attribute
+   <span class="n">CLAP_EVENT_CHOKE</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="c1">// no attribute
 </span>
-  <span class="n">CLAP_EVENT_CONTROL</span>    <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>    <span class="c1">// control attribute
-</span>  <span class="n">CLAP_EVENT_MIDI</span>       <span class="o">=</span> <span class="mi">6</span><span class="p">,</span>    <span class="c1">// midi attribute
+   <span class="n">CLAP_EVENT_PARAM_SET</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="c1">// param attribute
 </span>
-  <span class="n">CLAP_EVENT_PLAY</span>  <span class="o">=</span> <span class="mi">12</span><span class="p">,</span> <span class="c1">// no attribute
-</span>  <span class="n">CLAP_EVENT_PAUSE</span> <span class="o">=</span> <span class="mi">13</span><span class="p">,</span> <span class="c1">// no attribute
-</span>  <span class="n">CLAP_EVENT_STOP</span>  <span class="o">=</span> <span class="mi">14</span><span class="p">,</span> <span class="c1">// no attribute
-</span>  <span class="n">CLAP_EVENT_JUMP</span>  <span class="o">=</span> <span class="mi">15</span><span class="p">,</span>  <span class="c1">// attribute jump
+   <span class="cm">/* MIDI Style */</span>
+   <span class="n">CLAP_EVENT_CONTROL</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>  <span class="c1">// control attribute
+</span>   <span class="n">CLAP_EVENT_PROGRAM</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span> <span class="c1">// program attribute
+</span>   <span class="n">CLAP_EVENT_MIDI</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span>     <span class="c1">// midi attribute
 </span>
-  <span class="n">CLAP_EVENT_PROGRAM</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span> <span class="c1">// program attribute
+   <span class="n">CLAP_EVENT_PLAY</span> <span class="o">=</span> <span class="mi">12</span><span class="p">,</span>  <span class="c1">// no attribute
+</span>   <span class="n">CLAP_EVENT_PAUSE</span> <span class="o">=</span> <span class="mi">13</span><span class="p">,</span> <span class="c1">// no attribute
+</span>   <span class="n">CLAP_EVENT_STOP</span> <span class="o">=</span> <span class="mi">14</span><span class="p">,</span>  <span class="c1">// no attribute
 </span><span class="p">};</span>
 
-<span class="k">struct</span> <span class="n">clap_event_param</span>
-<span class="p">{</span>
-  <span class="cm">/* key/channel index */</span>
-  <span class="kt">int8_t</span>                  <span class="n">key</span><span class="p">;</span>     <span class="c1">// 0..127
-</span>  <span class="kt">int8_t</span>                  <span class="n">channel</span><span class="p">;</span> <span class="c1">// 0..16
-</span>
-  <span class="cm">/* parameter */</span>
-  <span class="kt">int32_t</span>                 <span class="n">index</span><span class="p">;</span>     <span class="c1">// parameter index
-</span>  <span class="k">union</span> <span class="n">clap_param_value</span>  <span class="n">value</span><span class="p">;</span>
-  <span class="kt">float</span>                   <span class="n">increment</span><span class="p">;</span> <span class="c1">// for param ramp
-</span><span class="p">};</span>
-
-<span class="cm">/** Note On/Off event. */</span>
-<span class="k">struct</span> <span class="n">clap_event_note</span>
-<span class="p">{</span>
-  <span class="kt">int8_t</span>  <span class="n">key</span><span class="p">;</span>      <span class="c1">// 0..127
-</span>  <span class="kt">int8_t</span>  <span class="n">channel</span><span class="p">;</span>  <span class="c1">// 0..15
-</span>  <span class="kt">float</span>   <span class="n">pitch</span><span class="p">;</span>    <span class="c1">// hertz
-</span>  <span class="kt">float</span>   <span class="n">velocity</span><span class="p">;</span> <span class="c1">// 0..1
-</span><span class="p">};</span>
-
-<span class="k">struct</span> <span class="n">clap_event_control</span>
-<span class="p">{</span>
-  <span class="kt">int8_t</span> <span class="n">key</span><span class="p">;</span>     <span class="c1">// 0..127
-</span>  <span class="kt">int8_t</span> <span class="n">channel</span><span class="p">;</span> <span class="c1">// 0..15
-</span>  <span class="kt">int8_t</span> <span class="n">control</span><span class="p">;</span> <span class="c1">// 0..127
-</span>  <span class="kt">float</span>  <span class="n">value</span><span class="p">;</span>   <span class="c1">// 0..1
-</span><span class="p">};</span>
-
-<span class="k">struct</span> <span class="n">clap_event_midi</span>
-<span class="p">{</span>
-  <span class="cm">/* midi event */</span>
-  <span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">buffer</span><span class="p">;</span>
-  <span class="kt">int32_t</span>        <span class="n">size</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nc">clap_event_param</span> <span class="p">{</span>
+   <span class="kt">int8_t</span>                 <span class="n">key</span><span class="p">;</span>
+   <span class="kt">int8_t</span>                 <span class="n">channel</span><span class="p">;</span>
+   <span class="kt">uint32_t</span>               <span class="n">index</span><span class="p">;</span> <span class="c1">// parameter index
+</span>   <span class="k">union</span> <span class="nc">clap_param_value</span> <span class="n">normalized_value</span><span class="p">;</span>
+   <span class="kt">double</span>                 <span class="n">normalized_ramp</span><span class="p">;</span>
 <span class="p">};</span>
 
-<span class="k">struct</span> <span class="n">clap_event_jump</span>
-<span class="p">{</span>
-  <span class="kt">int32_t</span> <span class="n">tempo</span><span class="p">;</span>      <span class="c1">// tempo in samples
-</span>  <span class="kt">int32_t</span> <span class="n">bar</span><span class="p">;</span>        <span class="c1">// the bar number
-</span>  <span class="kt">int32_t</span> <span class="n">bar_offset</span><span class="p">;</span> <span class="c1">// 0 &lt;= bar_offset &lt; tsig_denom * tempo
-</span>  <span class="kt">int64_t</span> <span class="n">song_time</span><span class="p">;</span>  <span class="c1">// song time in micro seconds
-</span>  <span class="kt">int32_t</span> <span class="n">tsig_num</span><span class="p">;</span>   <span class="c1">// time signature numerator
-</span>  <span class="kt">int32_t</span> <span class="n">tsig_denom</span><span class="p">;</span> <span class="c1">// time signature denominator
+<span class="cm">/** Note On/Off event. */</span>
+<span class="k">struct</span> <span class="nc">clap_event_note</span> <span class="p">{</span>
+   <span class="kt">int8_t</span> <span class="n">key</span><span class="p">;</span>      <span class="c1">// 0..127
+</span>   <span class="kt">int8_t</span> <span class="n">channel</span><span class="p">;</span>  <span class="c1">// 0..15
+</span>   <span class="kt">double</span> <span class="n">velocity</span><span class="p">;</span> <span class="c1">// 0..1
 </span><span class="p">};</span>
+
+<span class="k">struct</span> <span class="nc">clap_event_control</span> <span class="p">{</span>
+   <span class="kt">int8_t</span> <span class="n">key</span><span class="p">;</span>     <span class="c1">// 0..127, or -1 to match all keys
+</span>   <span class="kt">int8_t</span> <span class="n">channel</span><span class="p">;</span> <span class="c1">// 0..15, or -1 to match all channels
+</span>   <span class="kt">int8_t</span> <span class="n">control</span><span class="p">;</span> <span class="c1">// 0..127
+</span>   <span class="kt">double</span> <span class="n">value</span><span class="p">;</span>   <span class="c1">// 0..1
+</span><span class="p">};</span>
+
+<span class="k">struct</span> <span class="nc">clap_event_midi</span> <span class="p">{</span>
+   <span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">buffer</span><span class="p">;</span> <span class="c1">// midi buffer
+</span>   <span class="kt">uint32_t</span>       <span class="n">size</span><span class="p">;</span>
+<span class="p">};</span>
 
 <span class="cm">/**
  * Asks the plugin to load a program.
@@ -995,90 +926,122 @@ plugin's parameters and restore them.</p>
  * a preset from the filesystem, then parse it, do memory allocation,
  * there is no guarentee that the preset will be loaded in time.
  */</span>
-<span class="k">struct</span> <span class="n">clap_event_program</span>
-<span class="p">{</span>
-  <span class="kt">int32_t</span> <span class="n">bank_msb</span><span class="p">;</span> <span class="c1">// 0..0x7FFFFFFF
-</span>  <span class="kt">int32_t</span> <span class="n">bank_lsb</span><span class="p">;</span> <span class="c1">// 0..0x7FFFFFFF
-</span>  <span class="kt">int32_t</span> <span class="n">program</span><span class="p">;</span>  <span class="c1">// 0..0x7FFFFFFF
+<span class="k">struct</span> <span class="nc">clap_event_program</span> <span class="p">{</span>
+   <span class="kt">int32_t</span> <span class="n">bank_msb</span><span class="p">;</span> <span class="c1">// 0..0x7FFFFFFF
+</span>   <span class="kt">int32_t</span> <span class="n">bank_lsb</span><span class="p">;</span> <span class="c1">// 0..0x7FFFFFFF
+</span>   <span class="kt">int32_t</span> <span class="n">program</span><span class="p">;</span>  <span class="c1">// 0..0x7FFFFFFF
 </span><span class="p">};</span>
 
-<span class="k">struct</span> <span class="n">clap_event</span>
-<span class="p">{</span>
-  <span class="k">struct</span> <span class="n">clap_event</span>    <span class="o">*</span><span class="n">next</span><span class="p">;</span> <span class="c1">// linked list, NULL on end
-</span>  <span class="k">enum</span> <span class="n">clap_event_type</span>  <span class="n">type</span><span class="p">;</span>
-  <span class="kt">int64_t</span>               <span class="n">time</span><span class="p">;</span> <span class="c1">// offset from the first sample in the process block
-</span>  <span class="kt">int32_t</span>               <span class="n">port</span><span class="p">;</span> <span class="c1">// event port id
+<span class="k">struct</span> <span class="nc">clap_event</span> <span class="p">{</span>
+   <span class="k">enum</span> <span class="n">clap_event_type</span> <span class="n">type</span><span class="p">;</span>
+   <span class="kt">uint32_t</span> <span class="n">time</span><span class="p">;</span> <span class="c1">// offset from the first sample in the process block
 </span>
-  <span class="k">union</span> <span class="p">{</span>
-    <span class="k">struct</span> <span class="n">clap_event_note</span>        <span class="n">note</span><span class="p">;</span>
-    <span class="k">struct</span> <span class="n">clap_event_control</span>     <span class="n">control</span><span class="p">;</span>
-    <span class="k">struct</span> <span class="n">clap_event_param</span>       <span class="n">param</span><span class="p">;</span>
-    <span class="k">struct</span> <span class="n">clap_event_midi</span>        <span class="n">midi</span><span class="p">;</span>
-    <span class="k">struct</span> <span class="n">clap_event_jump</span>        <span class="n">jump</span><span class="p">;</span>
-    <span class="k">struct</span> <span class="n">clap_event_program</span>     <span class="n">program</span><span class="p">;</span>
-  <span class="p">};</span>
+   <span class="k">union</span> <span class="p">{</span>
+      <span class="k">struct</span> <span class="nc">clap_event_note</span>    <span class="n">note</span><span class="p">;</span>
+      <span class="k">struct</span> <span class="nc">clap_event_control</span> <span class="n">control</span><span class="p">;</span>
+      <span class="k">struct</span> <span class="nc">clap_event_param</span>   <span class="n">param</span><span class="p">;</span>
+      <span class="k">struct</span> <span class="nc">clap_event_midi</span>    <span class="n">midi</span><span class="p">;</span>
+      <span class="k">struct</span> <span class="nc">clap_event_program</span> <span class="n">program</span><span class="p">;</span>
+   <span class="p">};</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="nc">clap_event_list</span> <span class="p">{</span>
+   <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">size</span><span class="p">)(</span><span class="k">const</span> <span class="k">struct</span> <span class="nc">clap_event_istream</span> <span class="o">*</span><span class="n">stream</span><span class="p">);</span>
+   <span class="k">const</span> <span class="k">struct</span> <span class="nc">clap_event</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">get</span><span class="p">)(</span><span class="k">const</span> <span class="k">struct</span> <span class="nc">clap_event_istream</span> <span class="o">*</span><span class="n">stream</span><span class="p">,</span>
+                                   <span class="kt">int</span>                              <span class="n">index</span><span class="p">);</span>
+   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">push_back</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_event_istream</span> <span class="o">*</span><span class="n">stream</span><span class="p">,</span>
+                     <span class="k">const</span> <span class="k">struct</span> <span class="nc">clap_event</span> <span class="o">*</span>  <span class="n">event</span><span class="p">);</span>
 <span class="p">};</span>
 
 <span class="c1">/////////////
 // PROCESS //
 /////////////
 </span>
-<span class="k">enum</span> <span class="n">clap_process_status</span>
-<span class="p">{</span>
-  <span class="cm">/* Processing failed. The output buffer must be discarded. */</span>
-  <span class="n">CLAP_PROCESS_ERROR</span>    <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+<span class="k">enum</span> <span class="n">clap_process_status</span> <span class="p">{</span>
+   <span class="cm">/* Processing failed. The output buffer must be discarded. */</span>
+   <span class="n">CLAP_PROCESS_ERROR</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
 
-  <span class="cm">/* Processing succeed. */</span>
-  <span class="n">CLAP_PROCESS_CONTINUE</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+   <span class="cm">/* Processing succeed. */</span>
+   <span class="n">CLAP_PROCESS_CONTINUE</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
 
-  <span class="cm">/* Processing succeed, but no more processing is required, until next event. */</span>
-  <span class="n">CLAP_PROCESS_SLEEP</span>    <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+   <span class="cm">/* Processing succeed, but no more processing is required, until next event.
+    */</span>
+   <span class="n">CLAP_PROCESS_SLEEP</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
 <span class="p">};</span>
 
-<span class="k">struct</span> <span class="n">clap_process</span>
-<span class="p">{</span>
-  <span class="cm">/* number of frame to process */</span>
-  <span class="kt">int32_t</span> <span class="n">frames_count</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nc">clap_audio_buffer</span> <span class="p">{</span>
+   <span class="c1">// if data is null, then assume that the input has the value 0 for each
+</span>   <span class="c1">// samples. data[i] for channel i buffer
+</span>   <span class="kt">float</span> <span class="o">**</span><span class="n">data</span><span class="p">;</span>
+   <span class="kt">int32_t</span> <span class="n">channel_count</span><span class="p">;</span>
+<span class="p">};</span>
 
-  <span class="cm">/* process info */</span>
-  <span class="kt">int64_t</span> <span class="n">steady_time</span><span class="p">;</span> <span class="c1">// the steady time in samples
+<span class="k">struct</span> <span class="nc">clap_transport</span> <span class="p">{</span>
+   <span class="kt">bool</span> <span class="n">is_playing</span><span class="p">;</span>
+   <span class="kt">bool</span> <span class="n">is_recording</span><span class="p">;</span>
+   <span class="kt">bool</span> <span class="n">is_looping</span><span class="p">;</span>
+
+   <span class="kt">double</span> <span class="n">tempo</span><span class="p">;</span> <span class="c1">// tempo in bpm
 </span>
-  <span class="cm">/* Linked list of events
-   * The plugin must not modify those events. */</span>
-  <span class="k">struct</span> <span class="n">clap_event</span> <span class="o">*</span><span class="n">in_events</span><span class="p">;</span>
-  <span class="k">struct</span> <span class="n">clap_event</span> <span class="o">*</span><span class="n">out_events</span><span class="p">;</span>
+   <span class="kt">double</span> <span class="n">song_pos</span><span class="p">;</span>  <span class="c1">// position in beats
+</span>   <span class="kt">double</span> <span class="n">bar_start</span><span class="p">;</span> <span class="c1">// start pos of the current bar
+</span>   <span class="kt">double</span> <span class="n">loop_start</span><span class="p">;</span>
+   <span class="kt">double</span> <span class="n">loop_end</span><span class="p">;</span>
+
+   <span class="kt">int16_t</span> <span class="n">tsig_num</span><span class="p">;</span>   <span class="c1">// time signature numerator
+</span>   <span class="kt">int16_t</span> <span class="n">tsig_denom</span><span class="p">;</span> <span class="c1">// time signature denominator
+</span>
+   <span class="kt">int64_t</span> <span class="n">steady_time</span><span class="p">;</span> <span class="c1">// the steady time in samples
+</span><span class="p">};</span>
+
+<span class="k">struct</span> <span class="nc">clap_process</span> <span class="p">{</span>
+   <span class="kt">int32_t</span> <span class="n">frames_count</span><span class="p">;</span> <span class="c1">// number of frame to process
+</span>
+   <span class="k">struct</span> <span class="nc">clap_transport</span> <span class="n">transport</span><span class="p">;</span>
+
+   <span class="cm">/* audio ports */</span>
+   <span class="k">const</span> <span class="k">struct</span> <span class="nc">clap_audio_buffer</span> <span class="o">*</span><span class="n">audio_in</span><span class="p">;</span>
+   <span class="k">const</span> <span class="k">struct</span> <span class="nc">clap_audio_buffer</span> <span class="o">*</span><span class="n">audio_out</span><span class="p">;</span>
+   <span class="kt">int</span>                             <span class="n">audio_in_count</span><span class="p">;</span>
+   <span class="kt">int</span>                             <span class="n">audio_out_count</span><span class="p">;</span>
+
+   <span class="cm">/* events */</span>
+   <span class="k">const</span> <span class="k">struct</span> <span class="nc">clap_event_list</span> <span class="o">*</span><span class="n">in_events</span><span class="p">;</span>
+   <span class="k">struct</span> <span class="nc">clap_event_list</span> <span class="o">*</span>      <span class="n">out_events</span><span class="p">;</span>
 <span class="p">};</span>
 
 <span class="c1">//////////
 // HOST //
 //////////
 </span>
-<span class="k">struct</span> <span class="n">clap_host</span>
-<span class="p">{</span>
-  <span class="kt">int32_t</span> <span class="n">clap_version</span><span class="p">;</span> <span class="c1">// initialized to CLAP_VERSION
+<span class="k">struct</span> <span class="nc">clap_host</span> <span class="p">{</span>
+   <span class="kt">int32_t</span> <span class="n">clap_version</span><span class="p">;</span> <span class="c1">// initialized to CLAP_VERSION
 </span>
-  <span class="kt">void</span> <span class="o">*</span><span class="n">host_data</span><span class="p">;</span> <span class="c1">// reserved pointer for the host
+   <span class="kt">void</span> <span class="o">*</span><span class="n">host_data</span><span class="p">;</span> <span class="c1">// reserved pointer for the host
 </span>
-  <span class="kt">char</span> <span class="n">name</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span> <span class="c1">// plugin name, eg: &quot;BitwigStudio&quot;
-</span>  <span class="kt">char</span> <span class="n">version</span><span class="p">[</span><span class="n">CLAP_VERSION_SIZE</span><span class="p">];</span> <span class="c1">// the plugin version, eg: &quot;1.3.14&quot;
+   <span class="cm">/* Name and version could be attributes but it is convenient to
+    * have it when debugging. Also they are mandatory. */</span>
+   <span class="kt">char</span> <span class="n">name</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>    <span class="c1">// plugin name, eg: &quot;BitwigStudio&quot;
+</span>   <span class="kt">char</span> <span class="n">version</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span> <span class="c1">// the plugin version, eg: &quot;1.3.14&quot;
 </span>
-  <span class="cm">/* returns the size of the original string, 0 if not string
-   * [thread-safe] */</span>
-  <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">get_attribute</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span>
-                           <span class="k">const</span> <span class="kt">char</span>       <span class="o">*</span><span class="n">attr</span><span class="p">,</span>
-                           <span class="kt">char</span>             <span class="o">*</span><span class="n">buffer</span><span class="p">,</span>
-                           <span class="kt">int32_t</span>           <span class="n">size</span><span class="p">);</span>
+   <span class="cm">/* Returns the size of the original string. If this is larger than size, then
+    * the function did not have enough space to copy all the data.
+    * [thread-safe] */</span>
+   <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">get_attribute</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span>
+                            <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span>      <span class="n">attr</span><span class="p">,</span>
+                            <span class="kt">char</span> <span class="o">*</span>            <span class="n">buffer</span><span class="p">,</span>
+                            <span class="kt">int32_t</span>           <span class="n">size</span><span class="p">);</span>
 
-  <span class="cm">/* Log a message through the host.
-   * [thread-safe] */</span>
-  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">log</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span>       <span class="o">*</span><span class="n">host</span><span class="p">,</span>
-              <span class="k">struct</span> <span class="n">clap_plugin</span>     <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
-              <span class="k">enum</span> <span class="n">clap_log_severity</span>  <span class="n">severity</span><span class="p">,</span>
-              <span class="k">const</span> <span class="kt">char</span>             <span class="o">*</span><span class="n">msg</span><span class="p">);</span>
+   <span class="cm">/* Log a message through the host.
+    * [thread-safe] */</span>
+   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">log</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_host</span> <span class="o">*</span>     <span class="n">host</span><span class="p">,</span>
+               <span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span>   <span class="n">plugin</span><span class="p">,</span>
+               <span class="k">enum</span> <span class="n">clap_log_severity</span> <span class="n">severity</span><span class="p">,</span>
+               <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span>           <span class="n">msg</span><span class="p">);</span>
 
-  <span class="cm">/* query an extension
-   * [thread-safe] */</span>
-  <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">extension</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">extention_id</span><span class="p">);</span>
+   <span class="cm">/* Query an extension.
+    * [thread-safe] */</span>
+   <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">extension</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">extention_id</span><span class="p">);</span>
 <span class="p">};</span>
 
 <span class="c1">////////////
@@ -1087,899 +1050,483 @@ plugin's parameters and restore them.</p>
 </span>
 <span class="cm">/* bitfield
  * This gives an hint to the host what the plugin might do. */</span>
-<span class="k">enum</span> <span class="n">clap_plugin_type</span>
-<span class="p">{</span>
-  <span class="cm">/* Instruments can play notes, and generate audio */</span>
-  <span class="n">CLAP_PLUGIN_INSTRUMENT</span>   <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span><span class="p">),</span>
+<span class="k">enum</span> <span class="n">clap_plugin_type</span> <span class="p">{</span>
+   <span class="cm">/* Instruments can play notes, and generate audio */</span>
+   <span class="n">CLAP_PLUGIN_INSTRUMENT</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span><span class="p">),</span>
 
-  <span class="cm">/* Audio effects, process audio input and produces audio.
-   * Exemple: delay, reverb, compressor. */</span>
-  <span class="n">CLAP_PLUGIN_AUDIO_EFFECT</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">),</span>
+   <span class="cm">/* Audio effects, process audio input and produces audio.
+    * Exemple: delay, reverb, compressor. */</span>
+   <span class="n">CLAP_PLUGIN_AUDIO_EFFECT</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">),</span>
 
-  <span class="cm">/* Event effects, takes events as input and produces events.
-   * Exemple: arpegiator */</span>
-  <span class="n">CLAP_PLUGIN_EVENT_EFFECT</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">),</span> <span class="c1">// can be seen as midi effect
+   <span class="cm">/* Event effects, takes events as input and produces events.
+    * Exemple: arpegiator */</span>
+   <span class="n">CLAP_PLUGIN_EVENT_EFFECT</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">),</span> <span class="c1">// can be seen as midi effect
 </span>
-  <span class="cm">/* Analyze audio and/or events, and produces analysis results */</span>
-  <span class="n">CLAP_PLUGIN_ANALYZER</span>     <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span><span class="p">),</span>
-
-  <span class="cm">/* This plugin is a modular system, so it can load &quot;modules&quot;,
-   * have dynamic number of ports and parameters.
-   * In short it could do anything. */</span>
-  <span class="n">CLAP_PLUGIN_PATCHER</span>      <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">),</span>
-
-  <span class="cm">/* This plugin streams the audio signal.
-   * For example it can stream to a web radio.
-   * This is important to not block the process loop. */</span>
-  <span class="n">CLAP_PLUGIN_STREAMER</span>     <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">5</span><span class="p">),</span>
-
-  <span class="cm">/* This plugin act as a proxy, so it forwards the events/audio
-   * to an other program on the same machine or on the network.
-   *
-   * For example a wine bridge which runs Windows plugins on Linux,
-   * is a proxy. A plugin which sends the data to an hardware device
-   * is a proxy as well. */</span>
-  <span class="n">CLAP_PLUGIN_PROXY</span>        <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">6</span><span class="p">),</span>
-
-  <span class="cm">/* This plugin is a sampler, and can be used to load generic
-   * audio files. */</span>
-  <span class="n">CLAP_PLUGIN_SAMPLER</span>      <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">7</span><span class="p">),</span>
+   <span class="cm">/* Analyze audio and/or events, and produces analysis results */</span>
+   <span class="n">CLAP_PLUGIN_ANALYZER</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span><span class="p">),</span>
 <span class="p">};</span>
 
-<span class="k">struct</span> <span class="n">clap_plugin</span>
-<span class="p">{</span>
-  <span class="kt">int32_t</span> <span class="n">clap_version</span><span class="p">;</span> <span class="c1">// initialized to CLAP_VERSION
+<span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="p">{</span>
+   <span class="kt">int32_t</span> <span class="n">clap_version</span><span class="p">;</span> <span class="c1">// initialized to CLAP_VERSION
 </span>
-  <span class="kt">void</span> <span class="o">*</span><span class="n">host_data</span><span class="p">;</span>   <span class="c1">// reserved pointer for the host
-</span>  <span class="kt">void</span> <span class="o">*</span><span class="n">plugin_data</span><span class="p">;</span> <span class="c1">// reserved pointer for the plugin
+   <span class="kt">void</span> <span class="o">*</span><span class="n">plugin_data</span><span class="p">;</span> <span class="c1">// reserved pointer for the plugin
 </span>
-  <span class="cm">/* The 3 following strings are here because:
-   * - they are mandatory
-   * - it is convenient when you debug, to be able to see
-   *   the plugin name, id and version by displaying
-   *   the structure.
-   */</span>
-  <span class="kt">char</span> <span class="n">name</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span> <span class="c1">// plugin name, eg: &quot;Diva&quot;
-</span>  <span class="kt">char</span> <span class="n">id</span><span class="p">[</span><span class="n">CLAP_ID_SIZE</span><span class="p">];</span> <span class="c1">// plugin id, eg: &quot;u-he/diva&quot;
-</span>  <span class="kt">char</span> <span class="n">version</span><span class="p">[</span><span class="n">CLAP_VERSION_SIZE</span><span class="p">];</span> <span class="c1">// the plugin version, eg: &quot;1.3.2&quot;
+   <span class="cm">/* The 3 following strings are here because:
+    * - they are mandatory
+    * - it is convenient when you debug, to be able to see
+    *   the plugin name, id and version by displaying
+    *   the structure.
+    */</span>
+   <span class="kt">char</span> <span class="n">name</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>    <span class="c1">// plugin name, eg: &quot;Diva&quot;
+</span>   <span class="kt">char</span> <span class="n">id</span><span class="p">[</span><span class="n">CLAP_ID_SIZE</span><span class="p">];</span>        <span class="c1">// plugin id, eg: &quot;com.u-he.diva&quot;
+</span>   <span class="kt">char</span> <span class="n">version</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span> <span class="c1">// the plugin version, eg: &quot;1.3.2&quot;
 </span>
-  <span class="k">enum</span> <span class="n">clap_plugin_type</span> <span class="n">plugin_type</span><span class="p">;</span>
+   <span class="k">enum</span> <span class="n">clap_plugin_type</span> <span class="n">plugin_type</span><span class="p">;</span>
 
-  <span class="cm">/* Free the plugin and its resources.
-   * It is not required to deactivate the plugin prior to this call. */</span>
-  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">destroy</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
+   <span class="cm">/* Free the plugin and its resources.
+    * It is not required to deactivate the plugin prior to this call. */</span>
+   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">destroy</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 
-  <span class="cm">/* Copy at most size of the attribute's value into buffer.
-   * This function must place a '\0' byte at the end of the string.
-   * Returns the size of the original string or 0 if there is no
-   * value for this attributes.
-   * [thread-safe] */</span>
-  <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">get_attribute</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
-                           <span class="k">const</span> <span class="kt">char</span>         <span class="o">*</span><span class="n">attr</span><span class="p">,</span>
-                           <span class="kt">char</span>               <span class="o">*</span><span class="n">buffer</span><span class="p">,</span>
-                           <span class="kt">int32_t</span>             <span class="n">size</span><span class="p">);</span>
+   <span class="cm">/* Copy at most size of the attribute's value into buffer.
+    * This function must place a '\0' byte at the end of the string.
+    * Returns the size of the original string or 0 if there is no
+    * value for this attributes.
+    * [thread-safe] */</span>
+   <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">get_attribute</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
+                            <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span>        <span class="n">attr</span><span class="p">,</span>
+                            <span class="kt">char</span> <span class="o">*</span>              <span class="n">buffer</span><span class="p">,</span>
+                            <span class="kt">int32_t</span>             <span class="n">size</span><span class="p">);</span>
 
-  <span class="cm">/* activation/deactivation
-   * [audio-thread] */</span>
-  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">activate</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
-  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">deactivate</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
+   <span class="cm">/* activation/deactivation
+    * [main-thread] */</span>
+   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">activate</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="kt">int</span> <span class="n">sample_rate</span><span class="p">);</span>
+   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">deactivate</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 
-  <span class="cm">/* process audio, events, ...
-   * [audio-thread] */</span>
-  <span class="k">enum</span> <span class="nf">clap_process_status</span> <span class="p">(</span><span class="o">*</span><span class="n">process</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>  <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
-                                      <span class="k">struct</span> <span class="n">clap_process</span> <span class="o">*</span><span class="n">process</span><span class="p">);</span>
+   <span class="cm">/* process audio, events, ...
+    * [audio-thread] */</span>
+   <span class="k">enum</span> <span class="nf">clap_process_status</span> <span class="p">(</span><span class="o">*</span><span class="n">process</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span> <span class="n">plugin</span><span class="p">,</span>
+                                       <span class="k">struct</span> <span class="nc">clap_process</span> <span class="o">*</span><span class="n">process</span><span class="p">);</span>
 
-  <span class="cm">/* query an extension
-   * [thread-safe] */</span>
-  <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">extension</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">id</span><span class="p">);</span>
+   <span class="cm">/* query an extension
+    * [thread-safe] */</span>
+   <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">extension</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">id</span><span class="p">);</span>
 <span class="p">};</span>
 
 <span class="cm">/* This interface is the entry point of the dynamic library.
  *
- * Every methods must be thread-safe.
- *
- * Common sample rate values are: 44100, 48000, 88200, 96000,
- * 176400, 192000. */</span>
-<span class="k">struct</span> <span class="n">clap_plugin_factory</span>
-<span class="p">{</span>
-  <span class="cm">/* Get the number of plugins available.
-   * [thread-safe] */</span>
-  <span class="kt">int32_t</span> <span class="n">get_plugin_count</span><span class="p">(</span><span class="k">struct</span> <span class="n">clap_plugin_factory</span> <span class="o">*</span><span class="n">factory</span><span class="p">);</span>
+ * Every methods must be thread-safe. */</span>
+<span class="k">struct</span> <span class="nc">clap_plugin_entry</span> <span class="p">{</span>
+   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">init</span><span class="p">)(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">plugin_path</span><span class="p">);</span>
+   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">deinit</span><span class="p">)(</span><span class="kt">void</span><span class="p">);</span>
 
-  <span class="cm">/* Create a clap_plugin by its index.
-   * Valid indexes are from 0 to get_plugin_count() - 1.
-   * Returns null in case of error.
-   * [thread-safe] */</span>
-  <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="nf">create_plugin_by_index</span><span class="p">(</span><span class="k">struct</span> <span class="n">clap_plugin_factory</span> <span class="o">*</span><span class="n">factory</span><span class="p">,</span>
-                                             <span class="k">struct</span> <span class="n">clap_host</span>           <span class="o">*</span><span class="n">host</span><span class="p">,</span>
-                                             <span class="kt">int32_t</span>                     <span class="n">sample_rate</span><span class="p">,</span>
-                                             <span class="kt">int32_t</span>                     <span class="n">index</span><span class="p">);</span>
+   <span class="cm">/* Get the number of plugins available.
+    * [thread-safe] */</span>
+   <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">get_plugin_count</span><span class="p">)(</span><span class="kt">void</span><span class="p">);</span>
 
-  <span class="cm">/* Create a clap_plugin by its plugin_id.
-   * Returns null in case of error.
-   * [thread-safe] */</span>
-  <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="nf">create_plugin_by_id</span><span class="p">(</span><span class="k">struct</span> <span class="n">clap_plugin_factory</span> <span class="o">*</span><span class="n">factory</span><span class="p">,</span>
-                                          <span class="k">struct</span> <span class="n">clap_host</span>           <span class="o">*</span><span class="n">host</span><span class="p">,</span>
-                                          <span class="kt">int32_t</span>                     <span class="n">sample_rate</span><span class="p">,</span>
-                                          <span class="k">const</span> <span class="kt">char</span>                 <span class="o">*</span><span class="n">plugin_id</span><span class="p">);</span>
+   <span class="cm">/* Create a clap_plugin by its index.
+    * Valid indexes are from 0 to get_plugin_count() - 1.
+    * Returns null in case of error.
+    * [thread-safe] */</span>
+   <span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">create_plugin_by_index</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span>
+                                                 <span class="kt">int32_t</span>           <span class="n">index</span><span class="p">);</span>
+
+   <span class="cm">/* Create a clap_plugin by its plugin_id.
+    * Returns null in case of error.
+    * [thread-safe] */</span>
+   <span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">create_plugin_by_id</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span>
+                                              <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span>      <span class="n">plugin_id</span><span class="p">);</span>
 <span class="p">};</span>
 
 <span class="cm">/* Entry point */</span>
-<span class="n">CLAP_EXPORT</span> <span class="k">extern</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">clap_plugin_factory</span> <span class="o">*</span><span class="n">clap_plugin_factory</span><span class="p">;</span>
+<span class="n">CLAP_EXPORT</span> <span class="k">extern</span> <span class="k">const</span> <span class="k">struct</span> <span class="nc">clap_plugin_entry</span> <span class="o">*</span><span class="n">clap_plugin_entry</span><span class="p">;</span>
 
-<span class="cp"># ifdef __cplusplus
+<span class="cp">#ifdef __cplusplus
 </span><span class="p">}</span>
-<span class="cp"># endif
-</span>
-<span class="cp">#endif </span><span class="cm">/* !CLAP_H */</span>
+<span class="cp">#endif</span>
 </pre>
 </div>
 <div class="section" id="clap-ext-state-h">
-<h2><a class="toc-backref" href="#id43">clap/ext/state.h</a></h2>
+<h2><a class="toc-backref" href="#id40">clap/ext/state.h</a></h2>
 <pre class="code c literal-block">
-<span class="cp">#ifndef CLAP_EXT_STATE_H
-# define CLAP_EXT_STATE_H
+<span class="cp">#pragma once
 </span>
-<span class="cp"># include &quot;../clap.h&quot;
+<span class="cp">#include</span> <span class="cpf">&quot;../clap.h&quot;</span><span class="cp">
+#include</span> <span class="cpf">&quot;stream.h&quot;</span><span class="cp">
 </span>
-<span class="cp"># define CLAP_EXT_STATE &quot;clap/state&quot;
+<span class="cp">#define CLAP_EXT_STATE &quot;clap/state&quot;
 </span>
-<span class="cp"># ifdef __cplusplus
+<span class="cp">#ifdef __cplusplus
 </span><span class="k">extern</span> <span class="s">&quot;C&quot;</span> <span class="p">{</span>
-<span class="cp"># endif
+<span class="cp">#endif
 </span>
-<span class="k">struct</span> <span class="n">clap_plugin_state</span>
-<span class="p">{</span>
-  <span class="cm">/* The plugin has to allocate and save its state into *buffer.
-   * The plugin is also responsible to free the buffer on the
-   * next call to save() or when the plugin is destroyed.
-   * [audio-thread] */</span>
-  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">save</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="kt">void</span> <span class="o">**</span><span class="n">buffer</span><span class="p">,</span> <span class="kt">int32_t</span> <span class="o">*</span><span class="n">size</span><span class="p">);</span>
+<span class="k">struct</span> <span class="nc">clap_plugin_state</span> <span class="p">{</span>
+   <span class="cm">/* Saves the plugin state into stream.
+    * [main-thread] */</span>
+   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">save</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">clap_ostream</span> <span class="o">*</span><span class="n">stream</span><span class="p">);</span>
 
-  <span class="cm">/* [audio-thread] */</span>
-  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">restore</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buffer</span><span class="p">,</span> <span class="kt">int32_t</span> <span class="n">size</span><span class="p">);</span>
+   <span class="cm">/* Loads the plugin state from stream.
+    * [main-thread] */</span>
+   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">restore</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">clap_istream</span> <span class="o">*</span><span class="n">stream</span><span class="p">);</span>
 <span class="p">};</span>
 
-<span class="k">struct</span> <span class="n">clap_host_state</span>
-<span class="p">{</span>
-  <span class="cm">/* Tell the host that the plugin state has changed.
-   * [thread-safe] */</span>
-  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">set_dirty</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span>   <span class="o">*</span><span class="n">host</span><span class="p">,</span>
-                    <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
+<span class="k">struct</span> <span class="nc">clap_host_state</span> <span class="p">{</span>
+   <span class="cm">/* Tell the host that the plugin state has changed.
+    * [thread-safe] */</span>
+   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">set_dirty</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 <span class="p">};</span>
 
-<span class="cp"># ifdef __cplusplus
+<span class="cp">#ifdef __cplusplus
 </span><span class="p">}</span>
-<span class="cp"># endif
-</span>
-<span class="cp">#endif </span><span class="cm">/* !CLAP_EXT_STATE_H */</span>
+<span class="cp">#endif</span>
 </pre>
 </div>
 <div class="section" id="clap-ext-audio-ports-h">
-<h2><a class="toc-backref" href="#id44">clap/ext/audio-ports.h</a></h2>
+<h2><a class="toc-backref" href="#id41">clap/ext/audio-ports.h</a></h2>
 <pre class="code c literal-block">
-<span class="cp">#ifndef CLAP_EXT_AUDIO_PORTS_H
-# define CLAP_EXT_AUDIO_PORTS_H
+<span class="cp">#pragma once
 </span>
-<span class="cp"># ifdef __cplusplus
+<span class="cp">#ifdef __cplusplus
 </span><span class="k">extern</span> <span class="s">&quot;C&quot;</span> <span class="p">{</span>
-<span class="cp"># endif
+<span class="cp">#endif
 </span>
-<span class="cp"># include &quot;../clap.h&quot;
+<span class="cp">#include</span> <span class="cpf">&quot;../clap.h&quot;</span><span class="cp">
 </span>
-<span class="cp"># define CLAP_EXT_AUDIO_PORTS &quot;clap/audio-ports&quot;
+<span class="cp">#define CLAP_EXT_AUDIO_PORTS &quot;clap/audio-ports&quot;
 </span>
-<span class="k">enum</span> <span class="n">clap_audio_port_channel_mapping</span>
-<span class="p">{</span>
-  <span class="n">CLAP_AUDIO_PORT_UNSPECIFIED</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-  <span class="n">CLAP_AUDIO_PORT_MONO</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+<span class="k">enum</span> <span class="n">clap_audio_port_channel_mapping</span> <span class="p">{</span>
+   <span class="n">CLAP_AUDIO_PORT_UNSPECIFIED</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+   <span class="n">CLAP_AUDIO_PORT_MONO</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
 
-  <span class="c1">// left, right
-</span>  <span class="n">CLAP_AUDIO_PORT_STEREO</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+   <span class="c1">// left, right
+</span>   <span class="n">CLAP_AUDIO_PORT_STEREO</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
 
-  <span class="c1">// front left, front right, center, low, surround left, surround right
-</span>  <span class="c1">// surround back left, surround back right
-</span>  <span class="n">CLAP_AUDIO_PORT_SURROUND</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+   <span class="c1">// front left, front right, center, low, surround left, surround right
+</span>   <span class="c1">// surround back left, surround back right
+</span>   <span class="n">CLAP_AUDIO_PORT_SURROUND</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
 <span class="p">};</span>
 
-<span class="k">enum</span> <span class="n">clap_audio_port_role</span>
-<span class="p">{</span>
-  <span class="n">CLAP_AUDIO_PORT_INOUT</span>      <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-  <span class="n">CLAP_AUDIO_PORT_SIDECHAIN</span>  <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-  <span class="n">CLAP_AUDIO_PORT_MODULATION</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+<span class="k">struct</span> <span class="nc">clap_audio_port_info</span> <span class="p">{</span>
+   <span class="kt">char</span>    <span class="n">name</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span> <span class="c1">// useful in the debugger
+</span>   <span class="kt">bool</span>    <span class="n">is_input</span><span class="p">;</span>
+   <span class="kt">bool</span>    <span class="n">is_main</span><span class="p">;</span>
+   <span class="kt">int32_t</span> <span class="n">channel_count</span><span class="p">;</span>
+   <span class="k">enum</span> <span class="n">clap_audio_port_channel_mapping</span> <span class="n">channel_mapping</span><span class="p">;</span>
 <span class="p">};</span>
 
-<span class="k">struct</span> <span class="n">clap_audio_port_info</span>
-<span class="p">{</span>
-  <span class="kt">int32_t</span>                              <span class="n">id</span><span class="p">;</span>
-  <span class="kt">bool</span>                                 <span class="n">is_input</span><span class="p">;</span>
-  <span class="kt">int32_t</span>                              <span class="n">channel_count</span><span class="p">;</span>
-  <span class="k">enum</span> <span class="n">clap_audio_port_channel_mapping</span> <span class="n">channel_mapping</span><span class="p">;</span>
-  <span class="k">enum</span> <span class="n">clap_audio_port_role</span>            <span class="n">role</span><span class="p">;</span>
-  <span class="kt">char</span>                                 <span class="n">name</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>
+<span class="c1">// The audio ports scan has to be done while the plugin is deactivated.
+</span><span class="k">struct</span> <span class="nc">clap_plugin_audio_ports</span> <span class="p">{</span>
+   <span class="c1">// number of ports, both inputs and outputs
+</span>   <span class="c1">// [main-thread]
+</span>   <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">get_count</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 
-  <span class="cm">/* If true, then this is a virtual port which can be cloned
-   * and connected multiple times.
-   * Only useful for input ports.  */</span>
-  <span class="kt">bool</span>                                 <span class="n">is_cloneable</span><span class="p">;</span>
+   <span class="c1">// get info about about an audio port.
+</span>   <span class="c1">// [main-thread]
+</span>   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">get_info</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span>         <span class="n">plugin</span><span class="p">,</span>
+                    <span class="kt">int32_t</span>                      <span class="n">index</span><span class="p">,</span>
+                    <span class="k">struct</span> <span class="nc">clap_audio_port_info</span> <span class="o">*</span><span class="n">info</span><span class="p">);</span>
+
+   <span class="c1">// Returns the port latency.
+</span>   <span class="c1">// [main-thread]
+</span>   <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">get_latency</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="kt">int32_t</span> <span class="n">index</span><span class="p">);</span>
 <span class="p">};</span>
 
-<span class="k">struct</span> <span class="n">clap_audio_port</span>
-<span class="p">{</span>
-  <span class="kt">int32_t</span>                                <span class="n">channel_count</span><span class="p">;</span>
-  <span class="k">enum</span> <span class="n">clap_audio_port_channel_mapping</span>   <span class="n">channel_mapping</span><span class="p">;</span>
-  <span class="kt">float</span>                                <span class="o">**</span><span class="n">data</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nc">clap_host_audio_ports</span> <span class="p">{</span>
+   <span class="c1">// Tell the host that the plugin ports has changed.
+</span>   <span class="c1">// The host shall deactivate the plugin and then scan the ports again.
+</span>   <span class="c1">// [main-thread]
+</span>   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">changed</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
+
+   <span class="c1">// Tell the host that the latency changed.
+</span>   <span class="c1">// The host should call get_port_latency on each ports.
+</span>   <span class="c1">// [main-thread]
+</span>   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">latency_changed</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 <span class="p">};</span>
 
-<span class="cm">/* The audio ports configuration has to be done while the plugin is
- * deactivated. */</span>
-<span class="k">struct</span> <span class="n">clap_plugin_audio_ports</span>
-<span class="p">{</span>
-  <span class="cm">/* number of ports, including inputs and outputs
-   * [audio-thread] */</span>
-  <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">get_count</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>         <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
-
-  <span class="cm">/* get info about about an audio port.
-   * [audio-thread] */</span>
-  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">get_info</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>             <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
-                   <span class="kt">int32_t</span>                         <span class="n">index</span><span class="p">,</span>
-                   <span class="k">struct</span> <span class="n">clap_audio_port_info</span>    <span class="o">*</span><span class="n">info</span><span class="p">);</span>
-
-  <span class="cm">/* Connect the given port to the plugin's port at index.
-   * user_name is the name of the peer port given by the host/user.
-   * It can be useful especialy for repeatable ports.
-   * Returns the id of the port. In case of repeatable port,
-   * make sure that each connected port has a different id.
-   * Returns -1 if the connection failed.
-   * [audio-thread] */</span>
-  <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">connect</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>           <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
-                     <span class="kt">int32_t</span>                       <span class="n">port_id</span><span class="p">,</span>
-                     <span class="k">const</span> <span class="k">struct</span> <span class="n">clap_audio_port</span> <span class="o">*</span><span class="n">port</span><span class="p">,</span>
-                     <span class="k">const</span> <span class="kt">char</span>                   <span class="o">*</span><span class="n">user_name</span><span class="p">);</span>
-
-  <span class="cm">/* Disconnects a port.
-   * [audio-thread] */</span>
-  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">disconnect</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>           <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
-                     <span class="kt">int32_t</span>                       <span class="n">port_id</span><span class="p">);</span>
-
-  <span class="cm">/* Returns the absolute port latency in samples.
-   * [audio-thread] */</span>
-  <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">get_latency</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>       <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
-                         <span class="kt">int32_t</span>                   <span class="n">port_id</span><span class="p">);</span>
-<span class="p">};</span>
-
-<span class="k">struct</span> <span class="n">clap_host_audio_ports</span>
-<span class="p">{</span>
-  <span class="cm">/* Tell the host that the plugin ports has changed.
-   * The host shall deactivate the plugin and then
-   * scan the ports again.
-   * [thread-safe] */</span>
-  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">changed</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span>   <span class="o">*</span><span class="n">host</span><span class="p">,</span>
-                  <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
-
-  <span class="cm">/* Tell the host that the latency changed. The host should
-   * call get_port_latency on each ports.
-   * [thread-safe] */</span>
-  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">latency_changed</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span>
-                          <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
-<span class="p">};</span>
-
-<span class="cp"># ifdef __cplusplus
+<span class="cp">#ifdef __cplusplus
 </span><span class="p">}</span>
-<span class="cp"># endif
-</span>
-<span class="cp">#endif </span><span class="cm">/* !CLAP_EXT_PORT_H */</span>
-</pre>
-</div>
-<div class="section" id="clap-ext-event-ports-h">
-<h2><a class="toc-backref" href="#id45">clap/ext/event-ports.h</a></h2>
-<pre class="code c literal-block">
-<span class="cp">#ifndef CLAP_EVENT_PORTS_H
-# define CLAP_EVENT_PORTS_H
-</span>
-<span class="cp"># include &quot;../clap.h&quot;
-</span>
-<span class="cp"># define CLAP_EXT_EVENT_PORTS &quot;clap/event-ports&quot;
-</span>
-<span class="cp"># define CLAP_MAIN_EVENT_PORT_ID 0
-</span>
-<span class="cp"># ifdef __cplusplus
-</span><span class="k">extern</span> <span class="s">&quot;C&quot;</span> <span class="p">{</span>
-<span class="cp"># endif
-</span>
-<span class="k">struct</span> <span class="n">clap_audio_port_info</span>
-<span class="p">{</span>
-  <span class="cm">/* This number uniquely identify the port.
-   * There are two id space, one for the input event ports,
-   * and one for the output event ports.
-   * Valid ids are greater than 0.
-   * Every clap plugins always have one input event port and
-   * one output event port, their id is 0 (CLAP_MAIN_EVENT_PORT_ID).
-   *
-   * So one plugin only need this extension for additional ports. */</span>
-  <span class="kt">int32_t</span> <span class="n">id</span><span class="p">;</span>
-  <span class="kt">bool</span>    <span class="n">is_input</span><span class="p">;</span>
-  <span class="kt">char</span>    <span class="n">name</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>
-
-  <span class="cm">/* If true, then this is a virtual port which can be cloned
-   * and connected multiple times.
-   * Only useful for input ports. */</span>
-  <span class="kt">bool</span> <span class="n">is_cloneable</span><span class="p">;</span>
-<span class="p">};</span>
-
-<span class="k">struct</span> <span class="n">clap_plugin_event_ports</span>
-<span class="p">{</span>
-  <span class="cm">/* number of ports, including inputs and outputs
-   * [audio-thread] */</span>
-  <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">get_count</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>         <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
-
-  <span class="cm">/* get info about about an event port.
-   * [audio-thread] */</span>
-  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">get_info</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>             <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
-                   <span class="kt">int32_t</span>                         <span class="n">index</span><span class="p">,</span>
-                   <span class="k">struct</span> <span class="n">clap_event_port_info</span>    <span class="o">*</span><span class="n">info</span><span class="p">);</span>
-
-  <span class="cm">/* Clones a clonable port.
-   * On success returns a unique port id, for the cloned port.
-   * On failure, returns -1.
-   * user_name is a string provided by the host to tell the
-   * plugin how to name the new cloned port.
-   *
-   * [audio-thread]
-   */</span>
-  <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">clone_port</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
-                        <span class="kt">int32_t</span>             <span class="n">port_id</span><span class="p">,</span>
-                        <span class="k">const</span> <span class="kt">char</span>         <span class="o">*</span><span class="n">user_name</span><span class="p">);</span>
-
-  <span class="cm">/* When the host is done with a cloned port, it can call
-   * release_port() to release the resources.
-   * [audio-thread]*/</span>
-  <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">release_port</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
-                          <span class="kt">int32_t</span>             <span class="n">port_id</span><span class="p">);</span>
-<span class="p">};</span>
-
-<span class="cp"># ifdef __cplusplus
-</span><span class="p">}</span>
-<span class="cp"># endif
-</span>
-<span class="cp">#endif </span><span class="cm">/* !EVENT_PORTS_H */</span>
+<span class="cp">#endif</span>
 </pre>
 </div>
 <div class="section" id="clap-ext-params-h">
-<h2><a class="toc-backref" href="#id46">clap/ext/params.h</a></h2>
+<h2><a class="toc-backref" href="#id42">clap/ext/params.h</a></h2>
 <pre class="code c literal-block">
-<span class="cp">#ifndef CLAP_EXT_PARAMS_H
-# define CLAP_EXT_PARAMS_H
+<span class="cp">#pragma once
 </span>
-<span class="cp"># include &quot;../clap.h&quot;
-# include &quot;ports.h&quot;
+<span class="cp">#include</span> <span class="cpf">&quot;../clap.h&quot;</span><span class="cp">
 </span>
 <span class="cp">#ifdef __cplusplus
 </span><span class="k">extern</span> <span class="s">&quot;C&quot;</span> <span class="p">{</span>
 <span class="cp">#endif
 </span>
-<span class="cp"># define CLAP_EXT_PARAMS &quot;clap/params&quot;
-# define CLAP_ROOT_MODULE_ID &quot;&quot;
+<span class="cp">#define CLAP_EXT_PARAMS &quot;clap/params&quot;
+#define CLAP_ROOT_MODULE_ID &quot;&quot;
 </span>
-<span class="k">enum</span> <span class="n">clap_param_type</span>
-<span class="p">{</span>
-  <span class="n">CLAP_PARAM_FLOAT</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="c1">// uses value.f
-</span>  <span class="n">CLAP_PARAM_BOOL</span>  <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="c1">// uses value.b
-</span>  <span class="n">CLAP_PARAM_INT</span>   <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="c1">// uses value.i
-</span>  <span class="n">CLAP_PARAM_ENUM</span>  <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="c1">// uses value.i
+<span class="k">enum</span> <span class="n">clap_param_type</span> <span class="p">{</span>
+   <span class="n">CLAP_PARAM_FLOAT</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="c1">// uses value.d
+</span>   <span class="n">CLAP_PARAM_BOOL</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1">// uses value.b
+</span>   <span class="n">CLAP_PARAM_INT</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>   <span class="c1">// uses value.i
+</span>   <span class="n">CLAP_PARAM_ENUM</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>  <span class="c1">// uses value.i
 </span><span class="p">};</span>
-
-<span class="cm">/* This is useful for the knob scaling. */</span>
-<span class="k">enum</span> <span class="n">clap_param_scale</span>
-<span class="p">{</span>
-  <span class="n">CLAP_PARAM_SCALE_LINEAR</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-  <span class="n">CLAP_PARAM_SCALE_LOG</span>    <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-  <span class="n">CLAP_PARAM_SCALE_EXP</span>    <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
-<span class="p">};</span>
 
 <span class="cm">/* This describes the parameter and provides the current value */</span>
-<span class="k">struct</span> <span class="n">clap_param</span>
-<span class="p">{</span>
-  <span class="kt">int32_t</span> <span class="n">index</span><span class="p">;</span>  <span class="c1">// parameter's index
-</span>
-  <span class="cm">/* param info */</span>
-  <span class="kt">char</span>                    <span class="n">module_id</span><span class="p">[</span><span class="n">CLAP_ID_SIZE</span><span class="p">];</span>
-  <span class="kt">char</span>                    <span class="n">id</span><span class="p">[</span><span class="n">CLAP_ID_SIZE</span><span class="p">];</span> <span class="c1">// a string which identify the param
-</span>  <span class="kt">char</span>                    <span class="n">name</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span> <span class="c1">// the display name
-</span>  <span class="kt">char</span>                    <span class="n">desc</span><span class="p">[</span><span class="n">CLAP_DESC_SIZE</span><span class="p">];</span>
-  <span class="kt">char</span>                    <span class="n">display</span><span class="p">[</span><span class="n">CLAP_DISPLAY_SIZE</span><span class="p">];</span> <span class="c1">// the text used to display the value
-</span>  <span class="kt">bool</span>                    <span class="n">is_per_note</span><span class="p">;</span>
-  <span class="kt">bool</span>                    <span class="n">is_per_channel</span><span class="p">;</span>
-  <span class="kt">bool</span>                    <span class="n">is_used</span><span class="p">;</span>   <span class="c1">// is this parameter used by the patch?
-</span>  <span class="kt">bool</span>                    <span class="n">is_periodic</span><span class="p">;</span> <span class="c1">// after the last value, go back to the first one
-</span>  <span class="kt">bool</span>                    <span class="n">is_locked</span><span class="p">;</span> <span class="c1">// if true, the parameter can't be changed by
-</span>                                     <span class="c1">// the host
-</span>
-  <span class="cm">/* Can the parameter be automated at sample rate by an audio buffer? */</span>
-  <span class="kt">bool</span>                    <span class="n">supports_audio_automation</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nc">clap_param</span> <span class="p">{</span>
+   <span class="cm">/* param info */</span>
+   <span class="kt">char</span> <span class="n">id</span><span class="p">[</span><span class="n">CLAP_ID_SIZE</span><span class="p">];</span> <span class="c1">// a string which identify the param
+</span>   <span class="kt">char</span> <span class="n">module</span><span class="p">[</span><span class="n">CLAP_ID_SIZE</span><span class="p">];</span>
+   <span class="kt">char</span> <span class="n">name</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span> <span class="c1">// the display name
+</span>   <span class="kt">char</span> <span class="n">desc</span><span class="p">[</span><span class="n">CLAP_DESC_SIZE</span><span class="p">];</span>
+   <span class="kt">char</span> <span class="n">display</span><span class="p">[</span><span class="n">CLAP_DISPLAY_SIZE</span><span class="p">];</span> <span class="c1">// the text used to display the value
+</span>   <span class="kt">bool</span> <span class="n">is_per_note</span><span class="p">;</span>
+   <span class="kt">bool</span> <span class="n">is_per_channel</span><span class="p">;</span>
+   <span class="kt">bool</span> <span class="n">is_used</span><span class="p">;</span>     <span class="c1">// is this parameter used by the patch?
+</span>   <span class="kt">bool</span> <span class="n">is_periodic</span><span class="p">;</span> <span class="c1">// after the last value, go back to the first one
+</span>   <span class="kt">bool</span> <span class="n">is_locked</span><span class="p">;</span>   <span class="c1">// if true, the parameter can't be changed by the host
+</span>   <span class="kt">bool</span> <span class="n">is_automatable</span><span class="p">;</span>
 
-  <span class="cm">/* Can the parameter be automated by automation events? */</span>
-  <span class="kt">bool</span>                    <span class="n">supports_events_automation</span><span class="p">;</span>
-  <span class="kt">bool</span>                    <span class="n">supports_ramp_events</span><span class="p">;</span>
-
-  <span class="cm">/* value */</span>
-  <span class="k">enum</span> <span class="n">clap_param_type</span>    <span class="n">type</span><span class="p">;</span>
-  <span class="k">union</span> <span class="n">clap_param_value</span>  <span class="n">value</span><span class="p">;</span> <span class="c1">// current value
-</span>  <span class="k">union</span> <span class="n">clap_param_value</span>  <span class="n">min</span><span class="p">;</span>   <span class="c1">// minimum value
-</span>  <span class="k">union</span> <span class="n">clap_param_value</span>  <span class="n">max</span><span class="p">;</span>   <span class="c1">// maximum value
-</span>  <span class="k">union</span> <span class="n">clap_param_value</span>  <span class="n">deflt</span><span class="p">;</span> <span class="c1">// default value
-</span>  <span class="k">enum</span>  <span class="n">clap_param_scale</span>  <span class="n">scale</span><span class="p">;</span> <span class="c1">// scaling of the knob in the UI.
+   <span class="cm">/* value */</span>
+   <span class="k">enum</span> <span class="n">clap_param_type</span>   <span class="n">type</span><span class="p">;</span>
+   <span class="k">union</span> <span class="nc">clap_param_value</span> <span class="n">plain_value</span><span class="p">;</span> <span class="c1">// current value
+</span>   <span class="k">union</span> <span class="nc">clap_param_value</span> <span class="n">normalized_value</span><span class="p">;</span>
+   <span class="k">union</span> <span class="nc">clap_param_value</span> <span class="n">min</span><span class="p">;</span>   <span class="c1">// minimum value
+</span>   <span class="k">union</span> <span class="nc">clap_param_value</span> <span class="n">max</span><span class="p">;</span>   <span class="c1">// maximum value
+</span>   <span class="k">union</span> <span class="nc">clap_param_value</span> <span class="n">deflt</span><span class="p">;</span> <span class="c1">// default value
 </span><span class="p">};</span>
 
-<span class="k">struct</span> <span class="n">clap_param_module</span>
-<span class="p">{</span>
-  <span class="kt">char</span> <span class="n">id</span><span class="p">[</span><span class="n">CLAP_ID_SIZE</span><span class="p">];</span>
-  <span class="kt">char</span> <span class="n">parent_id</span><span class="p">[</span><span class="n">CLAP_ID_SIZE</span><span class="p">];</span>
-  <span class="kt">char</span> <span class="n">name</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>
-  <span class="kt">char</span> <span class="n">desc</span><span class="p">[</span><span class="n">CLAP_DESC_SIZE</span><span class="p">];</span>
+<span class="k">struct</span> <span class="nc">clap_param_module</span> <span class="p">{</span>
+   <span class="kt">char</span> <span class="n">id</span><span class="p">[</span><span class="n">CLAP_ID_SIZE</span><span class="p">];</span>
+   <span class="kt">char</span> <span class="n">parent_id</span><span class="p">[</span><span class="n">CLAP_ID_SIZE</span><span class="p">];</span>
+   <span class="kt">char</span> <span class="n">name</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>
+   <span class="kt">char</span> <span class="n">desc</span><span class="p">[</span><span class="n">CLAP_DESC_SIZE</span><span class="p">];</span>
 <span class="p">};</span>
 
-<span class="k">struct</span> <span class="n">clap_plugin_params</span>
-<span class="p">{</span>
-  <span class="cm">/* Returns the number of parameters.
-   * [audio-thread] */</span>
-  <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">count</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
+<span class="k">struct</span> <span class="nc">clap_plugin_params</span> <span class="p">{</span>
+   <span class="cm">/* Returns the number of parameters.
+    * [main-thread] */</span>
+   <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">count</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 
-  <span class="cm">/* Copies the parameter's info to param and returns true.
-   * If index is greater or equal to the number then return false.
-   * [audio-thread] */</span>
-  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">get_param</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
-                    <span class="kt">int32_t</span>             <span class="n">index</span><span class="p">,</span>
-                    <span class="k">struct</span> <span class="n">clap_param</span>  <span class="o">*</span><span class="n">param</span><span class="p">);</span>
+   <span class="cm">/* Copies the parameter's info to param and returns true.
+    * If index is greater or equal to the number then return false.
+    * [main-thread] */</span>
+   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">get_param</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
+                     <span class="kt">int32_t</span>             <span class="n">index</span><span class="p">,</span>
+                     <span class="k">struct</span> <span class="nc">clap_param</span> <span class="o">*</span> <span class="n">param</span><span class="p">);</span>
 
-  <span class="cm">/* Copies the module's info to module and returns true.
-   * If module_id is NULL or invalid then return false.
-   * [audio-thread] */</span>
-  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">get_module</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>       <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
-                     <span class="k">const</span> <span class="kt">char</span>               <span class="o">*</span><span class="n">module_id</span><span class="p">,</span>
-                     <span class="k">struct</span> <span class="n">clap_param_module</span> <span class="o">*</span><span class="n">module</span><span class="p">);</span>
+   <span class="cm">/* Copies the module's info to module and returns true on success.
+    * [main-thread] */</span>
+   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">get_module</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span>      <span class="n">plugin</span><span class="p">,</span>
+                      <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span>              <span class="n">module_id</span><span class="p">,</span>
+                      <span class="k">struct</span> <span class="nc">clap_param_module</span> <span class="o">*</span><span class="n">module</span><span class="p">);</span>
 
-  <span class="cm">/* Use an audio buffer to automate a parameter at sample rate.
-   * Once a parameter is automated by an audio buffer, concurrent
-   * automation event shall be ignored in favor of the audio rate
-   * automation.
-   *
-   * To disconnect the automation, set buffer to NULL.
-   * [audio-thread] */</span>
-  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">set_param_port</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>     <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
-                         <span class="kt">int32_t</span>                 <span class="n">param_index</span><span class="p">,</span>
-                         <span class="kt">int32_t</span>                 <span class="n">channel</span><span class="p">,</span>
-                         <span class="kt">int32_t</span>                 <span class="n">note</span><span class="p">,</span>
-                         <span class="k">struct</span> <span class="n">clap_audio_port</span> <span class="o">*</span><span class="n">port</span><span class="p">);</span>
+   <span class="c1">// [thread-safe,lock-free]
+</span>   <span class="kt">double</span> <span class="p">(</span><span class="o">*</span><span class="n">plain_to_normalized</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
+                                 <span class="kt">int32_t</span>             <span class="n">index</span><span class="p">,</span>
+                                 <span class="kt">double</span>              <span class="n">plain_value</span><span class="p">);</span>
+   <span class="kt">double</span> <span class="p">(</span><span class="o">*</span><span class="n">normalized_to_plain</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
+                                 <span class="kt">int32_t</span>             <span class="n">index</span><span class="p">,</span>
+                                 <span class="kt">double</span>              <span class="n">normalized_value</span><span class="p">);</span>
+
+   <span class="c1">// Sets the parameter value.
+</span>   <span class="c1">// If the plupin is activated, then the host must send a param event
+</span>   <span class="c1">// in the next process call to update the audio processor.
+</span>   <span class="c1">// [main-thread]
+</span>   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">set_parameter_value</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span>   <span class="n">plugin</span><span class="p">,</span>
+                               <span class="kt">int32_t</span>                <span class="n">index</span><span class="p">,</span>
+                               <span class="k">union</span> <span class="nc">clap_param_value</span> <span class="n">plain_value</span><span class="p">);</span>
 <span class="p">};</span>
 
-<span class="k">struct</span> <span class="n">clap_host_params</span>
-<span class="p">{</span>
-  <span class="cm">/* [thread-safe] */</span>
-  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">touch_begin</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span>   <span class="o">*</span><span class="n">host</span><span class="p">,</span>
-                      <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
-                      <span class="kt">int32_t</span>             <span class="n">index</span><span class="p">);</span>
+<span class="k">struct</span> <span class="nc">clap_host_params</span> <span class="p">{</span>
+   <span class="cm">/* [main-thread] */</span>
+   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">touch_begin</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_host</span> <span class="o">*</span>  <span class="n">host</span><span class="p">,</span>
+                       <span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
+                       <span class="kt">int32_t</span>             <span class="n">index</span><span class="p">);</span>
 
-  <span class="cm">/* [thread-safe] */</span>
-  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">touch_end</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span>     <span class="o">*</span><span class="n">host</span><span class="p">,</span>
-                    <span class="k">struct</span> <span class="n">clap_plugin</span>   <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
-                    <span class="kt">int32_t</span>               <span class="n">index</span><span class="p">);</span>
+   <span class="cm">/* [main-thread] */</span>
+   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">touch_end</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_host</span> <span class="o">*</span>  <span class="n">host</span><span class="p">,</span>
+                     <span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
+                     <span class="kt">int32_t</span>             <span class="n">index</span><span class="p">);</span>
 
-  <span class="cm">/* [thread-safe] */</span>
-  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">changed</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span>       <span class="o">*</span><span class="n">host</span><span class="p">,</span>
-                  <span class="k">struct</span> <span class="n">clap_plugin</span>     <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
-                  <span class="kt">int32_t</span>                 <span class="n">index</span><span class="p">,</span>
-                  <span class="k">union</span> <span class="n">clap_param_value</span>  <span class="n">value</span><span class="p">,</span>
-                  <span class="kt">bool</span>                    <span class="n">is_recordable</span><span class="p">);</span>
+   <span class="c1">// If the plugin is activated, the host must send a parameter update
+</span>   <span class="c1">// in the next process call to update the audio processor.
+</span>   <span class="c1">// Only for value changes that happens in the gui.
+</span>   <span class="c1">// [main-thread]
+</span>   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">changed</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_host</span> <span class="o">*</span>     <span class="n">host</span><span class="p">,</span>
+                   <span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span>   <span class="n">plugin</span><span class="p">,</span>
+                   <span class="kt">int32_t</span>                <span class="n">index</span><span class="p">,</span>
+                   <span class="k">union</span> <span class="nc">clap_param_value</span> <span class="n">plain_value</span><span class="p">,</span>
+                   <span class="kt">bool</span>                   <span class="n">is_recordable</span><span class="p">);</span>
 
-  <span class="cm">/* [thread-safe] */</span>
-  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">rescan</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span>   <span class="o">*</span><span class="n">host</span><span class="p">,</span>
-                 <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
+   <span class="cm">/* [main-thread] */</span>
+   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">rescan</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 <span class="p">};</span>
 
 <span class="cp">#ifdef __cplusplus
 </span><span class="p">}</span>
-<span class="cp">#endif
-</span>
-<span class="cp">#endif </span><span class="cm">/* !CLAP_EXT_PARAMS_H */</span>
+<span class="cp">#endif</span>
 </pre>
 </div>
 <div class="section" id="clap-ext-gui-h">
-<h2><a class="toc-backref" href="#id47">clap/ext/gui.h</a></h2>
+<h2><a class="toc-backref" href="#id43">clap/ext/gui.h</a></h2>
 <pre class="code c literal-block">
 <span class="cp">#ifndef CLAP_EXT_GUI_H
-# define CLAP_EXT_GUI_H
+#define CLAP_EXT_GUI_H
 </span>
-<span class="cp"># include &quot;../clap.h&quot;
+<span class="cp">#include</span> <span class="cpf">&quot;../clap.h&quot;</span><span class="cp">
 </span>
-<span class="cp"># define CLAP_EXT_GUI &quot;clap/gui&quot;
+<span class="cp">#define CLAP_EXT_GUI &quot;clap/gui&quot;
 </span>
-<span class="cp"># ifdef __cplusplus
+<span class="cp">#ifdef __cplusplus
 </span><span class="k">extern</span> <span class="s">&quot;C&quot;</span> <span class="p">{</span>
-<span class="cp"># endif
+<span class="cp">#endif
 </span>
-<span class="k">struct</span> <span class="n">clap_plugin_gui</span>
-<span class="p">{</span>
-  <span class="cm">/* Open the GUI
-   * [thread-safe] */</span>
-  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">open</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
+<span class="k">struct</span> <span class="nc">clap_plugin_gui</span> <span class="p">{</span>
+   <span class="c1">// Get the size of the plugin UI.
+</span>   <span class="c1">// [main-thread]
+</span>   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">get_size</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
+                    <span class="kt">int32_t</span> <span class="o">*</span>           <span class="n">width</span><span class="p">,</span>
+                    <span class="kt">int32_t</span> <span class="o">*</span>           <span class="n">height</span><span class="p">);</span>
 
-  <span class="cm">/* [thread-safe] */</span>
-  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">hide</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
-
-  <span class="cm">/* [thread-safe] */</span>
-  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">close</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
+   <span class="c1">// [main-thread]
+</span>   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">close</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 <span class="p">};</span>
 
-<span class="k">struct</span> <span class="n">clap_host_gui</span>
-<span class="p">{</span>
-  <span class="cm">/* [thread-safe] */</span>
-  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">gui_opened</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span>   <span class="o">*</span><span class="n">host</span><span class="p">,</span>
-                     <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
-
-  <span class="cm">/* [thread-safe] */</span>
-  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">gui_hidden</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span>   <span class="o">*</span><span class="n">host</span><span class="p">,</span>
-                     <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
-
-  <span class="cm">/* [thread-safe] */</span>
-  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">gui_closed</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span>   <span class="o">*</span><span class="n">host</span><span class="p">,</span>
-                     <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
+<span class="k">struct</span> <span class="nc">clap_host_gui</span> <span class="p">{</span>
+   <span class="cm">/* Request the host to resize the client area to width, height.
+    * Return true on success, false otherwise.
+    * [thread-safe] */</span>
+   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">resize</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span> <span class="kt">int32_t</span> <span class="n">width</span><span class="p">,</span> <span class="kt">int32_t</span> <span class="n">height</span><span class="p">);</span>
 <span class="p">};</span>
 
-<span class="cp"># ifdef __cplusplus
+<span class="cp">#ifdef __cplusplus
 </span><span class="p">}</span>
-<span class="cp"># endif
+<span class="cp">#endif
 </span>
 <span class="cp">#endif </span><span class="cm">/* !CLAP_EXT_GUI_H */</span>
 </pre>
 </div>
-<div class="section" id="clap-ext-embed-h">
-<h2><a class="toc-backref" href="#id48">clap/ext/embed.h</a></h2>
+<div class="section" id="clap-ext-gui-win32-h">
+<h2><a class="toc-backref" href="#id44">clap/ext/gui-win32.h</a></h2>
 <pre class="code c literal-block">
-<span class="cp">#ifndef CLAP_EXT_EMBED_H
-# define CLAP_EXT_EMBED_H
+<span class="cp">#pragma once
 </span>
-<span class="cp"># include &quot;../clap.h&quot;
+<span class="cp">#include</span> <span class="cpf">&quot;../clap.h&quot;</span><span class="cp">
 </span>
-<span class="cp"># define CLAP_EXT_EMBED &quot;clap/embed&quot;
-</span>
-<span class="cp"># ifdef __cplusplus
+<span class="cp">#ifdef __cplusplus
 </span><span class="k">extern</span> <span class="s">&quot;C&quot;</span> <span class="p">{</span>
-<span class="cp"># endif
+<span class="cp">#endif
 </span>
-<span class="k">struct</span> <span class="n">clap_host_embed</span>
-<span class="p">{</span>
-  <span class="cm">/* Request the host to resize the client area to width, height.
-   * Return true on success, false otherwise.
-   * [thread-safe] */</span>
-  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">resize</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span> <span class="kt">int32_t</span> <span class="n">width</span><span class="p">,</span> <span class="kt">int32_t</span> <span class="n">height</span><span class="p">);</span>
+<span class="cp">#define CLAP_EXT_GUI_WIN32 &quot;clap/gui/win32&quot;
+</span>
+<span class="c1">// we don't want to include windows.h from this file.
+</span><span class="k">typedef</span> <span class="kt">void</span> <span class="o">*</span><span class="n">clap_hwnd</span><span class="p">;</span>
+
+<span class="k">struct</span> <span class="nc">clap_plugin_gui_win32</span> <span class="p">{</span>
+   <span class="c1">// [main-thread]
+</span>   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">attach</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="n">clap_hwnd</span> <span class="n">window</span><span class="p">);</span>
+
+   <span class="c1">// [main-thread]
+</span>   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">detach</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 <span class="p">};</span>
 
-<span class="cp"># ifdef __cplusplus
+<span class="cp">#ifdef __cplusplus
 </span><span class="p">}</span>
-<span class="cp"># endif
-</span>
-<span class="cp">#endif </span><span class="cm">/* !CLAP_EXT_EMBED_H */</span>
+<span class="cp">#endif</span>
 </pre>
 </div>
-<div class="section" id="clap-ext-embed-win32-h">
-<h2><a class="toc-backref" href="#id49">clap/ext/embed-win32.h</a></h2>
+<div class="section" id="clap-ext-gui-x11-h">
+<h2><a class="toc-backref" href="#id45">clap/ext/gui-x11.h</a></h2>
 <pre class="code c literal-block">
-<span class="cp">#ifndef CLAP_EXT_EMBED_WIN32_H
-# define CLAP_EXT_EMBED_WIN32_H
+<span class="cp">#pragma once
 </span>
-<span class="cp"># include &lt;windows.h&gt;
+<span class="cp">#include</span> <span class="cpf">&quot;../clap.h&quot;</span><span class="cp">
 </span>
-<span class="cp"># include &quot;../clap.h&quot;
-# include &quot;embed.h&quot;
+<span class="cp">#define CLAP_EXT_GUI_X11 &quot;clap/gui/x11&quot;
 </span>
-<span class="cp"># ifdef __cplusplus
+<span class="cp">#ifdef __cplusplus
 </span><span class="k">extern</span> <span class="s">&quot;C&quot;</span> <span class="p">{</span>
-<span class="cp"># endif
+<span class="cp">#endif
 </span>
-<span class="cp"># define CLAP_EXT_EMBED_WIN32 &quot;clap/embed/win32&quot;
-</span>
-<span class="k">struct</span> <span class="n">clap_plugin_embed_win32</span>
-<span class="p">{</span>
-  <span class="cm">/* Get the size of the plugin UI.
-   * [thread-safe] */</span>
-  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">get_size</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
-                   <span class="kt">int32_t</span>            <span class="o">*</span><span class="n">width</span><span class="p">,</span>
-                   <span class="kt">int32_t</span>            <span class="o">*</span><span class="n">height</span><span class="p">);</span>
+<span class="k">struct</span> <span class="nc">clap_plugin_gui_x11</span> <span class="p">{</span>
+   <span class="c1">// Use the protocol XEmbed
+</span>   <span class="c1">// [main-thread]
+</span>   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">attach</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span>        <span class="n">display_name</span><span class="p">,</span>
+                  <span class="kt">unsigned</span> <span class="kt">long</span>       <span class="n">window</span><span class="p">);</span>
 
-  <span class="cm">/* Attach the plugin UI.
-   * [thread-safe] */</span>
-  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">attach</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="n">HWND</span> <span class="n">window</span><span class="p">);</span>
-
-  <span class="cm">/* Detach the plugin UI.
-   * [thread-safe] */</span>
-  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">detach</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
+   <span class="c1">// [main-thread]
+</span>   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">detach</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 <span class="p">};</span>
 
-<span class="cp"># ifdef __cplusplus
+<span class="cp">#ifdef __cplusplus
 </span><span class="p">}</span>
-<span class="cp"># endif
-</span>
-<span class="cp">#endif </span><span class="cm">/* !CLAP_EXT_EMBED_WIN32_H */</span>
+<span class="cp">#endif</span>
 </pre>
 </div>
-<div class="section" id="clap-ext-embed-x11-h">
-<h2><a class="toc-backref" href="#id50">clap/ext/embed-x11.h</a></h2>
+<div class="section" id="clap-ext-gui-cocoa-h">
+<h2><a class="toc-backref" href="#id46">clap/ext/gui-cocoa.h</a></h2>
 <pre class="code c literal-block">
-<span class="cp">#ifndef CLAP_EXT_EMBED_X11_H
-# define CLAP_EXT_EMBED_X11_H
+<span class="cp">#pragma once
 </span>
-<span class="cp"># include &quot;../clap.h&quot;
-# include &quot;embed.h&quot;
-</span>
-<span class="cp"># define CLAP_EXT_EMBED_X11 &quot;clap/embed/x11&quot;
-</span>
-<span class="cp"># ifdef __cplusplus
+<span class="cp">#ifdef __cplusplus
 </span><span class="k">extern</span> <span class="s">&quot;C&quot;</span> <span class="p">{</span>
-<span class="cp"># endif
+<span class="cp">#endif
 </span>
-<span class="k">struct</span> <span class="n">clap_plugin_embed_x11</span>
-<span class="p">{</span>
-  <span class="cm">/* Get the size of the plugin UI.
-   * [thread-safe] */</span>
-  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">get_size</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
-                   <span class="kt">int32_t</span>            <span class="o">*</span><span class="n">width</span><span class="p">,</span>
-                   <span class="kt">int32_t</span>            <span class="o">*</span><span class="n">height</span><span class="p">);</span>
+<span class="cp">#include</span> <span class="cpf">&quot;../clap.h&quot;</span><span class="cp">
+</span>
+<span class="cp">#define CLAP_EXT_GUI_COCOA &quot;clap/gui/cocoa&quot;
+</span>
+<span class="k">struct</span> <span class="nc">clap_plugin_embed_cocoa</span> <span class="p">{</span>
+   <span class="c1">// [main-thread]
+</span>   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">attach</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">nsView</span><span class="p">);</span>
 
-  <span class="cm">/* Note for the client, you can get a Display* by calling
-   * XOpenDisplay(display_name).
-   *
-   * Note for the host, the display_name can be retrieved from your own
-   * display-&gt;display_name.
-   *
-   * [thread-safe] */</span>
-  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">attach</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
-                 <span class="k">const</span> <span class="kt">char</span>         <span class="o">*</span><span class="n">display_name</span><span class="p">,</span>
-                 <span class="kt">unsigned</span> <span class="kt">long</span>       <span class="n">window</span><span class="p">);</span>
-
-  <span class="cm">/* Detach the plugin UI.
-   * [thread-safe] */</span>
-  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">detach</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
+   <span class="c1">// [main-thread]
+</span>   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">detach</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 <span class="p">};</span>
 
-<span class="cp"># ifdef __cplusplus
+<span class="cp">#ifdef __cplusplus
 </span><span class="p">}</span>
-<span class="cp"># endif
-</span>
-<span class="cp">#endif </span><span class="cm">/* !CLAP_EMBED_XLIB_H */</span>
+<span class="cp">#endif</span>
 </pre>
 </div>
-<div class="section" id="clap-ext-embed-cocoa-h">
-<h2><a class="toc-backref" href="#id51">clap/ext/embed-cocoa.h</a></h2>
+<div class="section" id="clap-ext-draft-key-name-h">
+<h2><a class="toc-backref" href="#id47">clap/ext/draft/key-name.h</a></h2>
 <pre class="code c literal-block">
-<span class="cp">#ifndef CLAP_EXT_EMBED_COCOA_H
-# define CLAP_EXT_EMBED_COCOA_H
+<span class="cp">#pragma once
 </span>
-<span class="cp"># ifdef __cplusplus
+<span class="cp">#ifdef __cplusplus
 </span><span class="k">extern</span> <span class="s">&quot;C&quot;</span> <span class="p">{</span>
-<span class="cp"># endif
+<span class="cp">#endif
 </span>
-<span class="cp"># include &quot;../clap.h&quot;
-# include &quot;embed.h&quot;
+<span class="cp">#include</span> <span class="cpf">&quot;../../clap.h&quot;</span><span class="cp">
 </span>
-<span class="cp"># define CLAP_EXT_EMBED_COCOA &quot;clap/embed/cocoa&quot;
+<span class="cp">#define CLAP_EXT_KEY_NAME &quot;clap/draft/key-name&quot;
 </span>
-<span class="k">struct</span> <span class="n">clap_plugin_embed_cocoa</span>
-<span class="p">{</span>
-  <span class="cm">/* Get the size of the plugin UI.
-   * [thread-safe] */</span>
-  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">get_size</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
-                   <span class="kt">int32_t</span>            <span class="o">*</span><span class="n">width</span><span class="p">,</span>
-                   <span class="kt">int32_t</span>            <span class="o">*</span><span class="n">height</span><span class="p">);</span>
-
-  <span class="cm">/* Attach the plugin UI.
-   * [thread-safe] */</span>
-  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">attach</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
-                 <span class="kt">void</span>               <span class="o">*</span><span class="n">nsView</span><span class="p">);</span>
-
-  <span class="cm">/* Detach the plugin UI.
-   * [thread-safe] */</span>
-  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">detach</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
-<span class="p">};</span>
-
-<span class="cp"># ifdef __cplusplus
-</span><span class="p">}</span>
-<span class="cp"># endif
-</span>
-<span class="cp">#endif </span><span class="cm">/* !CLAP_EXT_EMBED_COCOA_H */</span>
-</pre>
-</div>
-<div class="section" id="clap-ext-draft-locale-h">
-<h2><a class="toc-backref" href="#id52">clap/ext/draft/locale.h</a></h2>
-<pre class="code c literal-block">
-<span class="cp">#ifndef CLAP_EXT_LOCALE_H
-# define CLAP_EXT_LOCALE_H
-</span>
-<span class="cp"># ifdef __cplusplus
-</span><span class="k">extern</span> <span class="s">&quot;C&quot;</span> <span class="p">{</span>
-<span class="cp"># endif
-</span>
-<span class="cp"># include &quot;../../clap.h&quot;
-</span>
-<span class="cp"># define CLAP_EXT_LOCALE &quot;clap/draft/locale&quot;
-</span>
-<span class="k">struct</span> <span class="n">clap_plugin_locale</span>
-<span class="p">{</span>
-  <span class="cm">/* Sets the locale to use.
-   * [thread-safe] */</span>
-  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">set_locale</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">locale</span><span class="p">);</span>
-<span class="p">};</span>
-
-<span class="cp"># ifdef __cplusplus
-</span><span class="p">}</span>
-<span class="cp"># endif
-</span>
-<span class="cp">#endif </span><span class="cm">/* !CLAP_EXT_LOCALE_H */</span>
-</pre>
-</div>
-<div class="section" id="clap-ext-draft-presets-h">
-<h2><a class="toc-backref" href="#id53">clap/ext/draft/presets.h</a></h2>
-<pre class="code c literal-block">
-<span class="cp">#ifndef CLAP_EXT_PRESETS_H
-# define CLAP_EXT_PRESETS_H
-</span>
-<span class="cp"># ifdef __cplusplus
-</span><span class="k">extern</span> <span class="s">&quot;C&quot;</span> <span class="p">{</span>
-<span class="cp"># endif
-</span>
-<span class="cp"># include &quot;../../clap.h&quot;
-</span>
-<span class="cp"># define CLAP_EXT_PRESETS &quot;clap/draft/presets&quot;
-</span>
-<span class="cm">/* describes a single preset */</span>
-<span class="k">struct</span> <span class="n">clap_preset_info</span>
-<span class="p">{</span>
-  <span class="kt">char</span>     <span class="n">plugin_id</span><span class="p">[</span><span class="n">CLAP_ID_SIZE</span><span class="p">];</span>    <span class="c1">// used to identify which plugin can load the preset
-</span>  <span class="kt">char</span>     <span class="n">id</span><span class="p">[</span><span class="n">CLAP_ID_SIZE</span><span class="p">];</span>           <span class="c1">// used to identify a preset in a preset bank
-</span>  <span class="kt">char</span>     <span class="n">name</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>       <span class="c1">// preset name
-</span>  <span class="kt">char</span>     <span class="n">desc</span><span class="p">[</span><span class="n">CLAP_DESC_SIZE</span><span class="p">];</span>       <span class="c1">// desc and how to use it
-</span>  <span class="kt">char</span>     <span class="n">author</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>     <span class="c1">// author's name
-</span>  <span class="kt">char</span>     <span class="n">categories</span><span class="p">[</span><span class="n">CLAP_TAGS_SIZE</span><span class="p">];</span> <span class="c1">// &quot;cat1;cat2;cat3;...&quot;
-</span>  <span class="kt">char</span>     <span class="n">tags</span><span class="p">[</span><span class="n">CLAP_TAGS_SIZE</span><span class="p">];</span>       <span class="c1">// &quot;tag1;tag2;tag3;...&quot;
-</span>  <span class="kt">int8_t</span>   <span class="n">score</span><span class="p">;</span>                      <span class="c1">// 0 = garbage, ..., 100 = best, -1 = no score
+<span class="k">struct</span> <span class="nc">clap_key_name</span> <span class="p">{</span>
+   <span class="kt">char</span>   <span class="n">name</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>
+   <span class="kt">int8_t</span> <span class="n">key</span><span class="p">;</span>
+   <span class="kt">int8_t</span> <span class="n">channel</span><span class="p">;</span> <span class="c1">// -1 for every channels
 </span><span class="p">};</span>
 
-<span class="cm">/* Interface implemented by the plugin.
- * Used to create a preset library, get info about the current preset and
- * load a preset. */</span>
-<span class="k">struct</span> <span class="n">clap_plugin_preset</span>
-<span class="p">{</span>
-  <span class="cm">/* Create a preset library for this plugin
-   * [thread-safe] */</span>
-  <span class="k">struct</span> <span class="n">clap_preset_library</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">create_preset_library</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
+<span class="k">struct</span> <span class="nc">clap_plugin_key_name</span> <span class="p">{</span>
+   <span class="c1">// Return the number of key names
+</span>   <span class="c1">// [main-thread]
+</span>   <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">count</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 
-  <span class="cm">/* Get the current preset info
-   * [thread-safe] */</span>
-  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">get_current_preset_info</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>      <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
-                                  <span class="k">struct</span> <span class="n">clap_preset_info</span> <span class="o">*</span><span class="n">preset</span><span class="p">);</span>
-
-  <span class="cm">/* Load a preset from a bank file
-   * [audio-thread] */</span>
-  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">load_preset</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
-                      <span class="k">const</span> <span class="kt">char</span>         <span class="o">*</span><span class="n">path</span><span class="p">,</span>
-                      <span class="k">const</span> <span class="kt">char</span>         <span class="o">*</span><span class="n">preset_id</span><span class="p">);</span>
+   <span class="c1">// Returns true on success and stores the result into key_name
+</span>   <span class="c1">// [main-thread]
+</span>   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">get</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span>  <span class="n">plugin</span><span class="p">,</span>
+               <span class="kt">int</span>                   <span class="n">index</span><span class="p">,</span>
+               <span class="k">struct</span> <span class="nc">clap_key_name</span> <span class="o">*</span><span class="n">key_name</span><span class="p">);</span>
 <span class="p">};</span>
 
-<span class="cm">/* opaque type */</span>
-<span class="k">struct</span> <span class="n">clap_bank_handle</span><span class="p">;</span>
-
-<span class="cm">/* The principle behind this extension is that the host gets a list of
- * directories to scan recursively, and then for each files, it can ask
- * the interface to load the preset.
- *
- * Every file are considered as preset bank, so they can contain between
- * 0 and many presets. */</span>
-<span class="k">struct</span> <span class="n">clap_preset_library</span>
-<span class="p">{</span>
-  <span class="cm">/* The identifier of the preset library.
-   * As one preset library might be able to parse the presets for
-   * multiple different plugins, it is useful to identify a
-   * preset library by an id and a version, so the DAW can use
-   * the most recent version of every preset library which share
-   * the same id, and scan only once. */</span>
-  <span class="kt">char</span>    <span class="n">id</span><span class="p">[</span><span class="n">CLAP_ID_SIZE</span><span class="p">];</span>
-  <span class="kt">int32_t</span> <span class="n">version</span><span class="p">;</span> <span class="c1">// version of the preset library
-</span>
-  <span class="cm">/* Copies at most *path_size bytes into path.
-   * If directory_index is bigger than the number of directories,
-   * then return false.
-   * [thread-safe] */</span>
-  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">get_directory</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_preset_library</span> <span class="o">*</span><span class="n">library</span><span class="p">,</span>
-                        <span class="kt">int</span>                         <span class="n">directory_index</span><span class="p">,</span>
-                        <span class="kt">char</span>                       <span class="o">*</span><span class="n">path</span><span class="p">,</span>
-                        <span class="kt">int32_t</span>                    <span class="o">*</span><span class="n">path_size</span><span class="p">);</span>
-
-  <span class="cm">/* [thread-safe] */</span>
-  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">open_bank</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_preset_library</span>  <span class="o">*</span><span class="n">library</span><span class="p">,</span>
-                    <span class="k">const</span> <span class="kt">char</span>                  <span class="o">*</span><span class="n">path</span><span class="p">,</span>
-                    <span class="k">struct</span> <span class="n">clap_bank_handle</span>    <span class="o">**</span><span class="n">handle</span><span class="p">);</span>
-
-  <span class="cm">/* [thread-safe] */</span>
-  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">close_bank</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_preset_library</span> <span class="o">*</span><span class="n">library</span><span class="p">,</span>
-                     <span class="k">struct</span> <span class="n">clap_bank_handle</span>    <span class="o">*</span><span class="n">handle</span><span class="p">);</span>
-
-  <span class="cm">/* Returns the number of presets in the bank.
-   * If it is not known, return -2.
-   * On error return -1.
-   * [thread-safe] */</span>
-  <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">get_bank_size</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_preset_library</span> <span class="o">*</span><span class="n">library</span><span class="p">,</span>
-                           <span class="k">struct</span> <span class="n">clap_bank_handle</span>    <span class="o">*</span><span class="n">handle</span><span class="p">);</span>
-
-  <span class="cm">/* Get a preset info from its path and returns true.
-   * In case of a preset bank file, index is used, and *has_next
-   * should be set to false when index reaches the last preset.
-   * If the preset is not found, then it should return false.
-   * [thread-safe] */</span>
-  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">get_bank_preset</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_preset_library</span> <span class="o">*</span><span class="n">library</span><span class="p">,</span>
-                          <span class="k">struct</span> <span class="n">clap_bank_handle</span>    <span class="o">*</span><span class="n">handle</span><span class="p">,</span>
-                          <span class="k">struct</span> <span class="n">clap_preset_info</span>    <span class="o">*</span><span class="n">preset_info</span><span class="p">,</span>
-                          <span class="kt">int32_t</span>                     <span class="n">index</span><span class="p">);</span>
+<span class="k">struct</span> <span class="nc">clap_host_key_name</span> <span class="p">{</span>
+   <span class="c1">// Informs the host that the drum map has changed.
+</span>   <span class="c1">// [main-thread]
+</span>   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">changed</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">clap_host</span> <span class="o">*</span><span class="n">host</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
 <span class="p">};</span>
 
-<span class="cp"># ifdef __cplusplus
+<span class="cp">#ifdef __cplusplus
 </span><span class="p">}</span>
-<span class="cp"># endif
-</span>
-<span class="cp">#endif </span><span class="cm">/* !CLAP_EXT_PRESETS_H */</span>
-</pre>
-</div>
-<div class="section" id="clap-ext-draft-drum-map-h">
-<h2><a class="toc-backref" href="#id54">clap/ext/draft/drum-map.h</a></h2>
-<pre class="code c literal-block">
-<span class="cp">#ifndef CLAP_EXT_DRUM_MAP_H
-# define CLAP_EXT_DRUM_MAP_H
-</span>
-<span class="cp"># ifdef __cplusplus
-</span><span class="k">extern</span> <span class="s">&quot;C&quot;</span> <span class="p">{</span>
-<span class="cp"># endif
-</span>
-<span class="cp"># include &quot;../../clap.h&quot;
-</span>
-<span class="cp"># define CLAP_EXT_DRUM_MAP &quot;clap/draft/drum-map&quot;
-</span>
-<span class="k">struct</span> <span class="n">clap_drum_map_key_info</span>
-<span class="p">{</span>
-  <span class="kt">char</span>   <span class="n">name</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span>
-  <span class="kt">int8_t</span> <span class="n">key</span><span class="p">;</span>
-  <span class="kt">int8_t</span> <span class="n">channel</span><span class="p">;</span> <span class="c1">// -1 for every channels
-</span><span class="p">};</span>
-
-<span class="k">struct</span> <span class="n">clap_plugin_drum_map</span>
-<span class="p">{</span>
-  <span class="cm">/* Get the number of keys which have a drum map info on
-   * the given port_id.
-   * [thread-safe] */</span>
-  <span class="kt">int32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">get_key_count</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
-                           <span class="kt">int32_t</span>             <span class="n">port_id</span><span class="p">);</span>
-
-  <span class="cm">/* Loads the info for the given event port and key index.
-   * Returns true on success, false if the info could not be
-   * loaded.
-   * [thread-safe] */</span>
-  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">get_key_info</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_plugin</span>            <span class="o">*</span><span class="n">plugin</span><span class="p">,</span>
-                       <span class="kt">int32_t</span>                        <span class="n">port_id</span><span class="p">,</span>
-                       <span class="kt">int32_t</span>                        <span class="n">index</span><span class="p">,</span>
-                       <span class="k">struct</span> <span class="n">clap_drum_map_key_info</span> <span class="o">*</span><span class="n">info</span><span class="p">);</span>
-<span class="p">};</span>
-
-<span class="k">struct</span> <span class="n">clap_host_drum_map</span>
-<span class="p">{</span>
-  <span class="cm">/* Inform the host that the drum map has changed.
-   * [thread-safe] */</span>
-  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">drum_map_changed</span><span class="p">)(</span><span class="k">struct</span> <span class="n">clap_host</span>   <span class="o">*</span><span class="n">host</span><span class="p">,</span>
-                           <span class="k">struct</span> <span class="n">clap_plugin</span> <span class="o">*</span><span class="n">plugin</span><span class="p">);</span>
-<span class="p">};</span>
-
-<span class="cp"># ifdef __cplusplus
-</span><span class="p">}</span>
-<span class="cp"># endif
-</span>
-<span class="cp">#endif </span><span class="cm">/* !CLAP_EXT_DRUM_MAP_H */</span>
+<span class="cp">#endif</span>
 </pre>
 </div>
 </div>
