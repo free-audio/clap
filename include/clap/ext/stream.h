@@ -16,7 +16,9 @@ struct clap_istream {
 struct clap_ostream {
    /* returns the number of bytes written.
     * -1 on error. */
-   int64_t (*write)(struct clap_istream *stream, const void *buffer, uint64_t size);
+   int64_t (*write)(struct clap_istream *stream,
+                    const void *         buffer,
+                    uint64_t             size);
 };
 
 #ifdef __cplusplus

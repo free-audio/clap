@@ -16,24 +16,12 @@ enum clap_plugin_render_mode {
    CLAP_RENDER_OFFLINE = 1,
 };
 
-/* The render extension is used to have different quality settings while
- * playing realtime and while rendering. This feature is useful if your
- * processor is not fast enough to render at maximum quality in realtime.
- *
- * It should be used with care because, if you do all your equalization
- * with realtime settings and you render with offline settings, then
- * you might not get the sound you expected.
- */
+// The render extension is used to let the plugin know if it has "realtime"
+// pressure to process.
 struct clap_plugin_render {
-   /* Sets the plugin render mode, while the plugin is deactivated.
-    * Returns true on success, false otherwise.
-    * On failure the render mode is unchanged.
-    * [main-thread] */
-   bool (*set_render_mode)(struct clap_plugin *plugin, enum clap_plugin_render_mode mode);
-
-   /* Gets the current rendering mode, can be set anytime.
-    * [thread-safe,block-free] */
-   enum clap_plugin_render_mode (*get_render_mode)(struct clap_plugin *plugin);
+   // [main-thread]
+   void (*set_render_mode)(struct clap_plugin *         plugin,
+                           enum clap_plugin_render_mode mode);
 };
 
 #ifdef __cplusplus
