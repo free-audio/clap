@@ -117,9 +117,6 @@ Installation Paths
 | OSX      | ``TBD``                    |
 +----------+----------------------------+
 
-- Plugins distributed with packages should be installed to: ``/usr/lib/clap/`` or ``/usr/local/lib/clap/``
-- Plugins installed in the user's home should be installed to: ``${HOME}/.clap/``
-
 Instantiate a plugin
 --------------------
 
@@ -172,7 +169,7 @@ To extend clap's functionnality, there is a pretty simple mechanism:
   ...
 
 
-If the extension is not supported, the plugin should return ``NULL``.
+If the extension is not supported, the plugin must return ``NULL``.
 
 Extensions are interface, and **there is no need for the caller to free the pointer**.
 
@@ -186,20 +183,15 @@ By convention, extensions should provide a define for the extension name.
 Audio ports configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A plugin may have multiple audio ports, and multiple configurations
-(mono, stereo, quad, surround, ...). Yet we want to keep things simple,
-flexible and dynamic.
+A plugin may have multiple audio ports.
 
 An audio port has:
  - a direction (input or output)
  - a channel count: the number of pin in the bus
  - a channel mapping (eg: stereo left then right)
- - a role (input or output, sidechain input, audio rate modulation signal)
  - a name
- - is repeatable: can be used as a template to create multiple instance of the
-   same port and so connect multiple signals to it. For example you have an
-   analyzer and you want a repeatable input port, so the user can connect
-   an arbitrary number of signals.
+
+There can be only one main input and one main output.
 
 Standard channel mappings
 `````````````````````````
@@ -239,23 +231,36 @@ Before doing any processing, the plugin must be activated by calling
 If ``succeed == true`` then the activation succeed. If the activation failed,
 then the plugin is unusable.
 
-The host must not call ``activate()`` if the plugin is already activated.
-Yet the plugin should handle correctly double calls to ``activate()``.
+``activate()`` **must not** be called if the plugin is already activated.
 
 The plugin activation could be nothing, or could be a task which takes time,
-like connecting a remote server or device.
-So the host should not activate plugins in the audio processing thread.
+like allocating and initializing buffers.
+So the host **must not** activate plugins in the audio processing thread.
 
 To deactivate the plugin, just call ``plugin->deactivate(plugin)``. Like
 ``activate()``, ``deactivate()`` should not be called from the audio processing
 thread as it may take time.
 
-``deactivate()`` must not be called if the plugin is not activated. Yet the
-plugin should handle this mis-usage.
+``deactivate()`` **must not** be called if the plugin is not activated.
 
-The host must de-activate the plugin before destroying it. Again, if
-deactivate was not called before destroy(), the plugin should handle it
-gracefully.
+The host **must** de-activate the plugin before destroying it.
+
+Once activated the plugin can't change:
+ - its parameter list
+ - its latency
+ - its audio ports list
+
+Before activating the plugin the host should cache:
+ - the parameter list
+ - the latency
+ - the audio ports list
+
+Once the plugin is activated, when the plugin changes a parameter from its GUI.
+It should inform the host by using ``clap_host_params`` extension and the host
+will update the audio processor with a ``CLAP_EVENT_PARAM_SET`` event. At the
+same time, when a parameter changes from the DAW, it will inform the plugin GUI
+by using ``clap_plugin_params->set_param_value(...)`` and the processor using
+``CLAP_EVENT_PARAM_SET`` event.
 
 Processing
 ----------
@@ -264,12 +269,12 @@ The processing is done in one call: ``plugin->process(plugin, process);``.
 The data structure process regroup everything needed by the plugin:
 
 - number of frames
-- events (in)
-- some time info
+- transport info
+- audio buffers
+- events stream
 
 Once the processing is finished, the methods returns a process status
 which can be:
-
 
 +---------------------------+-------------------------------------------------------------+
 | Status                    | Meaning                                                     |
@@ -278,7 +283,7 @@ which can be:
 +---------------------------+-------------------------------------------------------------+
 | ``CLAP_PROCESS_CONTINUE`` | Succeed, the plugins wants to process the next block        |
 +---------------------------+-------------------------------------------------------------+
-| ``CLAP_PROCESS_SLEEP``    | Succeed, every voices terminated, wake me up on a new event |
+| ``CLAP_PROCESS_SLEEP``    | Succeed, I'm quiet and can go to sleep                      |
 +---------------------------+-------------------------------------------------------------+
 
 If ``process()`` returns ``CLAP_PROCESS_SLEEP`` and some parameters were ramping
@@ -297,53 +302,15 @@ Events
 ~~~~~~
 
 - Event's time is relative to the first sample of the processing block.
-- The plugin must not modify the events.
+- The plugin must not modify the events input events.
+- The host output event stream must make a copy of the plugin events.
 
-Notes
-`````
+Parameters Events
+`````````````````
 
-A note is identified by a key. A key correspond to the keys of a midi keyboard (128 keys).
-If the plugin supports tuning then it should use the ``event->note.pitch`` as
-the note frequency.
-
-The note A4 correspond to the key 57 and the frequency 440Hz.
-The note A3 correspond to the key 45 and the frequency 220Hz.
-
-If the plugin supports tuning, then the host could play the note A4 by sending
-a NOTE_ON event with key = 0 and pitch = 440. Then to stop the the host can
-send a NOTE_OFF event with the same key, so 0 in our case or it can send
-a NOTE_ON event on the same key (0), which would terminate the note on the key
-0 and start a new note on the key 0 with the given pitch.
-
-Here is a scenario where the plugin does not support tuning:
-
-- NOTE_ON, key = 60, pitch = 42; starts the note C4, with the pitch 493.88Hz
-- NOTE_OFF, key = 0, pitch = 493.88; ignored because no note has been started on key 0
-- NOTE_ON, key = 60, pitch = 54; retrigers the note C4, with the pitch 493.88Hz
-- NOTE_OFF, key = 60, pitch = 62; stops the note C4
-
-Here is a scenario where the plugin does support tuning:
-
-- NOTE_ON, key = 60, pitch = 42; starts a note, with the pitch 42Hz
-- NOTE_OFF, key = 0, pitch = 493.88; ignored because no note has been started on key 0
-- NOTE_ON, key = 60, pitch = 54; stops the note with the pitch 42Hz and starts
-  a note with a pitch of 54Hz
-- NOTE_OFF, key = 60, pitch = 62; stops the note with a pitch of 54Hz
-
-The plugin is encouraged to use an array with 128 pointers to voice, so
-it can quickly figure which voice is playing the given key.
-
-Parameters
-``````````
-
-Parameters can be automated by the host using ``CLAP_EVENT_PARAM_SET`` or
-``CLAP_EVENT_PARAM_RAMP``. Or they can be automated at audio rate by using
-an audio buffer.
-
-When using ``CLAP_EVENT_PARAM_RAMP``, the parameter is set to ``ev->param.value``
-and has to be incremented by ``event->param.increment`` for each samples, except
-for the time of the event, and until an event ``CLAP_EVENT_PARAM_SET`` or
-``CLAP_EVENT_PARAM_RAMP`` occur for this parameter.
+Parameters can be automated by the host using ``CLAP_EVENT_PARAM_SET``.
+The ramp only applies to float parameters, and applies until an other
+``CLAP_EVENT_PARAM_SET`` event is received.
 
 Parameters
 ----------
@@ -351,20 +318,20 @@ Parameters
 The host can get the plugin's parameters tree by using the params extension:
 
 - ``params->count(plugin);`` to know the number of parameters
-- ``params->get_param(plugin, param_index, &param);`` to get the parameter
+- ``params->get_param_info(plugin, param_index, &param_info);`` to get the parameter
   value and description
 
 .. code:: c
 
   #include <clap/ext/params.h>
 
-  struct clap_plugin_params *params = plugin->extension(plugin, CLAP_EXT_PARAMS);
+  const struct clap_plugin_params *params = plugin->extension(plugin, CLAP_EXT_PARAMS);
   if (!params)
     return; // no params extensions
-  uint32_t count = ports->count(plugin);
+  uint32_t count = params->count(plugin);
   for (uint32_t i = 0; i < count; ++i) {
-    struct clap_param param;
-    if (!ports->get_param(plugin, i, &param))
+    struct clap_param_info param_info;
+    if (!params->get_param_info(plugin, i, &param_info))
       continue;
     // ...
   }
@@ -376,43 +343,18 @@ Types
 
 There are a few parameter types:
 
-+-------+-----------------+------------------------------------------------------+
-| type  | value attribute | description                                          |
-+=======+=================+======================================================+
-| group | none            | not a value, but the only parameter which can have   |
-|       |                 | child. It should be used to organize parameters in   |
-|       |                 | the host GUI.                                        |
-+-------+-----------------+------------------------------------------------------+
-| bool  | ``value.b``     | a boolean value, can be true or false                |
-+-------+-----------------+------------------------------------------------------+
-| float | ``value.f``     | a float value                                        |
-+-------+-----------------+------------------------------------------------------+
-| int   | ``value.i``     | an integer value                                     |
-+-------+-----------------+------------------------------------------------------+
-| enum  | ``value.i``     | an enumeration, it uses integer values, and the host |
-|       |                 | should rely on ``display_text`` to show its value.   |
-+-------+-----------------+------------------------------------------------------+
-
-Scales
-~~~~~~
-
-The plugin can inform the host, which scale to use for the parameter's UI
-(knob, slider, ...). ``clap_param->scale`` can be set to ``CLAP_PARAM_LINEAR``,
-``CLAP_PARAM_LOG`` or ... A logarithmic scale is convinient for a frequency
-parameter.
-
-Automation
-~~~~~~~~~~
-
-When a parameter is modified by the GUI, the plugin should send a
-``CLAP_EVENT_PARAM_SET`` event must be sent to the host, using
-``host->events(host, plugin, events);`` so the host can record the automation.
-
-When a parameter is modified by an other parameter (this is discouraged),
-for example imagine you have a parameter modulating "absolutely" an other
-one through an XY mapping.
-The host should record the modulation source but not the modulation target.
-To do that the plugin uses ``clap_event_param->is_recordable``.
++--------+-----------------+------------------------------------------------------+
+| type   | value attribute | description                                          |
++========+=================+======================================================+
+| bool   | ``value.b``     | a boolean value, can be true or false                |
++--------+-----------------+------------------------------------------------------+
+| double | ``value.d``     | a double value                                       |
++--------+-----------------+------------------------------------------------------+
+| int    | ``value.i``     | an integer value                                     |
++--------+-----------------+------------------------------------------------------+
+| enum   | ``value.i``     | an enumeration, it uses integer values, and the host |
+|        |                 | should rely on ``display_text`` to show its value.   |
++--------+-----------------+------------------------------------------------------+
 
 Graphical User Interface
 ------------------------
@@ -496,10 +438,6 @@ Example on Windows
   if (embed)
     embed->embed(plugin, window);
 
-  struct clap_plugin_gui *gui = plugin->get_extension(plugin, CLAP_EXT_GUI);
-  if (gui)
-    gui->open(plugin);
-
 Resizing the window
 ```````````````````
 
@@ -509,8 +447,8 @@ Resizing the window
   #include <clap/ext/embed.h>
 
   // plugin code
-  struct clap_host_embed *embed = host->get_extension(plugin, CLAP_EMBED);
-  if (embed && embed->resize(host, width, height)) {
+  struct clap_host_gui *host_gui = host->get_extension(plugin, CLAP_EXT_GUI);
+  if (host_gui && host_gui->resize(host, width, height)) {
     // resize succeed
   }
 
@@ -524,11 +462,10 @@ Saving the plugin's state is done by using the state extension:
   #include <clap/clap.h>
   #include <clap/ext/state.h>
 
-  void   *buffer = NULL;
-  size_t  size   = 0;
+  struct clap_ostream *stream = ...;
 
   struct clap_plugin_state *state = plugin->get_extension(plugin, CLAP_EXT_STATE);
-  if (state && state->save(plugin, &buffer, &size)) {
+  if (state && state->save(plugin, stream)) {
     // save succeed
   } else {
     // save failed
@@ -538,7 +475,7 @@ Restoring the plugin's state is done by:
 
 .. code:: c
 
-  state->restore(plugin, buffer, size);
+  state->restore(plugin, stream);
 
 The state of the plugin should be independent of the machine: you can save a
 plugin state on a little endian machine and send it through the network to a

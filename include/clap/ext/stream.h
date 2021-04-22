@@ -7,6 +7,8 @@ extern "C" {
 #endif
 
 struct clap_istream {
+   void *ctx;
+
    /* returns the number of bytes read.
     * 0 for end of file.
     * -1 on error. */
@@ -14,6 +16,8 @@ struct clap_istream {
 };
 
 struct clap_ostream {
+   void *ctx;
+
    /* returns the number of bytes written.
     * -1 on error. */
    int64_t (*write)(struct clap_istream *stream,

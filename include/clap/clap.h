@@ -171,6 +171,8 @@ struct clap_event {
 };
 
 struct clap_event_list {
+   void *ctx;
+
    int (*size)(const struct clap_event_istream *stream);
    const struct clap_event *(*get)(const struct clap_event_istream *stream,
                                    int                              index);
