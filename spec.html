@@ -1147,8 +1147,8 @@ plugin's parameters and restore them.</p>
    <span class="kt">char</span>    <span class="n">name</span><span class="p">[</span><span class="n">CLAP_NAME_SIZE</span><span class="p">];</span> <span class="c1">// useful in the debugger
 </span>   <span class="kt">bool</span>    <span class="n">is_input</span><span class="p">;</span>
    <span class="kt">bool</span>    <span class="n">is_main</span><span class="p">;</span>
-   <span class="kt">bool</span>    <span class="n">is_64_bits</span><span class="p">;</span>
-   <span class="kt">int32_t</span> <span class="n">channel_count</span><span class="p">;</span>
+   <span class="kt">bool</span>    <span class="n">supports_64_bits</span><span class="p">;</span> <span class="c1">// 32 bit support is mandatory, the host chooses between 32 and 64.
+</span>   <span class="kt">int32_t</span> <span class="n">channel_count</span><span class="p">;</span>
    <span class="k">enum</span> <span class="n">clap_audio_port_channel_mapping</span> <span class="n">channel_mapping</span><span class="p">;</span>
 <span class="p">};</span>
 
