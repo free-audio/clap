@@ -61,7 +61,7 @@ in valid UTF-8.
 C++ exceptions
 --------------
 
-A CLAP interface must not send exception. It is supposed to work width
+A CLAP interface must not send exception. It is supposed to work with
 C programs.
 
 Multi-Threading
@@ -171,13 +171,13 @@ To extend clap's functionnality, there is a pretty simple mechanism:
 
 If the extension is not supported, the plugin must return ``NULL``.
 
-Extensions are interface, and **there is no need for the caller to free the pointer**.
+Extensions are interface, and **the caller must not free the pointer**.
 
 By convention, extensions should provide a define for the extension name.
 
 .. code:: c
 
-  // defined in <clap/ext/ports.h>
+  // defined in <clap/ext/audio-ports.h>
   # define CLAP_EXT_AUDIO_PORTS "clap/audio-ports"
 
 Audio ports configuration

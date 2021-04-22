@@ -221,7 +221,7 @@ in valid UTF-8.</p>
 </div>
 <div class="section" id="c-exceptions">
 <h2><a class="toc-backref" href="#id5">C++ exceptions</a></h2>
-<p>A CLAP interface must not send exception. It is supposed to work width
+<p>A CLAP interface must not send exception. It is supposed to work with
 C programs.</p>
 </div>
 <div class="section" id="multi-threading">
@@ -329,10 +329,10 @@ a few methods. The attribute <tt class="docutils literal">clap_version</tt> must
 <span class="p">...</span>
 </pre>
 <p>If the extension is not supported, the plugin must return <tt class="docutils literal">NULL</tt>.</p>
-<p>Extensions are interface, and <strong>there is no need for the caller to free the pointer</strong>.</p>
+<p>Extensions are interface, and <strong>the caller must not free the pointer</strong>.</p>
 <p>By convention, extensions should provide a define for the extension name.</p>
 <pre class="code c literal-block">
-<span class="c1">// defined in &lt;clap/ext/ports.h&gt;
+<span class="c1">// defined in &lt;clap/ext/audio-ports.h&gt;
 </span><span class="cp"># define CLAP_EXT_AUDIO_PORTS &quot;clap/audio-ports&quot;</span>
 </pre>
 </div>
