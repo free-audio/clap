@@ -61,27 +61,31 @@ in valid UTF-8.
 C++ exceptions
 --------------
 
-A CLAP interface must not send exception.
+A CLAP interface must not send exception. It is supposed to work width
+C programs.
 
 Multi-Threading
 ---------------
 
 Every function should have a specifier which tells you if it is thread safe,
-and if it is not, from which thread it can be used then.
+from which thread it can be used and if it must be lock-free and wait-free.
 
 The design is pretty simple. Every thing which is closely related to the
-audio processing, has to be realtime; **so it can't block!**
+audio processing, has to be realtime; **so it can't block or wait!**
 
 Functions marked with **[audio-thread]**, can only be called from the audio
 processing context and can not lock mutexes, or use any non deterministic
 synchronization method. It is implicit that calling a **[thread-safe]**
-might lead to wait on synchronization and is forbidden.
+might lead to wait on synchronization and it is forbidden.
 
 Then the other functions, shall be marked as **[thread-safe]**, which indicates
 that it can be called from multiple threads concurrently.
 
-Tips: while reading the headers, you can set your editor to highlight
-**[thread-safe]** and **[audio-thread]**.
+**[thread-safe,lock-wait-free]** means that the function can be called from
+anywhere and must not lock or wait. It is suitable to use from an audio thread.
+
+**[main-thread]** is the thread from which the user interacts with the GUI,
+and most of the application happens. You can use synchronization there.
 
 Naming conventions
 ------------------
@@ -98,34 +102,37 @@ Common
 
 - Directories should be scanned recursively.
 
-Linux
-~~~~~
+Installation Paths
+~~~~~~~~~~~~~~~~~~
+
++----------+----------------------------+
+| OS       | path                       |
++==========+============================+
+| Linux    | ``/usr/lib/clap``          |
++          +----------------------------+
+|          | ``~/.local/lib/clap``      |
++----------+----------------------------+
+| Windows  | ``C:\Program Files\clap\`` |
++----------+----------------------------+
+| OSX      | ``TBD``                    |
++----------+----------------------------+
 
 - Plugins distributed with packages should be installed to: ``/usr/lib/clap/`` or ``/usr/local/lib/clap/``
 - Plugins installed in the user's home should be installed to: ``${HOME}/.clap/``
-
-Windows
-~~~~~~~
-
-- Plugins should be installed to: ``C:\Program Files\clap\``
-
-Mac
-~~~
-
-- TBD
 
 Instantiate a plugin
 --------------------
 
 Plugin instantiation can be done in a few steps:
 
-- load the dynamic library with ``dlopen`` or symilar functions
+- load the dynamic library with ``dlopen()`` or symilar functions
 - find the symbol ``clap_plugin_factory``
+- call ``factory->init(plugin_path);``
 - use the factory to:
 
-  - get the number of plugins available ``factory->get_plugin_count(...);``
-  - create plugins by index to enumerate the collection ``factory->create_plugin_by_index(...);``
-  - create plugins by identifier to create a specific one ``factory->create_plugin_by_id(...);``
+  - get the number of plugins available ``factory->get_plugin_count();``
+  - create plugins by index to enumerate the collection ``factory->create_plugin_by_index(host, index);``
+  - create plugins by identifier to create a specific one ``factory->create_plugin_by_id(host, id);``
 
 Release a plugin
 ~~~~~~~~~~~~~~~~
@@ -139,9 +146,6 @@ Plugin description
 indicates which version of the clap interface has been used to build the plugin, and
 a few methods. The attribute ``clap_version`` must be initialized by the plugin with
 ``CLAP_PLUGIN_VERSION``.
-
-Then to get the plugin's name, you have to use
-``plugin->get_attribute(plugin, CLAP_ATTR_NAME, ...);``.
 
 See ``#include <clap/clap.h>`` for more information.
 

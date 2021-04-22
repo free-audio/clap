@@ -61,7 +61,7 @@ struct clap_plugin_params {
                            union clap_param_value plain_value);
 
    // Normalization only exists for float values
-   // [thread-safe,lock-free]
+   // [thread-safe,lock-wait-free]
    double (*plain_to_norm)(struct clap_plugin *plugin,
                            int32_t             param_index,
                            double              plain_value);
@@ -70,7 +70,7 @@ struct clap_plugin_params {
                            double              normalized_value);
 
    // Formats the display text for the given parameter value.
-   // [thread-safe,lock-free]
+   // [thread-safe,lock-wait-free]
    bool (*get_param_display)(struct clap_plugin *   plugin,
                              int32_t                param_index,
                              union clap_param_value plain_value,
