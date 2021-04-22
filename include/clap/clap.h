@@ -25,14 +25,13 @@
 
 #pragma once
 
-#include <bits/stdint-intn.h>
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define CLAP_VERSION_MAKE(Major, Minor, Revision)                              \
    ((((Major)&0xff) << 16) | (((Minor)&0xff) << 8) | ((Revision)&0xff))
@@ -84,9 +83,6 @@ enum clap_log_severity {
 // Url to support page, or mail to support
 #define CLAP_ATTR_SUPPORT "clap/support"
 
-// Should be "1" if the plugin supports tunning.
-#define CLAP_ATTR_SUPPORTS_TUNING "clap/supports_tuning"
-
 ////////////////
 // PARAMETERS //
 ////////////////
@@ -102,17 +98,16 @@ union clap_param_value {
 ////////////
 
 enum clap_event_type {
-   CLAP_EVENT_NOTE_ON = 0,  // note attribute
-   CLAP_EVENT_NOTE_OFF = 1, // note attribute
-
-   CLAP_EVENT_CHOKE = 2, // no attribute
-
+   CLAP_EVENT_NOTE_ON = 0,   // note attribute
+   CLAP_EVENT_NOTE_OFF = 1,  // note attribute
+   CLAP_EVENT_CHOKE = 2,     // no attribute
    CLAP_EVENT_PARAM_SET = 3, // param attribute
 
    /* MIDI Style */
-   CLAP_EVENT_CONTROL = 5,  // control attribute
-   CLAP_EVENT_PROGRAM = 16, // program attribute
-   CLAP_EVENT_MIDI = 6,     // midi attribute
+   CLAP_EVENT_CONTROL = 4,    // control attribute
+   CLAP_EVENT_PROGRAM = 5,    // program attribute
+   CLAP_EVENT_MIDI = 6,       // midi attribute
+   CLAP_EVENT_MIDI_SYSEX = 7, // midi attribute
 };
 
 struct clap_event_param {
@@ -120,7 +115,7 @@ struct clap_event_param {
    int32_t                channel;
    uint32_t               index; // parameter index
    union clap_param_value normalized_value;
-   double                 normalized_ramp;
+   double                 normalized_ramp; // only applies to float values
 };
 
 /** Note On/Off event. */
@@ -138,28 +133,26 @@ struct clap_event_control {
 };
 
 struct clap_event_midi {
+   uint8_t data[4];
+};
+
+struct clap_event_midi_sysex {
    const uint8_t *buffer; // midi buffer
    uint32_t       size;
 };
 
 /**
  * Asks the plugin to load a program.
- * This is analogue to the midi program set:
- * bank msb goes into bank_msb
- * bank lsb goes into bank_lsb
- * program goes into program
- *
- * Clap is not limited to 127.
+ * This is analogue to the midi program change.
  *
  * The main advantage of setting a program instead of loading
  * a preset, is that the program should already be in the plugin's
- * memory, and can be set instantly. If the plugin has to load
- * a preset from the filesystem, then parse it, do memory allocation,
- * there is no guarentee that the preset will be loaded in time.
+ * memory, and can be set instantly.
  */
 struct clap_event_program {
-   int32_t bank_msb; // 0..0x7FFFFFFF
-   int32_t bank_lsb; // 0..0x7FFFFFFF
+   int32_t channel;  // 0..15, -1 unspecified
+   int32_t bank_msb; // 0..0x7FFFFFFF, -1 unspecified
+   int32_t bank_lsb; // 0..0x7FFFFFFF, -1 unspecified
    int32_t program;  // 0..0x7FFFFFFF
 };
 
@@ -168,11 +161,12 @@ struct clap_event {
    uint32_t time; // offset from the first sample in the process block
 
    union {
-      struct clap_event_note    note;
-      struct clap_event_control control;
-      struct clap_event_param   param;
-      struct clap_event_midi    midi;
-      struct clap_event_program program;
+      struct clap_event_note       note;
+      struct clap_event_control    control;
+      struct clap_event_param      param;
+      struct clap_event_midi       midi;
+      struct clap_event_midi_sysex midi_sysex;
+      struct clap_event_program    program;
    };
 };
 
@@ -201,10 +195,12 @@ enum clap_process_status {
 };
 
 struct clap_audio_buffer {
-   // if data is null, then assume that the input has the value 0 for each
-   // samples. data[i] for channel i buffer
-   float **data;
-   int32_t channel_count;
+   // Either data32 or data64 will be set, but not both.
+   // If none are set, assume that the input has the value 0 for each samples.
+   // data[i] for channel i buffer
+   float ** data32;
+   double **data64;
+   int32_t  channel_count;
 };
 
 struct clap_transport {
@@ -312,7 +308,7 @@ struct clap_plugin {
    char id[CLAP_ID_SIZE];        // plugin id, eg: "com.u-he.diva"
    char version[CLAP_NAME_SIZE]; // the plugin version, eg: "1.3.2"
 
-   enum clap_plugin_type plugin_type;
+   uint64_t plugin_type; // bitfield of enum clap_plugin_type
 
    /* Free the plugin and its resources.
     * It is not required to deactivate the plugin prior to this call. */
@@ -355,7 +351,6 @@ struct clap_plugin_entry {
    int32_t (*get_plugin_count)(void);
 
    /* Create a clap_plugin by its index.
-    * Valid indexes are from 0 to get_plugin_count() - 1.
     * Returns null in case of error.
     * [thread-safe] */
    struct clap_plugin *(*create_plugin_by_index)(struct clap_host *host,

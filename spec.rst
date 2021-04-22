@@ -22,19 +22,13 @@ Goals
   - No C++ exceptions
   - No macro obfuscation
   - No object file to compile in the SDK, CLAP is an interface only.
-  - Simple resource management mechanism
+  - Simple resource management
 
 - Designed to work on any operating system and processor architecture
 - Be event oriented
 - Be extensible
 - Be easy to bridge
 - Be dynamic
-
-  - More and more advanced modular systems are showing up, they require
-
-    - dynamic ports
-    - dynamic parameters
-
 - Full MIDI access
 - Use flexible designs, give the option:
 

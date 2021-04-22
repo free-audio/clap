@@ -24,6 +24,7 @@ struct clap_audio_port_info {
    char    name[CLAP_NAME_SIZE]; // useful in the debugger
    bool    is_input;
    bool    is_main;
+   bool    is_64_bits;
    int32_t channel_count;
    enum clap_audio_port_channel_mapping channel_mapping;
 };
