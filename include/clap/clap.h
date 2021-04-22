@@ -25,6 +25,7 @@
 
 #pragma once
 
+#include <bits/stdint-intn.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -64,9 +65,6 @@ struct clap_host;
 enum clap_string_size {
    CLAP_ID_SIZE = 128,
    CLAP_NAME_SIZE = 64,
-   CLAP_DESC_SIZE = 256,
-   CLAP_DISPLAY_SIZE = 64,
-   CLAP_TAGS_SIZE = 256,
 };
 
 enum clap_log_severity {
@@ -79,8 +77,6 @@ enum clap_log_severity {
 
 // Description of the plugin
 #define CLAP_ATTR_DESCRIPTION "clap/description"
-// Product version string
-#define CLAP_ATTR_VERSION "clap/version"
 // Manufacturer name
 #define CLAP_ATTR_MANUFACTURER "clap/manufacturer"
 // Url to product
@@ -117,15 +113,11 @@ enum clap_event_type {
    CLAP_EVENT_CONTROL = 5,  // control attribute
    CLAP_EVENT_PROGRAM = 16, // program attribute
    CLAP_EVENT_MIDI = 6,     // midi attribute
-
-   CLAP_EVENT_PLAY = 12,  // no attribute
-   CLAP_EVENT_PAUSE = 13, // no attribute
-   CLAP_EVENT_STOP = 14,  // no attribute
 };
 
 struct clap_event_param {
-   int8_t                 key;
-   int8_t                 channel;
+   int32_t                key;
+   int32_t                channel;
    uint32_t               index; // parameter index
    union clap_param_value normalized_value;
    double                 normalized_ramp;
@@ -133,16 +125,16 @@ struct clap_event_param {
 
 /** Note On/Off event. */
 struct clap_event_note {
-   int8_t key;      // 0..127
-   int8_t channel;  // 0..15
-   double velocity; // 0..1
+   int32_t key;      // 0..127
+   int32_t channel;  // 0..15
+   double  velocity; // 0..1
 };
 
 struct clap_event_control {
-   int8_t key;     // 0..127, or -1 to match all keys
-   int8_t channel; // 0..15, or -1 to match all channels
-   int8_t control; // 0..127
-   double value;   // 0..1
+   int32_t key;     // 0..127, or -1 to match all keys
+   int32_t channel; // 0..15, or -1 to match all channels
+   int32_t control; // 0..127
+   double  value;   // 0..1
 };
 
 struct clap_event_midi {
@@ -280,7 +272,7 @@ struct clap_host {
 
    /* Query an extension.
     * [thread-safe] */
-   const void *(*extension)(struct clap_host *host, const char *extention_id);
+   const void *(*extension)(struct clap_host *host, const char *extension_id);
 };
 
 ////////////
@@ -343,8 +335,8 @@ struct clap_plugin {
 
    /* process audio, events, ...
     * [audio-thread] */
-   enum clap_process_status (*process)(struct clap_plugin * plugin,
-                                       struct clap_process *process);
+   enum clap_process_status (*process)(struct clap_plugin *       plugin,
+                                       const struct clap_process *process);
 
    /* query an extension
     * [thread-safe] */
