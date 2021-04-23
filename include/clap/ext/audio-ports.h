@@ -24,6 +24,7 @@ struct clap_audio_port_info {
    char    name[CLAP_NAME_SIZE]; // useful in the debugger
    bool    is_input;
    bool    is_main;
+   bool    is_cv; // control voltage
    bool    supports_64_bits; // 32 bit support is mandatory, the host chooses between 32 and 64.
    int32_t channel_count;
    enum clap_audio_port_channel_mapping channel_mapping;

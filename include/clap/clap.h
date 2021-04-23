@@ -35,7 +35,7 @@ extern "C" {
 
 #define CLAP_VERSION_MAKE(Major, Minor, Revision)                              \
    ((((Major)&0xff) << 16) | (((Minor)&0xff) << 8) | ((Revision)&0xff))
-#define CLAP_VERSION CLAP_VERSION_MAKE(0, 2, 0)
+#define CLAP_VERSION CLAP_VERSION_MAKE(0, 3, 0)
 #define CLAP_VERSION_MAJ(Version) (((Version) >> 16) & 0xff)
 #define CLAP_VERSION_MIN(Version) (((Version) >> 8) & 0xff)
 #define CLAP_VERSION_REV(Version) ((Version)&0xff)
@@ -64,14 +64,6 @@ struct clap_host;
 enum clap_string_size {
    CLAP_ID_SIZE = 128,
    CLAP_NAME_SIZE = 64,
-};
-
-enum clap_log_severity {
-   CLAP_LOG_DEBUG = 0,
-   CLAP_LOG_INFO = 1,
-   CLAP_LOG_WARNING = 2,
-   CLAP_LOG_ERROR = 3,
-   CLAP_LOG_FATAL = 4,
 };
 
 // Description of the plugin
@@ -185,14 +177,13 @@ struct clap_event_list {
 /////////////
 
 enum clap_process_status {
-   /* Processing failed. The output buffer must be discarded. */
+   // Processing failed. The output buffer must be discarded.
    CLAP_PROCESS_ERROR = 0,
 
-   /* Processing succeed. */
+   // Processing succeed.
    CLAP_PROCESS_CONTINUE = 1,
 
-   /* Processing succeed, but no more processing is required, until next event.
-    */
+   // Processing succeed, but no more processing is required, until next event.
    CLAP_PROCESS_SLEEP = 2,
 };
 
@@ -203,6 +194,9 @@ struct clap_audio_buffer {
    float ** data32;
    double **data64;
    int32_t  channel_count;
+   uint32_t latency;       // latency from/to the audio interface
+   uint64_t constant_mask; // bitmask for each channel, 1 if the value is
+                           // constant for the whole buffer
 };
 
 struct clap_transport {
@@ -248,8 +242,7 @@ struct clap_host {
 
    void *host_data; // reserved pointer for the host
 
-   /* Name and version could be attributes but it is convenient to
-    * have it when debugging. Also they are mandatory. */
+   /* Name and version are mandatory. */
    char name[CLAP_NAME_SIZE];    // plugin name, eg: "BitwigStudio"
    char version[CLAP_NAME_SIZE]; // the plugin version, eg: "1.3.14"
 
@@ -260,13 +253,6 @@ struct clap_host {
                             const char *      attr,
                             char *            buffer,
                             int32_t           size);
-
-   /* Log a message through the host.
-    * [thread-safe] */
-   void (*log)(struct clap_host *     host,
-               struct clap_plugin *   plugin,
-               enum clap_log_severity severity,
-               const char *           msg);
 
    /* Query an extension.
     * [thread-safe] */
@@ -291,7 +277,8 @@ enum clap_plugin_type {
     * Exemple: arpegiator */
    CLAP_PLUGIN_EVENT_EFFECT = (1 << 2), // can be seen as midi effect
 
-   /* Analyze audio and/or events, and produces analysis results */
+   /* Analyze audio and/or events, and produces analysis results,
+    * but doesn't change audio. */
    CLAP_PLUGIN_ANALYZER = (1 << 3),
 };
 

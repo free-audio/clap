@@ -27,10 +27,11 @@ struct clap_param_info {
    bool    is_periodic; // after the last value, go back to the first one
    bool    is_locked;   // if true, the parameter can't be changed by the host
    bool    is_automatable;
+   bool    is_hidden;
+   bool    is_bypass;
 
    /* value */
    enum clap_param_type   type;
-   union clap_param_value value;         // current plain value
    union clap_param_value min_value;     // minimum plain value
    union clap_param_value max_value;     // maximum plain value
    union clap_param_value default_value; // default plain value
@@ -76,6 +77,11 @@ struct clap_plugin_params {
                              union clap_param_value plain_value,
                              char *                 display,
                              uint32_t               size);
+
+   bool (*get_param_value_from_display)(struct clap_plugin *    plugin,
+                                        int32_t                 param_index,
+                                        const char *            display,
+                                        union clap_param_value *plain_value);
 };
 
 struct clap_host_params {
