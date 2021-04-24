@@ -4,9 +4,9 @@
 extern "C" {
 #endif
 
-#include "../../clap.h"
+#include "../clap.h"
 
-#define CLAP_EXT_IDLE "clap/draft/idle"
+#define CLAP_EXT_IDLE "clap/idle"
 
 struct clap_plugin_idle {
    // IDLE time that can be used by the plugin on the main thread

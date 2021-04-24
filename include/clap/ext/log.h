@@ -4,9 +4,9 @@
 extern "C" {
 #endif
 
-#include "../../clap.h"
+#include "../clap.h"
 
-#define CLAP_EXT_LOG "clap/draft/log"
+#define CLAP_EXT_LOG "clap/log"
 
 enum clap_log_severity {
    CLAP_LOG_DEBUG = 0,
