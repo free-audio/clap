@@ -47,7 +47,7 @@ extern "C" {
 #      define CLAP_EXPORT __declspec(dllexport)
 #   endif
 #else
-#   if __GNUC__ >= 4
+#   if __GNUC__ >= 4 || defined (__clang__)
 #      define CLAP_EXPORT __attribute__((visibility("default")))
 #   else
 #      define CLAP_EXPORT
@@ -204,6 +204,8 @@ struct clap_audio_buffer {
 };
 
 struct clap_transport {
+   bool is_free_running; // free running host, no info provided
+
    bool is_playing;
    bool is_recording;
    bool is_looping;

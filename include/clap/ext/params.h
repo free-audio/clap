@@ -72,16 +72,16 @@ struct clap_plugin_params {
 
    // Formats the display text for the given parameter value.
    // [thread-safe,lock-wait-free]
-   bool (*get_param_display)(struct clap_plugin *   plugin,
-                             int32_t                param_index,
-                             union clap_param_value plain_value,
-                             char *                 display,
-                             uint32_t               size);
+   bool (*value_to_text)(struct clap_plugin *   plugin,
+                         int32_t                param_index,
+                         union clap_param_value plain_value,
+                         char *                 display,
+                         uint32_t               size);
 
-   bool (*get_param_value_from_display)(struct clap_plugin *    plugin,
-                                        int32_t                 param_index,
-                                        const char *            display,
-                                        union clap_param_value *plain_value);
+   bool (*text_to_value)(struct clap_plugin *    plugin,
+                         int32_t                 param_index,
+                         const char *            display,
+                         union clap_param_value *plain_value);
 };
 
 struct clap_host_params {
@@ -102,11 +102,14 @@ struct clap_host_params {
    void (*changed)(struct clap_host *     host,
                    struct clap_plugin *   plugin,
                    int32_t                index,
-                   union clap_param_value plain_value,
-                   bool                   is_recordable);
+                   union clap_param_value plain_value);
 
    // [main-thread]
    void (*rescan)(struct clap_host *host, struct clap_plugin *plugin);
+   void (*rescan_params)(struct clap_host *  host,
+                         struct clap_plugin *plugin,
+                         const uint32_t *    indexes,
+                         uint32_t            count);
 };
 
 #ifdef __cplusplus

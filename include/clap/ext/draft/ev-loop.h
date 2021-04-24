@@ -29,7 +29,7 @@ struct clap_host_ev_loop {
    // [main-thread]
    bool (*unregister_timer)(struct clap_host *  host,
                             struct clap_plugin *plugin,
-                            uint64_t *          timer_id);
+                            uint64_t            timer_id);
 
    // [main-thread]
    bool (*register_fd)(struct clap_host *  host,

@@ -14,6 +14,9 @@ enum clap_log_severity {
    CLAP_LOG_WARNING = 2,
    CLAP_LOG_ERROR = 3,
    CLAP_LOG_FATAL = 4,
+
+   // This severity should be used to report misbehaviour of the host
+   CLAP_LOG_HOST_MISBEHAVING = 5,
 };
 
 struct clap_host_log {

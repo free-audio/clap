@@ -21,12 +21,17 @@ enum clap_audio_port_channel_mapping {
 };
 
 struct clap_audio_port_info {
-   char    name[CLAP_NAME_SIZE]; // useful in the debugger
-   bool    is_input;
-   bool    is_main;
-   bool    is_cv; // control voltage
-   bool    supports_64_bits; // 32 bit support is mandatory, the host chooses between 32 and 64.
-   int32_t channel_count;
+   char name[CLAP_NAME_SIZE]; // displayable name
+   bool is_input;
+   bool is_main;
+   bool is_cv;             // control voltage
+   bool supports_64_bits;  // 32 bit support is mandatory, the host chooses
+                           // between 32 and 64.
+   bool supports_in_place; // if true the daw can use the same buffer for input
+                           // and output
+   int32_t in_place_pair; // index to the buffer that correspond to this one for
+                          // in-place processing.
+   int32_t                              channel_count;
    enum clap_audio_port_channel_mapping channel_mapping;
 };
 
