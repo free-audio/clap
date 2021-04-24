@@ -17,6 +17,10 @@ struct clap_plugin_state {
    /* Loads the plugin state from stream.
     * [main-thread] */
    bool (*restore)(struct clap_plugin *plugin, struct clap_istream *stream);
+
+   // Loads a preset in the plugin native preset file format from a path.
+   // [main-thread]
+   bool (*load_preset_from_file)(struct clap_plugin *plugin, const char *path);
 };
 
 struct clap_host_state {
