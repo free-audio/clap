@@ -16,6 +16,10 @@ struct clap_plugin_gui {
                     int32_t *           width,
                     int32_t *           height);
 
+   // Sets the GUI scaling factor.
+   // [main-thread]
+   void (*set_scale)(struct clap_plugin *plugin, double scale);
+
    void (*show)(struct clap_plugin *plugin);
    void (*hide)(struct clap_plugin *plugin);
 
