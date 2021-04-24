@@ -10,8 +10,6 @@ extern "C" {
 #endif
 
 struct clap_plugin_gui {
-   void (*open)(struct clap_plugin *plugin);
-
    // Get the size of the plugin UI.
    // [main-thread]
    void (*get_size)(struct clap_plugin *plugin,

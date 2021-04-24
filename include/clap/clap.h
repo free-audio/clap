@@ -47,7 +47,7 @@ extern "C" {
 #      define CLAP_EXPORT __declspec(dllexport)
 #   endif
 #else
-#   if __GNUC__ >= 4 || defined (__clang__)
+#   if __GNUC__ >= 4 || defined(__clang__)
 #      define CLAP_EXPORT __attribute__((visibility("default")))
 #   else
 #      define CLAP_EXPORT
@@ -165,15 +165,15 @@ struct clap_event {
 struct clap_event_list {
    void *ctx;
 
-   int (*size)(const struct clap_event_list *list);
+   int32_t (*size)(const struct clap_event_list *list);
 
    // Don't free the return event, it belongs to the list
    const struct clap_event *(*get)(const struct clap_event_list *list,
                                    int                           index);
 
    // Makes a copy of the event
-   void (*push_back)(struct clap_event_list * list,
-                     const struct clap_event *event);
+   void (*push_back)(const struct clap_event_list *list,
+                     const struct clap_event *     event);
 };
 
 /////////////
@@ -228,15 +228,15 @@ struct clap_process {
 
    struct clap_transport transport;
 
-   /* audio ports */
-   const struct clap_audio_buffer *audio_in;
-   const struct clap_audio_buffer *audio_out;
-   int                             audio_in_count;
-   int                             audio_out_count;
+   // Audio buffers, they must have the same count as specified
+   // by clap_plugin_audio_ports->get_count().
+   // The index maps to clap_plugin_audio_ports->get_info().
+   const struct clap_audio_buffer *audio_buffers;
+   int                             audio_buffers_count;
 
    /* events */
    const struct clap_event_list *in_events;
-   struct clap_event_list *      out_events;
+   const struct clap_event_list *out_events;
 };
 
 //////////
