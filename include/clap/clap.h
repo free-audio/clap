@@ -165,11 +165,15 @@ struct clap_event {
 struct clap_event_list {
    void *ctx;
 
-   int (*size)(const struct clap_event_istream *stream);
-   const struct clap_event *(*get)(const struct clap_event_istream *stream,
-                                   int                              index);
-   void (*push_back)(struct clap_event_istream *stream,
-                     const struct clap_event *  event);
+   int (*size)(const struct clap_event_list *list);
+
+   // Don't free the return event, it belongs to the list
+   const struct clap_event *(*get)(const struct clap_event_list *list,
+                                   int                           index);
+
+   // Makes a copy of the event
+   void (*push_back)(struct clap_event_list * list,
+                     const struct clap_event *event);
 };
 
 /////////////
