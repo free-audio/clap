@@ -359,7 +359,7 @@ struct clap_plugin_entry {
 };
 
 /* Entry point */
-CLAP_EXPORT extern const struct clap_plugin_entry *clap_plugin_entry;
+CLAP_EXPORT extern const struct clap_plugin_entry clap_plugin_entry;
 
 #ifdef __cplusplus
 }
