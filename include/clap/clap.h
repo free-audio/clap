@@ -231,6 +231,9 @@ struct clap_process {
    // Audio buffers, they must have the same count as specified
    // by clap_plugin_audio_ports->get_count().
    // The index maps to clap_plugin_audio_ports->get_info().
+   //
+   // If a plugin does not implement clap_plugin_audio_ports,
+   // then it gets a default stereo input and output.
    const struct clap_audio_buffer *audio_inputs;
    const struct clap_audio_buffer *audio_outputs;
    int32_t                         audio_inputs_count;
