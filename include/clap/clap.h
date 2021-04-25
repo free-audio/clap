@@ -165,11 +165,11 @@ struct clap_event {
 struct clap_event_list {
    void *ctx;
 
-   int32_t (*size)(const struct clap_event_list *list);
+   uint32_t (*size)(const struct clap_event_list *list);
 
    // Don't free the return event, it belongs to the list
    const struct clap_event *(*get)(const struct clap_event_list *list,
-                                   int                           index);
+                                   uint32_t                      index);
 
    // Makes a copy of the event
    void (*push_back)(const struct clap_event_list *list,
@@ -231,8 +231,10 @@ struct clap_process {
    // Audio buffers, they must have the same count as specified
    // by clap_plugin_audio_ports->get_count().
    // The index maps to clap_plugin_audio_ports->get_info().
-   const struct clap_audio_buffer *audio_buffers;
-   int                             audio_buffers_count;
+   const struct clap_audio_buffer *audio_inputs;
+   const struct clap_audio_buffer *audio_outputs;
+   int32_t                         audio_inputs_count;
+   int32_t                         audio_outputs_count;
 
    /* events */
    const struct clap_event_list *in_events;

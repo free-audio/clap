@@ -22,7 +22,6 @@ enum clap_audio_port_channel_mapping {
 
 struct clap_audio_port_info {
    char name[CLAP_NAME_SIZE]; // displayable name
-   bool is_input;
    bool is_main;           // there can only be 1 main input and output
    bool is_cv;             // control voltage
    bool supports_64_bits;  // 32 bit support is mandatory, the host chooses
@@ -35,19 +34,22 @@ struct clap_audio_port_info {
 
 // The audio ports scan has to be done while the plugin is deactivated.
 struct clap_plugin_audio_ports {
-   // number of ports, both inputs and outputs
+   // number of ports, for either input or output
    // [main-thread]
-   int32_t (*get_count)(struct clap_plugin *plugin);
+   int32_t (*get_count)(struct clap_plugin *plugin, bool is_input);
 
    // get info about about an audio port.
    // [main-thread]
    void (*get_info)(struct clap_plugin *         plugin,
                     int32_t                      index,
+                    bool                         is_input,
                     struct clap_audio_port_info *info);
 
    // Returns the port latency.
    // [main-thread]
-   int32_t (*get_latency)(struct clap_plugin *plugin, int32_t index);
+   int32_t (*get_latency)(struct clap_plugin *plugin,
+                          int32_t             index,
+                          bool                is_input);
 };
 
 struct clap_host_audio_ports {
