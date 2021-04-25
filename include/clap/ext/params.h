@@ -56,9 +56,9 @@ typedef struct clap_plugin_params {
    // If the plupin is activated, then the host must send a param event
    // in the next process call to update the audio processor.
    // [main-thread]
-   void (*set_param_value)(clap_plugin *    plugin,
-                           int32_t          param_index,
-                           clap_param_value plain_value);
+   void (*set_value)(clap_plugin *    plugin,
+                     int32_t          param_index,
+                     clap_param_value plain_value);
 
    // Normalization only exists for float values
    // [thread-safe,lock-wait-free]
