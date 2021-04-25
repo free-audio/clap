@@ -6,7 +6,7 @@ extern "C" {
 
 #include "../../clap.h"
 
-#define CLAP_EXT_IDLE "clap/draft/tuning"
+#define CLAP_EXT_TUNING "clap/draft/tuning"
 
 // This extension is to providet a dynamic tuning table to the plugin.
 typedef struct clap_host_tuning {
