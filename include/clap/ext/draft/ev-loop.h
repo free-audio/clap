@@ -6,7 +6,7 @@ extern "C" {
 
 #include "../../clap.h"
 
-#define CLAP_EXT_POLL "clap/draft/ev-loop"
+#define CLAP_EXT_EV_LOOP "clap/draft/ev-loop"
 
 enum {
    CLAP_EV_LOOP_READ = 1,
