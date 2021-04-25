@@ -8,11 +8,11 @@ extern "C" {
 
 #define CLAP_EXT_IDLE "clap/idle"
 
-struct clap_plugin_idle {
+typedef struct clap_plugin_idle {
    // IDLE time that can be used by the plugin on the main thread
    // [main-thread]
-   void (*idle)(struct clap_plugin *plugin);
-};
+   void (*idle)(clap_plugin *plugin);
+} clap_plugin_idle;
 
 #ifdef __cplusplus
 }

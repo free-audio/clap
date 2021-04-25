@@ -8,13 +8,13 @@ extern "C" {
 
 #define CLAP_EXT_GUI_COCOA "clap/gui/cocoa"
 
-struct clap_plugin_embed_cocoa {
+typedef struct clap_plugin_embed_cocoa {
    // [main-thread]
-   bool (*attach)(struct clap_plugin *plugin, void *nsView);
+   bool (*attach)(clap_plugin *plugin, void *nsView);
 
    // [main-thread]
-   bool (*detach)(struct clap_plugin *plugin);
-};
+   bool (*detach)(clap_plugin *plugin);
+} clap_plugin_embed_cocoa;
 
 #ifdef __cplusplus
 }

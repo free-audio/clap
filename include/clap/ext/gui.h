@@ -9,30 +9,28 @@
 extern "C" {
 #endif
 
-struct clap_plugin_gui {
+typedef struct clap_plugin_gui {
    // Get the size of the plugin UI.
    // [main-thread]
-   void (*get_size)(struct clap_plugin *plugin,
-                    int32_t *           width,
-                    int32_t *           height);
+   void (*get_size)(clap_plugin *plugin, int32_t *width, int32_t *height);
 
    // Sets the GUI scaling factor.
    // [main-thread]
-   void (*set_scale)(struct clap_plugin *plugin, double scale);
+   void (*set_scale)(clap_plugin *plugin, double scale);
 
-   void (*show)(struct clap_plugin *plugin);
-   void (*hide)(struct clap_plugin *plugin);
+   void (*show)(clap_plugin *plugin);
+   void (*hide)(clap_plugin *plugin);
 
    // [main-thread]
-   void (*close)(struct clap_plugin *plugin);
-};
+   void (*close)(clap_plugin *plugin);
+} clap_plugin_gui;
 
-struct clap_host_gui {
+typedef struct clap_host_gui {
    /* Request the host to resize the client area to width, height.
     * Return true on success, false otherwise.
     * [thread-safe] */
-   bool (*resize)(struct clap_host *host, int32_t width, int32_t height);
-};
+   bool (*resize)(clap_host *host, int32_t width, int32_t height);
+} clap_host_gui;
 
 #ifdef __cplusplus
 }

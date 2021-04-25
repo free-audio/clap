@@ -8,7 +8,7 @@ extern "C" {
 
 #define CLAP_EXT_LOG "clap/log"
 
-enum clap_log_severity {
+typedef enum clap_log_severity {
    CLAP_LOG_DEBUG = 0,
    CLAP_LOG_INFO = 1,
    CLAP_LOG_WARNING = 2,
@@ -17,16 +17,16 @@ enum clap_log_severity {
 
    // This severity should be used to report misbehaviour of the host
    CLAP_LOG_HOST_MISBEHAVING = 5,
-};
+} clap_log_severity;
 
-struct clap_host_log {
+typedef struct clap_host_log {
    // Log a message through the host.
    // [thread-safe]
-   void (*log)(struct clap_host *     host,
-               struct clap_plugin *   plugin,
-               enum clap_log_severity severity,
-               const char *           msg);
-};
+   void (*log)(clap_host *       host,
+               clap_plugin *     plugin,
+               clap_log_severity severity,
+               const char *      msg);
+} clap_host_log;
 
 #ifdef __cplusplus
 }

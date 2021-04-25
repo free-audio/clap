@@ -54,17 +54,10 @@ extern "C" {
 #   endif
 #endif
 
-///////////////////////////
-// FORWARD DELCLARATIONS //
-///////////////////////////
-
-struct clap_plugin;
-struct clap_host;
-
-enum clap_string_size {
+typedef enum clap_string_size {
    CLAP_ID_SIZE = 128,
    CLAP_NAME_SIZE = 64,
-};
+} clap_string_size;
 
 // Description of the plugin
 #define CLAP_ATTR_DESCRIPTION "clap/description"
@@ -79,17 +72,17 @@ enum clap_string_size {
 // PARAMETERS //
 ////////////////
 
-union clap_param_value {
+typedef union clap_param_value {
    bool    b;
    double  d;
    int64_t i;
-};
+} clap_param_value;
 
 ////////////
 // EVENTS //
 ////////////
 
-enum clap_event_type {
+typedef enum clap_event_type {
    CLAP_EVENT_NOTE_ON = 0,   // note attribute
    CLAP_EVENT_NOTE_OFF = 1,  // note attribute
    CLAP_EVENT_CHOKE = 2,     // no attribute
@@ -100,38 +93,38 @@ enum clap_event_type {
    CLAP_EVENT_PROGRAM = 5,    // program attribute
    CLAP_EVENT_MIDI = 6,       // midi attribute
    CLAP_EVENT_MIDI_SYSEX = 7, // midi attribute
-};
+} clap_event_type;
 
-struct clap_event_param {
-   int32_t                key;
-   int32_t                channel;
-   uint32_t               index; // parameter index
-   union clap_param_value normalized_value;
-   double                 normalized_ramp; // only applies to float values
-};
+typedef struct clap_event_param {
+   int32_t          key;
+   int32_t          channel;
+   uint32_t         index; // parameter index
+   clap_param_value normalized_value;
+   double           normalized_ramp; // only applies to float values
+} clap_event_param;
 
 /** Note On/Off event. */
-struct clap_event_note {
+typedef struct clap_event_note {
    int32_t key;      // 0..127
    int32_t channel;  // 0..15
    double  velocity; // 0..1
-};
+} clap_event_note;
 
-struct clap_event_control {
+typedef struct clap_event_control {
    int32_t key;     // 0..127, or -1 to match all keys
    int32_t channel; // 0..15, or -1 to match all channels
    int32_t control; // 0..127
    double  value;   // 0..1
-};
+} clap_event_control;
 
-struct clap_event_midi {
+typedef struct clap_event_midi {
    uint8_t data[4];
-};
+} clap_event_midi;
 
-struct clap_event_midi_sysex {
+typedef struct clap_event_midi_sysex {
    const uint8_t *buffer; // midi buffer
    uint32_t       size;
-};
+} clap_event_midi_sysex;
 
 /**
  * Asks the plugin to load a program.
@@ -141,46 +134,44 @@ struct clap_event_midi_sysex {
  * a preset, is that the program should already be in the plugin's
  * memory, and can be set instantly.
  */
-struct clap_event_program {
+typedef struct clap_event_program {
    int32_t channel;  // 0..15, -1 unspecified
    int32_t bank_msb; // 0..0x7FFFFFFF, -1 unspecified
    int32_t bank_lsb; // 0..0x7FFFFFFF, -1 unspecified
    int32_t program;  // 0..0x7FFFFFFF
-};
+} clap_event_program;
 
-struct clap_event {
-   enum clap_event_type type;
+typedef struct clap_event {
+   clap_event_type type;
    uint32_t time; // offset from the first sample in the process block
 
    union {
-      struct clap_event_note       note;
-      struct clap_event_control    control;
-      struct clap_event_param      param;
-      struct clap_event_midi       midi;
-      struct clap_event_midi_sysex midi_sysex;
-      struct clap_event_program    program;
+      clap_event_note       note;
+      clap_event_control    control;
+      clap_event_param      param;
+      clap_event_midi       midi;
+      clap_event_midi_sysex midi_sysex;
+      clap_event_program    program;
    };
-};
+} clap_event;
 
-struct clap_event_list {
+typedef struct clap_event_list {
    void *ctx;
 
-   uint32_t (*size)(const struct clap_event_list *list);
+   uint32_t (*size)(const clap_event_list *list);
 
    // Don't free the return event, it belongs to the list
-   const struct clap_event *(*get)(const struct clap_event_list *list,
-                                   uint32_t                      index);
+   const clap_event *(*get)(const clap_event_list *list, uint32_t index);
 
    // Makes a copy of the event
-   void (*push_back)(const struct clap_event_list *list,
-                     const struct clap_event *     event);
-};
+   void (*push_back)(const clap_event_list *list, const clap_event *event);
+} clap_event_list;
 
 /////////////
 // PROCESS //
 /////////////
 
-enum clap_process_status {
+typedef enum clap_process_status {
    // Processing failed. The output buffer must be discarded.
    CLAP_PROCESS_ERROR = 0,
 
@@ -189,9 +180,9 @@ enum clap_process_status {
 
    // Processing succeed, but no more processing is required, until next event.
    CLAP_PROCESS_SLEEP = 2,
-};
+} clap_process_status;
 
-struct clap_audio_buffer {
+typedef struct clap_audio_buffer {
    // Either data32 or data64 will be set, but not both.
    // If none are set, assume that the input has the value 0 for each samples.
    // data[i] for channel i buffer
@@ -201,9 +192,9 @@ struct clap_audio_buffer {
    uint32_t latency;       // latency from/to the audio interface
    uint64_t constant_mask; // bitmask for each channel, 1 if the value is
                            // constant for the whole buffer
-};
+} clap_audio_buffer;
 
-struct clap_transport {
+typedef struct clap_transport {
    bool is_free_running; // free running host, no info provided
 
    bool is_playing;
@@ -221,12 +212,12 @@ struct clap_transport {
    int16_t tsig_denom; // time signature denominator
 
    int64_t steady_time; // the steady time in samples
-};
+} clap_transport;
 
-struct clap_process {
+typedef struct clap_process {
    int32_t frames_count; // number of frame to process
 
-   struct clap_transport transport;
+   clap_transport transport;
 
    // Audio buffers, they must have the same count as specified
    // by clap_plugin_audio_ports->get_count().
@@ -234,21 +225,21 @@ struct clap_process {
    //
    // If a plugin does not implement clap_plugin_audio_ports,
    // then it gets a default stereo input and output.
-   const struct clap_audio_buffer *audio_inputs;
-   const struct clap_audio_buffer *audio_outputs;
-   int32_t                         audio_inputs_count;
-   int32_t                         audio_outputs_count;
+   const clap_audio_buffer *audio_inputs;
+   const clap_audio_buffer *audio_outputs;
+   int32_t                  audio_inputs_count;
+   int32_t                  audio_outputs_count;
 
    /* events */
-   const struct clap_event_list *in_events;
-   const struct clap_event_list *out_events;
-};
+   const clap_event_list *in_events;
+   const clap_event_list *out_events;
+} clap_process;
 
 //////////
 // HOST //
 //////////
 
-struct clap_host {
+typedef struct clap_host {
    int32_t clap_version; // initialized to CLAP_VERSION
 
    void *host_data; // reserved pointer for the host
@@ -260,15 +251,15 @@ struct clap_host {
    /* Returns the size of the original string. If this is larger than size, then
     * the function did not have enough space to copy all the data.
     * [thread-safe] */
-   int32_t (*get_attribute)(struct clap_host *host,
-                            const char *      attr,
-                            char *            buffer,
-                            int32_t           size);
+   int32_t (*get_attribute)(clap_host * host,
+                            const char *attr,
+                            char *      buffer,
+                            int32_t     size);
 
    /* Query an extension.
     * [thread-safe] */
-   const void *(*extension)(struct clap_host *host, const char *extension_id);
-};
+   const void *(*extension)(clap_host *host, const char *extension_id);
+} clap_host;
 
 ////////////
 // PLUGIN //
@@ -276,7 +267,7 @@ struct clap_host {
 
 /* bitfield
  * This gives an hint to the host what the plugin might do. */
-enum clap_plugin_type {
+typedef enum clap_plugin_type {
    /* Instruments can play notes, and generate audio */
    CLAP_PLUGIN_INSTRUMENT = (1 << 0),
 
@@ -291,9 +282,9 @@ enum clap_plugin_type {
    /* Analyze audio and/or events, and produces analysis results,
     * but doesn't change audio. */
    CLAP_PLUGIN_ANALYZER = (1 << 3),
-};
+} clap_plugin_type;
 
-struct clap_plugin {
+typedef struct clap_plugin {
    int32_t clap_version; // initialized to CLAP_VERSION
 
    void *plugin_data; // reserved pointer for the plugin
@@ -308,36 +299,36 @@ struct clap_plugin {
    char id[CLAP_ID_SIZE];        // plugin id, eg: "com.u-he.diva"
    char version[CLAP_NAME_SIZE]; // the plugin version, eg: "1.3.2"
 
-   uint64_t plugin_type; // bitfield of enum clap_plugin_type
+   uint64_t plugin_type; // bitfield of clap_plugin_type
 
    /* Free the plugin and its resources.
     * It is not required to deactivate the plugin prior to this call. */
-   void (*destroy)(struct clap_plugin *plugin);
+   void (*destroy)(clap_plugin *plugin);
 
    /* Copy at most size of the attribute's value into buffer.
     * This function must place a '\0' byte at the end of the string.
     * Returns the size of the original string or 0 if there is no
     * value for this attributes.
     * [thread-safe] */
-   int32_t (*get_attribute)(struct clap_plugin *plugin,
-                            const char *        attr,
-                            char *              buffer,
-                            int32_t             size);
+   int32_t (*get_attribute)(clap_plugin *plugin,
+                            const char * attr,
+                            char *       buffer,
+                            int32_t      size);
 
    /* activation/deactivation
     * [main-thread] */
-   bool (*activate)(struct clap_plugin *plugin, int sample_rate);
-   void (*deactivate)(struct clap_plugin *plugin);
+   bool (*activate)(clap_plugin *plugin, int sample_rate);
+   void (*deactivate)(clap_plugin *plugin);
 
    /* process audio, events, ...
     * [audio-thread] */
-   enum clap_process_status (*process)(struct clap_plugin *       plugin,
-                                       const struct clap_process *process);
+   clap_process_status (*process)(clap_plugin *       plugin,
+                                       const clap_process *process);
 
    /* query an extension
     * [thread-safe] */
-   const void *(*extension)(struct clap_plugin *plugin, const char *id);
-};
+   const void *(*extension)(clap_plugin *plugin, const char *id);
+} clap_plugin;
 
 /* This interface is the entry point of the dynamic library.
  *
@@ -353,14 +344,12 @@ struct clap_plugin_entry {
    /* Create a clap_plugin by its index.
     * Returns null in case of error.
     * [thread-safe] */
-   struct clap_plugin *(*create_plugin_by_index)(struct clap_host *host,
-                                                 int32_t           index);
+   clap_plugin *(*create_plugin_by_index)(clap_host *host, int32_t index);
 
    /* Create a clap_plugin by its plugin_id.
     * Returns null in case of error.
     * [thread-safe] */
-   struct clap_plugin *(*create_plugin_by_id)(struct clap_host *host,
-                                              const char *      plugin_id);
+   clap_plugin *(*create_plugin_by_id)(clap_host *host, const char *plugin_id);
 };
 
 /* Entry point */

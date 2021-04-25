@@ -8,14 +8,14 @@
 extern "C" {
 #endif
 
-struct clap_plugin_gui_free_standing {
+typedef struct clap_plugin_gui_free_standing {
    // Opens the plugin window as a free standing window, which means it is not
    // embedded in the host and managed by the plugin.
    // [main-thread]
-   bool (*open)(struct clap_plugin *plugin,
-                const char *        display_name,
-                unsigned long       window);
-};
+   bool (*open)(clap_plugin * plugin,
+                const char *  display_name,
+                unsigned long window);
+} clap_plugin_gui_free_standing;
 
 #ifdef __cplusplus
 }
