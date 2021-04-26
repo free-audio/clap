@@ -116,7 +116,7 @@ typedef enum clap_event_type {
    CLAP_EVENT_NOTE_EXPRESSION, // note_expression attribute
    CLAP_EVENT_CHOKE,           // no attribute
    CLAP_EVENT_PARAM_SET,       // param attribute
-   CLAP_EVENT_JUMP,            // transport attribute
+   CLAP_EVENT_JUMP,            // jump attribute
    CLAP_EVENT_CHORD,           // chord attribute
    CLAP_EVENT_TEMPO,           // tempo attribute
    CLAP_EVENT_TSIG,            // tsig attribute
@@ -156,11 +156,11 @@ typedef enum clap_note_expression {
 } clap_note_expression;
 
 typedef struct clap_event_note_expression {
-   int32_t expression_id;
-   int32_t key;         // 0..127, or -1 to match all keys
-   int32_t channel;     // 0..15, or -1 to match all channels
-   int32_t control;     // 0..127
-   double  plain_value; // see expression for the range
+   clap_note_expression expression_id;
+   int32_t              key;         // 0..127, or -1 to match all keys
+   int32_t              channel;     // 0..15, or -1 to match all channels
+   int32_t              control;     // 0..127
+   double               plain_value; // see expression for the range
 } clap_event_note_expression;
 
 typedef struct clap_event_param {
