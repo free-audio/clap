@@ -8,7 +8,7 @@ extern "C" {
 
 #define CLAP_EXT_TUNING "clap/draft/tuning"
 
-// This extension is to providet a dynamic tuning table to the plugin.
+// This extension provides a dynamic tuning table to the plugin.
 typedef struct clap_host_tuning {
    // The plugin can ask the host, the frequency of a given key,
    // at a given time in case the tuning is automated.

@@ -45,6 +45,12 @@ typedef struct clap_plugin_audio_ports {
                     bool                  is_input,
                     clap_audio_port_info *info);
 
+   void (*activate_port)(clap_plugin *plugin,
+                         int32_t      index,
+                         bool         is_input,
+                         bool         use_64);
+   void (*deactivate_port)(clap_plugin *plugin, int32_t index, bool is_input);
+
    // Returns the port latency.
    // [main-thread]
    int32_t (*get_latency)(clap_plugin *plugin, int32_t index, bool is_input);

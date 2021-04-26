@@ -21,14 +21,17 @@ typedef struct clap_param_info {
    int32_t index;
    int32_t id;                   // a string which identify the param
    char    name[CLAP_NAME_SIZE]; // the display name
-   bool    is_per_note;
-   bool    is_per_channel;
-   bool    is_used;     // is this parameter used by the patch?
-   bool    is_periodic; // after the last value, go back to the first one
-   bool    is_locked;   // if true, the parameter can't be changed by the host
-   bool    is_automatable;
-   bool    is_hidden;
-   bool    is_bypass;
+   char    module[CLAP_ID_SIZE]; // the module containing the param, eg:
+                                 // "/filters/moog"; '/' will be used as a
+                                 // separator to show a tree like structure.
+   bool is_per_note;
+   bool is_per_channel;
+   bool is_used;     // is this parameter used by the patch?
+   bool is_periodic; // after the last value, go back to the first one
+   bool is_locked;   // if true, the parameter can't be changed by the host
+   bool is_automatable;
+   bool is_hidden;
+   bool is_bypass;
 
    /* value */
    clap_param_type  type;
