@@ -138,16 +138,29 @@ typedef struct clap_event_note {
 } clap_event_note;
 
 typedef enum clap_note_expression {
-   CLAP_NOTE_EXPRESSION_PITCH_BEND = 0,
+   // TODO range, 20 * log(K * x)?
+   CLAP_NOTE_EXPRESSION_VOLUME,
+
+   // pan, -1 left, 1 right
+   CLAP_NOTE_EXPRESSION_PAN,
+
+   // relative tunind in semitone
+   CLAP_NOTE_EXPRESSION_TUNING,
+   CLAP_NOTE_EXPRESSION_VIBRATO,
+   CLAP_NOTE_EXPRESSION_BRIGHTNESS,
+   CLAP_NOTE_EXPRESSION_BREATH,
+   CLAP_NOTE_EXPRESSION_PRUSSURE,
+   CLAP_NOTE_EXPRESSION_TIMBRE,
+
    // TODO...
 } clap_note_expression;
 
 typedef struct clap_event_note_expression {
    int32_t expression_id;
-   int32_t key;     // 0..127, or -1 to match all keys
-   int32_t channel; // 0..15, or -1 to match all channels
-   int32_t control; // 0..127
-   double  value;   // 0..1
+   int32_t key;         // 0..127, or -1 to match all keys
+   int32_t channel;     // 0..15, or -1 to match all channels
+   int32_t control;     // 0..127
+   double  plain_value; // see expression for the range
 } clap_event_note_expression;
 
 typedef struct clap_event_param {
