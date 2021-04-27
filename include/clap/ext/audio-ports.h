@@ -21,6 +21,7 @@ typedef enum clap_audio_port_channel_mapping {
 } clap_audio_port_channel_mapping;
 
 typedef struct clap_audio_port_info {
+   char id[CLAP_ID_SIZE];     // stable identifier
    char name[CLAP_NAME_SIZE]; // displayable name
    bool is_main;              // there can only be 1 main input and output
    bool is_cv;                // control voltage

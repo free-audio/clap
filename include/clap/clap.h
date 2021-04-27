@@ -82,29 +82,11 @@ typedef union clap_param_value {
 // TRANSPORT //
 ///////////////
 
-typedef struct clap_transport {
-
-   bool is_playing;
-   bool is_recording;
-
+typedef struct clap_loop_info {
    bool   is_loop_active;
    double loop_start;
    double loop_end;
-
-   bool   has_tempo;
-   double tempo; // tempo in bpm
-
-   bool   has_song_pos;
-   double song_pos_beats;   // position in beats
-   double song_pos_seconds; // position in seconds
-
-   double bar_start; // start pos of the current bar
-
-   bool    has_tsig;
-   int16_t tsig_num;   // time signature numerator
-   int16_t tsig_denom; // time signature denominator
-
-} clap_transport;
+} clap_loop_info;
 
 ////////////
 // EVENTS //
@@ -117,12 +99,11 @@ typedef enum clap_event_type {
    CLAP_EVENT_CHOKE,           // no attribute
    CLAP_EVENT_PARAM_SET,       // param attribute
    CLAP_EVENT_JUMP,            // jump attribute
-   CLAP_EVENT_CHORD,           // chord attribute
    CLAP_EVENT_TEMPO,           // tempo attribute
-   CLAP_EVENT_TSIG,            // tsig attribute
-   CLAP_EVENT_LOOP,            // loop attribute
    CLAP_EVENT_PLAY,            // is_playing attribute
    CLAP_EVENT_RECORD,          // is_recording attribute
+   CLAP_EVENT_TSIG,            // tsig attribute
+   CLAP_EVENT_CHORD,           // chord attribute
 
    /* MIDI Style */
    CLAP_EVENT_PROGRAM,    // program attribute
@@ -160,7 +141,8 @@ typedef struct clap_event_note_expression {
    int32_t              key;         // 0..127, or -1 to match all keys
    int32_t              channel;     // 0..15, or -1 to match all channels
    int32_t              control;     // 0..127
-   double               plain_value; // see expression for the range
+   double               normalized_value; // see expression for the range
+   double               normalized_ramp;
 } clap_event_note_expression;
 
 typedef struct clap_event_param {
@@ -168,6 +150,7 @@ typedef struct clap_event_param {
    int32_t          channel;
    uint32_t         index; // parameter index
    clap_param_value normalized_value;
+   double normalized_ramp; // valid until the end of the block or the next event
 } clap_event_param;
 
 typedef struct clap_event_jump {
@@ -192,12 +175,6 @@ typedef struct clap_event_chord {
    uint16_t note_mask;
    uint8_t  root_note; // 0..11, 0 for C
 } clap_event_chord;
-
-typedef struct clap_event_loop {
-   bool   is_loop_active;
-   double loop_start;
-   double loop_end;
-} clap_event_loop;
 
 typedef struct clap_event_midi {
    uint8_t data[4];
@@ -235,7 +212,6 @@ typedef struct clap_event {
       clap_event_chord           chord;
       double                     tempo;
       clap_event_tsig            tsig;
-      clap_event_loop            loop;
       bool                       is_playing;
       bool                       is_recording;
       clap_event_program         program;
@@ -281,6 +257,7 @@ typedef struct clap_audio_buffer {
    uint32_t latency;       // latency from/to the audio interface
    uint64_t constant_mask; // bitmask for each channel, 1 if the value is
                            // constant for the whole buffer
+   const char *plugin_port_id; // optional, used for validation
 } clap_audio_buffer;
 
 typedef struct clap_process {
@@ -289,7 +266,7 @@ typedef struct clap_process {
    bool    has_transport; // if false then this is a free running host, no
                           // transport events will be provided
 
-   clap_transport transport; // only valid if has_transport is true
+   clap_loop_info loop_info; // only valid if has_transport is true
 
    // Audio buffers, they must have the same count as specified
    // by clap_plugin_audio_ports->get_count().
