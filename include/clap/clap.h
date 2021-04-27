@@ -158,6 +158,7 @@ typedef struct clap_event_jump {
    double song_pos_seconds; // position in seconds
 
    double bar_start; // start pos of the current bar
+   int32_t bar_number; // bar at song pos 0 has the number 0
 } clap_event_jump;
 
 typedef struct clap_event_tsig {
