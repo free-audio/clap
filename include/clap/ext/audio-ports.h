@@ -21,14 +21,14 @@ typedef enum clap_audio_port_channel_mapping {
 } clap_audio_port_channel_mapping;
 
 typedef struct clap_audio_port_info {
-   char id[CLAP_ID_SIZE];     // stable identifier
-   char name[CLAP_NAME_SIZE]; // displayable name
-   bool is_main;              // there can only be 1 main input and output
-   bool is_cv;                // control voltage
-   bool supports_64_bits;     // 32 bit support is mandatory, the host chooses
-                              // between 32 and 64.
-   bool supports_in_place; // if true the daw can use the same buffer for input
-                           // and output, only for main input to main output
+   uint32_t id;                   // stable identifier
+   char     name[CLAP_NAME_SIZE]; // displayable name
+   bool     is_main;              // there can only be 1 main input and output
+   bool     is_cv;                // control voltage
+   bool     supports_64_bits;     // 32 bit support is mandatory, the host chooses
+                                  // between 32 and 64.
+   bool supports_in_place;        // if true the daw can use the same buffer for input
+                                  // and output, only for main input to main output
    int32_t                         channel_count;
    clap_audio_port_channel_mapping channel_mapping;
 } clap_audio_port_info;
@@ -41,15 +41,9 @@ typedef struct clap_plugin_audio_ports {
 
    // get info about about an audio port.
    // [main-thread]
-   void (*get_info)(clap_plugin *         plugin,
-                    int32_t               index,
-                    bool                  is_input,
-                    clap_audio_port_info *info);
+   void (*get_info)(clap_plugin *plugin, int32_t index, bool is_input, clap_audio_port_info *info);
 
-   void (*activate_port)(clap_plugin *plugin,
-                         int32_t      index,
-                         bool         is_input,
-                         bool         use_64);
+   void (*activate_port)(clap_plugin *plugin, int32_t index, bool is_input, bool use_64);
    void (*deactivate_port)(clap_plugin *plugin, int32_t index, bool is_input);
 
    // Returns the port latency.
