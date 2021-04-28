@@ -30,36 +30,12 @@
 #include <stdint.h>
 
 #include "events.h"
+#include "string-sizes.h"
+#include "macros.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#define CLAP_VERSION_MAKE(Major, Minor, Revision)                                                  \
-   ((((Major)&0xff) << 16) | (((Minor)&0xff) << 8) | ((Revision)&0xff))
-#define CLAP_VERSION CLAP_VERSION_MAKE(0, 4, 0)
-#define CLAP_VERSION_MAJ(Version) (((Version) >> 16) & 0xff)
-#define CLAP_VERSION_MIN(Version) (((Version) >> 8) & 0xff)
-#define CLAP_VERSION_REV(Version) ((Version)&0xff)
-
-#if defined _WIN32 || defined __CYGWIN__
-#   ifdef __GNUC__
-#      define CLAP_EXPORT __attribute__((dllexport))
-#   else
-#      define CLAP_EXPORT __declspec(dllexport)
-#   endif
-#else
-#   if __GNUC__ >= 4 || defined(__clang__)
-#      define CLAP_EXPORT __attribute__((visibility("default")))
-#   else
-#      define CLAP_EXPORT
-#   endif
-#endif
-
-typedef enum clap_string_size {
-   CLAP_ID_SIZE = 128,
-   CLAP_NAME_SIZE = 64,
-} clap_string_size;
 
 /////////////
 // PROCESS //
@@ -121,13 +97,10 @@ typedef struct clap_host {
    void *host_data; // reserved pointer for the host
 
    /* Name and version are mandatory. */
-   char name[CLAP_NAME_SIZE];    // plugin name, eg: "BitwigStudio"
-   char version[CLAP_NAME_SIZE]; // the plugin version, eg: "1.3.14"
-
-   /* Returns the size of the original string. If this is larger than size, then
-    * the function did not have enough space to copy all the data.
-    * [thread-safe] */
-   int32_t (*get_attribute)(clap_host *host, const char *attr, char *buffer, int32_t size);
+   const char *name;    // plugin name, eg: "BitwigStudio"
+   const char *vendor;
+   const char *url;
+   const char *version; // the plugin version, eg: "1.3.14"
 
    /* Query an extension.
     * [thread-safe] */
@@ -180,13 +153,6 @@ typedef struct clap_plugin {
    /* Free the plugin and its resources.
     * It is not required to deactivate the plugin prior to this call. */
    void (*destroy)(clap_plugin *plugin);
-
-   /* Copy at most size of the attribute's value into buffer.
-    * This function must place a '\0' byte at the end of the string.
-    * Returns the size of the original string or 0 if there is no
-    * value for this attributes.
-    * [thread-safe] */
-   int32_t (*get_attribute)(clap_plugin *plugin, const char *attr, char *buffer, int32_t size);
 
    /* activation/deactivation
     * [main-thread] */
