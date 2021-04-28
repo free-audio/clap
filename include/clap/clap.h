@@ -30,12 +30,14 @@
 #include <stdint.h>
 
 #include "events.h"
-#include "string-sizes.h"
 #include "macros.h"
+#include "string-sizes.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#define CLAP_VERSION CLAP_VERSION_MAKE(0, 4, 0)
 
 /////////////
 // PROCESS //
@@ -60,8 +62,7 @@ typedef struct clap_audio_buffer {
    double **data64;
    int32_t  channel_count;
    uint32_t latency;       // latency from/to the audio interface
-   uint64_t constant_mask; // bitmask for each channel, 1 if the value is
-                           // constant for the whole buffer
+   uint64_t constant_mask; // mask & (1 << N) to test if channel N is constant
    uint32_t port_id;
 } clap_audio_buffer;
 
@@ -96,14 +97,14 @@ typedef struct clap_host {
 
    void *host_data; // reserved pointer for the host
 
-   /* Name and version are mandatory. */
-   const char *name;    // plugin name, eg: "BitwigStudio"
-   const char *vendor;
-   const char *url;
-   const char *version; // the plugin version, eg: "1.3.14"
+   // name and version are mandatory.
+   const char *name;    // eg: "Bitwig Studio"
+   const char *vendor;  // eg: "Bitwig GmbH"
+   const char *url;     // eg: "https://bitwig.com"
+   const char *version; // eg: "3.3.8"
 
-   /* Query an extension.
-    * [thread-safe] */
+   // Query an extension.
+   // [thread-safe]
    const void *(*extension)(clap_host *host, const char *extension_id);
 } clap_host;
 
@@ -125,8 +126,9 @@ typedef enum clap_plugin_type {
     * Exemple: arpegiator */
    CLAP_PLUGIN_EVENT_EFFECT = (1 << 2), // can be seen as midi effect
 
-   /* Analyze audio and/or events, and produces analysis results,
-    * but doesn't change audio. */
+   // Analyze audio and/or events.
+   // If this is the only type reported by the plugin, the host can assume that it wont change the
+   // audio and event signal.
    CLAP_PLUGIN_ANALYZER = (1 << 3),
 } clap_plugin_type;
 
@@ -141,6 +143,17 @@ typedef struct clap_plugin_descriptor {
    const char *support_url; // eg: "https://u-he.com/support/"
    const char *version;     // eg: "1.4.4"
    const char *description; // eg: "The spirit of analogue"
+
+   // Arbitrary list of keywords, separated by `;'
+   // They can be matched by the host search engine and used to classify the plugin.
+   // Some examples:
+   // "master;eq;spectrum"
+   // "compressor;analog;character"
+   // "reverb;plate;cathedral"
+   // "kick;analog;808;roland"
+   // "analog;character;roland;moog"
+   // "chip;chiptune;gameboy;nintendo;sega"
+   const char *keywords;
 
    uint64_t plugin_type; // bitfield of clap_plugin_type
 } clap_plugin_descriptor;

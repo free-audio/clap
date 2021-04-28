@@ -7,7 +7,7 @@ extern "C" {
 #endif
 
 typedef struct clap_istream {
-   void *ctx;
+   void *ctx; // reserved pointer for the stream
 
    /* returns the number of bytes read.
     * 0 for end of file.
@@ -16,7 +16,7 @@ typedef struct clap_istream {
 } clap_istream;
 
 typedef struct clap_ostream {
-   void *ctx;
+   void *ctx; // reserved pointer for the stream
 
    /* returns the number of bytes written.
     * -1 on error. */

@@ -32,15 +32,15 @@ typedef enum clap_note_expression {
    // TODO range, 20 * log(K * x)?
    CLAP_NOTE_EXPRESSION_VOLUME,
 
-   // pan, -1 left, 1 right
+   // pan, 0 left, 0.5 center, 1 right
    CLAP_NOTE_EXPRESSION_PAN,
 
-   // relative tunind in semitone
+   // relative tuning in semitone, from -120 to +120
    CLAP_NOTE_EXPRESSION_TUNING,
    CLAP_NOTE_EXPRESSION_VIBRATO,
    CLAP_NOTE_EXPRESSION_BRIGHTNESS,
    CLAP_NOTE_EXPRESSION_BREATH,
-   CLAP_NOTE_EXPRESSION_PRUSSURE,
+   CLAP_NOTE_EXPRESSION_PRESSURE,
    CLAP_NOTE_EXPRESSION_TIMBRE,
 
    // TODO...
@@ -50,7 +50,6 @@ typedef struct clap_event_note_expression {
    clap_note_expression expression_id;
    int32_t              key;              // 0..127, or -1 to match all keys
    int32_t              channel;          // 0..15, or -1 to match all channels
-   int32_t              control;          // 0..127
    double               normalized_value; // see expression for the range
    double               normalized_ramp;
 } clap_event_note_expression;
@@ -140,7 +139,7 @@ typedef struct clap_event {
 } clap_event;
 
 typedef struct clap_event_list {
-   void *ctx;
+   void *ctx; // reserved pointer for the list
 
    uint32_t (*size)(const clap_event_list *list);
 
