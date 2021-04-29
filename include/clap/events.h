@@ -116,10 +116,9 @@ typedef struct clap_event_midi_sysex {
  * memory, and can be set instantly (no loading time).
  */
 typedef struct clap_event_program {
-   int32_t channel;  // 0..15, -1 unspecified
-   int32_t bank_msb; // 0..0x7FFFFFFF, -1 unspecified
-   int32_t bank_lsb; // 0..0x7FFFFFFF, -1 unspecified
-   int32_t program;  // 0..0x7FFFFFFF
+   int32_t channel; // 0..15, -1 unspecified
+   int32_t bank;    // 0..0x7FFFFFFF, -1 unspecified
+   int32_t program; // 0..0x7FFFFFFF
 } clap_event_program;
 
 typedef struct clap_event {
