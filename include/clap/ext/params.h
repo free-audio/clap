@@ -27,6 +27,7 @@ typedef struct clap_param_info {
 
    bool is_per_note;    // does this param supports per note automations?
    bool is_per_channel; // does this param supports per channel automations?
+   bool is_modulable;   // does this param
    bool is_used;        // is this parameter used by the patch?
    bool is_periodic;    // after the last value, go back to the first one
    bool is_locked;      // if true, the parameter can't be changed by the host
@@ -61,7 +62,10 @@ typedef struct clap_plugin_params {
    // If the plupin is activated, then the host must send a param event
    // in the next process call to update the audio processor.
    // [main-thread]
-   void (*set_value)(clap_plugin *plugin, int32_t param_index, clap_param_value plain_value);
+   void (*set_value)(clap_plugin *    plugin,
+                     int32_t          param_index,
+                     clap_param_value plain_value,
+                     clap_param_value plain_modulated_value);
 
    // Normalization only exists for float values
    // [thread-safe,lock-wait-free]
