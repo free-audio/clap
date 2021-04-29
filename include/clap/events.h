@@ -14,11 +14,8 @@ typedef enum clap_event_type {
    CLAP_EVENT_PARAM_SET,       // param attribute
    CLAP_EVENT_TIME_INFO,       // time_info attribute
    CLAP_EVENT_CHORD,           // chord attribute
-
-   /* MIDI Style */
-   CLAP_EVENT_PROGRAM,    // program attribute
-   CLAP_EVENT_MIDI,       // midi attribute
-   CLAP_EVENT_MIDI_SYSEX, // midi attribute
+   CLAP_EVENT_MIDI,            // midi attribute
+   CLAP_EVENT_MIDI_SYSEX,      // midi attribute
 } clap_event_type;
 
 /** Note On/Off event. */
@@ -107,20 +104,6 @@ typedef struct clap_event_midi_sysex {
    uint32_t       size;
 } clap_event_midi_sysex;
 
-/**
- * Asks the plugin to load a program.
- * This is analogue to the midi program change.
- *
- * The main advantage of setting a program instead of loading
- * a preset, is that the program should already be in the plugin's
- * memory, and can be set instantly (no loading time).
- */
-typedef struct clap_event_program {
-   int32_t channel; // 0..15, -1 unspecified
-   int32_t bank;    // 0..0x7FFFFFFF, -1 unspecified
-   int32_t program; // 0..0x7FFFFFFF
-} clap_event_program;
-
 typedef struct clap_event {
    clap_event_type type;
    uint32_t        time; // offset from the first sample in the process block
@@ -131,7 +114,6 @@ typedef struct clap_event {
       clap_event_param           param;
       clap_event_time_info       time_info;
       clap_event_chord           chord;
-      clap_event_program         program;
       clap_event_midi            midi;
       clap_event_midi_sysex      midi_sysex;
    };
