@@ -69,8 +69,10 @@ typedef struct clap_audio_buffer {
 typedef struct clap_process {
    int64_t steady_time;   // a steady sample time counter, requiered
    int32_t frames_count;  // number of frame to process
-   bool    has_transport; // if false then this is a free running host, no
-                          // transport events will be provided
+
+   // time info at sample 0
+   // If null, then this is a free running host, no transport events will be provided
+   const clap_event_time_info *time_info;
 
    // Audio buffers, they must have the same count as specified
    // by clap_plugin_audio_ports->get_count().

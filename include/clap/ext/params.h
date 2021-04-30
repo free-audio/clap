@@ -37,10 +37,10 @@ typedef struct clap_param_info {
 
    /* value */
    clap_param_type  type;
-   clap_param_value min_value;     // minimum plain value
-   clap_param_value max_value;     // maximum plain value
-   clap_param_value default_value; // default plain value
-   int32_t          enum_size;     // the number of values in the enum, if type is an enum
+   clap_param_value min_value;        // minimum plain value
+   clap_param_value max_value;        // maximum plain value
+   clap_param_value default_value;    // default plain value
+   int32_t          enum_entry_count; // the number of values in the enum, if type is an enum
 } clap_param_info;
 
 typedef struct clap_plugin_params {
@@ -52,7 +52,10 @@ typedef struct clap_plugin_params {
    // [main-thread]
    bool (*get_info)(clap_plugin *plugin, int32_t param_index, clap_param_info *param_info);
 
-   int64_t (*get_enum_value)(clap_plugin *plugin, int32_t param_index, int32_t value_index);
+   bool (*get_enum_value)(clap_plugin *     plugin,
+                          int32_t           param_index,
+                          int32_t           value_index,
+                          clap_param_value *plain_value);
 
    // Gets the parameter plain value.
    // [main-thread]
@@ -103,7 +106,7 @@ typedef struct clap_host_params {
                    clap_param_value plain_value);
 
    // [main-thread]
-   void (*rescan)(clap_host *host, clap_plugin *plugin);
+   void (*rescan)(clap_host *host, clap_plugin *plugin, bool did_parameter_list_change);
    void (*rescan_params)(clap_host *     host,
                          clap_plugin *   plugin,
                          const uint32_t *indexes,

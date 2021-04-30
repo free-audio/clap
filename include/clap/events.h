@@ -66,6 +66,10 @@ typedef struct clap_event_param {
 } clap_event_param;
 
 typedef struct clap_event_time_info {
+   bool has_second_timeline;
+   bool has_beats_timeline;
+   bool has_time_signature;
+
    double song_pos_beats;   // position in beats
    double song_pos_seconds; // position in seconds
 
@@ -77,8 +81,10 @@ typedef struct clap_event_time_info {
    int32_t bar_number; // bar at song pos 0 has the number 0
 
    bool   is_loop_active;
-   double loop_start; // in beats
-   double loop_end;   // in beats
+   double loop_start_beats;
+   double loop_end_beats;
+   double loop_start_seconds;
+   double loop_end_seconds;
 
    int16_t num;   // time signature numerator
    int16_t denom; // time signature denominator
