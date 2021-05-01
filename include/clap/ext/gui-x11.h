@@ -14,9 +14,6 @@ typedef struct clap_plugin_gui_x11 {
    bool (*attach)(clap_plugin * plugin,
                   const char *  display_name,
                   unsigned long window);
-
-   // [main-thread]
-   bool (*detach)(clap_plugin *plugin);
 } clap_plugin_gui_x11;
 
 #ifdef __cplusplus

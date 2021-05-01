@@ -22,7 +22,7 @@ typedef enum clap_audio_port_channel_mapping {
 
 typedef struct clap_audio_port_info {
    uint32_t id;                   // stable identifier
-   char     name[CLAP_NAME_SIZE]; // displayable name
+   char     name[CLAP_NAME_SIZE]; // displayable name, i18n?
    bool     is_main;              // there can only be 1 main input and output
    bool     is_cv;                // control voltage
    bool     supports_64_bits;     // 32 bit support is mandatory, the host chooses
