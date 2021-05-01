@@ -1,7 +1,7 @@
 #pragma once
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -90,8 +90,8 @@ typedef struct clap_event_transport {
    double loop_start_seconds;
    double loop_end_seconds;
 
-   int16_t num;   // time signature numerator
-   int16_t denom; // time signature denominator
+   int16_t tsig_num;   // time signature numerator
+   int16_t tsig_denom; // time signature denominator
 } clap_event_transport;
 
 typedef struct clap_event_chord {
