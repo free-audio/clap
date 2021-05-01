@@ -19,11 +19,11 @@ typedef enum clap_param_type {
 typedef struct clap_param_info {
    /* param info */
    int32_t index;
-   int32_t id;
-   char    name[CLAP_NAME_SIZE]; // the display name
-   char    module[CLAP_ID_SIZE]; // the module containing the param, eg:
-                                 // "/filters/moog"; '/' will be used as a
-                                 // separator to show a tree like structure.
+   char    id[CLAP_ID_SIZE];
+   char    name[CLAP_NAME_SIZE];     // the display name
+   char    module[CLAP_MODULE_SIZE]; // the module containing the param, eg:
+                                     // "/filters/moog"; '/' will be used as a
+                                     // separator to show a tree like structure.
 
    bool is_per_note;    // does this param supports per note automations?
    bool is_per_channel; // does this param supports per channel automations?

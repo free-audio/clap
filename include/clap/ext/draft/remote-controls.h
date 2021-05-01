@@ -10,9 +10,9 @@ extern "C" {
 #define CLAP_EXT_REMOTE_CONTROLS "clap/draft/remote-controls"
 
 typedef struct clap_remote_controls_page {
-   int32_t id;
+   char    id[CLAP_ID_SIZE];
    char    name[CLAP_NAME_SIZE];
-   int32_t param_id[8];
+   int32_t param_id[8][CLAP_ID_SIZE];
 } clap_remote_controls_page;
 
 typedef struct clap_plugin_remote_controls {

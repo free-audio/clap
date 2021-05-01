@@ -1,11 +1,11 @@
 #pragma once
 
+#include "../../clap.h"
+#include "../../stream.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "../../clap.h"
-#include "../../stream.h"
 
 #define CLAP_EXT_VST2_CONVERT "clap/draft/vst2-convert"
 
@@ -28,16 +28,16 @@ typedef struct clap_plugin_vst2_convert {
    bool (*convert_normalize_value)(clap_plugin *     plugin,
                                    uint32_t          vst2_param_id,
                                    double            vst2_normalized_value,
-                                   uint32_t *        clap_param_id,
+                                   char *            clap_param_id,
                                    clap_param_value *clap_normalized_value);
 
    // converts the vst2 param id and plain value to clap param id and
    // plain value.
    // [thread-safe]
    bool (*convert_plain_value)(clap_plugin *     plugin,
-                               uint32_t          vst2_param_index,
+                               uint32_t          vst2_param_id,
                                double            vst2_plain_value,
-                               uint32_t *        clap_param_index,
+                               char *            clap_param_id,
                                clap_param_value *clap_plain_value);
 } clap_plugin_vst2_convert;
 
