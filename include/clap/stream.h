@@ -12,7 +12,7 @@ typedef struct clap_istream {
    /* returns the number of bytes read.
     * 0 for end of file.
     * -1 on error. */
-   int64_t (*read)(clap_istream *stream, void *buffer, uint64_t size);
+   int64_t (*read)(struct clap_istream *stream, void *buffer, uint64_t size);
 } clap_istream;
 
 typedef struct clap_ostream {
@@ -20,7 +20,7 @@ typedef struct clap_ostream {
 
    /* returns the number of bytes written.
     * -1 on error. */
-   int64_t (*write)(clap_istream *stream, const void *buffer, uint64_t size);
+   int64_t (*write)(struct clap_istream *stream, const void *buffer, uint64_t size);
 } clap_ostream;
 
 #ifdef __cplusplus

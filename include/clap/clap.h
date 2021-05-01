@@ -67,12 +67,12 @@ typedef struct clap_audio_buffer {
 } clap_audio_buffer;
 
 typedef struct clap_process {
-   int64_t steady_time;   // a steady sample time counter, requiered
-   int32_t frames_count;  // number of frame to process
+   int64_t steady_time;  // a steady sample time counter, requiered
+   int32_t frames_count; // number of frame to process
 
    // time info at sample 0
    // If null, then this is a free running host, no transport events will be provided
-   const clap_event_time_info *time_info;
+   const clap_event_transport *transport;
 
    // Audio buffers, they must have the same count as specified
    // by clap_plugin_audio_ports->get_count().
@@ -107,7 +107,7 @@ typedef struct clap_host {
 
    // Query an extension.
    // [thread-safe]
-   const void *(*extension)(clap_host *host, const char *extension_id);
+   const void *(*extension)(struct clap_host *host, const char *extension_id);
 } clap_host;
 
 ////////////
@@ -167,20 +167,20 @@ typedef struct clap_plugin {
 
    /* Free the plugin and its resources.
     * It is not required to deactivate the plugin prior to this call. */
-   void (*destroy)(clap_plugin *plugin);
+   void (*destroy)(struct clap_plugin *plugin);
 
    /* activation/deactivation
     * [main-thread] */
-   bool (*activate)(clap_plugin *plugin, int sample_rate);
-   void (*deactivate)(clap_plugin *plugin);
+   bool (*activate)(struct clap_plugin *plugin, int sample_rate);
+   void (*deactivate)(struct clap_plugin *plugin);
 
    /* process audio, events, ...
     * [audio-thread] */
-   clap_process_status (*process)(clap_plugin *plugin, const clap_process *process);
+   clap_process_status (*process)(struct clap_plugin *plugin, const clap_process *process);
 
    /* query an extension
     * [thread-safe] */
-   const void *(*extension)(clap_plugin *plugin, const char *id);
+   const void *(*extension)(struct clap_plugin *plugin, const char *id);
 } clap_plugin;
 
 /////////////////

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -12,7 +13,7 @@ typedef enum clap_event_type {
    CLAP_EVENT_NOTE_EXPRESSION, // note_expression attribute
    CLAP_EVENT_CHOKE,           // no attribute
    CLAP_EVENT_PARAM_SET,       // param attribute
-   CLAP_EVENT_TIME_INFO,       // time_info attribute
+   CLAP_EVENT_TRANSPORT,       // transport attribute
    CLAP_EVENT_CHORD,           // chord attribute
    CLAP_EVENT_MIDI,            // midi attribute
    CLAP_EVENT_MIDI_SYSEX,      // midi attribute
@@ -65,7 +66,7 @@ typedef struct clap_event_param {
    double           normalized_ramp; // valid until the end of the block or the next event
 } clap_event_param;
 
-typedef struct clap_event_time_info {
+typedef struct clap_event_transport {
    bool has_second_timeline;
    bool has_beats_timeline;
    bool has_time_signature;
@@ -80,6 +81,9 @@ typedef struct clap_event_time_info {
    double  bar_start;  // start pos of the current bar
    int32_t bar_number; // bar at song pos 0 has the number 0
 
+   bool is_playing;
+   bool is_recording;
+
    bool   is_loop_active;
    double loop_start_beats;
    double loop_end_beats;
@@ -88,7 +92,7 @@ typedef struct clap_event_time_info {
 
    int16_t num;   // time signature numerator
    int16_t denom; // time signature denominator
-} clap_event_time_info;
+} clap_event_transport;
 
 typedef struct clap_event_chord {
    // bitset of active keys:
@@ -118,7 +122,7 @@ typedef struct clap_event {
       clap_event_note            note;
       clap_event_note_expression note_expression;
       clap_event_param           param;
-      clap_event_time_info       time_info;
+      clap_event_transport       time_info;
       clap_event_chord           chord;
       clap_event_midi            midi;
       clap_event_midi_sysex      midi_sysex;
@@ -128,13 +132,13 @@ typedef struct clap_event {
 typedef struct clap_event_list {
    void *ctx; // reserved pointer for the list
 
-   uint32_t (*size)(const clap_event_list *list);
+   uint32_t (*size)(const struct clap_event_list *list);
 
    // Don't free the return event, it belongs to the list
-   const clap_event *(*get)(const clap_event_list *list, uint32_t index);
+   const clap_event *(*get)(const struct clap_event_list *list, uint32_t index);
 
    // Makes a copy of the event
-   void (*push_back)(const clap_event_list *list, const clap_event *event);
+   void (*push_back)(const struct clap_event_list *list, const clap_event *event);
 } clap_event_list;
 
 #ifdef __cplusplus

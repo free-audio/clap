@@ -5,20 +5,9 @@ extern "C" {
 #endif
 
 #include "../clap.h"
+#include "../channel-map.h"
 
 #define CLAP_EXT_AUDIO_PORTS "clap/audio-ports"
-
-typedef enum clap_audio_port_channel_mapping {
-   CLAP_AUDIO_PORT_UNSPECIFIED = 0,
-   CLAP_AUDIO_PORT_MONO = 1,
-
-   // left, right
-   CLAP_AUDIO_PORT_STEREO = 2,
-
-   // front left, front right, center, low, surround left, surround right
-   // surround back left, surround back right
-   CLAP_AUDIO_PORT_SURROUND = 3,
-} clap_audio_port_channel_mapping;
 
 typedef struct clap_audio_port_info {
    uint32_t id;                   // stable identifier
@@ -29,8 +18,8 @@ typedef struct clap_audio_port_info {
                                   // between 32 and 64.
    bool supports_in_place;        // if true the daw can use the same buffer for input
                                   // and output, only for main input to main output
-   int32_t                         channel_count;
-   clap_audio_port_channel_mapping channel_mapping;
+   int32_t    channel_count;
+   clap_chmap channel_map;
 } clap_audio_port_info;
 
 // The audio ports scan has to be done while the plugin is deactivated.
