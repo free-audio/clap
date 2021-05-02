@@ -191,7 +191,7 @@ typedef struct clap_plugin {
  *
  * Every methods must be thread-safe. */
 struct clap_plugin_entry {
-   void (*init)(const char *plugin_path);
+   bool (*init)(const char *plugin_path);
    void (*deinit)(void);
 
    /* Get the number of plugins available.
