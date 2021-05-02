@@ -13,6 +13,7 @@
 #include "ext/params.h"
 #include "ext/render.h"
 #include "ext/state.h"
+#include "ext/latency.h"
 
 #include "ext/draft/event-filter.h"
 #include "ext/draft/event-loop.h"

@@ -32,29 +32,19 @@ typedef struct clap_plugin_audio_ports {
    // [main-thread]
    void (*get_info)(clap_plugin *plugin, int32_t index, bool is_input, clap_audio_port_info *info);
 
-   void (*activate_port)(clap_plugin *plugin, int32_t index, bool is_input, bool use_64);
-   void (*deactivate_port)(clap_plugin *plugin, int32_t index, bool is_input);
-
-   // Returns the port latency.
-   // [main-thread]
-   int32_t (*get_latency)(clap_plugin *plugin, int32_t index, bool is_input);
+   void (*set_active)(clap_plugin *plugin, int32_t index, bool is_input, bool use_64, bool is_active);
 } clap_plugin_audio_ports;
 
 typedef struct clap_host_audio_ports {
    // Tell the host that the plugin ports has changed.
    // The host shall deactivate the plugin and then scan the ports again.
    // [main-thread]
-   void (*ports_changed)(clap_host *host, clap_plugin *plugin);
+   void (*changed)(clap_host *host, clap_plugin *plugin);
 
    // Tell the host that the plugin ports name have changed.
    // It is not necessary to deactivates the plugin.
    // [main-thread]
-   void (*ports_name_changed)(clap_host *host, clap_plugin *plugin);
-
-   // Tell the host that the latency changed.
-   // The host should call get_port_latency on each ports.
-   // [main-thread]
-   void (*latency_changed)(clap_host *host, clap_plugin *plugin);
+   void (*name_changed)(clap_host *host, clap_plugin *plugin);
 } clap_host_audio_ports;
 
 #ifdef __cplusplus

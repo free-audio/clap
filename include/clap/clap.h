@@ -47,11 +47,15 @@ typedef enum clap_process_status {
    // Processing failed. The output buffer must be discarded.
    CLAP_PROCESS_ERROR = 0,
 
-   // Processing succeed.
+   // Processing succeed, keep processing.
    CLAP_PROCESS_CONTINUE = 1,
 
-   // Processing succeed, but no more processing is required, until next event.
-   CLAP_PROCESS_SLEEP = 2,
+   // Processing succeed, keep processing until the output is silent.
+   CLAP_PROCESS_CONTINUE_UNTIL_QUIET = 2,
+
+   // Processing succeed, but no more processing is required,
+   // until next event or variation in audio input.
+   CLAP_PROCESS_SLEEP = 3,
 } clap_process_status;
 
 typedef struct clap_audio_buffer {
@@ -63,7 +67,6 @@ typedef struct clap_audio_buffer {
    int32_t  channel_count;
    uint32_t latency;       // latency from/to the audio interface
    uint64_t constant_mask; // mask & (1 << N) to test if channel N is constant
-   uint32_t port_id;
 } clap_audio_buffer;
 
 typedef struct clap_process {
@@ -171,8 +174,11 @@ typedef struct clap_plugin {
 
    /* activation/deactivation
     * [main-thread] */
-   bool (*activate)(struct clap_plugin *plugin, int sample_rate);
-   void (*deactivate)(struct clap_plugin *plugin);
+   bool (*set_active)(struct clap_plugin *plugin, int sample_rate, bool is_active);
+
+   // Set to true before processing, and to false before sending the plugin to sleep.
+   // [audio-thread]
+   void (*set_processing)(struct clap_plugin *plugin, bool is_active);
 
    /* process audio, events, ...
     * [audio-thread] */
