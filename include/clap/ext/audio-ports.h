@@ -44,7 +44,12 @@ typedef struct clap_host_audio_ports {
    // Tell the host that the plugin ports has changed.
    // The host shall deactivate the plugin and then scan the ports again.
    // [main-thread]
-   void (*changed)(clap_host *host, clap_plugin *plugin);
+   void (*ports_changed)(clap_host *host, clap_plugin *plugin);
+
+   // Tell the host that the plugin ports name have changed.
+   // It is not necessary to deactivates the plugin.
+   // [main-thread]
+   void (*ports_name_changed)(clap_host *host, clap_plugin *plugin);
 
    // Tell the host that the latency changed.
    // The host should call get_port_latency on each ports.
