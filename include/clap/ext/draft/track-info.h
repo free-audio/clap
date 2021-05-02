@@ -11,7 +11,7 @@ extern "C" {
 #define CLAP_EXT_TRACK_INFO "clap/draft/track-info"
 
 typedef struct clap_track_info {
-   char       id[CLAP_ID_SIZE];
+   int32_t    id;
    int32_t    index;
    char       name[CLAP_NAME_SIZE];
    char       path[512]; // Like "/group1/group2/drum-machine/drum-pad"
