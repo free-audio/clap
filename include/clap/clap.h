@@ -202,7 +202,7 @@ struct clap_plugin_entry {
     * Returns null in case of error.
     * The descriptor does not need to be freed.
     * [thread-safe] */
-   const clap_plugin_descriptor *(*get_plugin_descriptor)(clap_host *host, int32_t index);
+   const clap_plugin_descriptor *(*get_plugin_descriptor)(int32_t index);
 
    /* Create a clap_plugin by its plugin_id.
     * The returned pointer must be freed by calling plugin->destroy(plugin);
