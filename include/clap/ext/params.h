@@ -59,13 +59,13 @@ typedef struct clap_plugin_params {
 
    // Gets the parameter plain value.
    // [main-thread]
-   clap_param_value (*get_value)(clap_plugin *plugin, int32_t param_index);
+   bool (*get_value)(clap_plugin *plugin, int32_t param_index, clap_param_value *plain_value);
 
    // Sets the parameter plain value.
    // If the plupin is activated, then the host must send a param event
    // in the next process call to update the audio processor.
    // [main-thread]
-   void (*set_value)(clap_plugin *    plugin,
+   bool (*set_value)(clap_plugin *    plugin,
                      int32_t          param_id,
                      clap_param_value plain_value,
                      clap_param_value plain_modulated_value);
