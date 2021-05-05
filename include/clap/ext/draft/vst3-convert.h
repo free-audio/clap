@@ -22,11 +22,11 @@ typedef struct clap_plugin_vst3_convert {
    // converts the VST3 param id and normalized value to clap param id and
    // normalized value.
    // [thread-safe]
-   bool (*convert_normalize_value)(clap_plugin *     plugin,
-                                   uint32_t          vst3_param_id,
-                                   double            vst3_normalized_value,
-                                   int32_t *         clap_param_id,
-                                   clap_param_value *clap_normalized_value);
+   bool (*convert_normalized_value)(clap_plugin *     plugin,
+                                    uint32_t          vst3_param_id,
+                                    double            vst3_normalized_value,
+                                    int32_t *         clap_param_id,
+                                    clap_param_value *clap_plain_value);
 
    // converts the vst3 param id and plain value to clap param id and
    // plain value.

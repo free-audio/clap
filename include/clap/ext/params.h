@@ -70,11 +70,6 @@ typedef struct clap_plugin_params {
                      clap_param_value plain_value,
                      clap_param_value plain_modulated_value);
 
-   // Normalization only exists for float values
-   // [thread-safe,lock-wait-free]
-   double (*plain_to_norm)(clap_plugin *plugin, int32_t param_id, double plain_value);
-   double (*norm_to_plain)(clap_plugin *plugin, int32_t param_id, double normalized_value);
-
    // Formats the display text for the given parameter value.
    // [thread-safe,lock-wait-free]
    bool (*value_to_text)(clap_plugin *    plugin,

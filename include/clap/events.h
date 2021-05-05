@@ -27,7 +27,7 @@ typedef struct clap_event_note {
 } clap_event_note;
 
 typedef enum clap_note_expression {
-   // TODO range, 20 * log(K * x)?
+   // x >= 0, use 20 * log(4 * x)
    CLAP_NOTE_EXPRESSION_VOLUME,
 
    // pan, 0 left, 0.5 center, 1 right
@@ -35,6 +35,8 @@ typedef enum clap_note_expression {
 
    // relative tuning in semitone, from -120 to +120
    CLAP_NOTE_EXPRESSION_TUNING,
+
+   // 0..1
    CLAP_NOTE_EXPRESSION_VIBRATO,
    CLAP_NOTE_EXPRESSION_BRIGHTNESS,
    CLAP_NOTE_EXPRESSION_BREATH,
@@ -46,10 +48,10 @@ typedef enum clap_note_expression {
 
 typedef struct clap_event_note_expression {
    clap_note_expression expression_id;
-   int32_t              key;              // 0..127, or -1 to match all keys
-   int32_t              channel;          // 0..15, or -1 to match all channels
-   double               normalized_value; // see expression for the range
-   double               normalized_ramp;
+   int32_t              key;     // 0..127, or -1 to match all keys
+   int32_t              channel; // 0..15, or -1 to match all channels
+   double               value;   // see expression for the range
+   double               ramp;
 } clap_event_note_expression;
 
 typedef union clap_param_value {
@@ -62,8 +64,8 @@ typedef struct clap_event_param {
    int32_t          key;
    int32_t          channel;
    uint32_t         param_id; // parameter index
-   clap_param_value normalized_value;
-   double           normalized_ramp; // valid until the end of the block or the next event
+   clap_param_value value;
+   double           ramp; // valid until the end of the block or the next event
 } clap_event_param;
 
 typedef struct clap_event_transport {
