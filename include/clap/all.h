@@ -21,6 +21,7 @@
 #include "ext/draft/preset-load.h"
 #include "ext/draft/remote-controls.h"
 #include "ext/draft/thread-check.h"
+#include "ext/draft/thread-pool.h"
 #include "ext/draft/track-info.h"
 #include "ext/draft/tuning.h"
 #include "ext/draft/vst2-convert.h"
