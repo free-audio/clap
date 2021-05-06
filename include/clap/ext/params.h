@@ -60,7 +60,7 @@ typedef struct clap_plugin_params {
 
    // Gets the parameter plain value.
    // [main-thread]
-   bool (*get_value)(clap_plugin *plugin, int32_t param_index, clap_param_value *plain_value);
+   bool (*get_value)(clap_plugin *plugin, clap_param_id param_id, clap_param_value *plain_value);
 
    // Sets the parameter plain value.
    // If the plupin is activated, then the host must send a param event
