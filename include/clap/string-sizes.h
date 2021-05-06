@@ -6,10 +6,10 @@
 extern "C" {
 #endif
 
-typedef enum clap_string_size {
+enum {
    CLAP_NAME_SIZE = 64,
    CLAP_MODULE_SIZE = 128,
-} clap_string_size;
+};
 
 #ifdef __cplusplus
 }

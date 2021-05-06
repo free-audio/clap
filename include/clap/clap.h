@@ -43,20 +43,21 @@ extern "C" {
 // PROCESS //
 /////////////
 
-typedef enum clap_process_status {
+enum {
    // Processing failed. The output buffer must be discarded.
    CLAP_PROCESS_ERROR = 0,
 
    // Processing succeed, keep processing.
    CLAP_PROCESS_CONTINUE = 1,
 
-   // Processing succeed, keep processing until the output is silent.
-   CLAP_PROCESS_CONTINUE_UNTIL_QUIET = 2,
+   // Processing succeed, keep processing if the output is not quiet.
+   CLAP_PROCESS_CONTINUE_IF_NOT_QUIET = 2,
 
    // Processing succeed, but no more processing is required,
    // until next event or variation in audio input.
    CLAP_PROCESS_SLEEP = 3,
-} clap_process_status;
+};
+typedef int32_t clap_process_status;
 
 typedef struct clap_audio_buffer {
    // Either data32 or data64 will be set, but not both.
@@ -119,7 +120,7 @@ typedef struct clap_host {
 
 /* bitfield
  * This gives an hint to the host what the plugin might do. */
-typedef enum clap_plugin_type {
+enum {
    /* Instruments can play notes, and generate audio */
    CLAP_PLUGIN_INSTRUMENT = (1 << 0),
 
@@ -135,7 +136,8 @@ typedef enum clap_plugin_type {
    // If this is the only type reported by the plugin, the host can assume that it wont change the
    // audio and event signal.
    CLAP_PLUGIN_ANALYZER = (1 << 3),
-} clap_plugin_type;
+};
+typedef int32_t clap_plugin_type;
 
 typedef struct clap_plugin_descriptor {
    int32_t clap_version; // initialized to CLAP_VERSION

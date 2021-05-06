@@ -8,13 +8,14 @@
 extern "C" {
 #endif
 
-typedef enum clap_plugin_render_mode {
+enum {
    /* Default setting, used to play "realtime". */
    CLAP_RENDER_REALTIME = 0,
 
    /* Render setting, used while rendering the song. */
    CLAP_RENDER_OFFLINE = 1,
-} clap_plugin_render_mode;
+};
+typedef int32_t clap_plugin_render_mode;
 
 // The render extension is used to let the plugin know if it has "realtime"
 // pressure to process.

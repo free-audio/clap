@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-typedef enum clap_event_type {
+enum {
    CLAP_EVENT_NOTE_ON,         // note attribute
    CLAP_EVENT_NOTE_OFF,        // note attribute
    CLAP_EVENT_NOTE_EXPRESSION, // note_expression attribute
@@ -17,7 +17,9 @@ typedef enum clap_event_type {
    CLAP_EVENT_CHORD,           // chord attribute
    CLAP_EVENT_MIDI,            // midi attribute
    CLAP_EVENT_MIDI_SYSEX,      // midi attribute
-} clap_event_type;
+};
+typedef int32_t  clap_event_type;
+typedef uint32_t clap_param_id;
 
 /** Note On/Off event. */
 typedef struct clap_event_note {
@@ -26,7 +28,7 @@ typedef struct clap_event_note {
    double  velocity; // 0..1
 } clap_event_note;
 
-typedef enum clap_note_expression {
+enum {
    // x >= 0, use 20 * log(4 * x)
    CLAP_NOTE_EXPRESSION_VOLUME,
 
@@ -44,7 +46,8 @@ typedef enum clap_note_expression {
    CLAP_NOTE_EXPRESSION_TIMBRE,
 
    // TODO...
-} clap_note_expression;
+};
+typedef int32_t clap_note_expression;
 
 typedef struct clap_event_note_expression {
    clap_note_expression expression_id;
@@ -63,7 +66,7 @@ typedef union clap_param_value {
 typedef struct clap_event_param {
    int32_t          key;
    int32_t          channel;
-   uint32_t         param_id; // parameter index
+   clap_param_id    param_id; // parameter index
    clap_param_value value;
    double           ramp; // valid until the end of the block or the next event
 } clap_event_param;
