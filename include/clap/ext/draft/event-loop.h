@@ -1,44 +1,52 @@
 #pragma once
 
+#include <stddef.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 #include "../../clap.h"
 
-#define CLAP_EXT_EV_LOOP "clap/draft/event-loop"
+#define CLAP_EXT_EVENT_LOOP "clap/draft/event-loop"
+
+#ifdef _WIN32
+typedef void *clap_fd;
+#else
+typedef int clap_fd;
+#endif
 
 enum {
-   CLAP_EV_LOOP_READ = 1,
-   CLAP_EV_LOOP_WRITE = 2,
+   CLAP_FD_READ = 1 << 0,
+   CLAP_FD_WRITE = 1 << 1,
+   CLAP_FD_ERROR = 1 << 2,
 };
 
-typedef void (*clap_fd_callback)(clap_plugin *plugin, int fd, int flags);
+typedef struct clap_plugin_event_loop {
+   // [main-thread]
+   void (*on_timer)(clap_plugin *plugin, size_t timer_id);
 
-typedef void (*clap_timer_callback)(clap_plugin *plugin, uint64_t timer_id);
+   // [main-thread]
+   void (*on_fd)(clap_plugin *plugin, clap_fd fd, uint32_t flags);
+} clap_plugin_event_loop;
 
 typedef struct clap_host_event_loop {
    // [main-thread]
-   bool (*register_timer)(clap_host *         host,
-                          clap_plugin *       plugin,
-                          int64_t             period_ms,
-                          clap_timer_callback callback,
-                          uint64_t *          timer_id);
+   bool (*register_timer)(clap_host *  host,
+                          clap_plugin *plugin,
+                          uint32_t     period_ms,
+                          uint32_t *   timer_id);
 
    // [main-thread]
-   bool (*unregister_timer)(clap_host *  host,
-                            clap_plugin *plugin,
-                            uint64_t     timer_id);
+   bool (*unregister_timer)(clap_host *host, clap_plugin *plugin, uint32_t timer_id);
 
    // [main-thread]
-   bool (*register_fd)(clap_host *      host,
-                       clap_plugin *    plugin,
-                       int              fd,
-                       int              flags,
-                       clap_fd_callback callback);
+   bool (*register_fd)(clap_host *host, clap_plugin *plugin, clap_fd fd, uint32_t flags);
 
    // [main-thread]
-   bool (*unregister_fd)(clap_host *host, clap_plugin *plugin, int fd);
+   bool (*modify_fd)(clap_host *host, clap_plugin *plugin, clap_fd fd, uint32_t flags);
+
+   // [main-thread]
+   bool (*unregister_fd)(clap_host *host, clap_plugin *plugin, clap_fd fd);
 } clap_host_event_loop;
 
 #ifdef __cplusplus
