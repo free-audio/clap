@@ -6,12 +6,12 @@ extern "C" {
 
 #include "../clap.h"
 
-#define CLAP_EXT_GUI_COCOA "clap/gui/cocoa"
+#define CLAP_EXT_GUI_COCOA "clap/gui-cocoa"
 
-typedef struct clap_plugin_embed_cocoa {
+typedef struct clap_plugin_gui_cocoa {
    // [main-thread]
    bool (*attach)(clap_plugin *plugin, void *nsView);
-} clap_plugin_embed_cocoa;
+} clap_plugin_gui_cocoa;
 
 #ifdef __cplusplus
 }

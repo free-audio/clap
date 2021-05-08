@@ -2,7 +2,7 @@
 
 #include "../clap.h"
 
-#define CLAP_EXT_GUI_X11 "clap/gui/x11"
+#define CLAP_EXT_GUI_X11 "clap/gui-x11"
 
 #ifdef __cplusplus
 extern "C" {

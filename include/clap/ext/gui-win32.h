@@ -6,7 +6,7 @@
 extern "C" {
 #endif
 
-#define CLAP_EXT_GUI_WIN32 "clap/gui/win32"
+#define CLAP_EXT_GUI_WIN32 "clap/gui-win32"
 
 // we don't want to include windows.h from this file.
 typedef void *clap_hwnd;

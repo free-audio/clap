@@ -15,6 +15,8 @@ typedef void *clap_fd;
 typedef int clap_fd;
 #endif
 
+typedef uint32_t clap_timer_id;
+
 enum {
    CLAP_FD_READ = 1 << 0,
    CLAP_FD_WRITE = 1 << 1,
@@ -23,7 +25,7 @@ enum {
 
 typedef struct clap_plugin_event_loop {
    // [main-thread]
-   void (*on_timer)(clap_plugin *plugin, size_t timer_id);
+   void (*on_timer)(clap_plugin *plugin, clap_timer_id timer_id);
 
    // [main-thread]
    void (*on_fd)(clap_plugin *plugin, clap_fd fd, uint32_t flags);
@@ -31,13 +33,13 @@ typedef struct clap_plugin_event_loop {
 
 typedef struct clap_host_event_loop {
    // [main-thread]
-   bool (*register_timer)(clap_host *  host,
-                          clap_plugin *plugin,
-                          uint32_t     period_ms,
-                          uint32_t *   timer_id);
+   bool (*register_timer)(clap_host *    host,
+                          clap_plugin *  plugin,
+                          uint32_t       period_ms,
+                          clap_timer_id *timer_id);
 
    // [main-thread]
-   bool (*unregister_timer)(clap_host *host, clap_plugin *plugin, uint32_t timer_id);
+   bool (*unregister_timer)(clap_host *host, clap_plugin *plugin, clap_timer_id timer_id);
 
    // [main-thread]
    bool (*register_fd)(clap_host *host, clap_plugin *plugin, clap_fd fd, uint32_t flags);

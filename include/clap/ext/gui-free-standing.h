@@ -2,7 +2,7 @@
 
 #include "../clap.h"
 
-#define CLAP_EXT_GUI_FREE_STANDING "clap/gui/free-standing"
+#define CLAP_EXT_GUI_FREE_STANDING "clap/gui-free-standing"
 
 #ifdef __cplusplus
 extern "C" {
