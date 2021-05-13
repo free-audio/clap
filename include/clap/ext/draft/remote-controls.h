@@ -28,7 +28,7 @@ typedef struct clap_plugin_remote_controls {
 typedef struct clap_host_remote_controls {
    // Informs the host that the remote controls page has changed.
    // [main-thread]
-   void (*changed)(clap_host *host, clap_plugin *plugin);
+   void (*changed)(clap_host *host);
 } clap_host_remote_controls;
 
 #ifdef __cplusplus

@@ -29,7 +29,7 @@ typedef struct clap_plugin_track_info {
 typedef struct clap_host_track_info {
    // Informs the host that the note names has changed.
    // [main-thread]
-   void (*get_track_info)(clap_host *host, clap_plugin *plugin, clap_track_info *info);
+   void (*get_track_info)(clap_host *host, clap_track_info *info);
 } clap_host_track_info;
 
 #ifdef __cplusplus

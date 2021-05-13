@@ -20,7 +20,7 @@ typedef struct clap_host_latency {
    // Tell the host that the latency changed.
    // The new latency will be effective after deactivation of the plugin.
    // [main-thread]
-   void (*changed)(clap_host *host, clap_plugin *plugin, uint32_t new_latency);
+   void (*changed)(clap_host *host, uint32_t new_latency);
 } clap_host_latency;
 
 #ifdef __cplusplus

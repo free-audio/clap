@@ -40,12 +40,12 @@ typedef struct clap_host_audio_ports {
    // Tell the host that the plugin ports has changed.
    // The host shall deactivate the plugin and then scan the ports again.
    // [main-thread]
-   void (*changed)(clap_host *host, clap_plugin *plugin);
+   void (*changed)(clap_host *host);
 
    // Tell the host that the plugin ports name have changed.
    // It is not necessary to deactivates the plugin.
    // [main-thread]
-   void (*name_changed)(clap_host *host, clap_plugin *plugin);
+   void (*name_changed)(clap_host *host);
 } clap_host_audio_ports;
 
 #ifdef __cplusplus

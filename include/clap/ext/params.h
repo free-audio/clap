@@ -86,26 +86,20 @@ typedef struct clap_plugin_params {
 
 typedef struct clap_host_params {
    /* [main-thread] */
-   void (*touch_begin)(clap_host *host, clap_plugin *plugin, clap_id param_id);
+   void (*touch_begin)(clap_host *host, clap_id param_id);
 
    /* [main-thread] */
-   void (*touch_end)(clap_host *host, clap_plugin *plugin, clap_id param_id);
+   void (*touch_end)(clap_host *host, clap_id param_id);
 
    // If the plugin is activated, the host must send a parameter update
    // in the next process call to update the audio processor.
    // Only for value changes that happens in the gui.
    // [main-thread]
-   void (*changed)(clap_host *      host,
-                   clap_plugin *    plugin,
-                   clap_id          param_id,
-                   clap_param_value plain_value);
+   void (*changed)(clap_host *host, clap_id param_id, clap_param_value plain_value);
 
    // [main-thread]
-   void (*rescan)(clap_host *host, clap_plugin *plugin, bool did_parameter_list_change);
-   void (*rescan_params)(clap_host *     host,
-                         clap_plugin *   plugin,
-                         const uint32_t *indexes,
-                         uint32_t        count);
+   void (*rescan)(clap_host *host, bool did_parameter_list_change);
+   void (*rescan_params)(clap_host *host, const uint32_t *indexes, uint32_t count);
 } clap_host_params;
 
 #ifdef __cplusplus

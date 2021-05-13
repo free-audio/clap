@@ -31,22 +31,19 @@ typedef struct clap_plugin_event_loop {
 
 typedef struct clap_host_event_loop {
    // [main-thread]
-   bool (*register_timer)(clap_host *  host,
-                          clap_plugin *plugin,
-                          uint32_t     period_ms,
-                          clap_id *    timer_id);
+   bool (*register_timer)(clap_host *host, uint32_t period_ms, clap_id *timer_id);
 
    // [main-thread]
-   bool (*unregister_timer)(clap_host *host, clap_plugin *plugin, clap_id timer_id);
+   bool (*unregister_timer)(clap_host *host, clap_id timer_id);
 
    // [main-thread]
-   bool (*register_fd)(clap_host *host, clap_plugin *plugin, clap_fd fd, uint32_t flags);
+   bool (*register_fd)(clap_host *host, clap_fd fd, uint32_t flags);
 
    // [main-thread]
-   bool (*modify_fd)(clap_host *host, clap_plugin *plugin, clap_fd fd, uint32_t flags);
+   bool (*modify_fd)(clap_host *host, clap_fd fd, uint32_t flags);
 
    // [main-thread]
-   bool (*unregister_fd)(clap_host *host, clap_plugin *plugin, clap_fd fd);
+   bool (*unregister_fd)(clap_host *host, clap_fd fd);
 } clap_host_event_loop;
 
 #ifdef __cplusplus

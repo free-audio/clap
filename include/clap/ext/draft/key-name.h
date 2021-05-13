@@ -27,7 +27,7 @@ typedef struct clap_plugin_note_name {
 typedef struct clap_host_note_name {
    // Informs the host that the note names has changed.
    // [main-thread]
-   void (*changed)(clap_host *host, clap_plugin *plugin);
+   void (*changed)(clap_host *host);
 } clap_host_note_name;
 
 #ifdef __cplusplus

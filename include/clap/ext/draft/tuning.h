@@ -16,11 +16,7 @@ typedef struct clap_host_tuning {
    // The plugin is not supposed to query it for each samples,
    // but at a rate that makes sense for low frequency modulations.
    // [audio-thread]
-   double (*key_freq)(clap_host *  host,
-                      clap_plugin *plugin,
-                      int32_t      key,
-                      int32_t      channel,
-                      int32_t      frameIndex);
+   double (*key_freq)(clap_host *host, int32_t key, int32_t channel, int32_t frameIndex);
 } clap_host_tuning;
 
 #ifdef __cplusplus

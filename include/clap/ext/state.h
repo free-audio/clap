@@ -22,7 +22,7 @@ typedef struct clap_plugin_state {
 typedef struct clap_host_state {
    /* Tell the host that the plugin state has changed.
     * [thread-safe] */
-   void (*set_dirty)(clap_host *host, clap_plugin *plugin);
+   void (*set_dirty)(clap_host *host);
 } clap_host_state;
 
 #ifdef __cplusplus

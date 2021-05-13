@@ -52,7 +52,7 @@ typedef struct clap_host_thread_pool {
    // The host should check that the plugin is within the process call, and if not, reject the exec
    // request.
    // [audio-thread]
-   bool (*request_exec)(clap_host *host, clap_plugin *plugin, uint32_t num_tasks);
+   bool (*request_exec)(clap_host *host, uint32_t num_tasks);
 } clap_host_thread_pool;
 
 #ifdef __cplusplus
