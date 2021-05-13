@@ -170,6 +170,10 @@ typedef struct clap_plugin {
 
    void *plugin_data; // reserved pointer for the plugin
 
+   // Must be called after creating the plugin.
+   // If init returns false, the host must destroy the plugin instance.
+   bool (*init)(struct clap_plugin *plugin);
+
    /* Free the plugin and its resources.
     * It is not required to deactivate the plugin prior to this call. */
    void (*destroy)(struct clap_plugin *plugin);
@@ -214,6 +218,7 @@ struct clap_plugin_entry {
 
    /* Create a clap_plugin by its plugin_id.
     * The returned pointer must be freed by calling plugin->destroy(plugin);
+    * The plugin is not allowed to use the host callbacks in the create method.
     * Returns null in case of error.
     * [thread-safe] */
    clap_plugin *(*create_plugin)(clap_host *host, const char *plugin_id);

@@ -10,7 +10,7 @@ extern "C" {
 #define CLAP_EXT_AUDIO_PORTS "clap/audio-ports"
 
 typedef struct clap_audio_port_info {
-   int32_t id;                   // stable identifier
+   clap_id id;                   // stable identifier
    char    name[CLAP_NAME_SIZE]; // displayable name, i18n?
    bool    is_main;              // there can only be 1 main input and output
    bool    is_cv;                // control voltage
@@ -32,7 +32,8 @@ typedef struct clap_plugin_audio_ports {
    // [main-thread]
    void (*get_info)(clap_plugin *plugin, int32_t index, bool is_input, clap_audio_port_info *info);
 
-   void (*set_active)(clap_plugin *plugin, int32_t index, bool is_input, bool use_64, bool is_active);
+   void (*set_active)(
+      clap_plugin *plugin, int32_t index, bool is_input, bool use_64, bool is_active);
 } clap_plugin_audio_ports;
 
 typedef struct clap_host_audio_ports {

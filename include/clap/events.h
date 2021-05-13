@@ -19,7 +19,9 @@ enum {
    CLAP_EVENT_MIDI_SYSEX,      // midi attribute
 };
 typedef int32_t  clap_event_type;
-typedef uint32_t clap_param_id;
+typedef uint32_t clap_id;
+
+#define CLAP_INVALID_ID UINT32_MAX
 
 /** Note On/Off event. */
 typedef struct clap_event_note {
@@ -66,7 +68,7 @@ typedef union clap_param_value {
 typedef struct clap_event_param {
    int32_t          key;
    int32_t          channel;
-   clap_param_id    param_id; // parameter index
+   clap_id    param_id; // parameter index
    clap_param_value value;
    double           ramp; // valid until the end of the block or the next event
 } clap_event_param;
