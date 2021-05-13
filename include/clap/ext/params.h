@@ -84,6 +84,34 @@ typedef struct clap_plugin_params {
                          clap_param_value *plain_value);
 } clap_plugin_params;
 
+enum {
+   // The parameter values did change.
+   // The host will scan the parameter value and value_to_text
+   CLAP_PARAM_RESCAN_VALUES = 1 << 0,
+
+   // The parameter info did change
+   CLAP_PARAM_RESCAN_INFO = 1 << 1,
+
+   // The parameter range did change, or enum definition did change.
+   // This change can't be performed immediately because there might be
+   // param updates pending in the host's queues.
+   // The change will apply once the host deactivates the plugin.
+   CLAP_PARAM_RESCAN_RANGES = 1 << 2,
+
+   // The parameter list did change
+   // It means that some parameters maybe added or removed,
+   // the index <-> id mapping is invalidated
+   //
+   // The plugin can't perform the parameter list change immediately:
+   // 1. the plugin sends CLAP_PARAM_RESCAN_LIST
+   // 2. the host deactivates the plugin, be aware that it may happen a bit later
+   //    because the host needs to flush its parameters update queues and suspend
+   //    the plugin execution in the audio engine
+   // 3. the plugin can switch to its new parameter set
+   // 4. the host activates the plugin
+   CLAP_PARAM_RESCAN_LIST = 1 << 3,
+};
+
 typedef struct clap_host_params {
    /* [main-thread] */
    void (*touch_begin)(clap_host *host, clap_id param_id);
@@ -97,9 +125,13 @@ typedef struct clap_host_params {
    // [main-thread]
    void (*changed)(clap_host *host, clap_id param_id, clap_param_value plain_value);
 
+   // Rescan the full list of parameters according to the flags.
    // [main-thread]
-   void (*rescan)(clap_host *host, bool did_parameter_list_change);
-   void (*rescan_params)(clap_host *host, const uint32_t *indexes, uint32_t count);
+   void (*rescan)(clap_host *host, uint32_t flags);
+
+   // Only rescan the given subset of parameters according to the flags.
+   // [main-thread]
+   void (*rescan_params)(clap_host *host, uint32_t flags, const uint32_t *indexes, uint32_t count);
 } clap_host_params;
 
 #ifdef __cplusplus
