@@ -8,7 +8,6 @@
 #include "ext/gui-win32.h"
 #include "ext/gui-cocoa.h"
 #include "ext/gui-free-standing.h"
-#include "ext/idle.h"
 #include "ext/log.h"
 #include "ext/params.h"
 #include "ext/render.h"
