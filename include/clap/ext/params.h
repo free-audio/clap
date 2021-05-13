@@ -85,31 +85,33 @@ typedef struct clap_plugin_params {
 } clap_plugin_params;
 
 enum {
-   // The parameter values did change.
-   // The host will scan the parameter value and value_to_text
+   // The parameter values did change. Typically what happens when loading a preset.
+   // The host will scan the parameter value and value_to_text.
+   // The host will not record those changes as automation points.
    CLAP_PARAM_RESCAN_VALUES = 1 << 0,
 
    // The parameter info did change
    CLAP_PARAM_RESCAN_INFO = 1 << 1,
 
-   // The parameter range did change, or enum definition did change.
-   // This change can't be performed immediately because there might be
-   // param updates pending in the host's queues.
-   // The change will apply once the host deactivates the plugin.
-   CLAP_PARAM_RESCAN_RANGES = 1 << 2,
-
-   // The parameter list did change
-   // It means that some parameters maybe added or removed,
-   // the index <-> id mapping is invalidated
+   // This invalidates everything the host knows about parameters.
+   //
+   // Some parameters were added or removed.
+   // Some parameter had critical changes which requieres to invalidate the host parameter update
+   // queues:
+   // - is_automatable
+   // - range
+   // - enum definition
+   // - ...
    //
    // The plugin can't perform the parameter list change immediately:
-   // 1. the plugin sends CLAP_PARAM_RESCAN_LIST
+   // 1. host_params->rescan(host, CLAP_PARAM_RESCAN_ALL);
    // 2. the host deactivates the plugin, be aware that it may happen a bit later
    //    because the host needs to flush its parameters update queues and suspend
    //    the plugin execution in the audio engine
-   // 3. the plugin can switch to its new parameter set
-   // 4. the host activates the plugin
-   CLAP_PARAM_RESCAN_LIST = 1 << 3,
+   // 3. the plugin can switch to its new parameter set during plugin->set_active(plugin, 0, false);
+   // 4. the host scans all the parameters
+   // 5. the host activates the plugin
+   CLAP_PARAM_RESCAN_ALL = 1 << 2,
 };
 
 typedef struct clap_host_params {
