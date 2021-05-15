@@ -36,7 +36,7 @@ typedef struct clap_param_info {
    bool is_bypass;      // used to merge the plugin and host bypass button.
 
    /* value */
-   clap_param_type  type;
+   clap_param_type  type;             // this field is not allowed to change for a given param id
    clap_param_value min_value;        // minimum plain value
    clap_param_value max_value;        // maximum plain value
    clap_param_value default_value;    // default plain value
@@ -88,27 +88,40 @@ enum {
    // The parameter values did change. Typically what happens when loading a preset.
    // The host will scan the parameter value and value_to_text.
    // The host will not record those changes as automation points.
+   // New values takes effect immediately.
    CLAP_PARAM_RESCAN_VALUES = 1 << 0,
 
-   // The parameter info did change
+   // The parameter info did change, use this flag for:
+   // - name change
+   // - module change
+   // - is_modulable
+   // - is_used
+   // - is_periodic
+   // - is_hidden
+   // New info takes effect immediately.
    CLAP_PARAM_RESCAN_INFO = 1 << 1,
 
-   // This invalidates everything the host knows about parameters.
+   // This invalidates everything the host knows about parameters and takes effect after the host
+   // did deactivate the plugin if it was activated.
    //
-   // Some parameters were added or removed.
-   // Some parameter had critical changes which requieres to invalidate the host parameter update
-   // queues:
-   // - is_automatable
-   // - range
-   // - enum definition
-   // - ...
+   // You must use this flag if:
+   // - some parameters were added or removed.
+   // - some parameters had critical changes which requieres to invalidate the host queues:
+   //   - is_per_note
+   //   - is_per_channel
+   //   - is_automatable
+   //   - is_locked
+   //   - is_bypass
+   //   - min_value
+   //   - max_value
+   //   - enum definition (enum_entry_count or enum value)
    //
    // The plugin can't perform the parameter list change immediately:
    // 1. host_params->rescan(host, CLAP_PARAM_RESCAN_ALL);
    // 2. the host deactivates the plugin, be aware that it may happen a bit later
    //    because the host needs to flush its parameters update queues and suspend
    //    the plugin execution in the audio engine
-   // 3. the plugin can switch to its new parameter set during plugin->set_active(plugin, 0, false);
+   // 3. the host calls plugin->set_active(plugin, 0, false); and the plugin can switch to its new parameters
    // 4. the host scans all the parameters
    // 5. the host activates the plugin
    CLAP_PARAM_RESCAN_ALL = 1 << 2,
