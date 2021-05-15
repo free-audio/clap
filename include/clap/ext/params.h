@@ -118,10 +118,10 @@ enum {
    //
    // The plugin can't perform the parameter list change immediately:
    // 1. host_params->rescan(host, CLAP_PARAM_RESCAN_ALL);
-   // 2. the host deactivates the plugin, be aware that it may happen a bit later
-   //    because the host needs to flush its parameters update queues and suspend
+   // 2. the host needs to flush its parameters update queues and suspend
    //    the plugin execution in the audio engine
-   // 3. the host calls plugin->set_active(plugin, 0, false); and the plugin can switch to its new parameters
+   // 3. the host calls plugin->set_active(plugin, 0, false); and the plugin
+   //    can switch to its new parameters
    // 4. the host scans all the parameters
    // 5. the host activates the plugin
    CLAP_PARAM_RESCAN_ALL = 1 << 2,
@@ -129,16 +129,16 @@ enum {
 
 typedef struct clap_host_params {
    /* [main-thread] */
-   void (*touch_begin)(clap_host *host, clap_id param_id);
-
-   /* [main-thread] */
-   void (*touch_end)(clap_host *host, clap_id param_id);
+   void (*adjust_begin)(clap_host *host, clap_id param_id);
 
    // If the plugin is activated, the host must send a parameter update
    // in the next process call to update the audio processor.
    // Only for value changes that happens in the gui.
    // [main-thread]
-   void (*changed)(clap_host *host, clap_id param_id, clap_param_value plain_value);
+   void (*adjust)(clap_host *host, clap_id param_id, clap_param_value plain_value);
+
+   /* [main-thread] */
+   void (*adjust_end)(clap_host *host, clap_id param_id);
 
    // Rescan the full list of parameters according to the flags.
    // [main-thread]
