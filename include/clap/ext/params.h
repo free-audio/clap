@@ -143,11 +143,6 @@ typedef struct clap_host_params {
    // Rescan the full list of parameters according to the flags.
    // [main-thread]
    void (*rescan)(clap_host *host, uint32_t flags);
-
-   // Only rescan the given subset of parameters according to the flags.
-   // CLAP_PARAM_RESCAN_ALL can't be used with this method.
-   // [main-thread]
-   void (*rescan_params)(clap_host *host, uint32_t flags, const uint32_t *indexes, uint32_t count);
 } clap_host_params;
 
 #ifdef __cplusplus
