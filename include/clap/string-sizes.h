@@ -9,6 +9,7 @@ extern "C" {
 enum {
    CLAP_NAME_SIZE = 64,
    CLAP_MODULE_SIZE = 128,
+   CLAP_KEYWORDS_SIZE = 128,
 };
 
 #ifdef __cplusplus

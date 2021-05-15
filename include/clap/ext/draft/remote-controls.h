@@ -12,6 +12,7 @@ extern "C" {
 typedef struct clap_remote_controls_page {
    clap_id id;
    char    name[CLAP_NAME_SIZE];
+   char    keywords[CLAP_KEYWORDS_SIZE];
    clap_id param_id[8];
 } clap_remote_controls_page;
 
