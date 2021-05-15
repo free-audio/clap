@@ -27,13 +27,13 @@ typedef struct clap_param_info {
 
    bool is_per_note;    // does this param supports per note automations?
    bool is_per_channel; // does this param supports per channel automations?
-   bool is_modulable;   // does this param
    bool is_used;        // is this parameter used by the patch?
    bool is_periodic;    // after the last value, go back to the first one
    bool is_locked;      // if true, the parameter can't be changed by the host
    bool is_automatable; // can the host send param event to change it in the process call?
-   bool is_hidden;      // it implies is_automatable == true. Don't show it to the user.
-   bool is_bypass;      // used to merge the plugin and host bypass button.
+   bool is_hidden; // don't show it to the user, unless the parameter is already used (automation,
+                   // modulation, controller mapping)
+   bool is_bypass; // used to merge the plugin and host bypass button.
 
    /* value */
    clap_param_type  type;             // this field is not allowed to change for a given param id
