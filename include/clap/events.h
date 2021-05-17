@@ -68,9 +68,11 @@ typedef union clap_param_value {
 typedef struct clap_event_param {
    int32_t          key;
    int32_t          channel;
-   clap_id    param_id; // parameter index
+   clap_id          param_id; // parameter index
    clap_param_value value;
    double           ramp; // valid until the end of the block or the next event
+   clap_param_value modulated_value;
+   double           modulation_ramp;
 } clap_event_param;
 
 typedef struct clap_event_transport {

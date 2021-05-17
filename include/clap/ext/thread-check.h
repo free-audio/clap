@@ -4,9 +4,9 @@
 extern "C" {
 #endif
 
-#include "../../clap.h"
+#include "../clap.h"
 
-#define CLAP_EXT_THREAD_CHECK "clap/draft/thread-check"
+#define CLAP_EXT_THREAD_CHECK "clap/thread-check"
 
 // This interface is useful to do runtime checks and make
 // sure that the functions are called on the correct threads.

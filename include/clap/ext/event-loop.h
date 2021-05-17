@@ -5,9 +5,9 @@
 extern "C" {
 #endif
 
-#include "../../clap.h"
+#include "../clap.h"
 
-#define CLAP_EXT_EVENT_LOOP "clap/draft/event-loop"
+#define CLAP_EXT_EVENT_LOOP "clap/event-loop"
 
 #ifdef _WIN32
 typedef void *clap_fd;
