@@ -8,7 +8,7 @@ find_package(Qt6Widgets REQUIRED)
 #pkg_check_modules(PortAudio REQUIRED IMPORTED_TARGET portaudio-2.0)
 #pkg_check_modules(PortMidi REQUIRED IMPORTED_TARGET portmidi)
 
-add_executable(Host EXCLUDE_FROM_ALL
+add_executable(clap-host EXCLUDE_FROM_ALL
   application.cc
   application.hh
   audio-settings.cc
@@ -47,19 +47,16 @@ add_executable(Host EXCLUDE_FROM_ALL
   settings-widget.hh
   )
 
-set_target_properties(Host PROPERTIES CXX_STANDARD 17)
-target_compile_options(Host PRIVATE -fsanitize=address)
-target_link_options(Host PRIVATE -fsanitize=address)
-
-target_link_libraries(Host portmidi portaudio)
-target_link_libraries(Host Qt6::Widgets Qt6::Core)
+set_target_properties(clap-host PROPERTIES CXX_STANDARD 17)
+target_link_libraries(clap-host Qt6::Widgets Qt6::Core)
+target_link_libraries(clap-host portmidi portaudio)
 
 if (LINUX)
-  target_link_libraries(Host dl pthread)
+  target_link_libraries(clap-host dl pthread)
 endif()
 
 if (APPLE)
-  set_target_properties(Host PROPERTIES OSX_ARCHITECTURES x86_64)
+  set_target_properties(clap-host PROPERTIES OSX_ARCHITECTURES x86_64)
 
   find_library(CORE_FOUNDATION CoreFoundation)
   find_library(CORE_AUDIO CoreAudio)
@@ -68,5 +65,5 @@ if (APPLE)
   find_library(AUDIO_UNIT AudioUnit)
   find_library(AUDIO_TOOLBOX AudioToolbox)
   find_library(CARBON Carbon)
-  target_link_libraries(Host ${CARBON} ${AUDIO_UNIT} ${AUDIO_TOOLBOX} ${CORE_MIDI} ${CORE_AUDIO} ${CORE_SERVICES} ${CORE_FOUNDATION})
+  target_link_libraries(clap-host ${CARBON} ${AUDIO_UNIT} ${AUDIO_TOOLBOX} ${CORE_MIDI} ${CORE_AUDIO} ${CORE_SERVICES} ${CORE_FOUNDATION})
 endif()

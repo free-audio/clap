@@ -16,6 +16,11 @@ typedef struct clap_plugin_event_filter {
    bool (*accepts)(clap_plugin *plugin, clap_event_type event_type);
 } clap_plugin_event_filter;
 
+
+typedef struct clap_host_event_filter {
+   void (*changed)(clap_host *host);
+} clap_host_event_filter;
+
 #ifdef __cplusplus
 }
 #endif

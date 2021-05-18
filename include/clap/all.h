@@ -19,7 +19,7 @@
 #include "ext/draft/event-filter.h"
 #include "ext/draft/key-name.h"
 #include "ext/draft/preset-load.h"
-#include "ext/draft/remote-controls.h"
+#include "ext/draft/quick-controls.h"
 #include "ext/draft/thread-pool.h"
 #include "ext/draft/track-info.h"
 #include "ext/draft/tuning.h"

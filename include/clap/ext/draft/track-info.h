@@ -23,13 +23,13 @@ typedef struct clap_track_info {
 
 typedef struct clap_plugin_track_info {
    // [main-thread]
-   int (*track_info_changed)(clap_plugin *plugin, const clap_track_info *info);
+   void (*set_track_info)(clap_plugin *plugin, const clap_track_info *info);
 } clap_plugin_track_info;
 
 typedef struct clap_host_track_info {
    // Informs the host that the note names has changed.
    // [main-thread]
-   void (*get_track_info)(clap_host *host, clap_track_info *info);
+   bool (*get_track_info)(clap_host *host, clap_track_info *info);
 } clap_host_track_info;
 
 #ifdef __cplusplus
