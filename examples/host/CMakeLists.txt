@@ -3,12 +3,12 @@ set(CMAKE_AUTOMOC ON)
 
 find_package(Qt6Core REQUIRED)
 find_package(Qt6Widgets REQUIRED)
-#find_package(portaudio REQUIRED)
-#find_package(portmidi REQUIRED)
 
-include_directories(../libs)
+#find_package(PkgConfig REQUIRED)
+#pkg_check_modules(PortAudio REQUIRED IMPORTED_TARGET portaudio-2.0)
+#pkg_check_modules(PortMidi REQUIRED IMPORTED_TARGET portmidi)
 
-add_executable(Host
+add_executable(Host EXCLUDE_FROM_ALL
   application.cc
   application.hh
   audio-settings.cc
