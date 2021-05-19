@@ -132,6 +132,13 @@ bool PluginHost::load(const QString &path, int pluginIndex) {
       return false;
    }
 
+   if (desc->clap_version != CLAP_VERSION) {
+      qWarning() << "incompatible clap version: " << CLAP_VERSION_MAJ(desc->clap_version) << "."
+                 << CLAP_VERSION_MIN(desc->clap_version) << "."
+                 << CLAP_VERSION_REV(desc->clap_version);
+      return false;
+   }
+
    plugin_ = pluginEntry_->create_plugin(&host_, desc->id);
    if (!plugin_) {
       qWarning() << "could not create the plugin with id: " << desc->id;
