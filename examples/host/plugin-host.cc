@@ -693,8 +693,9 @@ void PluginHost::clapParamsAdjustBegin(clap_host *host, clap_id param_id) {
 
    if (param.isBeingAdjusted()) {
       std::ostringstream msg;
-      msg << "Plugin called clap_host_params.adjust_end() on param_id: " << param_id
-          << ", but this parameter is already marked as being adjusted";
+      msg << "Plugin called clap_host_params.adjust_end() on ";
+      param.printShortInfo(msg);
+      msg << ", but this parameter is already marked as being adjusted";
       throw std::logic_error(msg.str());
    }
 
@@ -709,8 +710,9 @@ void PluginHost::clapParamsAdjustEnd(clap_host *host, clap_id param_id) {
 
    if (!param.isBeingAdjusted()) {
       std::ostringstream msg;
-      msg << "Plugin called clap_host_params.adjust_end() on param_id: " << param_id
-          << ", but this parameter is not marked as being adjusted";
+      msg << "Plugin called clap_host_params.adjust_end() on ";
+      param.printShortInfo(msg);
+      msg << ", but this parameter is not marked as being adjusted";
       throw std::logic_error(msg.str());
    }
 
@@ -725,8 +727,9 @@ void PluginHost::clapParamsAdjust(clap_host *host, clap_id param_id, clap_param_
 
    if (!param.isBeingAdjusted()) {
       std::ostringstream msg;
-      msg << "Plugin called clap_host_params.adjust() on param_id: " << param_id
-          << ", but this parameter is not marked as being adjusted";
+      msg << "Plugin called clap_host_params.adjust() on ";
+      param.printShortInfo(msg);
+      msg << ", but this parameter is not marked as being adjusted";
       throw std::logic_error(msg.str());
    }
 

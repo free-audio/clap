@@ -25,6 +25,7 @@ public:
    bool        isValueValid(const clap_param_value v) const;
    static bool areValuesEqual(clap_param_type type, clap_param_value v1, clap_param_value v2);
 
+   void printShortInfo(std::ostream &os) const;
    void printInfo(std::ostream &os) const;
    void printValue(const clap_param_value v, std::ostream &os) const;
 

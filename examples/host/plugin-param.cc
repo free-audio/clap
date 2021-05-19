@@ -63,8 +63,12 @@ bool PluginParam::isValueValid(const clap_param_value v) const {
    }
 }
 
-void PluginParam::printInfo(std::ostream &os) const {
+void PluginParam::printShortInfo(std::ostream &os) const {
    os << "id: " << info_.id << ", name: '" << info_.name << "', module: '" << info_.module << "'";
+}
+
+void PluginParam::printInfo(std::ostream &os) const {
+   printShortInfo(os);
 
    if (hasRange()) {
       os << ", min: ";
