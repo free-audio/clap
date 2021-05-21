@@ -197,9 +197,12 @@ void PluginParametersWidget::connectToParam(PluginParam *param) {
    currentParam_ = param;
    connect(param, &PluginParam::infoChanged, this, &PluginParametersWidget::paramInfoChanged);
    connect(param, &PluginParam::valueChanged, this, &PluginParametersWidget::paramValueChanged);
+   connect(param,
+           &PluginParam::isBeingAdjustedChanged,
+           this,
+           &PluginParametersWidget::updateParamIsBeingAjustedChanged);
 
-   updateParamInfo();
-   updateParamValue();
+   updateAll();
 }
 
 void PluginParametersWidget::disconnectFromParam() {
@@ -210,7 +213,18 @@ void PluginParametersWidget::disconnectFromParam() {
       currentParam_, &PluginParam::infoChanged, this, &PluginParametersWidget::paramInfoChanged);
    disconnect(
       currentParam_, &PluginParam::valueChanged, this, &PluginParametersWidget::paramValueChanged);
+   disconnect(currentParam_,
+              &PluginParam::isBeingAdjustedChanged,
+              this,
+              &PluginParametersWidget::updateParamIsBeingAjustedChanged);
+
+   updateAll();
+}
+
+void PluginParametersWidget::updateAll() {
    updateParamInfo();
+   updateParamValue();
+   updateParamIsBeingAjustedChanged();
 }
 
 void PluginParametersWidget::updateParamInfo() {
@@ -274,6 +288,15 @@ void PluginParametersWidget::updateParamInfo() {
          defaultValueLabel_->setText(QString::number(i.default_value.d));
          break;
       }
+   }
+}
+
+void PluginParametersWidget::updateParamIsBeingAjustedChanged() {
+   if (!currentParam_) {
+      isBeingAdjusted_->setText("-");
+   } else {
+      auto &p = *currentParam_;
+      isBeingAdjusted_->setText(p.isBeingAdjusted() ? "true" : "false");
    }
 }
 

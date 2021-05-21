@@ -65,8 +65,10 @@ private:
    void paramValueChanged();
    void sliderValueChanged(int newValue);
 
+   void updateAll();
    void updateParamInfo();
    void updateParamValue();
+   void updateParamIsBeingAjustedChanged();
 
    static const constexpr int SLIDER_RANGE = 10000;
 

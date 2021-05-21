@@ -39,13 +39,16 @@ public:
    void beginAdjust() {
       Q_ASSERT(!is_being_adjusted_);
       is_being_adjusted_ = true;
+      isBeingAdjustedChanged();
    }
    void endAdjust() {
       Q_ASSERT(is_being_adjusted_);
       is_being_adjusted_ = false;
+      isBeingAdjustedChanged();
    }
 
 signals:
+   void isBeingAdjustedChanged();
    void infoChanged();
    void valueChanged();
    void modulatedValueChanged();
