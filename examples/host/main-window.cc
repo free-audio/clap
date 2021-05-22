@@ -12,6 +12,7 @@
 #include "application.hh"
 #include "engine.hh"
 #include "main-window.hh"
+#include "plugin-host.hh"
 #include "plugin-parameters-widget.hh"
 #include "plugin-quick-controls-widget.hh"
 #include "settings-dialog.hh"
@@ -52,6 +53,11 @@ void MainWindow::createMenu() {
 
    QMenu *fileMenu = menuBar->addMenu(tr("File"));
    fileMenu->addAction(tr("Load plugin"));
+   connect(fileMenu->addAction(tr("Load Native Plugin Preset")),
+           &QAction::triggered,
+           this,
+           &MainWindow::loadNativePluginPreset);
+   fileMenu->addSeparator();
    connect(fileMenu->addAction(tr("Settings")),
            &QAction::triggered,
            this,
@@ -93,4 +99,13 @@ void MainWindow::resizePluginView(int width, int height) {
    pluginViewWidget_->setMaximumSize(width, height);
    pluginViewWidget_->show();
    adjustSize();
+}
+
+void MainWindow::loadNativePluginPreset()
+{
+   auto file = QFileDialog::getOpenFileName(this, tr("Load Plugin Native Preset"));
+   if (file.isEmpty())
+      return;
+
+   application_.engine()->pluginHost().loadNativePluginPreset(file.toStdString());
 }

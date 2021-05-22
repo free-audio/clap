@@ -17,6 +17,7 @@ public:
    WId getEmbedWindowId();
 
 public:
+   void loadNativePluginPreset();
    void showSettingsDialog();
    void showPluginParametersWindow();
    void showPluginQuickControlsWindow();

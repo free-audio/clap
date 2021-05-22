@@ -17,14 +17,14 @@ PluginQuickControlsWidget::PluginQuickControlsWidget(QWidget *parent, PluginHost
    for (auto &qc : controls_)
       qc = new PluginQuickControlWidget(this, pluginHost);
 
-   auto grid = new QGridLayout(this);
+   auto grid = new QGridLayout();
    grid->setSpacing(3);
 
    const auto rowSize = CLAP_QUICK_CONTROLS_COUNT / 2;
    for (int i = 0; i < CLAP_QUICK_CONTROLS_COUNT; ++i)
       grid->addWidget(controls_[i], i / rowSize, i % rowSize);
 
-   auto vbox = new QVBoxLayout(this);
+   auto vbox = new QVBoxLayout();
    vbox->addWidget(chooser_);
    vbox->addLayout(grid);
    vbox->setSpacing(3);

@@ -37,11 +37,6 @@ Application::Application(int argc, char **argv)
    mainWindow_->show();
 
    engine_->setParentWindow(mainWindow_->getEmbedWindowId());
-   QObject::connect(engine_,
-                    SIGNAL(resizePluginView(int, int)),
-                    mainWindow_,
-                    SLOT(resizePluginView(int, int)),
-                    Qt::QueuedConnection);
 
    if (engine_->loadPlugin(pluginPath_, pluginIndex_))
       engine_->start();

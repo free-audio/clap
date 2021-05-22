@@ -169,6 +169,8 @@ void PluginHost::initPluginExtensions() {
    initPluginExtension(pluginGuiFreeStanding_, CLAP_EXT_GUI_FREE_STANDING);
    initPluginExtension(pluginEventLoop_, CLAP_EXT_EVENT_LOOP);
    initPluginExtension(pluginThreadPool_, CLAP_EXT_THREAD_POOL);
+   initPluginExtension(pluginPresetLoad_, CLAP_EXT_PRESET_LOAD);
+   initPluginExtension(pluginState_, CLAP_EXT_STATE);
 
    pluginExtensionsAreInitialized_ = true;
 }
@@ -1019,6 +1021,18 @@ void PluginHost::clapQuickControlsSelectedPageChanged(clap_host *host, clap_id p
       throw std::logic_error(msg.str());
    }
    h->quickControlsSetSelectedPage(page_id);
+}
+
+bool PluginHost::loadNativePluginPreset(const std::string &path) {
+   checkForMainThread();
+
+   if (!pluginPresetLoad_)
+      return false;
+
+   if (!pluginPresetLoad_->load_from_file)
+      throw std::logic_error("clap_plugin_preset_load does not implement load_from_file");
+
+   return pluginPresetLoad_->load_from_file(plugin_, path.c_str());
 }
 
 void PluginHost::setPluginState(PluginState state) {

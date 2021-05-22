@@ -59,6 +59,10 @@ public:
    auto quickControlsSelectedPage() const { return quickControlsSelectedPage_; }
    void setQuickControlsSelectedPageByHost(clap_id page_id);
 
+   bool loadNativePluginPreset(const std::string& path);
+   bool loadStateFromFile(const std::string& path);
+   bool saveStateToFile(const std::string& path);
+
    static void checkForMainThread();
    static void checkForAudioThread();
 
@@ -142,6 +146,8 @@ private:
    const clap_plugin_gui_free_standing *pluginGuiFreeStanding_ = nullptr;
    const clap_plugin_event_loop *       pluginEventLoop_ = nullptr;
    const clap_plugin_thread_pool *      pluginThreadPool_ = nullptr;
+   const clap_plugin_preset_load *      pluginPresetLoad_ = nullptr;
+   const clap_plugin_state *            pluginState_ = nullptr;
 
    bool pluginExtensionsAreInitialized_ = false;
 
