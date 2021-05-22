@@ -8,7 +8,7 @@ find_package(Qt6Widgets REQUIRED)
 #pkg_check_modules(PortAudio REQUIRED IMPORTED_TARGET portaudio-2.0)
 #pkg_check_modules(PortMidi REQUIRED IMPORTED_TARGET portmidi)
 
-add_executable(clap-host EXCLUDE_FROM_ALL
+add_executable(clap-host
   application.cc
   application.hh
   audio-settings.cc
