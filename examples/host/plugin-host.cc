@@ -27,15 +27,15 @@ PluginHost::PluginHost(Engine &engine) : QObject(&engine), engine_(engine) {
 
    host_.host_data = this;
    host_.clap_version = CLAP_VERSION;
-   host_.extension = PluginHost::clapHostExtension;
+   host_.extension = PluginHost::clapExtension;
    host_.name = "Clap Test Host";
    host_.version = "0.0.1";
    host_.vendor = "clap";
    host_.url = "https://github.com/free-audio/clap";
 
-   hostLog_.log = PluginHost::clapHostLog;
+   hostLog_.log = PluginHost::clapLog;
 
-   hostGui_.resize = PluginHost::clapHostGuiResize;
+   hostGui_.resize = PluginHost::clapGuiResize;
 
    hostThreadCheck_.is_main_thread = PluginHost::clapIsMainThread;
    hostThreadCheck_.is_audio_thread = PluginHost::clapIsAudioThread;
@@ -55,6 +55,8 @@ PluginHost::PluginHost(Engine &engine) : QObject(&engine), engine_(engine) {
 
    hostQuickControls_.pages_changed = PluginHost::clapQuickControlsPagesChanged;
    hostQuickControls_.selected_page_changed = PluginHost::clapQuickControlsSelectedPageChanged;
+
+   hostState_.set_dirty = PluginHost::clapStateSetDirty;
 
    initThreadPool();
 }
@@ -256,7 +258,7 @@ void PluginHost::setParentWindow(WId parentWindow) {
    Application::instance().mainWindow()->resizePluginView(width, height);
 }
 
-void PluginHost::clapHostLog(clap_host *host, clap_log_severity severity, const char *msg) {
+void PluginHost::clapLog(clap_host *host, clap_log_severity severity, const char *msg) {
    switch (severity) {
    case CLAP_LOG_DEBUG:
       qDebug() << msg;
@@ -284,7 +286,7 @@ void PluginHost::initPluginExtension(const T *&ext, const char *id) {
    ext = static_cast<const T *>(plugin_->extension(plugin_, id));
 }
 
-const void *PluginHost::clapHostExtension(clap_host *host, const char *extension) {
+const void *PluginHost::clapExtension(clap_host *host, const char *extension) {
    checkForMainThread();
 
    PluginHost *h = static_cast<PluginHost *>(host->host_data);
@@ -304,6 +306,8 @@ const void *PluginHost::clapHostExtension(clap_host *host, const char *extension
       return &h->hostParams_;
    if (!strcmp(extension, CLAP_EXT_QUICK_CONTROLS))
       return &h->hostQuickControls_;
+   if (!strcmp(extension, CLAP_EXT_STATE))
+      return &h->hostState_;
    return nullptr;
 }
 
@@ -494,7 +498,7 @@ void PluginHost::eventLoopSetFdNotifierFlags(clap_fd fd, uint32_t flags) {
       it->second->err->setEnabled(false);
 }
 
-bool PluginHost::clapHostGuiResize(clap_host *host, int32_t width, int32_t height) {
+bool PluginHost::clapGuiResize(clap_host *host, int32_t width, int32_t height) {
    checkForMainThread();
 
    PluginHost *h = static_cast<PluginHost *>(host->host_data);
@@ -1033,6 +1037,18 @@ bool PluginHost::loadNativePluginPreset(const std::string &path) {
       throw std::logic_error("clap_plugin_preset_load does not implement load_from_file");
 
    return pluginPresetLoad_->load_from_file(plugin_, path.c_str());
+}
+
+void PluginHost::clapStateSetDirty(clap_host *host) {
+   checkForMainThread();
+
+   auto h = fromHost(host);
+
+   if (!h->pluginState_ || !h->pluginState_->save || !h->pluginState_->restore)
+      throw std::logic_error("Plugin called clap_host_state.set_dirty() but the host does not "
+                             "provide a complete clap_plugin_state interface.");
+
+   // TODO set dirty
 }
 
 void PluginHost::setPluginState(PluginState state) {

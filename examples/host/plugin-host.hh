@@ -77,7 +77,7 @@ private:
    void initPluginExtension(const T *&ext, const char *id);
 
    /* clap host callbacks */
-   static void clapHostLog(clap_host *host, clap_log_severity severity, const char *msg);
+   static void clapLog(clap_host *host, clap_log_severity severity, const char *msg);
 
    static bool clapIsMainThread(clap_host *host);
    static bool clapIsAudioThread(clap_host *host);
@@ -114,10 +114,12 @@ private:
 
    static bool clapThreadPoolRequestExec(clap_host *host, uint32_t num_tasks);
 
-   static const void *clapHostExtension(clap_host *host, const char *extension);
+   static const void *clapExtension(clap_host *host, const char *extension);
 
    /* clap host gui callbacks */
-   static bool clapHostGuiResize(clap_host *host, int32_t width, int32_t height);
+   static bool clapGuiResize(clap_host *host, int32_t width, int32_t height);
+
+   static void clapStateSetDirty(clap_host *host);
 
 private:
    Engine &engine_;
@@ -133,6 +135,7 @@ private:
    clap_host_event_loop     hostEventLoop_;
    clap_host_thread_check   hostThreadCheck_;
    clap_host_thread_pool    hostThreadPool_;
+   clap_host_state hostState_;
 
    const struct clap_plugin_entry *     pluginEntry_ = nullptr;
    clap_plugin *                        plugin_ = nullptr;
