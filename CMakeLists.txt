@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.20)
 project(CLAP C CXX)
 
 set(ENABLE_CLAP_HOST FALSE CACHE BOOL "Enables the example host")
+set(ENABLE_CLAP_PLUGINS FALSE CACHE BOOL "Enables the example plugins")
+set(ENABLE_CLAP_SYNAESTHESIS FALSE CACHE BOOL "Enables Synaesthesis, the plugin framework")
 
 include_directories(include)
 
