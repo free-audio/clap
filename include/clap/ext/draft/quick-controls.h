@@ -8,11 +8,15 @@ extern "C" {
 
 #define CLAP_EXT_QUICK_CONTROLS "clap/draft/quick-controls"
 
+enum {
+   CLAP_QUICK_CONTROLS_COUNT = 8
+};
+
 typedef struct clap_quick_controls_page {
    clap_id id;
    char    name[CLAP_NAME_SIZE];
    char    keywords[CLAP_KEYWORDS_SIZE];
-   clap_id param_id[8];
+   clap_id param_ids[CLAP_QUICK_CONTROLS_COUNT];
 } clap_quick_controls_page;
 
 typedef struct clap_plugin_quick_controls {

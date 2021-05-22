@@ -55,12 +55,17 @@ public:
    void setParamValueByHost(PluginParam &param, clap_param_value value);
 
    auto &params() const { return params_; }
+   auto &quickControlsPages() const { return quickControlsPages_; }
+   auto quickControlsSelectedPage() const { return quickControlsSelectedPage_; }
+   void setQuickControlsSelectedPageByHost(clap_id page_id);
 
    static void checkForMainThread();
    static void checkForAudioThread();
 
 signals:
    void paramsChanged();
+   void quickControlsPagesChanged();
+   void quickControlsSelectedPageChanged();
 
 private:
    static PluginHost *fromHost(clap_host *host);
@@ -91,6 +96,11 @@ private:
       return flags & (CLAP_PARAM_RESCAN_ALL | CLAP_PARAM_RESCAN_INFO);
    }
 
+   void scanQuickControls();
+   void quickControlsSetSelectedPage(clap_id pageId);
+   static void clapQuickControlsPagesChanged(clap_host *host);
+   static void clapQuickControlsSelectedPageChanged(clap_host *host, clap_id page_id);
+
    static bool clapEventLoopRegisterTimer(clap_host *host, uint32_t period_ms, clap_id *timer_id);
    static bool clapEventLoopUnregisterTimer(clap_host *host, clap_id timer_id);
    static bool clapEventLoopRegisterFd(clap_host *host, clap_fd fd, uint32_t flags);
@@ -110,18 +120,20 @@ private:
 
    QLibrary library_;
 
-   clap_host              host_;
-   clap_host_log          hostLog_;
-   clap_host_gui          hostGui_;
-   clap_host_audio_ports  hostAudioPorts_;
-   clap_host_params       hostParams_;
-   clap_host_event_loop   hostEventLoop_;
-   clap_host_thread_check hostThreadCheck_;
-   clap_host_thread_pool  hostThreadPool_;
+   clap_host                host_;
+   clap_host_log            hostLog_;
+   clap_host_gui            hostGui_;
+   clap_host_audio_ports    hostAudioPorts_;
+   clap_host_params         hostParams_;
+   clap_host_quick_controls hostQuickControls_;
+   clap_host_event_loop     hostEventLoop_;
+   clap_host_thread_check   hostThreadCheck_;
+   clap_host_thread_pool    hostThreadPool_;
 
    const struct clap_plugin_entry *     pluginEntry_ = nullptr;
    clap_plugin *                        plugin_ = nullptr;
    const clap_plugin_params *           pluginParams_ = nullptr;
+   const clap_plugin_quick_controls *   pluginQuickControls_ = nullptr;
    const clap_plugin_audio_ports *      pluginAudioPorts_ = nullptr;
    const clap_plugin_gui *              pluginGui_ = nullptr;
    const clap_plugin_gui_x11 *          pluginGuiX11_ = nullptr;
@@ -163,6 +175,9 @@ private:
    std::unordered_map<clap_id, std::unique_ptr<PluginParam>> params_;
    ParamQueue                                                appToEngineQueue_;
    ParamQueue                                                engineToAppQueue_;
+
+   std::unordered_map<clap_id, std::unique_ptr<clap_quick_controls_page>> quickControlsPages_;
+   clap_id quickControlsSelectedPage_ = CLAP_INVALID_ID;
 
    /* delayed actions */
    enum PluginState {

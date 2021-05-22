@@ -28,10 +28,10 @@ PluginHost::PluginHost(Engine &engine) : QObject(&engine), engine_(engine) {
    host_.host_data = this;
    host_.clap_version = CLAP_VERSION;
    host_.extension = PluginHost::clapHostExtension;
-   host_.name = "Mini Test Host";
+   host_.name = "Clap Test Host";
    host_.version = "0.0.1";
-   host_.vendor = "u-he";
-   host_.url = "https://www.u-he.com";
+   host_.vendor = "clap";
+   host_.url = "https://github.com/free-audio/clap";
 
    hostLog_.log = PluginHost::clapHostLog;
 
@@ -52,6 +52,9 @@ PluginHost::PluginHost(Engine &engine) : QObject(&engine), engine_(engine) {
    hostParams_.adjust_end = PluginHost::clapParamsAdjustEnd;
    hostParams_.adjust = PluginHost::clapParamsAdjust;
    hostParams_.rescan = PluginHost::clapParamsRescan;
+
+   hostQuickControls_.pages_changed = PluginHost::clapQuickControlsPagesChanged;
+   hostQuickControls_.selected_page_changed = PluginHost::clapQuickControlsSelectedPageChanged;
 
    initThreadPool();
 }
@@ -148,6 +151,7 @@ bool PluginHost::load(const QString &path, int pluginIndex) {
 
    initPluginExtensions();
    scanParams();
+   scanQuickControls();
    return true;
 }
 
@@ -156,6 +160,7 @@ void PluginHost::initPluginExtensions() {
       return;
 
    initPluginExtension(pluginParams_, CLAP_EXT_PARAMS);
+   initPluginExtension(pluginQuickControls_, CLAP_EXT_QUICK_CONTROLS);
    initPluginExtension(pluginAudioPorts_, CLAP_EXT_AUDIO_PORTS);
    initPluginExtension(pluginGui_, CLAP_EXT_GUI);
    initPluginExtension(pluginGuiX11_, CLAP_EXT_GUI_X11);
@@ -295,7 +300,8 @@ const void *PluginHost::clapHostExtension(clap_host *host, const char *extension
       return &h->hostEventLoop_;
    if (!strcmp(extension, CLAP_EXT_PARAMS))
       return &h->hostParams_;
-
+   if (!strcmp(extension, CLAP_EXT_QUICK_CONTROLS))
+      return &h->hostQuickControls_;
    return nullptr;
 }
 
@@ -900,6 +906,119 @@ clap_param_value PluginHost::getParamValue(const clap_param_info &info) {
    msg << "failed to get the param value, id: " << info.id << ", name: " << info.name
        << ", module: " << info.module;
    throw std::logic_error(msg.str());
+}
+
+void PluginHost::scanQuickControls() {
+   checkForMainThread();
+
+   if (!pluginQuickControls_)
+      return;
+
+   if (!pluginQuickControls_->get_page || !pluginQuickControls_->page_count) {
+      std::ostringstream msg;
+      msg << "clap_plugin_quick_controls is partially implemented.";
+      throw std::logic_error(msg.str());
+   }
+
+   quickControlsSetSelectedPage(CLAP_INVALID_ID);
+   quickControlsPages_.clear();
+
+   const auto N = pluginQuickControls_->page_count(plugin_);
+   if (N == 0)
+      return;
+
+   quickControlsPages_.reserve(N);
+
+   clap_id firstPageId = CLAP_INVALID_ID;
+   for (int i = 0; i < N; ++i) {
+      auto page = std::make_unique<clap_quick_controls_page>();
+      if (!pluginQuickControls_->get_page(plugin_, i, page.get())) {
+         std::ostringstream msg;
+         msg << "clap_plugin_quick_controls.get_page(" << i << ") failed, while the page count is "
+             << N;
+         throw std::logic_error(msg.str());
+      }
+
+      if (page->id == CLAP_INVALID_ID) {
+         std::ostringstream msg;
+         msg << "clap_plugin_quick_controls.get_page(" << i << ") gave an invalid page_id";
+         throw std::invalid_argument(msg.str());
+      }
+
+      if (i == 0)
+         firstPageId = page->id;
+
+      auto it = quickControlsPages_.find(page->id);
+      if (it != quickControlsPages_.end()) {
+         std::ostringstream msg;
+         msg << "clap_plugin_quick_controls.get_page(" << i
+             << ") gave twice the same page_id:" << page->id << std::endl
+             << " 1. name: " << it->second->name << std::endl
+             << " 2. name: " << page->name;
+         throw std::invalid_argument(msg.str());
+      }
+
+      quickControlsPages_.emplace(page->id, std::move(page));
+   }
+
+   quickControlsPagesChanged();
+
+   auto pageId = pluginQuickControls_->get_selected_page(plugin_);
+   quickControlsSetSelectedPage(pageId == CLAP_INVALID_ID ? firstPageId : pageId);
+}
+
+void PluginHost::quickControlsSetSelectedPage(clap_id pageId) {
+   if (pageId == quickControlsSelectedPage_)
+      return;
+
+   if (pageId != CLAP_INVALID_ID) {
+      auto it = quickControlsPages_.find(pageId);
+      if (it == quickControlsPages_.end()) {
+         std::ostringstream msg;
+         msg << "quick control page_id " << pageId << " not found";
+         throw std::invalid_argument(msg.str());
+      }
+   }
+
+   quickControlsSelectedPage_ = pageId;
+   quickControlsSelectedPageChanged();
+}
+
+void PluginHost::setQuickControlsSelectedPageByHost(clap_id page_id) {
+   Q_ASSERT(page_id != CLAP_INVALID_ID);
+
+   checkForMainThread();
+
+   quickControlsSelectedPage_ = page_id;
+
+   if (pluginQuickControls_ && pluginQuickControls_->select_page)
+      pluginQuickControls_->select_page(plugin_, page_id);
+}
+
+void PluginHost::clapQuickControlsPagesChanged(clap_host *host) {
+   checkForMainThread();
+
+   auto h = fromHost(host);
+   if (!h->pluginQuickControls_) {
+      std::ostringstream msg;
+      msg << "Plugin called clap_host_quick_controls.pages_changed() but does not provide "
+             "clap_plugin_quick_controls";
+      throw std::logic_error(msg.str());
+   }
+   h->scanQuickControls();
+}
+
+void PluginHost::clapQuickControlsSelectedPageChanged(clap_host *host, clap_id page_id) {
+   checkForMainThread();
+
+   auto h = fromHost(host);
+   if (!h->pluginQuickControls_) {
+      std::ostringstream msg;
+      msg << "Plugin called clap_host_quick_controls.selected_page_changed() but does not provide "
+             "clap_plugin_quick_controls";
+      throw std::logic_error(msg.str());
+   }
+   h->quickControlsSetSelectedPage(page_id);
 }
 
 void PluginHost::setPluginState(PluginState state) {

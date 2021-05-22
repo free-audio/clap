@@ -22,6 +22,10 @@ add_executable(clap-host EXCLUDE_FROM_ALL
   param-queue.hh
   plugin-host.cc
   plugin-host.hh
+  plugin-quick-control-widget.cc
+  plugin-quick-control-widget.hh
+  plugin-quick-controls-widget.cc
+  plugin-quick-controls-widget.hh
 
   CMakeLists.txt
   device-reference.cc

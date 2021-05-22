@@ -5,6 +5,7 @@
 class Application;
 class SettingsDialog;
 class PluginParametersWidget;
+class PluginQuickControlsWidget;
 
 class MainWindow : public QMainWindow {
    Q_OBJECT
@@ -18,6 +19,7 @@ public:
 public:
    void showSettingsDialog();
    void showPluginParametersWindow();
+   void showPluginQuickControlsWindow();
    void resizePluginView(int width, int height);
 
 private:
@@ -30,4 +32,7 @@ private:
 
    QMainWindow *           pluginParametersWindow_ = nullptr;
    PluginParametersWidget *pluginParametersWidget_ = nullptr;
+
+   QMainWindow *              pluginQuickControlsWindow_ = nullptr;
+   PluginQuickControlsWidget *pluginQuickControlsWidget_ = nullptr;
 };
