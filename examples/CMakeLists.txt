@@ -2,8 +2,9 @@ if (ENABLE_CLAP_HOST)
     add_subdirectory(host)
 endif()
 
-if (ENABLE_CLAP_SYNAESTHESIS OR ENABLE_CLAP_PLUGINS)
-    add_subdirectory(synaesthesis)
+if (ENABLE_CLAP_GUI OR ENABLE_CLAP_PLUGINS)
+    add_subdirectory(gui)
+    add_subdirectory(gui-proxy)
 endif()
 
 if (ENABLE_CLAP_PLUGINS)
