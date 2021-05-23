@@ -4,10 +4,16 @@
 
 #include "../plugin.hh"
 
-class Gain : public Plugin
-{
+class Gain : public Plugin {
 public:
-    Gain(clap_host *host);
-};
+   Gain(clap_host *host);
 
-extern const clap_plugin_descriptor g_gain_plugin_descriptor;
+   static const clap_plugin_descriptor *descriptor();
+
+   bool init() override;
+   clap_process_status process(const clap_process *process) override;
+
+private:
+   int channelCount_ = 2;
+   int channelMap_ = CLAP_CHMAP_STEREO;
+};

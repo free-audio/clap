@@ -23,7 +23,7 @@ typedef struct clap_track_info {
 
 typedef struct clap_plugin_track_info {
    // [main-thread]
-   void (*set_track_info)(clap_plugin *plugin, const clap_track_info *info);
+   void (*track_info_changed)(clap_plugin *plugin);
 } clap_plugin_track_info;
 
 typedef struct clap_host_track_info {

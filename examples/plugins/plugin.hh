@@ -6,6 +6,9 @@
 #include <clap/all.h>
 
 class Plugin {
+public:
+   clap_plugin *clapPlugin() noexcept { return &plugin_; }
+
 protected:
    Plugin(const clap_plugin_descriptor *desc, clap_host *host);
    virtual ~Plugin() = default;
@@ -50,6 +53,7 @@ protected:
    /////////////////////////////////
    bool canUseHostLog() const noexcept;
    bool canUseThreadCheck() const noexcept;
+   bool canUseTrackInfo() const noexcept;
 
    /////////////////////
    // Thread Checking //
