@@ -37,7 +37,7 @@
 extern "C" {
 #endif
 
-#define CLAP_VERSION CLAP_VERSION_MAKE(0, 4, 0)
+#define CLAP_VERSION CLAP_VERSION_MAKE(0, 5, 0)
 
 /////////////
 // PROCESS //
@@ -180,11 +180,14 @@ typedef struct clap_plugin {
 
    /* activation/deactivation
     * [main-thread] */
-   bool (*set_active)(struct clap_plugin *plugin, int sample_rate, bool is_active);
+   bool (*activate)(struct clap_plugin *plugin, int sample_rate);
+   void (*deactivate)(struct clap_plugin *plugin);
+
 
    // Set to true before processing, and to false before sending the plugin to sleep.
    // [audio-thread]
-   void (*set_processing)(struct clap_plugin *plugin, bool is_active);
+   bool (*start_processing)(struct clap_plugin *plugin);
+   void (*stop_processing)(struct clap_plugin *plugin);
 
    /* process audio, events, ...
     * [audio-thread] */

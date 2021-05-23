@@ -187,7 +187,7 @@ void PluginHost::unload() {
       pluginGui_->close(plugin_);
 
    if (isPluginActive()) {
-      plugin_->set_active(plugin_, 0, false);
+      plugin_->deactivate(plugin_);
       setPluginState(Inactive);
    }
 
@@ -213,7 +213,7 @@ bool PluginHost::canActivate() const {
 }
 
 void PluginHost::activate(int32_t sample_rate) {
-   if (plugin_->set_active(plugin_, sample_rate, true))
+   if (plugin_->activate(plugin_, sample_rate))
       setPluginState(ActiveAndSleeping);
    else
       setPluginState(InactiveWithError);
@@ -621,7 +621,7 @@ void PluginHost::process() {
    // TODO if the plugin was not processing and had audio or events that should
    // wake it, then we should set it as processing
    if (!isPluginProcessing()) {
-      plugin_->set_processing(plugin_, true);
+      plugin_->start_processing(plugin_);
       setPluginState(ActiveAndProcessing);
    }
 
@@ -640,7 +640,7 @@ void PluginHost::process() {
    evIn_.clear();
 
    if (scheduleDeactivateForParameterScan_) {
-      plugin_->set_processing(plugin_, false);
+      plugin_->stop_processing(plugin_);
       setPluginState(ActiveAndReadyToDeactivate);
    }
 
@@ -897,7 +897,7 @@ void PluginHost::clapParamsRescan(clap_host *host, uint32_t flags) {
       h->scheduleParamsRescanFlags_ = 0;
 
       if (h->canActivate())
-         h->plugin_->set_active(h->plugin_, h->engine_.sampleRate(), true);
+         h->plugin_->activate(h->plugin_, h->engine_.sampleRate());
 
       h->paramsChanged();
    }
