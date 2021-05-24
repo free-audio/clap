@@ -10,10 +10,16 @@ public:
 
    static const clap_plugin_descriptor *descriptor();
 
-   bool init() override;
+protected:
+   bool                init() override;
+   bool                activate(int sample_rate) override;
+   void                deactivate() override;
    clap_process_status process(const clap_process *process) override;
+
+   void trackInfoChanged() override;
+   void updateChannelCount(bool shouldNotifyHost);
 
 private:
    int channelCount_ = 2;
-   int channelMap_ = CLAP_CHMAP_STEREO;
+   bool schedulePortUpdate_ = false;
 };

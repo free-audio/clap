@@ -26,6 +26,8 @@ protected:
    virtual clap_process_status process(const clap_process *process) { return CLAP_PROCESS_SLEEP; }
    virtual const void *        extension(const char *id) { return nullptr; }
 
+   virtual void trackInfoChanged() {}
+
    /////////////////////
    // CLAP Interfaces //
    /////////////////////
@@ -54,6 +56,7 @@ protected:
    bool canUseHostLog() const noexcept;
    bool canUseThreadCheck() const noexcept;
    bool canUseTrackInfo() const noexcept;
+   bool canChangeAudioPorts() const noexcept;
 
    /////////////////////
    // Thread Checking //

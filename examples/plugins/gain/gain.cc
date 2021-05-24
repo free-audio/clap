@@ -22,27 +22,49 @@ const clap_plugin_descriptor *Gain::descriptor() {
 Gain::Gain(clap_host *host) : Plugin(descriptor(), host) {}
 
 bool Gain::init() {
-   if (canUseTrackInfo()) {
-      clap_track_info info;
-      if (hostTrackInfo_->get_track_info(host_, &info))
-      {
-         channelCount_ = info.channel_count;
-         channelMap_ = info.channel_map;
-      }
-   }
-
+   updateChannelCount(false);
    return true;
 }
 
-clap_process_status Gain::process(const clap_process *process)
-{
+void Gain::updateChannelCount(bool shouldNotifyHost) {
+   if (!canUseTrackInfo())
+      return;
+
+   clap_track_info info;
+   if (!hostTrackInfo_->get(host_, &info))
+      return;
+
+   if (channelCount_ == info.channel_count)
+      return;
+
+   if (isActive_)
+      // we can't change our ports now, delay it
+      schedulePortUpdate_ = true;
+   else
+      channelCount_ = info.channel_count;
+
+   if (canChangeAudioPorts())
+      hostAudioPorts_->changed(host_);
+}
+
+bool Gain::activate(int sample_rate) { return true; }
+
+void Gain::deactivate() {
+   if (schedulePortUpdate_) {
+      schedulePortUpdate_ = false;
+      updateChannelCount(true);
+   }
+}
+
+void Gain::trackInfoChanged() { updateChannelCount(true); }
+
+clap_process_status Gain::process(const clap_process *process) {
    auto **in = process->audio_inputs[0].data32;
    auto **out = process->audio_outputs[0].data32;
 
    float k = 1;
 
-   for (int i = 0; i < process->frames_count; ++i)
-   {
+   for (int i = 0; i < process->frames_count; ++i) {
       for (int j = 0; j < channelCount_; ++j)
          out[j][i] = k * in[j][i];
    }
