@@ -109,7 +109,7 @@ typedef struct clap_host {
 
    // Query an extension.
    // [thread-safe]
-   const void *(*extension)(struct clap_host *host, const char *extension_id);
+   const void *(*extension)(const struct clap_host *host, const char *extension_id);
 } clap_host;
 
 ////////////
@@ -170,29 +170,29 @@ typedef struct clap_plugin {
 
    // Must be called after creating the plugin.
    // If init returns false, the host must destroy the plugin instance.
-   bool (*init)(struct clap_plugin *plugin);
+   bool (*init)(const struct clap_plugin *plugin);
 
    /* Free the plugin and its resources.
     * It is not required to deactivate the plugin prior to this call. */
-   void (*destroy)(struct clap_plugin *plugin);
+   void (*destroy)(const struct clap_plugin *plugin);
 
    /* activation/deactivation
     * [main-thread] */
-   bool (*activate)(struct clap_plugin *plugin, int sample_rate);
-   void (*deactivate)(struct clap_plugin *plugin);
+   bool (*activate)(const struct clap_plugin *plugin, int sample_rate);
+   void (*deactivate)(const struct clap_plugin *plugin);
 
    // Set to true before processing, and to false before sending the plugin to sleep.
    // [audio-thread]
-   bool (*start_processing)(struct clap_plugin *plugin);
-   void (*stop_processing)(struct clap_plugin *plugin);
+   bool (*start_processing)(const struct clap_plugin *plugin);
+   void (*stop_processing)(const struct clap_plugin *plugin);
 
    /* process audio, events, ...
     * [audio-thread] */
-   clap_process_status (*process)(struct clap_plugin *plugin, const clap_process *process);
+   clap_process_status (*process)(const struct clap_plugin *plugin, const clap_process *process);
 
    /* query an extension
     * [thread-safe] */
-   const void *(*extension)(struct clap_plugin *plugin, const char *id);
+   const void *(*extension)(const struct clap_plugin *plugin, const char *id);
 } clap_plugin;
 
 /////////////////
@@ -221,7 +221,7 @@ struct clap_plugin_entry {
     * The plugin is not allowed to use the host callbacks in the create method.
     * Returns null in case of error.
     * [thread-safe] */
-   clap_plugin *(*create_plugin)(clap_host *host, const char *plugin_id);
+   const clap_plugin *(*create_plugin)(const clap_host *host, const char *plugin_id);
 };
 
 /* Entry point */

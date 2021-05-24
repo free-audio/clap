@@ -10,10 +10,10 @@
 namespace clap {
    class Plugin {
    public:
-      clap_plugin *clapPlugin() noexcept { return &plugin_; }
+      const clap_plugin *clapPlugin() noexcept { return &plugin_; }
 
    protected:
-      Plugin(const clap_plugin_descriptor *desc, clap_host *host);
+      Plugin(const clap_plugin_descriptor *desc, const clap_host *host);
       virtual ~Plugin() = default;
 
       // not copyable, not moveable
@@ -74,7 +74,7 @@ namespace clap {
       ///////////////
       // Utilities //
       ///////////////
-      static Plugin &from(clap_plugin *plugin);
+      static Plugin &from(const clap_plugin *plugin);
 
       template <typename T>
       void initInterface(const T *&ptr, const char *id);
@@ -125,7 +125,7 @@ namespace clap {
       clap_plugin_gui_x11    pluginGuiX11_;
       clap_plugin_event_loop pluginEventLoop_;
 
-      clap_host *const                host_ = nullptr;
+      const clap_host *const          host_ = nullptr;
       const clap_host_log *           hostLog_ = nullptr;
       const clap_host_thread_check *  hostThreadCheck_ = nullptr;
       const clap_host_thread_pool *   hostThreadPool_ = nullptr;
@@ -147,23 +147,23 @@ namespace clap {
 
       clap_plugin plugin_;
       // clap_plugin
-      static bool                clapInit(clap_plugin *plugin);
-      static void                clapDestroy(clap_plugin *plugin);
-      static bool                clapActivate(clap_plugin *plugin, int sample_rate);
-      static void                clapDeactivate(clap_plugin *plugin);
-      static bool                clapStartProcessing(clap_plugin *plugin);
-      static void                clapStopProcessing(clap_plugin *plugin);
-      static clap_process_status clapProcess(struct clap_plugin *plugin,
+      static bool                clapInit(const clap_plugin *plugin);
+      static void                clapDestroy(const clap_plugin *plugin);
+      static bool                clapActivate(const clap_plugin *plugin, int sample_rate);
+      static void                clapDeactivate(const clap_plugin *plugin);
+      static bool                clapStartProcessing(const clap_plugin *plugin);
+      static void                clapStopProcessing(const clap_plugin *plugin);
+      static clap_process_status clapProcess(const clap_plugin * plugin,
                                              const clap_process *process);
-      static const void *        clapExtension(struct clap_plugin *plugin, const char *id);
+      static const void *        clapExtension(const clap_plugin *plugin, const char *id);
 
       // clap_plugin_track_info
-      static void clapTrackInfoChanged(clap_plugin *plugin);
+      static void clapTrackInfoChanged(const clap_plugin *plugin);
       void        initTrackInfo();
 
       // clap_plugin_audio_ports
-      static uint32_t clapAudioPortsCount(clap_plugin *plugin, bool is_input);
-      static bool     clapAudioPortsInfo(clap_plugin *         plugin,
+      static uint32_t clapAudioPortsCount(const clap_plugin *plugin, bool is_input);
+      static bool     clapAudioPortsInfo(const clap_plugin *   plugin,
                                          uint32_t              index,
                                          bool                  is_input,
                                          clap_audio_port_info *info);

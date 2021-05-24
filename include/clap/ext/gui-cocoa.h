@@ -10,7 +10,7 @@ extern "C" {
 
 typedef struct clap_plugin_gui_cocoa {
    // [main-thread]
-   bool (*attach)(clap_plugin *plugin, void *nsView);
+   bool (*attach)(const clap_plugin *plugin, void *nsView);
 } clap_plugin_gui_cocoa;
 
 #ifdef __cplusplus

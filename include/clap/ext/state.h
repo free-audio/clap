@@ -12,17 +12,17 @@ extern "C" {
 typedef struct clap_plugin_state {
    /* Saves the plugin state into stream.
     * [main-thread] */
-   bool (*save)(clap_plugin *plugin, clap_ostream *stream);
+   bool (*save)(const clap_plugin *plugin, clap_ostream *stream);
 
    /* Loads the plugin state from stream.
     * [main-thread] */
-   bool (*restore)(clap_plugin *plugin, clap_istream *stream);
+   bool (*restore)(const clap_plugin *plugin, clap_istream *stream);
 } clap_plugin_state;
 
 typedef struct clap_host_state {
    /* Tell the host that the plugin state has changed.
     * [thread-safe] */
-   void (*set_dirty)(clap_host *host);
+   void (*set_dirty)(const clap_host *host);
 } clap_host_state;
 
 #ifdef __cplusplus

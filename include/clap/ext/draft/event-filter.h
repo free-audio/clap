@@ -13,12 +13,12 @@ extern "C" {
 typedef struct clap_plugin_event_filter {
    // Returns true if the plugin is interested in the given event type.
    // [audio-thread]
-   bool (*accepts)(clap_plugin *plugin, clap_event_type event_type);
+   bool (*accepts)(const clap_plugin *plugin, clap_event_type event_type);
 } clap_plugin_event_filter;
 
 
 typedef struct clap_host_event_filter {
-   void (*changed)(clap_host *host);
+   void (*changed)(const clap_host *host);
 } clap_host_event_filter;
 
 #ifdef __cplusplus

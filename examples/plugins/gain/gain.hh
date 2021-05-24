@@ -7,7 +7,7 @@
 namespace clap {
    class Gain final : public Plugin {
    public:
-      Gain(clap_host *host);
+      Gain(const clap_host *host);
 
       static const clap_plugin_descriptor *descriptor();
 

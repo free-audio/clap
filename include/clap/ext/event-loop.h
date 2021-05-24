@@ -23,27 +23,27 @@ enum {
 
 typedef struct clap_plugin_event_loop {
    // [main-thread]
-   void (*on_timer)(clap_plugin *plugin, clap_id timer_id);
+   void (*on_timer)(const clap_plugin *plugin, clap_id timer_id);
 
    // [main-thread]
-   void (*on_fd)(clap_plugin *plugin, clap_fd fd, uint32_t flags);
+   void (*on_fd)(const clap_plugin *plugin, clap_fd fd, uint32_t flags);
 } clap_plugin_event_loop;
 
 typedef struct clap_host_event_loop {
    // [main-thread]
-   bool (*register_timer)(clap_host *host, uint32_t period_ms, clap_id *timer_id);
+   bool (*register_timer)(const clap_host *host, uint32_t period_ms, clap_id *timer_id);
 
    // [main-thread]
-   bool (*unregister_timer)(clap_host *host, clap_id timer_id);
+   bool (*unregister_timer)(const clap_host *host, clap_id timer_id);
 
    // [main-thread]
-   bool (*register_fd)(clap_host *host, clap_fd fd, uint32_t flags);
+   bool (*register_fd)(const clap_host *host, clap_fd fd, uint32_t flags);
 
    // [main-thread]
-   bool (*modify_fd)(clap_host *host, clap_fd fd, uint32_t flags);
+   bool (*modify_fd)(const clap_host *host, clap_fd fd, uint32_t flags);
 
    // [main-thread]
-   bool (*unregister_fd)(clap_host *host, clap_fd fd);
+   bool (*unregister_fd)(const clap_host *host, clap_fd fd);
 } clap_host_event_loop;
 
 #ifdef __cplusplus

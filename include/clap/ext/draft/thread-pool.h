@@ -17,12 +17,12 @@ extern "C" {
 /// Simple example with N voices to process
 ///
 /// @code
-/// void myplug_thread_pool_exec(clap_plugin *plugin, uint32_t voice_index)
+/// void myplug_thread_pool_exec(const clap_plugin *plugin, uint32_t voice_index)
 /// {
 ///    compute_voice(plugin, voice_index);
 /// }
 ///
-/// void myplug_process(clap_plugin *plugin, const clap_process *process)
+/// void myplug_process(const clap_plugin *plugin, const clap_process *process)
 /// {
 ///    ...
 ///    bool didComputeVoices = false;
@@ -40,7 +40,7 @@ extern "C" {
 
 typedef struct clap_plugin_thread_pool {
    // Called by the thread pool
-   void (*exec)(clap_plugin *plugin, uint32_t task_index);
+   void (*exec)(const clap_plugin *plugin, uint32_t task_index);
 } clap_plugin_thread_pool;
 
 typedef struct clap_host_thread_pool {
@@ -52,7 +52,7 @@ typedef struct clap_host_thread_pool {
    // The host should check that the plugin is within the process call, and if not, reject the exec
    // request.
    // [audio-thread]
-   bool (*request_exec)(clap_host *host, uint32_t num_tasks);
+   bool (*request_exec)(const clap_host *host, uint32_t num_tasks);
 } clap_host_thread_pool;
 
 #ifdef __cplusplus

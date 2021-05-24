@@ -30,30 +30,30 @@ typedef struct clap_file_reference {
 typedef struct clap_plugin_file_reference {
    // returns the number of file reference this plugin has
    // [main-thread]
-   uint32_t (*count)(clap_plugin *plugin);
+   uint32_t (*count)(const clap_plugin *plugin);
 
    // gets the file reference at index
    // returns true on success
    // [main-thread]
-   bool (*get)(clap_plugin *plugin, uint32_t index, clap_file_reference *file_reference);
+   bool (*get)(const clap_plugin *plugin, uint32_t index, clap_file_reference *file_reference);
 
    // [main-thread]
-   bool (*get_hash)(clap_plugin *plugin, clap_id resource_id, clap_hash hash, uint8_t *digest);
+   bool (*get_hash)(const clap_plugin *plugin, clap_id resource_id, clap_hash hash, uint8_t *digest);
 
    // updates the path to a file reference
    // [main-thread]
-   bool (*set)(clap_plugin *plugin, clap_id resource_id, const char *path);
+   bool (*set)(const clap_plugin *plugin, clap_id resource_id, const char *path);
 
    // [main-thread]
-   bool (*save_resources)(clap_plugin *plugin);
+   bool (*save_resources)(const clap_plugin *plugin);
 } clap_plugin_file_reference;
 
 typedef struct clap_host_file_reference {
    // informs the host that the file references have changed, the host should schedule a full rescan
    // [main-thread]
-   void (*changed)(clap_host *host);
+   void (*changed)(const clap_host *host);
 
-   void (*set_dirty)(clap_host *host , clap_id resource_id);
+   void (*set_dirty)(const clap_host *host , clap_id resource_id);
 } clap_host_file_reference;
 
 #ifdef __cplusplus

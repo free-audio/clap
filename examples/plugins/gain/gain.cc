@@ -22,7 +22,7 @@ namespace clap {
       return &desc;
    }
 
-   Gain::Gain(clap_host *host) : Plugin(descriptor(), host) {}
+   Gain::Gain(const clap_host *host) : Plugin(descriptor(), host) {}
 
    bool Gain::activate(int sample_rate) {
       channelCount_ = trackChannelCount();
@@ -51,8 +51,8 @@ namespace clap {
       strncpy(info.name, "main", sizeof(info.name));
       info.is_main = true;
       info.is_cv = false;
-      info.supports_64_bits = false;
-      info.supports_in_place = true;
+      info.sample_size = 32;
+      info.in_place = true;
       info.channel_count = channelCount_;
       info.channel_map = CLAP_CHMAP_UNSPECIFIED;
 

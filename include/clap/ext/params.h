@@ -46,39 +46,39 @@ typedef struct clap_param_info {
 typedef struct clap_plugin_params {
    // Returns the number of parameters.
    // [main-thread]
-   int32_t (*count)(clap_plugin *plugin);
+   int32_t (*count)(const clap_plugin *plugin);
 
    // Copies the parameter's info to param_info and returns true on success.
    // [main-thread]
-   bool (*get_info)(clap_plugin *plugin, int32_t param_index, clap_param_info *param_info);
+   bool (*get_info)(const clap_plugin *plugin, int32_t param_index, clap_param_info *param_info);
 
-   bool (*get_enum_value)(clap_plugin *     plugin,
+   bool (*get_enum_value)(const clap_plugin *     plugin,
                           clap_id           param_id,
                           int32_t           value_index,
                           clap_param_value *plain_value);
 
    // Gets the parameter plain value.
    // [main-thread]
-   bool (*get_value)(clap_plugin *plugin, clap_id param_id, clap_param_value *plain_value);
+   bool (*get_value)(const clap_plugin *plugin, clap_id param_id, clap_param_value *plain_value);
 
    // Sets the parameter plain value.
    // If the plupin is activated, then the host must send a param event
    // in the next process call to update the audio processor.
    // [main-thread]
-   bool (*set_value)(clap_plugin *    plugin,
+   bool (*set_value)(const clap_plugin *    plugin,
                      clap_id          param_id,
                      clap_param_value plain_value,
                      clap_param_value plain_modulated_value);
 
    // Formats the display text for the given parameter value.
    // [thread-safe,lock-wait-free]
-   bool (*value_to_text)(clap_plugin *    plugin,
+   bool (*value_to_text)(const clap_plugin *    plugin,
                          clap_id          param_id,
                          clap_param_value plain_value,
                          char *           display,
                          uint32_t         size);
 
-   bool (*text_to_value)(clap_plugin *     plugin,
+   bool (*text_to_value)(const clap_plugin *     plugin,
                          clap_id           param_id,
                          const char *      display,
                          clap_param_value *plain_value);
@@ -129,20 +129,20 @@ enum {
 
 typedef struct clap_host_params {
    /* [main-thread] */
-   void (*adjust_begin)(clap_host *host, clap_id param_id);
+   void (*adjust_begin)(const clap_host *host, clap_id param_id);
 
    // If the plugin is activated, the host must send a parameter update
    // in the next process call to update the audio processor.
    // Only for value changes that happens in the gui.
    // [main-thread]
-   void (*adjust)(clap_host *host, clap_id param_id, clap_param_value plain_value);
+   void (*adjust)(const clap_host *host, clap_id param_id, clap_param_value plain_value);
 
    /* [main-thread] */
-   void (*adjust_end)(clap_host *host, clap_id param_id);
+   void (*adjust_end)(const clap_host *host, clap_id param_id);
 
    // Rescan the full list of parameters according to the flags.
    // [main-thread]
-   void (*rescan)(clap_host *host, uint32_t flags);
+   void (*rescan)(const clap_host *host, uint32_t flags);
 } clap_host_params;
 
 #ifdef __cplusplus

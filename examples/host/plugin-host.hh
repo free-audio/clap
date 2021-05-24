@@ -72,20 +72,20 @@ signals:
    void quickControlsSelectedPageChanged();
 
 private:
-   static PluginHost *fromHost(clap_host *host);
+   static PluginHost *fromHost(const clap_host *host);
    template <typename T>
    void initPluginExtension(const T *&ext, const char *id);
 
    /* clap host callbacks */
-   static void clapLog(clap_host *host, clap_log_severity severity, const char *msg);
+   static void clapLog(const clap_host *host, clap_log_severity severity, const char *msg);
 
-   static bool clapIsMainThread(clap_host *host);
-   static bool clapIsAudioThread(clap_host *host);
+   static bool clapIsMainThread(const clap_host *host);
+   static bool clapIsAudioThread(const clap_host *host);
 
-   static void  clapParamsAdjustBegin(clap_host *host, clap_id param_id);
-   static void  clapParamsAdjustEnd(clap_host *host, clap_id param_id);
-   static void  clapParamsAdjust(clap_host *host, clap_id param_id, clap_param_value plain_value);
-   static void  clapParamsRescan(clap_host *host, uint32_t flags);
+   static void  clapParamsAdjustBegin(const clap_host *host, clap_id param_id);
+   static void  clapParamsAdjustEnd(const clap_host *host, clap_id param_id);
+   static void  clapParamsAdjust(const clap_host *host, clap_id param_id, clap_param_value plain_value);
+   static void  clapParamsRescan(const clap_host *host, uint32_t flags);
    void         scanParams();
    void         scanParam(int32_t index);
    PluginParam &checkValidParamId(const std::string_view &function,
@@ -102,24 +102,24 @@ private:
 
    void scanQuickControls();
    void quickControlsSetSelectedPage(clap_id pageId);
-   static void clapQuickControlsPagesChanged(clap_host *host);
-   static void clapQuickControlsSelectedPageChanged(clap_host *host, clap_id page_id);
+   static void clapQuickControlsPagesChanged(const clap_host *host);
+   static void clapQuickControlsSelectedPageChanged(const clap_host *host, clap_id page_id);
 
-   static bool clapEventLoopRegisterTimer(clap_host *host, uint32_t period_ms, clap_id *timer_id);
-   static bool clapEventLoopUnregisterTimer(clap_host *host, clap_id timer_id);
-   static bool clapEventLoopRegisterFd(clap_host *host, clap_fd fd, uint32_t flags);
-   static bool clapEventLoopModifyFd(clap_host *host, clap_fd fd, uint32_t flags);
-   static bool clapEventLoopUnregisterFd(clap_host *host, clap_fd fd);
+   static bool clapEventLoopRegisterTimer(const clap_host *host, uint32_t period_ms, clap_id *timer_id);
+   static bool clapEventLoopUnregisterTimer(const clap_host *host, clap_id timer_id);
+   static bool clapEventLoopRegisterFd(const clap_host *host, clap_fd fd, uint32_t flags);
+   static bool clapEventLoopModifyFd(const clap_host *host, clap_fd fd, uint32_t flags);
+   static bool clapEventLoopUnregisterFd(const clap_host *host, clap_fd fd);
    void        eventLoopSetFdNotifierFlags(clap_fd fd, uint32_t flags);
 
-   static bool clapThreadPoolRequestExec(clap_host *host, uint32_t num_tasks);
+   static bool clapThreadPoolRequestExec(const clap_host *host, uint32_t num_tasks);
 
-   static const void *clapExtension(clap_host *host, const char *extension);
+   static const void *clapExtension(const clap_host *host, const char *extension);
 
    /* clap host gui callbacks */
-   static bool clapGuiResize(clap_host *host, int32_t width, int32_t height);
+   static bool clapGuiResize(const clap_host *host, int32_t width, int32_t height);
 
-   static void clapStateSetDirty(clap_host *host);
+   static void clapStateSetDirty(const clap_host *host);
 
 private:
    Engine &engine_;
@@ -138,7 +138,7 @@ private:
    clap_host_state hostState_;
 
    const struct clap_plugin_entry *     pluginEntry_ = nullptr;
-   clap_plugin *                        plugin_ = nullptr;
+   const clap_plugin *                        plugin_ = nullptr;
    const clap_plugin_params *           pluginParams_ = nullptr;
    const clap_plugin_quick_controls *   pluginQuickControls_ = nullptr;
    const clap_plugin_audio_ports *      pluginAudioPorts_ = nullptr;

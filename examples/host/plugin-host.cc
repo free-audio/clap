@@ -258,7 +258,7 @@ void PluginHost::setParentWindow(WId parentWindow) {
    Application::instance().mainWindow()->resizePluginView(width, height);
 }
 
-void PluginHost::clapLog(clap_host *host, clap_log_severity severity, const char *msg) {
+void PluginHost::clapLog(const clap_host *host, clap_log_severity severity, const char *msg) {
    switch (severity) {
    case CLAP_LOG_DEBUG:
       qDebug() << msg;
@@ -286,7 +286,7 @@ void PluginHost::initPluginExtension(const T *&ext, const char *id) {
    ext = static_cast<const T *>(plugin_->extension(plugin_, id));
 }
 
-const void *PluginHost::clapExtension(clap_host *host, const char *extension) {
+const void *PluginHost::clapExtension(const clap_host *host, const char *extension) {
    checkForMainThread();
 
    PluginHost *h = static_cast<PluginHost *>(host->host_data);
@@ -311,7 +311,7 @@ const void *PluginHost::clapExtension(clap_host *host, const char *extension) {
    return nullptr;
 }
 
-PluginHost *PluginHost::fromHost(clap_host *host) {
+PluginHost *PluginHost::fromHost(const clap_host *host) {
    if (!host)
       throw std::invalid_argument("Passed a null host pointer");
 
@@ -326,9 +326,9 @@ PluginHost *PluginHost::fromHost(clap_host *host) {
    return h;
 }
 
-bool PluginHost::clapIsMainThread(clap_host *host) { return g_thread_type == MainThread; }
+bool PluginHost::clapIsMainThread(const clap_host *host) { return g_thread_type == MainThread; }
 
-bool PluginHost::clapIsAudioThread(clap_host *host) { return g_thread_type == AudioThread; }
+bool PluginHost::clapIsAudioThread(const clap_host *host) { return g_thread_type == AudioThread; }
 
 void PluginHost::checkForMainThread() {
    if (g_thread_type != MainThread)
@@ -340,7 +340,7 @@ void PluginHost::checkForAudioThread() {
       throw std::logic_error("Requires Audio Thread!");
 }
 
-bool PluginHost::clapThreadPoolRequestExec(clap_host *host, uint32_t num_tasks) {
+bool PluginHost::clapThreadPoolRequestExec(const clap_host *host, uint32_t num_tasks) {
    checkForAudioThread();
 
    auto h = fromHost(host);
@@ -356,7 +356,7 @@ bool PluginHost::clapThreadPoolRequestExec(clap_host *host, uint32_t num_tasks) 
    return true;
 }
 
-bool PluginHost::clapEventLoopRegisterTimer(clap_host *host,
+bool PluginHost::clapEventLoopRegisterTimer(const clap_host *host,
                                             uint32_t   period_ms,
                                             clap_id *  timer_id) {
    checkForMainThread();
@@ -382,7 +382,7 @@ bool PluginHost::clapEventLoopRegisterTimer(clap_host *host,
    return true;
 }
 
-bool PluginHost::clapEventLoopUnregisterTimer(clap_host *host, clap_id timer_id) {
+bool PluginHost::clapEventLoopUnregisterTimer(const clap_host *host, clap_id timer_id) {
    checkForMainThread();
 
    auto h = fromHost(host);
@@ -399,7 +399,7 @@ bool PluginHost::clapEventLoopUnregisterTimer(clap_host *host, clap_id timer_id)
    return true;
 }
 
-bool PluginHost::clapEventLoopRegisterFd(clap_host *host, clap_fd fd, uint32_t flags) {
+bool PluginHost::clapEventLoopRegisterFd(const clap_host *host, clap_fd fd, uint32_t flags) {
    checkForMainThread();
 
    auto h = fromHost(host);
@@ -419,7 +419,7 @@ bool PluginHost::clapEventLoopRegisterFd(clap_host *host, clap_fd fd, uint32_t f
    return true;
 }
 
-bool PluginHost::clapEventLoopModifyFd(clap_host *host, clap_fd fd, uint32_t flags) {
+bool PluginHost::clapEventLoopModifyFd(const clap_host *host, clap_fd fd, uint32_t flags) {
    checkForMainThread();
 
    auto h = fromHost(host);
@@ -438,7 +438,7 @@ bool PluginHost::clapEventLoopModifyFd(clap_host *host, clap_fd fd, uint32_t fla
    return true;
 }
 
-bool PluginHost::clapEventLoopUnregisterFd(clap_host *host, clap_fd fd) {
+bool PluginHost::clapEventLoopUnregisterFd(const clap_host *host, clap_fd fd) {
    checkForMainThread();
 
    auto h = fromHost(host);
@@ -498,7 +498,7 @@ void PluginHost::eventLoopSetFdNotifierFlags(clap_fd fd, uint32_t flags) {
       it->second->err->setEnabled(false);
 }
 
-bool PluginHost::clapGuiResize(clap_host *host, int32_t width, int32_t height) {
+bool PluginHost::clapGuiResize(const clap_host *host, int32_t width, int32_t height) {
    checkForMainThread();
 
    PluginHost *h = static_cast<PluginHost *>(host->host_data);
@@ -704,7 +704,7 @@ void PluginHost::checkValidParamValue(const PluginParam &param, clap_param_value
    }
 }
 
-void PluginHost::clapParamsAdjustBegin(clap_host *host, clap_id param_id) {
+void PluginHost::clapParamsAdjustBegin(const clap_host *host, clap_id param_id) {
    checkForMainThread();
 
    auto  h = fromHost(host);
@@ -721,7 +721,7 @@ void PluginHost::clapParamsAdjustBegin(clap_host *host, clap_id param_id) {
    param.beginAdjust();
 }
 
-void PluginHost::clapParamsAdjustEnd(clap_host *host, clap_id param_id) {
+void PluginHost::clapParamsAdjustEnd(const clap_host *host, clap_id param_id) {
    checkForMainThread();
 
    auto  h = fromHost(host);
@@ -738,7 +738,7 @@ void PluginHost::clapParamsAdjustEnd(clap_host *host, clap_id param_id) {
    param.endAdjust();
 }
 
-void PluginHost::clapParamsAdjust(clap_host *host, clap_id param_id, clap_param_value value) {
+void PluginHost::clapParamsAdjust(const clap_host *host, clap_id param_id, clap_param_value value) {
    checkForMainThread();
 
    auto  h = fromHost(host);
@@ -775,7 +775,7 @@ void PluginHost::setParamValueByHost(PluginParam &param, clap_param_value value)
 
 void PluginHost::scanParams() { clapParamsRescan(&host_, CLAP_PARAM_RESCAN_ALL); }
 
-void PluginHost::clapParamsRescan(clap_host *host, uint32_t flags) {
+void PluginHost::clapParamsRescan(const clap_host *host, uint32_t flags) {
    checkForMainThread();
    auto h = fromHost(host);
 
@@ -1001,7 +1001,7 @@ void PluginHost::setQuickControlsSelectedPageByHost(clap_id page_id) {
       pluginQuickControls_->select_page(plugin_, page_id);
 }
 
-void PluginHost::clapQuickControlsPagesChanged(clap_host *host) {
+void PluginHost::clapQuickControlsPagesChanged(const clap_host *host) {
    checkForMainThread();
 
    auto h = fromHost(host);
@@ -1014,7 +1014,7 @@ void PluginHost::clapQuickControlsPagesChanged(clap_host *host) {
    h->scanQuickControls();
 }
 
-void PluginHost::clapQuickControlsSelectedPageChanged(clap_host *host, clap_id page_id) {
+void PluginHost::clapQuickControlsSelectedPageChanged(const clap_host *host, clap_id page_id) {
    checkForMainThread();
 
    auto h = fromHost(host);
@@ -1039,7 +1039,7 @@ bool PluginHost::loadNativePluginPreset(const std::string &path) {
    return pluginPresetLoad_->load_from_file(plugin_, path.c_str());
 }
 
-void PluginHost::clapStateSetDirty(clap_host *host) {
+void PluginHost::clapStateSetDirty(const clap_host *host) {
    checkForMainThread();
 
    auto h = fromHost(host);

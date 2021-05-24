@@ -21,7 +21,7 @@ typedef int32_t clap_plugin_render_mode;
 // pressure to process.
 typedef struct clap_plugin_render {
    // [main-thread]
-   void (*set_render_mode)(clap_plugin *plugin, clap_plugin_render_mode mode);
+   void (*set_render_mode)(const clap_plugin *plugin, clap_plugin_render_mode mode);
 } clap_plugin_render;
 
 #ifdef __cplusplus

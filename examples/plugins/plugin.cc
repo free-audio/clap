@@ -8,7 +8,7 @@
 
 namespace clap {
 
-   Plugin::Plugin(const clap_plugin_descriptor *desc, clap_host *host) : host_(host) {
+   Plugin::Plugin(const clap_plugin_descriptor *desc, const clap_host *host) : host_(host) {
       plugin_.plugin_data = this;
       plugin_.desc = desc;
       plugin_.init = Plugin::clapInit;
@@ -26,7 +26,7 @@ namespace clap {
    /////////////////////
 
    // clap_plugin interface
-   bool Plugin::clapInit(clap_plugin *plugin) {
+   bool Plugin::clapInit(const clap_plugin *plugin) {
       auto &self = from(plugin);
 
       self.plugin_.extension = Plugin::clapExtension;
@@ -43,13 +43,13 @@ namespace clap {
       return self.init();
    }
 
-   void Plugin::clapDestroy(clap_plugin *plugin) {
+   void Plugin::clapDestroy(const clap_plugin *plugin) {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin.destroy");
       delete &from(plugin);
    }
 
-   bool Plugin::clapActivate(clap_plugin *plugin, int sample_rate) {
+   bool Plugin::clapActivate(const clap_plugin *plugin, int sample_rate) {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin.activate");
 
@@ -88,7 +88,7 @@ namespace clap {
       return true;
    }
 
-   void Plugin::clapDeactivate(clap_plugin *plugin) {
+   void Plugin::clapDeactivate(const clap_plugin *plugin) {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin.deactivate");
 
@@ -103,7 +103,7 @@ namespace clap {
       self.deactivate();
    }
 
-   bool Plugin::clapStartProcessing(clap_plugin *plugin) {
+   bool Plugin::clapStartProcessing(const clap_plugin *plugin) {
       auto &self = from(plugin);
       self.ensureAudioThread("clap_plugin.start_processing");
 
@@ -121,7 +121,7 @@ namespace clap {
       return self.isProcessing_;
    }
 
-   void Plugin::clapStopProcessing(clap_plugin *plugin) {
+   void Plugin::clapStopProcessing(const clap_plugin *plugin) {
       auto &self = from(plugin);
       self.ensureAudioThread("clap_plugin.stop_processing");
 
@@ -139,8 +139,7 @@ namespace clap {
       self.isProcessing_ = false;
    }
 
-   clap_process_status Plugin::clapProcess(struct clap_plugin *plugin,
-                                           const clap_process *process) {
+   clap_process_status Plugin::clapProcess(const clap_plugin *plugin, const clap_process *process) {
       auto &self = from(plugin);
       self.ensureAudioThread("clap_plugin.process");
 
@@ -158,7 +157,7 @@ namespace clap {
       return self.process(process);
    }
 
-   const void *Plugin::clapExtension(struct clap_plugin *plugin, const char *id) {
+   const void *Plugin::clapExtension(const clap_plugin *plugin, const char *id) {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin.extension");
 
@@ -172,7 +171,7 @@ namespace clap {
       return from(plugin).extension(id);
    }
 
-   void Plugin::clapTrackInfoChanged(clap_plugin *plugin) {
+   void Plugin::clapTrackInfoChanged(const clap_plugin *plugin) {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_track_info.changed");
 
@@ -224,14 +223,14 @@ namespace clap {
       hasTrackInfo_ = hostTrackInfo_->get(host_, &trackInfo_);
    }
 
-   uint32_t Plugin::clapAudioPortsCount(clap_plugin *plugin, bool is_input) {
+   uint32_t Plugin::clapAudioPortsCount(const clap_plugin *plugin, bool is_input) {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_audio_ports.count");
 
       return is_input ? self.inputAudioPorts_.size() : self.outputAudioPorts_.size();
    }
 
-   bool Plugin::clapAudioPortsInfo(clap_plugin *         plugin,
+   bool Plugin::clapAudioPortsInfo(const clap_plugin *   plugin,
                                    uint32_t              index,
                                    bool                  is_input,
                                    clap_audio_port_info *info) {
@@ -344,7 +343,7 @@ namespace clap {
    ///////////////
    // Utilities //
    ///////////////
-   Plugin &Plugin::from(clap_plugin *plugin) {
+   Plugin &Plugin::from(const clap_plugin *plugin) {
       if (!plugin) {
          std::cerr << "called with a null clap_plugin pointer!" << std::endl;
          std::terminate();
@@ -387,7 +386,7 @@ namespace clap {
 
    uint32_t Plugin::compareAudioPortsInfo(const clap_audio_port_info &a,
                                           const clap_audio_port_info &b) noexcept {
-      if (a.supports_64_bits != b.supports_64_bits || a.supports_in_place != b.supports_in_place ||
+      if (a.sample_size != b.sample_size || a.in_place != b.in_place ||
           a.is_cv != b.is_cv || a.is_main != b.is_main || a.channel_count != b.channel_count ||
           a.channel_map != b.channel_map || a.id != b.id)
          return CLAP_AUDIO_PORTS_RESCAN_ALL;
