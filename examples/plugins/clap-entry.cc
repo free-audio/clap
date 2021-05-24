@@ -29,7 +29,7 @@ static void addPlugin() {
 }
 
 static bool clap_init(const char *plugin_path) {
-   addPlugin<Gain>();
+   addPlugin<clap::Gain>();
    return true;
 }
 
