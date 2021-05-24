@@ -59,14 +59,13 @@ void Gain::deactivate() {
 void Gain::trackInfoChanged() { updateChannelCount(true); }
 
 clap_process_status Gain::process(const clap_process *process) {
-   auto **in = process->audio_inputs[0].data32;
-   auto **out = process->audio_outputs[0].data32;
+   float *in = process->audio_inputs[0].data32i;
+   float *out = process->audio_outputs[0].data32i;
 
    float k = 1;
-
-   for (int i = 0; i < process->frames_count; ++i) {
-      for (int j = 0; j < channelCount_; ++j)
-         out[j][i] = k * in[j][i];
+   const auto N = process->frames_count * channelCount_;
+   for (int i = 0; i < N; ++i) {
+      out[i] = k * in[i];
    }
 
    return CLAP_PROCESS_CONTINUE_IF_NOT_QUIET;

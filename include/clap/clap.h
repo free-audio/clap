@@ -60,11 +60,11 @@ enum {
 typedef int32_t clap_process_status;
 
 typedef struct clap_audio_buffer {
-   // Either data32 or data64 will be set, but not both.
-   // If none are set, assume that the input has the value 0 for each samples.
-   // data[i] for channel i buffer
-   float ** data32;
-   double **data64;
+   // Only one of dataXXX pointer will be set.
+   float ** data32;  // non-interleaved
+   float *  data32i; // interleaved
+   double **data64;  // non-interleaved
+   double * data64i; // interleaved
    int32_t  channel_count;
    uint32_t latency;       // latency from/to the audio interface
    uint64_t constant_mask; // mask & (1 << N) to test if channel N is constant
@@ -182,7 +182,6 @@ typedef struct clap_plugin {
     * [main-thread] */
    bool (*activate)(struct clap_plugin *plugin, int sample_rate);
    void (*deactivate)(struct clap_plugin *plugin);
-
 
    // Set to true before processing, and to false before sending the plugin to sleep.
    // [audio-thread]

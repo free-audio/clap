@@ -20,6 +20,7 @@ typedef struct clap_audio_port_info {
                                  // and output, only for main input to main output
    int32_t    channel_count;
    clap_chmap channel_map;
+   bool       interleave; // selects interleaved buffer
 } clap_audio_port_info;
 
 // The audio ports scan has to be done while the plugin is deactivated.
