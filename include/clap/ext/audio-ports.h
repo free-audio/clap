@@ -20,33 +20,32 @@ typedef struct clap_audio_port_info {
                                  // and output, only for main input to main output
    int32_t    channel_count;
    clap_chmap channel_map;
-   bool       interleave; // selects interleaved buffer
 } clap_audio_port_info;
 
 // The audio ports scan has to be done while the plugin is deactivated.
 typedef struct clap_plugin_audio_ports {
    // number of ports, for either input or output
    // [main-thread]
-   int32_t (*get_count)(clap_plugin *plugin, bool is_input);
+   uint32_t (*count)(clap_plugin *plugin, bool is_input);
 
    // get info about about an audio port.
    // [main-thread]
-   void (*get_info)(clap_plugin *plugin, int32_t index, bool is_input, clap_audio_port_info *info);
-
-   void (*set_active)(
-      clap_plugin *plugin, int32_t index, bool is_input, bool use_64, bool is_active);
+   bool (*get_info)(clap_plugin *plugin, uint32_t index, bool is_input, clap_audio_port_info *info);
 } clap_plugin_audio_ports;
 
-typedef struct clap_host_audio_ports {
-   // Tell the host that the plugin ports has changed.
-   // The host shall deactivate the plugin and then scan the ports again.
-   // [main-thread]
-   void (*changed)(clap_host *host);
+enum {
+   // The ports name did change, the host can scan them right away.
+   CLAP_AUDIO_PORTS_RESCAN_NAMES = 1 << 0,
 
-   // Tell the host that the plugin ports name have changed.
-   // It is not necessary to deactivates the plugin.
+   // The ports have changed, the host shall deactivate the plugin
+   // and perform a full scan of the ports.
+   CLAP_AUDIO_PORTS_RESCAN_ALL = 1 << 1,
+};
+
+typedef struct clap_host_audio_ports {
+   // Rescan the full list of audio ports according to the flags.
    // [main-thread]
-   void (*name_changed)(clap_host *host);
+   void (*rescan)(clap_host *host, uint32_t flags);
 } clap_host_audio_ports;
 
 #ifdef __cplusplus

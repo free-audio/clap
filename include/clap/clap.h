@@ -60,11 +60,9 @@ enum {
 typedef int32_t clap_process_status;
 
 typedef struct clap_audio_buffer {
-   // Only one of dataXXX pointer will be set.
-   float ** data32;  // non-interleaved
-   float *  data32i; // interleaved
-   double **data64;  // non-interleaved
-   double * data64i; // interleaved
+   // Either data32 or data64 pointer will be set.
+   float ** data32;
+   double **data64;
    int32_t  channel_count;
    uint32_t latency;       // latency from/to the audio interface
    uint64_t constant_mask; // mask & (1 << N) to test if channel N is constant

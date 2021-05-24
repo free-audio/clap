@@ -4,22 +4,21 @@
 
 #include "../plugin.hh"
 
-class Gain : public Plugin {
+class Gain final : public Plugin {
 public:
    Gain(clap_host *host);
 
    static const clap_plugin_descriptor *descriptor();
 
 protected:
-   bool                init() override;
    bool                activate(int sample_rate) override;
    void                deactivate() override;
    clap_process_status process(const clap_process *process) override;
 
-   void trackInfoChanged() override;
-   void updateChannelCount(bool shouldNotifyHost);
+   void defineAudioPorts(std::vector<clap_audio_port_info> &inputPorts,
+                         std::vector<clap_audio_port_info> &outputPorts) override;
+   bool shouldInvalidateAudioPortsDefinitionOnTrackChannelChange() const override { return true; }
 
 private:
-   int channelCount_ = 2;
-   bool schedulePortUpdate_ = false;
+   int  channelCount_ = 0;
 };

@@ -1,22 +1,22 @@
 #include <cassert>
+#include <cstring>
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
-#include <cstring>
 
 #include "plugin.hh"
 
 Plugin::Plugin(const clap_plugin_descriptor *desc, clap_host *host) : host_(host) {
    plugin_.plugin_data = this;
    plugin_.desc = desc;
-   plugin_.init = Plugin::clapPluginInit;
-   plugin_.destroy = Plugin::clapPluginDestroy;
-   plugin_.extension = Plugin::clapPluginExtension;
-   plugin_.process = Plugin::clapPluginProcess;
-   plugin_.activate = Plugin::clapPluginActivate;
-   plugin_.deactivate = Plugin::clapPluginDeactivate;
-   plugin_.start_processing = Plugin::clapPluginStartProcessing;
-   plugin_.stop_processing = Plugin::clapPluginStopProcessing;
+   plugin_.init = Plugin::clapInit;
+   plugin_.destroy = Plugin::clapDestroy;
+   plugin_.extension = nullptr;
+   plugin_.process = nullptr;
+   plugin_.activate = nullptr;
+   plugin_.deactivate = nullptr;
+   plugin_.start_processing = nullptr;
+   plugin_.stop_processing = nullptr;
 }
 
 /////////////////////
@@ -24,20 +24,30 @@ Plugin::Plugin(const clap_plugin_descriptor *desc, clap_host *host) : host_(host
 /////////////////////
 
 // clap_plugin interface
-bool Plugin::clapPluginInit(clap_plugin *plugin) {
+bool Plugin::clapInit(clap_plugin *plugin) {
    auto &self = from(plugin);
+
+   self.plugin_.extension = Plugin::clapExtension;
+   self.plugin_.process = Plugin::clapProcess;
+   self.plugin_.activate = Plugin::clapActivate;
+   self.plugin_.deactivate = Plugin::clapDeactivate;
+   self.plugin_.start_processing = Plugin::clapStartProcessing;
+   self.plugin_.stop_processing = Plugin::clapStopProcessing;
+
    self.initInterfaces();
    self.ensureMainThread("clap_plugin.init");
+   self.initTrackInfo();
+   self.defineAudioPorts(self.inputAudioPorts_, self.outputAudioPorts_);
    return self.init();
 }
 
-void Plugin::clapPluginDestroy(clap_plugin *plugin) {
+void Plugin::clapDestroy(clap_plugin *plugin) {
    auto &self = from(plugin);
    self.ensureMainThread("clap_plugin.destroy");
    delete &from(plugin);
 }
 
-bool Plugin::clapPluginActivate(clap_plugin *plugin, int sample_rate) {
+bool Plugin::clapActivate(clap_plugin *plugin, int sample_rate) {
    auto &self = from(plugin);
    self.ensureMainThread("clap_plugin.activate");
 
@@ -51,7 +61,7 @@ bool Plugin::clapPluginActivate(clap_plugin *plugin, int sample_rate) {
              << ". The host must deactivate the plugin first." << std::endl
              << "Simulating deactivation.";
          self.hostMisbehaving(msg.str());
-         clapPluginDeactivate(plugin);
+         clapDeactivate(plugin);
       }
    }
 
@@ -76,7 +86,7 @@ bool Plugin::clapPluginActivate(clap_plugin *plugin, int sample_rate) {
    return true;
 }
 
-void Plugin::clapPluginDeactivate(clap_plugin *plugin) {
+void Plugin::clapDeactivate(clap_plugin *plugin) {
    auto &self = from(plugin);
    self.ensureMainThread("clap_plugin.deactivate");
 
@@ -85,10 +95,13 @@ void Plugin::clapPluginDeactivate(clap_plugin *plugin) {
       return;
    }
 
+   if (self.scheduleAudioPortsUpdate_)
+      self.updateAudioPorts();
+
    self.deactivate();
 }
 
-bool Plugin::clapPluginStartProcessing(clap_plugin *plugin) {
+bool Plugin::clapStartProcessing(clap_plugin *plugin) {
    auto &self = from(plugin);
    self.ensureAudioThread("clap_plugin.start_processing");
 
@@ -106,7 +119,7 @@ bool Plugin::clapPluginStartProcessing(clap_plugin *plugin) {
    return self.isProcessing_;
 }
 
-void Plugin::clapPluginStopProcessing(clap_plugin *plugin) {
+void Plugin::clapStopProcessing(clap_plugin *plugin) {
    auto &self = from(plugin);
    self.ensureAudioThread("clap_plugin.stop_processing");
 
@@ -124,8 +137,7 @@ void Plugin::clapPluginStopProcessing(clap_plugin *plugin) {
    self.isProcessing_ = false;
 }
 
-clap_process_status Plugin::clapPluginProcess(struct clap_plugin *plugin,
-                                              const clap_process *process) {
+clap_process_status Plugin::clapProcess(struct clap_plugin *plugin, const clap_process *process) {
    auto &self = from(plugin);
    self.ensureAudioThread("clap_plugin.process");
 
@@ -135,21 +147,112 @@ clap_process_status Plugin::clapPluginProcess(struct clap_plugin *plugin,
    }
 
    if (!self.isProcessing_) {
-      self.hostMisbehaving("Host called clap_plugin.process() without calling clap_plugin.start_processing()");
+      self.hostMisbehaving(
+         "Host called clap_plugin.process() without calling clap_plugin.start_processing()");
       return CLAP_PROCESS_ERROR;
    }
 
    return self.process(process);
 }
 
-const void *Plugin::clapPluginExtension(struct clap_plugin *plugin, const char *id) {
+const void *Plugin::clapExtension(struct clap_plugin *plugin, const char *id) {
    auto &self = from(plugin);
    self.ensureMainThread("clap_plugin.extension");
 
    if (!strcmp(id, CLAP_EXT_RENDER))
       return &self.pluginRender_;
+   if (!strcmp(id, CLAP_EXT_TRACK_INFO))
+      return &pluginTrackInfo_;
+   if (!strcmp(id, CLAP_EXT_AUDIO_PORTS))
+      return &pluginAudioPorts_;
 
    return from(plugin).extension(id);
+}
+
+void Plugin::clapTrackInfoChanged(clap_plugin *plugin) {
+   auto &self = from(plugin);
+   self.ensureMainThread("clap_plugin_track_info.changed");
+
+   if (!self.canUseTrackInfo()) {
+      self.hostMisbehaving("Host called clap_plugin_track_info.changed() but does not provide a "
+                           "complete clap_host_track_info interface");
+      return;
+   }
+
+   clap_track_info info;
+   if (!self.hostTrackInfo_->get(self.host_, &info)) {
+      self.hasTrackInfo_ = false;
+      self.hostMisbehaving(
+         "clap_host_track_info.get() failed after calling clap_plugin_track_info.changed()");
+      return;
+   }
+
+   const bool didChannelChange = info.channel_count != self.trackInfo_.channel_count ||
+                                 info.channel_map != self.trackInfo_.channel_map;
+   self.trackInfo_ = info;
+   self.hasTrackInfo_ = true;
+
+   if (didChannelChange && self.canChangeAudioPorts() &&
+       self.shouldInvalidateAudioPortsDefinitionOnTrackChannelChange())
+      self.invalidateAudioPortsDefinition();
+
+   self.trackInfoChanged();
+}
+
+void Plugin::invalidateAudioPortsDefinition() {
+   checkMainThread();
+
+   if (isActive()) {
+      scheduleAudioPortsUpdate_ = true;
+      hostAudioPorts_->rescan(host_, CLAP_AUDIO_PORTS_RESCAN_ALL);
+      return;
+   }
+
+   updateAudioPorts();
+   hostAudioPorts_->rescan(host_, CLAP_AUDIO_PORTS_RESCAN_ALL);
+}
+
+void Plugin::initTrackInfo() {
+   checkMainThread();
+
+   assert(!hasTrackInfo_);
+   if (!canUseTrackInfo())
+      return;
+
+   hasTrackInfo_ = hostTrackInfo_->get(host_, &trackInfo_);
+}
+
+uint32_t Plugin::clapAudioPortsCount(clap_plugin *plugin, bool is_input) {
+   auto &self = from(plugin);
+   self.ensureMainThread("clap_plugin_audio_ports.count");
+
+   return is_input ? self.inputAudioPorts_.size() : self.outputAudioPorts_.size();
+}
+
+bool Plugin::clapAudioPortsInfo(clap_plugin *         plugin,
+                                uint32_t              index,
+                                bool                  is_input,
+                                clap_audio_port_info *info) {
+   auto &self = from(plugin);
+   self.ensureMainThread("clap_plugin_audio_ports.info");
+   auto count = clapAudioPortsCount(plugin, is_input);
+   if (index >= count) {
+      std::ostringstream msg;
+      msg << "Host called clap_plugin_audio_ports.info() with an index out of bounds: " << index
+          << " >= " << count;
+      self.hostMisbehaving(msg.str());
+      return false;
+   }
+
+   *info = is_input ? self.inputAudioPorts_[index] : self.outputAudioPorts_[index];
+   return true;
+}
+
+void Plugin::updateAudioPorts() {
+   scheduleAudioPortsUpdate_ = false;
+   inputAudioPorts_.clear();
+   outputAudioPorts_.clear();
+   defineAudioPorts(inputAudioPorts_, outputAudioPorts_);
 }
 
 /////////////
@@ -177,6 +280,14 @@ bool Plugin::canUseThreadCheck() const noexcept {
 /////////////////////
 // Thread Checking //
 /////////////////////
+
+void Plugin::checkMainThread() {
+   if (!hostThreadCheck_ || !hostThreadCheck_->is_main_thread ||
+       hostThreadCheck_->is_main_thread(host_))
+      return;
+
+   std::terminate();
+}
 
 void Plugin::ensureMainThread(const char *method) {
    if (!hostThreadCheck_ || !hostThreadCheck_->is_main_thread ||
@@ -244,4 +355,11 @@ void Plugin::initInterfaces() {
    initInterface(hostTrackInfo_, CLAP_EXT_TRACK_INFO);
    initInterface(hostState_, CLAP_EXT_STATE);
    initInterface(hostNoteName_, CLAP_EXT_NOTE_NAME);
+}
+
+int Plugin::sampleRate() const noexcept {
+   assert(isActive_ &&
+          "there is no point in querying the sample rate if the plugin isn't activated");
+   assert(isActive_ ? sampleRate_ > 0 : sampleRate_ == 0);
+   return sampleRate_;
 }
