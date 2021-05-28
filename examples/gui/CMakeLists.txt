@@ -8,4 +8,4 @@ add_executable(clap-gui
     main.cc
 )
 
-set_target_properties(clap-gui PROPERTIES CXX_STANDARD 17)
+set_target_properties(clap-gui PROPERTIES CXX_STANDARD 20)

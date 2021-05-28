@@ -7,6 +7,8 @@
 
 #include <clap/all.h>
 
+#include "parameters.hh"
+
 namespace clap {
    class Plugin {
    public:

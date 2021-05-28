@@ -1,8 +1,11 @@
-add_library(clap-plugin SHARED
-    clap-entry.cc
-    plugin.cc
-    plugin.hh
+add_library(
+  clap-plugin SHARED
+  clap-entry.cc
+  parameters.cc
+  parameters.hh
+  plugin.cc
+  plugin.hh
+  gain/gain.hh
+  gain/gain.cc)
 
-    gain/gain.hh
-    gain/gain.cc
-    )
+set_target_properties(clap-plugin PROPERTIES CXX_STANDARD 20)

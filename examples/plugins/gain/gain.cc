@@ -22,7 +22,35 @@ namespace clap {
       return &desc;
    }
 
-   Gain::Gain(const clap_host *host) : Plugin(descriptor(), host) {}
+   enum {
+      kParamIdGain = 0,
+   };
+
+   Gain::Gain(const clap_host *host) : Plugin(descriptor(), host) {
+      parameters_.addParameter({
+         .info = {
+            .id = kParamIdGain,
+            .name = "gain",
+            .module = "/",
+            .is_per_note = false,
+            .is_per_channel = false,
+            .is_used = true,
+            .is_periodic = false,
+            .is_locked = false,
+            .is_automatable = true,
+            .is_hidden = false,
+            .is_bypass = false,
+            .type = CLAP_PARAM_FLOAT,
+            .min_value = { .d = -120 },
+            .max_value = { .d = 20 },
+            .default_value = { .d = 0 },
+            .enum_entry_count = 0,
+         },
+         .enumDefinition = {},
+         .value = { .d = 0 },
+         .modulation = { .d = 0 },
+      });
+   }
 
    bool Gain::activate(int sample_rate) {
       channelCount_ = trackChannelCount();

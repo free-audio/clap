@@ -792,7 +792,7 @@ void PluginHost::clapParamsRescan(const clap_host *host, uint32_t flags) {
 
    for (int32_t i = 0; i < count; ++i) {
       clap_param_info info;
-      if (!h->pluginParams_->get_info(h->plugin_, i, &info))
+      if (!h->pluginParams_->info(h->plugin_, i, &info))
          throw std::logic_error("clap_plugin_params.get_info did return false!");
 
       if (info.id == CLAP_INVALID_ID) {
@@ -905,7 +905,7 @@ void PluginHost::clapParamsRescan(const clap_host *host, uint32_t flags) {
 
 clap_param_value PluginHost::getParamValue(const clap_param_info &info) {
    clap_param_value value;
-   if (pluginParams_->get_value(plugin_, info.id, &value))
+   if (pluginParams_->value(plugin_, info.id, &value))
       return value;
 
    std::ostringstream msg;

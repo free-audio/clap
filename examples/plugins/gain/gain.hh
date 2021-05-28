@@ -24,5 +24,7 @@ namespace clap {
 
    private:
       int channelCount_ = 0;
+
+      Parameters parameters_;
    };
 } // namespace clap

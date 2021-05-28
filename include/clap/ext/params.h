@@ -6,6 +6,40 @@
 extern "C" {
 #endif
 
+/// @page Parameters
+/// @brief parameters management
+///
+/// Scenarios:
+///
+/// I. Loading a preset
+/// - load the preset in a temporary state, if the plugin is activated and preset will introduce
+///   breaking change like latency, audio ports change, parameter changes, ...
+///   report those to the host and wait for the host to deactivate the plugin
+///   to apply those changes. If there are no breaking changes, the plugin can apply them
+///   them right away.
+///   The plugin is resonsible to update both its audio processor and its gui.
+///
+/// II. Turning a knob on the DAW interface
+/// - if the plugin is active, the host will send a CLAP_PARAM_SET event to the plugin
+/// - if the plugin is not active, the host will call plugin_params->set_value(...)
+///
+/// III. Turning a knob on the Plugin interface
+/// - host_params->begin_adjust(...)
+/// - host_params->adjust(...) many times -> updates host's knob and record automation
+/// - host_params->end_adjust(...)
+/// - the plugin is responsible to send the parameter value to its audio processor
+///
+/// IV. Turning a knob via automation
+/// - host sends a CLAP_PARAM_SET event
+/// - the plugin is responsible to update its GUI
+///
+/// V. Turning a knob via MIDI mapping
+/// - the plugin sends a CLAP_PARAM_SET output event
+///
+/// VI. Adding or removing parameters
+/// - call host_params->rescan(CLAP_PARAM_RESCAN_ALL)
+/// - if the plugin is activated, apply the new parameters once the host deactivates the plugin
+
 #define CLAP_EXT_PARAMS "clap/params"
 
 enum {
