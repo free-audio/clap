@@ -9,16 +9,16 @@
 namespace clap {
 
    Plugin::Plugin(const clap_plugin_descriptor *desc, const clap_host *host) : host_(host) {
-      plugin_.plugin_data = this;
-      plugin_.desc = desc;
-      plugin_.init = Plugin::clapInit;
-      plugin_.destroy = Plugin::clapDestroy;
-      plugin_.extension = nullptr;
-      plugin_.process = nullptr;
-      plugin_.activate = nullptr;
-      plugin_.deactivate = nullptr;
+      plugin_.plugin_data      = this;
+      plugin_.desc             = desc;
+      plugin_.init             = Plugin::clapInit;
+      plugin_.destroy          = Plugin::clapDestroy;
+      plugin_.extension        = nullptr;
+      plugin_.process          = nullptr;
+      plugin_.activate         = nullptr;
+      plugin_.deactivate       = nullptr;
       plugin_.start_processing = nullptr;
-      plugin_.stop_processing = nullptr;
+      plugin_.stop_processing  = nullptr;
    }
 
    /////////////////////
@@ -29,12 +29,12 @@ namespace clap {
    bool Plugin::clapInit(const clap_plugin *plugin) {
       auto &self = from(plugin);
 
-      self.plugin_.extension = Plugin::clapExtension;
-      self.plugin_.process = Plugin::clapProcess;
-      self.plugin_.activate = Plugin::clapActivate;
-      self.plugin_.deactivate = Plugin::clapDeactivate;
+      self.plugin_.extension        = Plugin::clapExtension;
+      self.plugin_.process          = Plugin::clapProcess;
+      self.plugin_.activate         = Plugin::clapActivate;
+      self.plugin_.deactivate       = Plugin::clapDeactivate;
       self.plugin_.start_processing = Plugin::clapStartProcessing;
-      self.plugin_.stop_processing = Plugin::clapStopProcessing;
+      self.plugin_.stop_processing  = Plugin::clapStopProcessing;
 
       self.initInterfaces();
       self.ensureMainThread("clap_plugin.init");
@@ -83,7 +83,7 @@ namespace clap {
          return false;
       }
 
-      self.isActive_ = true;
+      self.isActive_   = true;
       self.sampleRate_ = sample_rate;
       return true;
    }
@@ -191,7 +191,7 @@ namespace clap {
 
       const bool didChannelChange = info.channel_count != self.trackInfo_.channel_count ||
                                     info.channel_map != self.trackInfo_.channel_map;
-      self.trackInfo_ = info;
+      self.trackInfo_    = info;
       self.hasTrackInfo_ = true;
 
       if (didChannelChange && self.canChangeAudioPorts() &&
@@ -275,7 +275,7 @@ namespace clap {
          return;
 
       // compare the list of ports to the old one
-      inputAudioPorts_ = inputs;
+      inputAudioPorts_  = inputs;
       outputAudioPorts_ = outputs;
 
       hostAudioPorts_->rescan(host_, flags);
@@ -386,8 +386,8 @@ namespace clap {
 
    uint32_t Plugin::compareAudioPortsInfo(const clap_audio_port_info &a,
                                           const clap_audio_port_info &b) noexcept {
-      if (a.sample_size != b.sample_size || a.in_place != b.in_place ||
-          a.is_cv != b.is_cv || a.is_main != b.is_main || a.channel_count != b.channel_count ||
+      if (a.sample_size != b.sample_size || a.in_place != b.in_place || a.is_cv != b.is_cv ||
+          a.is_main != b.is_main || a.channel_count != b.channel_count ||
           a.channel_map != b.channel_map || a.id != b.id)
          return CLAP_AUDIO_PORTS_RESCAN_ALL;
 

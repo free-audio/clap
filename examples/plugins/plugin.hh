@@ -18,7 +18,7 @@ namespace clap {
 
       // not copyable, not moveable
       Plugin(const Plugin &) = delete;
-      Plugin(Plugin &&) = delete;
+      Plugin(Plugin &&)      = delete;
       Plugin &operator=(const Plugin &) = delete;
       Plugin &operator=(Plugin &&) = delete;
 
@@ -26,8 +26,9 @@ namespace clap {
       // Methods to override //
       /////////////////////////
 
+      // clap_plugin
       virtual bool                init() { return true; }
-      virtual bool                activate(int sample_rate) { return true; }
+      virtual bool                activate(int sampleRate) { return true; }
       virtual void                deactivate() {}
       virtual bool                startProcessing() { return true; }
       virtual void                stopProcessing() {}
@@ -42,7 +43,22 @@ namespace clap {
          return false;
       }
 
+      // clap_plugin_track_info
       virtual void trackInfoChanged() {}
+
+      // clap_plugin_params
+      virtual uint32_t paramsCount() const { return 0; }
+      virtual bool     paramsInfo(int32_t paramIndex, clap_param_info *info) const { return false; }
+      virtual bool paramsEnumValue(clap_id paramId, int32_t valueIndex, clap_param_value *value) {
+         return false;
+      }
+      virtual bool paramsValue(clap_id paramId, clap_param_value *value) { return false; }
+      virtual void
+      paramsSetValue(clap_id paramId, clap_param_value value, clap_param_value modulation) {}
+      virtual bool
+      paramsValueToText(clap_id paramId, clap_param_value value, char *display, uint32_t size) { return false; }
+      virtual bool
+      paramsTextToValue(clap_id param_id, const char *display, clap_param_value *value) { return false; }
 
       //////////////////
       // Invalidation //
@@ -125,20 +141,20 @@ namespace clap {
       clap_plugin_gui_x11    pluginGuiX11_;
       clap_plugin_event_loop pluginEventLoop_;
 
-      const clap_host *const          host_ = nullptr;
-      const clap_host_log *           hostLog_ = nullptr;
-      const clap_host_thread_check *  hostThreadCheck_ = nullptr;
-      const clap_host_thread_pool *   hostThreadPool_ = nullptr;
-      const clap_host_audio_ports *   hostAudioPorts_ = nullptr;
-      const clap_host_event_filter *  hostEventFilter_ = nullptr;
+      const clap_host *const          host_              = nullptr;
+      const clap_host_log *           hostLog_           = nullptr;
+      const clap_host_thread_check *  hostThreadCheck_   = nullptr;
+      const clap_host_thread_pool *   hostThreadPool_    = nullptr;
+      const clap_host_audio_ports *   hostAudioPorts_    = nullptr;
+      const clap_host_event_filter *  hostEventFilter_   = nullptr;
       const clap_host_file_reference *hostFileReference_ = nullptr;
-      const clap_host_latency *       hostLatency_ = nullptr;
-      const clap_host_gui *           hostGui_ = nullptr;
-      const clap_host_event_loop *    hostEventLoop_ = nullptr;
-      const clap_host_params *        hostParams_ = nullptr;
-      const clap_host_track_info *    hostTrackInfo_ = nullptr;
-      const clap_host_state *         hostState_ = nullptr;
-      const clap_host_note_name *     hostNoteName_ = nullptr;
+      const clap_host_latency *       hostLatency_       = nullptr;
+      const clap_host_gui *           hostGui_           = nullptr;
+      const clap_host_event_loop *    hostEventLoop_     = nullptr;
+      const clap_host_params *        hostParams_        = nullptr;
+      const clap_host_track_info *    hostTrackInfo_     = nullptr;
+      const clap_host_state *         hostState_         = nullptr;
+      const clap_host_note_name *     hostNoteName_      = nullptr;
 
    private:
       /////////////////////
@@ -169,14 +185,14 @@ namespace clap {
                                          clap_audio_port_info *info);
       void            updateAudioPorts();
 
-      static const constexpr clap_plugin_track_info  pluginTrackInfo_ = {clapTrackInfoChanged};
+      static const constexpr clap_plugin_track_info  pluginTrackInfo_  = {clapTrackInfoChanged};
       static const constexpr clap_plugin_audio_ports pluginAudioPorts_ = {clapAudioPortsCount,
                                                                           clapAudioPortsInfo};
 
       // state
-      bool isActive_ = false;
+      bool isActive_     = false;
       bool isProcessing_ = false;
-      int  sampleRate_ = 0;
+      int  sampleRate_   = 0;
 
       bool            hasTrackInfo_ = false;
       clap_track_info trackInfo_;
