@@ -14,7 +14,7 @@ enum {
    CLAP_PARAM_INT = 2,   // uses value.i
    CLAP_PARAM_ENUM = 3,  // uses value.i
 };
-typedef int32_t clap_param_type;
+typedef uint32_t clap_param_type;
 
 /* This describes the parameter and provides the current value */
 typedef struct clap_param_info {
@@ -40,48 +40,49 @@ typedef struct clap_param_info {
    clap_param_value min_value;        // minimum plain value
    clap_param_value max_value;        // maximum plain value
    clap_param_value default_value;    // default plain value
-   int32_t          enum_entry_count; // the number of values in the enum, if type is an enum
+   uint32_t         enum_entry_count; // the number of values in the enum, if type is an enum
 } clap_param_info;
 
 typedef struct clap_plugin_params {
    // Returns the number of parameters.
    // [main-thread]
-   int32_t (*count)(const clap_plugin *plugin);
+   uint32_t (*count)(const clap_plugin *plugin);
 
    // Copies the parameter's info to param_info and returns true on success.
    // [main-thread]
-   bool (*get_info)(const clap_plugin *plugin, int32_t param_index, clap_param_info *param_info);
+   bool (*info)(const clap_plugin *plugin, int32_t param_index, clap_param_info *param_info);
 
-   bool (*get_enum_value)(const clap_plugin *     plugin,
-                          clap_id           param_id,
-                          int32_t           value_index,
-                          clap_param_value *plain_value);
+   // [main-thread]
+   bool (*enum_value)(const clap_plugin *plugin,
+                      clap_id            param_id,
+                      int32_t            value_index,
+                      clap_param_value * value);
 
    // Gets the parameter plain value.
    // [main-thread]
-   bool (*get_value)(const clap_plugin *plugin, clap_id param_id, clap_param_value *plain_value);
+   bool (*value)(const clap_plugin *plugin, clap_id param_id, clap_param_value *value);
 
    // Sets the parameter plain value.
    // If the plupin is activated, then the host must send a param event
    // in the next process call to update the audio processor.
    // [main-thread]
-   bool (*set_value)(const clap_plugin *    plugin,
-                     clap_id          param_id,
-                     clap_param_value plain_value,
-                     clap_param_value plain_modulated_value);
+   bool (*set_value)(const clap_plugin *plugin,
+                     clap_id            param_id,
+                     clap_param_value   value,
+                     clap_param_value   modulation);
 
    // Formats the display text for the given parameter value.
    // [thread-safe,lock-wait-free]
-   bool (*value_to_text)(const clap_plugin *    plugin,
-                         clap_id          param_id,
-                         clap_param_value plain_value,
-                         char *           display,
-                         uint32_t         size);
+   bool (*value_to_text)(const clap_plugin *plugin,
+                         clap_id            param_id,
+                         clap_param_value   value,
+                         char *             display,
+                         uint32_t           size);
 
-   bool (*text_to_value)(const clap_plugin *     plugin,
-                         clap_id           param_id,
-                         const char *      display,
-                         clap_param_value *plain_value);
+   bool (*text_to_value)(const clap_plugin *plugin,
+                         clap_id            param_id,
+                         const char *       display,
+                         clap_param_value * value);
 } clap_plugin_params;
 
 enum {
@@ -135,7 +136,7 @@ typedef struct clap_host_params {
    // in the next process call to update the audio processor.
    // Only for value changes that happens in the gui.
    // [main-thread]
-   void (*adjust)(const clap_host *host, clap_id param_id, clap_param_value plain_value);
+   void (*adjust)(const clap_host *host, clap_id param_id, clap_param_value value);
 
    /* [main-thread] */
    void (*adjust_end)(const clap_host *host, clap_id param_id);
