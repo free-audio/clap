@@ -110,6 +110,11 @@ typedef struct clap_host {
    // Query an extension.
    // [thread-safe]
    const void *(*extension)(const struct clap_host *host, const char *extension_id);
+
+   // Ask the host to deactivate and then reactivate the plugin.
+   // The operation may be delayed by the host.
+   // [thread-safe]
+   void (*restart_plugin)(const struct clap_host *host);
 } clap_host;
 
 ////////////
