@@ -38,7 +38,11 @@ typedef struct clap_plugin_file_reference {
    bool (*get)(const clap_plugin *plugin, uint32_t index, clap_file_reference *file_reference);
 
    // [main-thread]
-   bool (*get_hash)(const clap_plugin *plugin, clap_id resource_id, clap_hash hash, uint8_t *digest);
+   bool (*get_hash)(const clap_plugin *plugin,
+                    clap_id            resource_id,
+                    clap_hash          hash,
+                    uint8_t *          digest,
+                    uint32_t           digest_size);
 
    // updates the path to a file reference
    // [main-thread]
@@ -53,7 +57,7 @@ typedef struct clap_host_file_reference {
    // [main-thread]
    void (*changed)(const clap_host *host);
 
-   void (*set_dirty)(const clap_host *host , clap_id resource_id);
+   void (*set_dirty)(const clap_host *host, clap_id resource_id);
 } clap_host_file_reference;
 
 #ifdef __cplusplus
