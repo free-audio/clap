@@ -66,13 +66,28 @@ typedef union clap_param_value {
 } clap_param_value;
 
 typedef struct clap_event_param {
-   int32_t          key;
-   int32_t          channel;
-   clap_id          param_id; // parameter index
+   // selects if the events targets a specific key or channel, -1 for global;
+   int32_t key;
+   int32_t channel;
+
+   // target parameter
+   clap_id param_id;
+
+   // The value that we hear is value + modulation
+   // If the plugin receives MIDI CC or overrides the automation playback because of a
+   // GUI takeover, it should add the modulation and preserve the modulation playback
    clap_param_value value;
-   double           ramp; // valid until the end of the block or the next event
-   clap_param_value modulated_value;
-   double           modulation_ramp;
+   clap_param_value modulation;
+
+   // the ramps are constant value that are added to value every samples
+   // they are valid until the end of the block or the next event
+   // If this event happens at time T, the value at time K is value + (K - T) * ramp.
+   double value_ramp;
+   double modulation_ramp;
+
+   // only used by the plugin for output events
+   bool begin_adjust;
+   bool end_adjust;
 } clap_event_param;
 
 typedef struct clap_event_transport {
