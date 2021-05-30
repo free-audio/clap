@@ -613,7 +613,7 @@ void PluginHost::process() {
       ev.param.param_id = param_id;
       ev.param.key = -1;
       ev.param.channel = -1;
-      ev.param.ramp = 0;
+      ev.param.value_ramp = 0;
       ev.param.value = value;
       evIn_.push_back(ev);
    });

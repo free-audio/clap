@@ -12,44 +12,52 @@ extern "C" {
 /// Main idea:
 ///
 /// The host sees the plugin as an atomic entity; and acts as a controler on top of its parameters.
+/// The plugin is responsible to keep in sync its audio processor and its GUI.
 ///
-/// The host can read at any time the parameter value on the [main-thread] using
+/// The host can read at any time parameters value on the [main-thread] using
 /// @ref clap_plugin_params.value().
 ///
 /// There is a single way at a time for the host to set parameters value.
-/// - if the plugin is active, send @ref CLAP_PARAM_SET event during the process call [audio-thread]
+/// - if the plugin is active, send @ref CLAP_EVENT_PARAM_SET during the process call [audio-thread]
 /// - if the plugin is not active, call @ref clap_plugin_params.set_value [main-thread]
 ///
-/// Rationale: sending @ref CLAP_PARAM_SET event during the process call is the natural way to play parameter automation.
-/// But, the process call is only possible if the plugin is active. If it is not, then everything happens on the
-/// [main-thread] using the clap_plugin_params and clap_host_params interfaces.
+/// Rationale: Ideally there would be a single way to set parameters values.
+/// Sending @ref CLAP_EVENT_PARAM_SET via @ref clap_plugin.process is the natural way to play
+/// parameter automation. But, the process call is only possible if the plugin is active. If the
+/// plugin is not active, then everything happens on the [main-thread] using @ref clap_plugin_params
+/// and @ref clap_host_params interfaces.
 ///
-/// When the plugin receives a parameter set, it is responsible to keep in sync its GUI and audio processor.
-///
-/// When the plugin changes a parameter value because a knob is being adjusted on its GUI or a MIDI CC is mapped to a parameter,
-/// the plugin must inform the host. The host can then update its GUI, interrupt automation playback and record new automation points.
-/// If the plugin is active, it will send @ref CLAP_PARAM_SET events, it must set the fields begin_adjust on the first parameter set and end_adjust on the last one.
-/// If the plugin is inactive, it will use:
+/// When the plugin changes a parameter value, it must inform the host.
+/// If the plugin is active, it will send @ref CLAP_EVENT_PARAM_SET during the process call
+/// - set @ref clap_event_param.begin_adjust to mark the begining of automation recording
+/// - set @ref clap_event_param.end_adjust to mark the end of automation recording
+/// If the plugin is not active, it will use:
 /// - @ref clap_host_params.adjust_begin() - marks the begining of automation recording
 /// - @ref clap_host_params.adjust() - adds a new point in the automation recording
 /// - @ref clap_host_params.adjust_end() - marks the end of automation recording
 ///
-/// @note it may be convenient for the plugin to let the host knows about the midi mapping table,
-/// and translate MIDI CCs to parameter events for the plugin, yet it is not necessary.
+/// @note MIDI CCs are a tricky because you may not know when the parameter adjustment ends.
+/// Also if the hosts records incoming MIDI CC and parameter change automation at the same time,
+/// there will be a conflict at playback: MIDI CC vs Automation.
+/// The parameter automation will always target the same parameter because the param_id is stable.
+/// The MIDI CC may have a different mapping in the future and may result in a different playback.
+///
+/// It is highly recommanded to use @ref clap_plugin_midi_mappings to let the host solve
+/// this problem and offer a consistent experience to the user across different plugins.
 ///
 /// Scenarios:
 ///
 /// I. Loading a preset
 /// - load the preset in a temporary state, if the plugin is activated and preset will introduce
-///   breaking change like latency, audio ports change, parameter changes, ...
+///   breaking change like latency, audio ports change, new parameters, ...
 ///   report those to the host and wait for the host to deactivate the plugin
 ///   to apply those changes. If there are no breaking changes, the plugin can apply them
 ///   them right away.
 ///   The plugin is resonsible to update both its audio processor and its gui.
 ///
 /// II. Turning a knob on the DAW interface
-/// - if the plugin is active, the host will send a CLAP_PARAM_SET event to the plugin
-/// - if the plugin is not active, the host will call plugin_params->set_value(...)
+/// - if the plugin is active, the host will send a @ref CLAP_EVENT_PARAM_SET event to the plugin
+/// - if the plugin is not active, the host will call @ref clap_plugin_params.set_value
 ///
 /// III. Turning a knob on the Plugin interface
 /// - if the plugin is not active
@@ -61,11 +69,11 @@ extern "C" {
 /// - the plugin is responsible to send the parameter value to its audio processor
 ///
 /// IV. Turning a knob via automation
-/// - host sends a CLAP_PARAM_SET event
+/// - host sends a @ref CLAP_EVENT_PARAM_SET during the process call
 /// - the plugin is responsible to update its GUI
 ///
 /// V. Turning a knob via internal MIDI mapping
-/// - the plugin sends a CLAP_PARAM_SET output event
+/// - the plugin sends a CLAP_EVENT_PARAM_SET output event
 /// - the plugin is responsible to update its GUI
 ///
 /// VI. Adding or removing parameters
