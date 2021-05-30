@@ -20,6 +20,7 @@ typedef struct clap_midi_mapping
 {
     int32_t channel;
     int32_t number;
+    clap_id param_id;
 } clap_midi_mapping;
 
 typedef struct clap_plugin_midi_mappings
