@@ -6,6 +6,8 @@
 extern "C" {
 #endif
 
+#define CLAP_EXT_MIDI_MAPPINGS "clap/midi-mappings"
+
 enum {
     CLAP_MIDI_MAPPING_CC7,
     CLAP_MIDI_MAPPING_CC14,
