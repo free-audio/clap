@@ -25,6 +25,7 @@ extern "C" {
 typedef struct clap_file_reference {
    clap_id resource_id;
    char    path[CLAP_PATH_SIZE];
+   bool    belongs_to_plugin_collection;
 } clap_file_reference;
 
 typedef struct clap_plugin_file_reference {
