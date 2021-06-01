@@ -296,6 +296,13 @@ namespace clap {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_params.enum_value");
 
+      if (!self.isValidParamId(param_id)) {
+         std::ostringstream msg;
+         msg << "clap_plugin_params.enum_value called with invalid param_id: " << param_id;
+         self.hostMisbehaving(msg.str());
+         return false;
+      }
+
       // TODO: check the value index?
 
       return self.paramsEnumValue(param_id, value_index, value);
@@ -305,6 +312,13 @@ namespace clap {
    Plugin::clapParamsValue(const clap_plugin *plugin, clap_id param_id, clap_param_value *value) {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_params.value");
+
+      if (!self.isValidParamId(param_id)) {
+         std::ostringstream msg;
+         msg << "clap_plugin_params.value called with invalid param_id: " << param_id;
+         self.hostMisbehaving(msg.str());
+         return false;
+      }
 
       // TODO extra checks
 
@@ -324,6 +338,13 @@ namespace clap {
          return false;
       }
 
+      if (!self.isValidParamId(param_id)) {
+         std::ostringstream msg;
+         msg << "clap_plugin_params.set_value called with invalid param_id: " << param_id;
+         self.hostMisbehaving(msg.str());
+         return false;
+      }
+
       // TODO: extra checks
 
       return self.paramsSetValue(param_id, value, modulation);
@@ -337,6 +358,13 @@ namespace clap {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_params.value_to_text");
 
+      if (!self.isValidParamId(param_id)) {
+         std::ostringstream msg;
+         msg << "clap_plugin_params.value_to_text called with invalid param_id: " << param_id;
+         self.hostMisbehaving(msg.str());
+         return false;
+      }
+
       // TODO: extra checks
       return self.paramsValueToText(param_id, value, display, size);
    }
@@ -348,8 +376,31 @@ namespace clap {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_params.text_to_value");
 
+      if (!self.isValidParamId(param_id)) {
+         std::ostringstream msg;
+         msg << "clap_plugin_params.text_to_value called with invalid param_id: " << param_id;
+         self.hostMisbehaving(msg.str());
+         return false;
+      }
+
       // TODO: extra checks
       return self.paramsTextToValue(param_id, display, value);
+   }
+
+   bool Plugin::isValidParamId(clap_id param_id) const noexcept {
+      checkMainThread();
+
+      auto            count = paramsCount();
+      clap_param_info info;
+      for (uint32_t i = 0; i < count; ++i) {
+         if (!paramsInfo(i, &info))
+            // TODO: fatal error?
+            continue;
+
+         if (info.id == param_id)
+            return true;
+      }
+      return false;
    }
 
    /////////////
@@ -379,7 +430,7 @@ namespace clap {
    // Thread Checking //
    /////////////////////
 
-   void Plugin::checkMainThread() {
+   void Plugin::checkMainThread() const {
       if (!hostThreadCheck_ || !hostThreadCheck_->is_main_thread ||
           hostThreadCheck_->is_main_thread(host_))
          return;

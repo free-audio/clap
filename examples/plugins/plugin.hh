@@ -96,7 +96,7 @@ namespace clap {
       /////////////////////
       // Thread Checking //
       /////////////////////
-      void checkMainThread();
+      void checkMainThread() const;
       void ensureMainThread(const char *method);
       void ensureAudioThread(const char *method);
 
@@ -111,6 +111,8 @@ namespace clap {
 
       static uint32_t compareAudioPortsInfo(const clap_audio_port_info &a,
                                             const clap_audio_port_info &b) noexcept;
+
+      virtual bool isValidParamId(clap_id param_id) const noexcept;
 
       //////////////////////
       // Processing State //
