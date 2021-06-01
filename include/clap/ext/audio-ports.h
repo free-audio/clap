@@ -88,7 +88,7 @@ typedef struct clap_plugin_audio_ports {
    // selects the configuration designated by id
    // returns true if the configuration could be applied
    // [main-thread,plugin-deactivated]
-   bool (*set_config)(const clap_plugin *plugin, clap_id id);
+   bool (*set_config)(const clap_plugin *plugin, clap_id config_id);
 } clap_plugin_audio_ports;
 
 enum {
