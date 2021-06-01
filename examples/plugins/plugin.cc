@@ -264,6 +264,94 @@ namespace clap {
       return self.audioPortsSetConfig(config_id);
    }
 
+   uint32_t Plugin::clapParamsCount(const clap_plugin *plugin) {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_params.count");
+
+      return self.paramsCount();
+   }
+
+   bool Plugin::clapParamsIinfo(const clap_plugin *plugin,
+                                int32_t            param_index,
+                                clap_param_info *  param_info) {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_params.info");
+
+      auto count = clapParamsCount(plugin);
+      if (param_index >= count) {
+         std::ostringstream msg;
+         msg << "called clap_plugin_params.info with an index out of bounds: " << param_index
+             << " >= " << count;
+         self.hostMisbehaving(msg.str());
+         return false;
+      }
+
+      return self.paramsInfo(param_index, param_info);
+   }
+
+   bool Plugin::clapParamsEnumValue(const clap_plugin *plugin,
+                                    clap_id            param_id,
+                                    int32_t            value_index,
+                                    clap_param_value * value) {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_params.enum_value");
+
+      // TODO: check the value index?
+
+      return self.paramsEnumValue(param_id, value_index, value);
+   }
+
+   bool
+   Plugin::clapParamsValue(const clap_plugin *plugin, clap_id param_id, clap_param_value *value) {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_params.value");
+
+      // TODO extra checks
+
+      return self.paramsValue(param_id, value);
+   }
+
+   bool Plugin::clapParamsSetValue(const clap_plugin *plugin,
+                                   clap_id            param_id,
+                                   clap_param_value   value,
+                                   clap_param_value   modulation) {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_params.set_value");
+
+      if (self.isActive_) {
+         self.hostMisbehaving(
+            "it is forbidden to call clap_plugin_params.set_value() if the plugin is activated");
+         return false;
+      }
+
+      // TODO: extra checks
+
+      return self.paramsSetValue(param_id, value, modulation);
+   }
+
+   bool Plugin::clapParamsValueToText(const clap_plugin *plugin,
+                                      clap_id            param_id,
+                                      clap_param_value   value,
+                                      char *             display,
+                                      uint32_t           size) {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_params.value_to_text");
+
+      // TODO: extra checks
+      return self.paramsValueToText(param_id, value, display, size);
+   }
+
+   bool Plugin::clapParamsTextToValue(const clap_plugin *plugin,
+                                      clap_id            param_id,
+                                      const char *       display,
+                                      clap_param_value * value) {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_params.text_to_value");
+
+      // TODO: extra checks
+      return self.paramsTextToValue(param_id, display, value);
+   }
+
    /////////////
    // Logging //
    /////////////

@@ -62,8 +62,8 @@ namespace clap {
          return false;
       }
       virtual bool paramsValue(clap_id paramId, clap_param_value *value) { return false; }
-      virtual void
-      paramsSetValue(clap_id paramId, clap_param_value value, clap_param_value modulation) {}
+      virtual bool
+      paramsSetValue(clap_id paramId, clap_param_value value, clap_param_value modulation) { return false; }
       virtual bool
       paramsValueToText(clap_id paramId, clap_param_value value, char *display, uint32_t size) {
          return false;
