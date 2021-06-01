@@ -16,11 +16,8 @@ namespace clap {
       void                deactivate() override;
       clap_process_status process(const clap_process *process) override;
 
-      void defineAudioPorts(std::vector<clap_audio_port_info> &inputPorts,
-                            std::vector<clap_audio_port_info> &outputPorts) override;
-      bool shouldInvalidateAudioPortsDefinitionOnTrackChannelChange() const override {
-         return true;
-      }
+      uint32_t audioPortsCount(bool is_input) override { return 2; }
+      bool     audioPortsInfo(uint32_t index, bool is_input, clap_audio_port_info *info) override;
 
    private:
       int channelCount_ = 0;

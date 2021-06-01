@@ -39,16 +39,23 @@ namespace clap {
       }
       virtual const void *extension(const char *id) { return nullptr; }
 
-      virtual void defineAudioPorts(std::vector<clap_audio_port_info> &inputPorts,
-                                    std::vector<clap_audio_port_info> &outputPorts) {}
-      virtual bool shouldInvalidateAudioPortsDefinitionOnTrackChannelChange() const {
-         return false;
-      }
-
       // clap_plugin_track_info
       virtual void trackInfoChanged() {}
 
+      // clap_plugin_audio_ports
+      virtual bool     implementsAudioPorts() const noexcept { return false; }
+      virtual uint32_t audioPortsCount(bool is_input) { return 0; }
+      virtual bool     audioPortsInfo(uint32_t index, bool is_input, clap_audio_port_info *info) {
+         return false;
+      }
+      virtual uint32_t audioPortsConfigCount() { return 0; }
+      virtual bool     audioPortsGetConfig(uint32_t index, clap_audio_ports_config *config) {
+         return false;
+      }
+      virtual bool audioPortsSetConfig(clap_id config_id) { return false; }
+
       // clap_plugin_params
+      virtual bool     implementsParams() const noexcept { return false; }
       virtual uint32_t paramsCount() const { return 0; }
       virtual bool     paramsInfo(int32_t paramIndex, clap_param_info *info) const { return false; }
       virtual bool paramsEnumValue(clap_id paramId, int32_t valueIndex, clap_param_value *value) {
@@ -58,9 +65,13 @@ namespace clap {
       virtual void
       paramsSetValue(clap_id paramId, clap_param_value value, clap_param_value modulation) {}
       virtual bool
-      paramsValueToText(clap_id paramId, clap_param_value value, char *display, uint32_t size) { return false; }
+      paramsValueToText(clap_id paramId, clap_param_value value, char *display, uint32_t size) {
+         return false;
+      }
       virtual bool
-      paramsTextToValue(clap_id param_id, const char *display, clap_param_value *value) { return false; }
+      paramsTextToValue(clap_id param_id, const char *display, clap_param_value *value) {
+         return false;
+      }
 
       //////////////////
       // Invalidation //
@@ -126,7 +137,6 @@ namespace clap {
    protected:
       clap_plugin_event_filter pluginEventFilter_;
       clap_plugin_latency      pluginLatency_;
-      clap_plugin_params       pluginParams_;
       clap_plugin_render       pluginRender_;
       clap_plugin_note_name    pluginNoteName_;
       clap_plugin_thread_pool  pluginThreadPool_;
@@ -185,11 +195,50 @@ namespace clap {
                                          uint32_t              index,
                                          bool                  is_input,
                                          clap_audio_port_info *info);
-      void            updateAudioPorts();
+      static uint32_t clapAudioPortsConfigCount(const clap_plugin *plugin);
+      static bool     clapAudioPortsGetConfig(const clap_plugin *      plugin,
+                                              uint32_t                 index,
+                                              clap_audio_ports_config *config);
+      static bool     clapAudioPortsSetConfig(const clap_plugin *plugin, clap_id config_id);
 
+      // clap_plugin_params
+      static uint32_t clapParamsCount(const clap_plugin *plugin);
+      static bool
+      clapParamsIinfo(const clap_plugin *plugin, int32_t param_index, clap_param_info *param_info);
+      static bool clapParamsEnumValue(const clap_plugin *plugin,
+                                      clap_id            param_id,
+                                      int32_t            value_index,
+                                      clap_param_value * value);
+      static bool
+      clapParamsValue(const clap_plugin *plugin, clap_id param_id, clap_param_value *value);
+      static bool clapParamsSetValue(const clap_plugin *plugin,
+                                     clap_id            param_id,
+                                     clap_param_value   value,
+                                     clap_param_value   modulation);
+      static bool clapParamsValueToText(const clap_plugin *plugin,
+                                        clap_id            param_id,
+                                        clap_param_value   value,
+                                        char *             display,
+                                        uint32_t           size);
+      static bool clapParamsTextToValue(const clap_plugin *plugin,
+                                        clap_id            param_id,
+                                        const char *       display,
+                                        clap_param_value * value);
+
+      // interfaces
       static const constexpr clap_plugin_track_info  pluginTrackInfo_  = {clapTrackInfoChanged};
       static const constexpr clap_plugin_audio_ports pluginAudioPorts_ = {clapAudioPortsCount,
-                                                                          clapAudioPortsInfo};
+                                                                          clapAudioPortsInfo,
+                                                                          clapAudioPortsConfigCount,
+                                                                          clapAudioPortsGetConfig,
+                                                                          clapAudioPortsSetConfig};
+      static const constexpr clap_plugin_params      pluginParams_     = {clapParamsCount,
+                                                                 clapParamsIinfo,
+                                                                 clapParamsEnumValue,
+                                                                 clapParamsValue,
+                                                                 clapParamsSetValue,
+                                                                 clapParamsValueToText,
+                                                                 clapParamsTextToValue};
 
       // state
       bool isActive_     = false;
@@ -198,9 +247,5 @@ namespace clap {
 
       bool            hasTrackInfo_ = false;
       clap_track_info trackInfo_;
-
-      bool                              scheduleAudioPortsUpdate_ = false;
-      std::vector<clap_audio_port_info> inputAudioPorts_;
-      std::vector<clap_audio_port_info> outputAudioPorts_;
    };
 } // namespace clap

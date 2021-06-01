@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
+#include <utility>
 
 #include "plugin.hh"
 
@@ -39,7 +40,6 @@ namespace clap {
       self.initInterfaces();
       self.ensureMainThread("clap_plugin.init");
       self.initTrackInfo();
-      self.defineAudioPorts(self.inputAudioPorts_, self.outputAudioPorts_);
       return self.init();
    }
 
@@ -96,9 +96,6 @@ namespace clap {
          self.hostMisbehaving("The plugin was deactivated twice.");
          return;
       }
-
-      if (self.scheduleAudioPortsUpdate_)
-         self.updateAudioPorts();
 
       self.deactivate();
    }
@@ -165,8 +162,10 @@ namespace clap {
          return &self.pluginRender_;
       if (!strcmp(id, CLAP_EXT_TRACK_INFO))
          return &pluginTrackInfo_;
-      if (!strcmp(id, CLAP_EXT_AUDIO_PORTS))
+      if (!strcmp(id, CLAP_EXT_AUDIO_PORTS) && self.implementsAudioPorts())
          return &pluginAudioPorts_;
+      if (!strcmp(id, CLAP_EXT_PARAMS) && self.implementsParams())
+         return &pluginParams_;
 
       return from(plugin).extension(id);
    }
@@ -193,24 +192,7 @@ namespace clap {
                                     info.channel_map != self.trackInfo_.channel_map;
       self.trackInfo_    = info;
       self.hasTrackInfo_ = true;
-
-      if (didChannelChange && self.canChangeAudioPorts() &&
-          self.shouldInvalidateAudioPortsDefinitionOnTrackChannelChange())
-         self.invalidateAudioPortsDefinition();
-
       self.trackInfoChanged();
-   }
-
-   void Plugin::invalidateAudioPortsDefinition() {
-      checkMainThread();
-
-      if (isActive()) {
-         scheduleAudioPortsUpdate_ = true;
-         hostAudioPorts_->rescan(host_, CLAP_AUDIO_PORTS_RESCAN_ALL);
-         return;
-      }
-
-      updateAudioPorts();
    }
 
    void Plugin::initTrackInfo() {
@@ -227,7 +209,7 @@ namespace clap {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_audio_ports.count");
 
-      return is_input ? self.inputAudioPorts_.size() : self.outputAudioPorts_.size();
+      return self.audioPortsCount(is_input);
    }
 
    bool Plugin::clapAudioPortsInfo(const clap_plugin *   plugin,
@@ -245,40 +227,41 @@ namespace clap {
          return false;
       }
 
-      *info = is_input ? self.inputAudioPorts_[index] : self.outputAudioPorts_[index];
-      return true;
+      return self.audioPortsInfo(index, is_input, info);
    }
 
-   void Plugin::updateAudioPorts() {
-      checkMainThread();
-      assert(!isActive());
+   uint32_t Plugin::clapAudioPortsConfigCount(const clap_plugin *plugin) {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_audio_ports.config_count");
+      return self.audioPortsConfigCount();
+   }
 
-      scheduleAudioPortsUpdate_ = false;
+   bool Plugin::clapAudioPortsGetConfig(const clap_plugin *      plugin,
+                                        uint32_t                 index,
+                                        clap_audio_ports_config *config) {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_audio_ports.get_config");
 
-      // Get the new list of ports
-      std::vector<clap_audio_port_info> inputs;
-      std::vector<clap_audio_port_info> outputs;
-      defineAudioPorts(inputAudioPorts_, outputAudioPorts_);
-
-      uint32_t flags = 0;
-
-      if (inputs.size() != inputAudioPorts_.size() || outputs.size() != outputAudioPorts_.size())
-         flags = CLAP_AUDIO_PORTS_RESCAN_ALL;
-      else {
-         for (int i = 0; i < inputs.size() && !(flags & CLAP_AUDIO_PORTS_RESCAN_ALL); ++i)
-            flags |= compareAudioPortsInfo(inputs[i], inputAudioPorts_[i]);
-         for (int i = 0; i < outputs.size() && !(flags & CLAP_AUDIO_PORTS_RESCAN_ALL); ++i)
-            flags |= compareAudioPortsInfo(outputs[i], outputAudioPorts_[i]);
+      auto count = clapAudioPortsConfigCount(plugin);
+      if (index >= count) {
+         std::ostringstream msg;
+         msg << "called clap_plugin_audio_ports.get_config with an index out of bounds: " << index
+             << " >= " << count;
+         self.hostMisbehaving(msg.str());
+         return false;
       }
+      return self.audioPortsGetConfig(index, config);
+   }
 
-      if (flags == 0)
-         return;
+   bool Plugin::clapAudioPortsSetConfig(const clap_plugin *plugin, clap_id config_id) {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_audio_ports.get_config");
 
-      // compare the list of ports to the old one
-      inputAudioPorts_  = inputs;
-      outputAudioPorts_ = outputs;
+      if (self.isActive())
+         self.hostMisbehaving(
+            "it is illegal to call clap_audio_ports.set_config if the plugin is active");
 
-      hostAudioPorts_->rescan(host_, flags);
+      return self.audioPortsSetConfig(config_id);
    }
 
    /////////////

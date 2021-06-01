@@ -27,28 +27,29 @@ namespace clap {
    };
 
    Gain::Gain(const clap_host *host) : Plugin(descriptor(), host) {
-      parameters_.addParameter({
-         .info = {
-            .id = kParamIdGain,
-            .name = "gain",
-            .module = "/",
-            .is_per_note = false,
-            .is_per_channel = false,
-            .is_used = true,
-            .is_periodic = false,
-            .is_locked = false,
-            .is_automatable = true,
-            .is_hidden = false,
-            .is_bypass = false,
-            .type = CLAP_PARAM_FLOAT,
-            .min_value = { .d = -120 },
-            .max_value = { .d = 20 },
-            .default_value = { .d = 0 },
-            .enum_entry_count = 0,
-         },
+      parameters_.addParameter(Parameter{
+         .info =
+            clap_param_info{
+               .id               = kParamIdGain,
+               .name             = "gain",
+               .module           = "/",
+               .is_per_note      = false,
+               .is_per_channel   = false,
+               .is_used          = true,
+               .is_periodic      = false,
+               .is_locked        = false,
+               .is_automatable   = true,
+               .is_hidden        = false,
+               .is_bypass        = false,
+               .type             = CLAP_PARAM_FLOAT,
+               .min_value        = {.d = -120},
+               .max_value        = {.d = 20},
+               .default_value    = {.d = 0},
+               .enum_entry_count = 0,
+            },
          .enumDefinition = {},
-         .value = { .d = 0 },
-         .modulation = { .d = 0 },
+         .value          = {.d = 0},
+         .modulation     = {.d = 0},
       });
    }
 
@@ -60,7 +61,7 @@ namespace clap {
    void Gain::deactivate() { channelCount_ = 0; }
 
    clap_process_status Gain::process(const clap_process *process) {
-      float **in = process->audio_inputs[0].data32;
+      float **in  = process->audio_inputs[0].data32;
       float **out = process->audio_outputs[0].data32;
 
       float k = 1;
@@ -72,19 +73,18 @@ namespace clap {
       return CLAP_PROCESS_CONTINUE_IF_NOT_QUIET;
    }
 
-   void Gain::defineAudioPorts(std::vector<clap_audio_port_info> &inputPorts,
-                               std::vector<clap_audio_port_info> &outputPorts) {
-      clap_audio_port_info info;
-      info.id = 0;
-      strncpy(info.name, "main", sizeof(info.name));
-      info.is_main = true;
-      info.is_cv = false;
-      info.sample_size = 32;
-      info.in_place = true;
-      info.channel_count = channelCount_;
-      info.channel_map = CLAP_CHMAP_UNSPECIFIED;
+   bool Gain::audioPortsInfo(uint32_t index, bool is_input, clap_audio_port_info *info) {
+      assert(index == 0);
 
-      inputPorts.push_back(info);
-      outputPorts.push_back(info);
+      info->id = 0;
+      strncpy(info->name, "main", sizeof(info->name));
+      info->is_main       = true;
+      info->is_cv         = false;
+      info->sample_size   = 32;
+      info->in_place      = true;
+      info->channel_count = channelCount_;
+      info->channel_map   = CLAP_CHMAP_UNSPECIFIED;
+
+      return true;
    }
 } // namespace clap
