@@ -253,7 +253,7 @@ void PluginHost::setParentWindow(WId parentWindow) {
    int height = 0;
 
    if (pluginGui_)
-      pluginGui_->get_size(plugin_, &width, &height);
+      pluginGui_->size(plugin_, &width, &height);
 
    Application::instance().mainWindow()->resizePluginView(width, height);
 }
@@ -920,7 +920,7 @@ void PluginHost::scanQuickControls() {
    if (!pluginQuickControls_)
       return;
 
-   if (!pluginQuickControls_->get_page || !pluginQuickControls_->page_count) {
+   if (!pluginQuickControls_->page_info || !pluginQuickControls_->page_count) {
       std::ostringstream msg;
       msg << "clap_plugin_quick_controls is partially implemented.";
       throw std::logic_error(msg.str());
@@ -938,7 +938,7 @@ void PluginHost::scanQuickControls() {
    clap_id firstPageId = CLAP_INVALID_ID;
    for (int i = 0; i < N; ++i) {
       auto page = std::make_unique<clap_quick_controls_page>();
-      if (!pluginQuickControls_->get_page(plugin_, i, page.get())) {
+      if (!pluginQuickControls_->page_info(plugin_, i, page.get())) {
          std::ostringstream msg;
          msg << "clap_plugin_quick_controls.get_page(" << i << ") failed, while the page count is "
              << N;
@@ -969,7 +969,7 @@ void PluginHost::scanQuickControls() {
 
    quickControlsPagesChanged();
 
-   auto pageId = pluginQuickControls_->get_selected_page(plugin_);
+   auto pageId = pluginQuickControls_->selected_page(plugin_);
    quickControlsSetSelectedPage(pageId == CLAP_INVALID_ID ? firstPageId : pageId);
 }
 
