@@ -38,6 +38,9 @@ typedef struct clap_plugin_file_reference {
    // [main-thread]
    bool (*get)(const clap_plugin *plugin, uint32_t index, clap_file_reference *file_reference);
 
+   // This method does not compute the hash.
+   // It is only used in case of missing resource. The host may have additionnal known resource
+   // location and may be able to locate the file by using its known hash.
    // [main-thread]
    bool (*get_hash)(const clap_plugin *plugin,
                     clap_id            resource_id,
@@ -47,7 +50,7 @@ typedef struct clap_plugin_file_reference {
 
    // updates the path to a file reference
    // [main-thread]
-   bool (*set)(const clap_plugin *plugin, clap_id resource_id, const char *path);
+   bool (*update_path)(const clap_plugin *plugin, clap_id resource_id, const char *path);
 
    // [main-thread]
    bool (*save_resources)(const clap_plugin *plugin);

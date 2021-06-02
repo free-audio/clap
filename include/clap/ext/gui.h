@@ -12,9 +12,9 @@ extern "C" {
 typedef struct clap_plugin_gui {
    // Get the size of the plugin UI.
    // [main-thread]
-   void (*get_size)(const clap_plugin *plugin, int32_t *width, int32_t *height);
+   void (*size)(const clap_plugin *plugin, int32_t *width, int32_t *height);
 
-   // Sets the GUI scaling factor.
+   // Set the GUI scaling factor.
    // [main-thread]
    void (*set_scale)(const clap_plugin *plugin, double scale);
 
