@@ -1,5 +1,6 @@
 #include <cassert>
 #include <cstring>
+#include <filesystem>
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
@@ -10,46 +11,47 @@
 namespace clap {
 
    Plugin::Plugin(const clap_plugin_descriptor *desc, const clap_host *host) : host_(host) {
-      plugin_.plugin_data      = this;
-      plugin_.desc             = desc;
-      plugin_.init             = Plugin::clapInit;
-      plugin_.destroy          = Plugin::clapDestroy;
-      plugin_.extension        = nullptr;
-      plugin_.process          = nullptr;
-      plugin_.activate         = nullptr;
-      plugin_.deactivate       = nullptr;
+      plugin_.plugin_data = this;
+      plugin_.desc = desc;
+      plugin_.init = Plugin::clapInit;
+      plugin_.destroy = Plugin::clapDestroy;
+      plugin_.extension = nullptr;
+      plugin_.process = nullptr;
+      plugin_.activate = nullptr;
+      plugin_.deactivate = nullptr;
       plugin_.start_processing = nullptr;
-      plugin_.stop_processing  = nullptr;
+      plugin_.stop_processing = nullptr;
    }
 
    /////////////////////
    // CLAP Interfaces //
    /////////////////////
 
-   // clap_plugin interface
-   bool Plugin::clapInit(const clap_plugin *plugin) {
+   //-------------//
+   // clap_plugin //
+   //-------------//
+   bool Plugin::clapInit(const clap_plugin *plugin) noexcept {
       auto &self = from(plugin);
 
-      self.plugin_.extension        = Plugin::clapExtension;
-      self.plugin_.process          = Plugin::clapProcess;
-      self.plugin_.activate         = Plugin::clapActivate;
-      self.plugin_.deactivate       = Plugin::clapDeactivate;
+      self.plugin_.extension = Plugin::clapExtension;
+      self.plugin_.process = Plugin::clapProcess;
+      self.plugin_.activate = Plugin::clapActivate;
+      self.plugin_.deactivate = Plugin::clapDeactivate;
       self.plugin_.start_processing = Plugin::clapStartProcessing;
-      self.plugin_.stop_processing  = Plugin::clapStopProcessing;
+      self.plugin_.stop_processing = Plugin::clapStopProcessing;
 
       self.initInterfaces();
       self.ensureMainThread("clap_plugin.init");
-      self.initTrackInfo();
       return self.init();
    }
 
-   void Plugin::clapDestroy(const clap_plugin *plugin) {
+   void Plugin::clapDestroy(const clap_plugin *plugin) noexcept {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin.destroy");
       delete &from(plugin);
    }
 
-   bool Plugin::clapActivate(const clap_plugin *plugin, int sample_rate) {
+   bool Plugin::clapActivate(const clap_plugin *plugin, int sample_rate) noexcept {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin.activate");
 
@@ -83,12 +85,12 @@ namespace clap {
          return false;
       }
 
-      self.isActive_   = true;
+      self.isActive_ = true;
       self.sampleRate_ = sample_rate;
       return true;
    }
 
-   void Plugin::clapDeactivate(const clap_plugin *plugin) {
+   void Plugin::clapDeactivate(const clap_plugin *plugin) noexcept {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin.deactivate");
 
@@ -100,7 +102,7 @@ namespace clap {
       self.deactivate();
    }
 
-   bool Plugin::clapStartProcessing(const clap_plugin *plugin) {
+   bool Plugin::clapStartProcessing(const clap_plugin *plugin) noexcept {
       auto &self = from(plugin);
       self.ensureAudioThread("clap_plugin.start_processing");
 
@@ -118,7 +120,7 @@ namespace clap {
       return self.isProcessing_;
    }
 
-   void Plugin::clapStopProcessing(const clap_plugin *plugin) {
+   void Plugin::clapStopProcessing(const clap_plugin *plugin) noexcept {
       auto &self = from(plugin);
       self.ensureAudioThread("clap_plugin.stop_processing");
 
@@ -136,7 +138,8 @@ namespace clap {
       self.isProcessing_ = false;
    }
 
-   clap_process_status Plugin::clapProcess(const clap_plugin *plugin, const clap_process *process) {
+   clap_process_status Plugin::clapProcess(const clap_plugin *plugin,
+                                           const clap_process *process) noexcept {
       auto &self = from(plugin);
       self.ensureAudioThread("clap_plugin.process");
 
@@ -154,68 +157,161 @@ namespace clap {
       return self.process(process);
    }
 
-   const void *Plugin::clapExtension(const clap_plugin *plugin, const char *id) {
+   const void *Plugin::clapExtension(const clap_plugin *plugin, const char *id) noexcept {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin.extension");
 
-      if (!strcmp(id, CLAP_EXT_RENDER))
-         return &self.pluginRender_;
-      if (!strcmp(id, CLAP_EXT_TRACK_INFO))
+      if (!strcmp(id, CLAP_EXT_STATE) && self.implementsState())
+         return &pluginState_;
+      if (!strcmp(id, CLAP_EXT_PRESET_LOAD) && self.implementsPresetLoad())
+         return &pluginPresetLoad_;
+      if (!strcmp(id, CLAP_EXT_RENDER) && self.implementsRender())
+         return &pluginRender_;
+      if (!strcmp(id, CLAP_EXT_TRACK_INFO) && self.implementsTrackInfo())
          return &pluginTrackInfo_;
+      if (!strcmp(id, CLAP_EXT_LATENCY) && self.implementsLatency())
+         return &pluginLatency_;
       if (!strcmp(id, CLAP_EXT_AUDIO_PORTS) && self.implementsAudioPorts())
          return &pluginAudioPorts_;
       if (!strcmp(id, CLAP_EXT_PARAMS) && self.implementsParams())
          return &pluginParams_;
+      if (!strcmp(id, CLAP_EXT_NOTE_NAME) && self.implementsNoteName())
+         return &pluginNoteName_;
 
       return from(plugin).extension(id);
    }
 
-   void Plugin::clapTrackInfoChanged(const clap_plugin *plugin) {
+   template <typename T>
+   void Plugin::initInterface(const T *&ptr, const char *id) noexcept {
+      assert(!ptr);
+      assert(id);
+
+      if (host_->extension)
+         ptr = static_cast<const T *>(host_->extension(host_, id));
+   }
+
+   void Plugin::initInterfaces() noexcept {
+      initInterface(hostLog_, CLAP_EXT_LOG);
+      initInterface(hostThreadCheck_, CLAP_EXT_THREAD_CHECK);
+      initInterface(hostThreadPool_, CLAP_EXT_THREAD_POOL);
+      initInterface(hostAudioPorts_, CLAP_EXT_AUDIO_PORTS);
+      initInterface(hostEventLoop_, CLAP_EXT_EVENT_LOOP);
+      initInterface(hostEventFilter_, CLAP_EXT_EVENT_FILTER);
+      initInterface(hostFileReference_, CLAP_EXT_FILE_REFERENCE);
+      initInterface(hostLatency_, CLAP_EXT_LATENCY);
+      initInterface(hostGui_, CLAP_EXT_GUI);
+      initInterface(hostParams_, CLAP_EXT_PARAMS);
+      initInterface(hostTrackInfo_, CLAP_EXT_TRACK_INFO);
+      initInterface(hostState_, CLAP_EXT_STATE);
+      initInterface(hostNoteName_, CLAP_EXT_NOTE_NAME);
+   }
+
+   //-------------------//
+   // clap_plugin_state //
+   //-------------------//
+   uint32_t Plugin::clapLatencyGet(const clap_plugin *plugin) noexcept {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_latency.get");
+
+      return self.latencyGet();
+   }
+
+   //--------------------//
+   // clap_plugin_render //
+   //--------------------//
+   void Plugin::clapRenderSetMode(const clap_plugin *plugin,
+                                  clap_plugin_render_mode mode) noexcept {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_render.set_mode");
+
+      switch (mode) {
+      case CLAP_RENDER_REALTIME:
+      case CLAP_RENDER_OFFLINE:
+         self.renderSetMode(mode);
+         break;
+
+      default: {
+         std::ostringstream msg;
+         msg << "host called clap_plugin_render.set_mode with an unknown mode : " << mode;
+         self.hostMisbehaving(msg.str());
+         break;
+      }
+      }
+   }
+
+   //-------------------//
+   // clap_plugin_state //
+   //-------------------//
+   bool Plugin::clapStateSave(const clap_plugin *plugin, clap_ostream *stream) noexcept {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_state.save");
+
+      return self.stateSave(stream);
+   }
+
+   bool Plugin::clapStateLoad(const clap_plugin *plugin, clap_istream *stream) noexcept {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_state.load");
+
+      return self.stateLoad(stream);
+   }
+
+   bool Plugin::clapStateIsDirty(const clap_plugin *plugin) noexcept {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_state.is_dirty");
+
+      return self.stateIsDirty();
+   }
+
+   //-------------------------//
+   // clap_plugin_preset_load //
+   //-------------------------//
+   bool Plugin::clapPresetLoadFromFile(const clap_plugin *plugin, const char *path) noexcept {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_preset_load.from_file");
+
+      if (!path) {
+         self.hostMisbehaving("host called clap_plugin_preset_load.from_file with a null path");
+         return false;
+      }
+
+      // TODO check if the file is readable
+
+      return self.presetLoadFromFile(path);
+   }
+
+   //------------------------//
+   // clap_plugin_track_info //
+   //------------------------//
+
+   void Plugin::clapTrackInfoChanged(const clap_plugin *plugin) noexcept {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_track_info.changed");
 
       if (!self.canUseTrackInfo()) {
-         self.hostMisbehaving("Host called clap_plugin_track_info.changed() but does not provide a "
+         self.hostMisbehaving("host called clap_plugin_track_info.changed() but does not provide a "
                               "complete clap_host_track_info interface");
          return;
       }
 
-      clap_track_info info;
-      if (!self.hostTrackInfo_->get(self.host_, &info)) {
-         self.hasTrackInfo_ = false;
-         self.hostMisbehaving(
-            "clap_host_track_info.get() failed after calling clap_plugin_track_info.changed()");
-         return;
-      }
-
-      const bool didChannelChange = info.channel_count != self.trackInfo_.channel_count ||
-                                    info.channel_map != self.trackInfo_.channel_map;
-      self.trackInfo_    = info;
-      self.hasTrackInfo_ = true;
       self.trackInfoChanged();
    }
 
-   void Plugin::initTrackInfo() {
-      checkMainThread();
+   //-------------------------//
+   // clap_plugin_audio_ports //
+   //-------------------------//
 
-      assert(!hasTrackInfo_);
-      if (!canUseTrackInfo())
-         return;
-
-      hasTrackInfo_ = hostTrackInfo_->get(host_, &trackInfo_);
-   }
-
-   uint32_t Plugin::clapAudioPortsCount(const clap_plugin *plugin, bool is_input) {
+   uint32_t Plugin::clapAudioPortsCount(const clap_plugin *plugin, bool is_input) noexcept {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_audio_ports.count");
 
       return self.audioPortsCount(is_input);
    }
 
-   bool Plugin::clapAudioPortsInfo(const clap_plugin *   plugin,
-                                   uint32_t              index,
-                                   bool                  is_input,
-                                   clap_audio_port_info *info) {
+   bool Plugin::clapAudioPortsInfo(const clap_plugin *plugin,
+                                   uint32_t index,
+                                   bool is_input,
+                                   clap_audio_port_info *info) noexcept {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_audio_ports.info");
       auto count = clapAudioPortsCount(plugin, is_input);
@@ -230,15 +326,15 @@ namespace clap {
       return self.audioPortsInfo(index, is_input, info);
    }
 
-   uint32_t Plugin::clapAudioPortsConfigCount(const clap_plugin *plugin) {
+   uint32_t Plugin::clapAudioPortsConfigCount(const clap_plugin *plugin) noexcept {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_audio_ports.config_count");
       return self.audioPortsConfigCount();
    }
 
-   bool Plugin::clapAudioPortsGetConfig(const clap_plugin *      plugin,
-                                        uint32_t                 index,
-                                        clap_audio_ports_config *config) {
+   bool Plugin::clapAudioPortsGetConfig(const clap_plugin *plugin,
+                                        uint32_t index,
+                                        clap_audio_ports_config *config) noexcept {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_audio_ports.get_config");
 
@@ -253,7 +349,7 @@ namespace clap {
       return self.audioPortsGetConfig(index, config);
    }
 
-   bool Plugin::clapAudioPortsSetConfig(const clap_plugin *plugin, clap_id config_id) {
+   bool Plugin::clapAudioPortsSetConfig(const clap_plugin *plugin, clap_id config_id) noexcept {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_audio_ports.get_config");
 
@@ -264,16 +360,19 @@ namespace clap {
       return self.audioPortsSetConfig(config_id);
    }
 
-   uint32_t Plugin::clapParamsCount(const clap_plugin *plugin) {
+   uint32_t Plugin::clapParamsCount(const clap_plugin *plugin) noexcept {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_params.count");
 
       return self.paramsCount();
    }
 
+   //--------------------//
+   // clap_plugin_params //
+   //--------------------//
    bool Plugin::clapParamsIinfo(const clap_plugin *plugin,
-                                int32_t            param_index,
-                                clap_param_info *  param_info) {
+                                int32_t param_index,
+                                clap_param_info *param_info) noexcept {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_params.info");
 
@@ -290,9 +389,9 @@ namespace clap {
    }
 
    bool Plugin::clapParamsEnumValue(const clap_plugin *plugin,
-                                    clap_id            param_id,
-                                    int32_t            value_index,
-                                    clap_param_value * value) {
+                                    clap_id param_id,
+                                    int32_t value_index,
+                                    clap_param_value *value) noexcept {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_params.enum_value");
 
@@ -308,8 +407,9 @@ namespace clap {
       return self.paramsEnumValue(param_id, value_index, value);
    }
 
-   bool
-   Plugin::clapParamsValue(const clap_plugin *plugin, clap_id param_id, clap_param_value *value) {
+   bool Plugin::clapParamsValue(const clap_plugin *plugin,
+                                clap_id param_id,
+                                clap_param_value *value) noexcept {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_params.value");
 
@@ -326,9 +426,9 @@ namespace clap {
    }
 
    bool Plugin::clapParamsSetValue(const clap_plugin *plugin,
-                                   clap_id            param_id,
-                                   clap_param_value   value,
-                                   clap_param_value   modulation) {
+                                   clap_id param_id,
+                                   clap_param_value value,
+                                   clap_param_value modulation) noexcept {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_params.set_value");
 
@@ -351,10 +451,10 @@ namespace clap {
    }
 
    bool Plugin::clapParamsValueToText(const clap_plugin *plugin,
-                                      clap_id            param_id,
-                                      clap_param_value   value,
-                                      char *             display,
-                                      uint32_t           size) {
+                                      clap_id param_id,
+                                      clap_param_value value,
+                                      char *display,
+                                      uint32_t size) noexcept {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_params.value_to_text");
 
@@ -370,9 +470,9 @@ namespace clap {
    }
 
    bool Plugin::clapParamsTextToValue(const clap_plugin *plugin,
-                                      clap_id            param_id,
-                                      const char *       display,
-                                      clap_param_value * value) {
+                                      clap_id param_id,
+                                      const char *display,
+                                      clap_param_value *value) noexcept {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_params.text_to_value");
 
@@ -390,7 +490,7 @@ namespace clap {
    bool Plugin::isValidParamId(clap_id param_id) const noexcept {
       checkMainThread();
 
-      auto            count = paramsCount();
+      auto count = paramsCount();
       clap_param_info info;
       for (uint32_t i = 0; i < count; ++i) {
          if (!paramsInfo(i, &info))
@@ -403,17 +503,48 @@ namespace clap {
       return false;
    }
 
+   //-----------------------//
+   // clap_plugin_note_name //
+   //-----------------------//
+
+   uint32_t Plugin::clapNoteNameCount(const clap_plugin *plugin) noexcept {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_note_name.count");
+      return self.noteNameCount();
+   }
+
+   bool Plugin::clapNoteNameGet(const clap_plugin *plugin,
+                                uint32_t index,
+                                clap_note_name *note_name) noexcept {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_note_name.get");
+
+      // TODO check index
+      auto count = clapNoteNameCount(plugin);
+      if (index >= count) {
+         std::ostringstream msg;
+         msg << "host called clap_plugin_note_name.get with an index out of bounds: " << index
+             << " >= " << count;
+         self.hostMisbehaving(msg.str());
+         return false;
+      }
+
+      return self.noteNameGet(index, note_name);
+   }
+
    /////////////
    // Logging //
    /////////////
-   void Plugin::log(clap_log_severity severity, const char *msg) const {
+   void Plugin::log(clap_log_severity severity, const char *msg) const noexcept {
       if (canUseHostLog())
          hostLog_->log(host_, severity, msg);
       else
          std::clog << msg << std::endl;
    }
 
-   void Plugin::hostMisbehaving(const char *msg) { log(CLAP_LOG_HOST_MISBEHAVING, msg); }
+   void Plugin::hostMisbehaving(const char *msg) const noexcept {
+      log(CLAP_LOG_HOST_MISBEHAVING, msg);
+   }
 
    /////////////////////////////////
    // Interface consistency check //
@@ -430,7 +561,7 @@ namespace clap {
    // Thread Checking //
    /////////////////////
 
-   void Plugin::checkMainThread() const {
+   void Plugin::checkMainThread() const noexcept {
       if (!hostThreadCheck_ || !hostThreadCheck_->is_main_thread ||
           hostThreadCheck_->is_main_thread(host_))
          return;
@@ -438,7 +569,7 @@ namespace clap {
       std::terminate();
    }
 
-   void Plugin::ensureMainThread(const char *method) {
+   void Plugin::ensureMainThread(const char *method) const noexcept {
       if (!hostThreadCheck_ || !hostThreadCheck_->is_main_thread ||
           hostThreadCheck_->is_main_thread(host_))
          return;
@@ -450,7 +581,7 @@ namespace clap {
       std::terminate();
    }
 
-   void Plugin::ensureAudioThread(const char *method) {
+   void Plugin::ensureAudioThread(const char *method) const noexcept {
       if (!hostThreadCheck_ || !hostThreadCheck_->is_audio_thread ||
           hostThreadCheck_->is_audio_thread(host_))
          return;
@@ -465,7 +596,7 @@ namespace clap {
    ///////////////
    // Utilities //
    ///////////////
-   Plugin &Plugin::from(const clap_plugin *plugin) {
+   Plugin &Plugin::from(const clap_plugin *plugin) noexcept {
       if (!plugin) {
          std::cerr << "called with a null clap_plugin pointer!" << std::endl;
          std::terminate();
@@ -481,31 +612,6 @@ namespace clap {
       return *static_cast<Plugin *>(plugin->plugin_data);
    }
 
-   template <typename T>
-   void Plugin::initInterface(const T *&ptr, const char *id) {
-      assert(!ptr);
-      assert(id);
-
-      if (host_->extension)
-         ptr = static_cast<const T *>(host_->extension(host_, id));
-   }
-
-   void Plugin::initInterfaces() {
-      initInterface(hostLog_, CLAP_EXT_LOG);
-      initInterface(hostThreadCheck_, CLAP_EXT_THREAD_CHECK);
-      initInterface(hostThreadPool_, CLAP_EXT_THREAD_POOL);
-      initInterface(hostAudioPorts_, CLAP_EXT_AUDIO_PORTS);
-      initInterface(hostEventLoop_, CLAP_EXT_EVENT_LOOP);
-      initInterface(hostEventFilter_, CLAP_EXT_EVENT_FILTER);
-      initInterface(hostFileReference_, CLAP_EXT_FILE_REFERENCE);
-      initInterface(hostLatency_, CLAP_EXT_LATENCY);
-      initInterface(hostGui_, CLAP_EXT_GUI);
-      initInterface(hostParams_, CLAP_EXT_PARAMS);
-      initInterface(hostTrackInfo_, CLAP_EXT_TRACK_INFO);
-      initInterface(hostState_, CLAP_EXT_STATE);
-      initInterface(hostNoteName_, CLAP_EXT_NOTE_NAME);
-   }
-
    uint32_t Plugin::compareAudioPortsInfo(const clap_audio_port_info &a,
                                           const clap_audio_port_info &b) noexcept {
       if (a.sample_size != b.sample_size || a.in_place != b.in_place || a.is_cv != b.is_cv ||
@@ -517,12 +623,5 @@ namespace clap {
          return CLAP_AUDIO_PORTS_RESCAN_NAMES;
 
       return 0;
-   }
-
-   int Plugin::sampleRate() const noexcept {
-      assert(isActive_ &&
-             "there is no point in querying the sample rate if the plugin isn't activated");
-      assert(isActive_ ? sampleRate_ > 0 : sampleRate_ == 0);
-      return sampleRate_;
    }
 } // namespace clap

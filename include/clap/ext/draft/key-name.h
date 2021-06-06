@@ -17,11 +17,11 @@ typedef struct clap_note_name {
 typedef struct clap_plugin_note_name {
    // Return the number of note names
    // [main-thread]
-   int (*count)(const clap_plugin *plugin);
+   uint32_t (*count)(const clap_plugin *plugin);
 
    // Returns true on success and stores the result into note_name
    // [main-thread]
-   bool (*get)(const clap_plugin *plugin, int index, clap_note_name *note_name);
+   bool (*get)(const clap_plugin *plugin, uint32_t index, clap_note_name *note_name);
 } clap_plugin_note_name;
 
 typedef struct clap_host_note_name {

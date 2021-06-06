@@ -5,6 +5,8 @@ add_library(
   parameters.hh
   plugin.cc
   plugin.hh
+  plugin-helper.cc
+  plugin-helper.hh
   gain/gain.hh
   gain/gain.cc)
 

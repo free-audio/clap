@@ -16,13 +16,16 @@ typedef struct clap_plugin_state {
 
    /* Loads the plugin state from stream.
     * [main-thread] */
-   bool (*restore)(const clap_plugin *plugin, clap_istream *stream);
+   bool (*load)(const clap_plugin *plugin, clap_istream *stream);
+
+   // [main-thread]
+   bool (*is_dirty)(const clap_plugin *plugin);
 } clap_plugin_state;
 
 typedef struct clap_host_state {
    /* Tell the host that the plugin state has changed.
     * [thread-safe] */
-   void (*set_dirty)(const clap_host *host);
+   void (*mark_dirty)(const clap_host *host);
 } clap_host_state;
 
 #ifdef __cplusplus
