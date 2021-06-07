@@ -43,7 +43,7 @@ namespace clap {
       virtual const void *extension(const char *id) noexcept { return nullptr; }
 
       //---------------------//
-      // clap_plugin_latenxy //
+      // clap_plugin_latency //
       //---------------------//
       virtual bool implementsLatency() const noexcept { return false; }
       virtual uint32_t latencyGet() const noexcept { return 0; }
@@ -58,7 +58,7 @@ namespace clap {
       // clap_plugin_thread_pool //
       //-------------------------//
       virtual bool implementsThreadPool() const noexcept { return false; }
-      virtual void threadPoolExec(uint32_t task_index) noexcept;
+      virtual void threadPoolExec(uint32_t taskIndex) noexcept;
 
       //-------------------//
       // clap_plugin_state //
@@ -88,9 +88,9 @@ namespace clap {
       // clap_plugin_audio_ports //
       //-------------------------//
       virtual bool implementsAudioPorts() const noexcept { return false; }
-      virtual uint32_t audioPortsCount(bool is_input) const noexcept { return 0; }
+      virtual uint32_t audioPortsCount(bool isInput) const noexcept { return 0; }
       virtual bool
-      audioPortsInfo(uint32_t index, bool is_input, clap_audio_port_info *info) const noexcept {
+      audioPortsInfo(uint32_t index, bool isInput, clap_audio_port_info *info) const noexcept {
          return false;
       }
       virtual uint32_t audioPortsConfigCount() const noexcept { return 0; }
@@ -98,7 +98,7 @@ namespace clap {
                                        clap_audio_ports_config *config) const noexcept {
          return false;
       }
-      virtual bool audioPortsSetConfig(clap_id config_id) noexcept { return false; }
+      virtual bool audioPortsSetConfig(clap_id configId) noexcept { return false; }
 
       //--------------------//
       // clap_plugin_params //
@@ -125,22 +125,23 @@ namespace clap {
          return false;
       }
       virtual bool
-      paramsTextToValue(clap_id param_id, const char *display, clap_param_value *value) noexcept {
+      paramsTextToValue(clap_id paramId, const char *display, clap_param_value *value) noexcept {
          return false;
       }
+      virtual bool isValidParamId(clap_id paramId) const noexcept;
 
       //-----------------------//
       // clap_plugin_note_name //
       //-----------------------//
       virtual bool implementsNoteName() const noexcept { return false; }
       virtual int noteNameCount() noexcept { return 0; }
-      virtual bool noteNameGet(int index, clap_note_name *note_name) noexcept { return false; }
+      virtual bool noteNameGet(int index, clap_note_name *noteName) noexcept { return false; }
 
       //------------------------//
       // clap_plugin_event_loop //
       //------------------------//
       virtual bool implementsEventLoop() const noexcept { return false; }
-      virtual void eventLoopOnTimer(clap_id timer_id) noexcept {}
+      virtual void eventLoopOnTimer(clap_id timerId) noexcept {}
       virtual void eventLoopOnFd(clap_fd fd, uint32_t flags) noexcept {}
 
       //-----------------//
@@ -157,7 +158,7 @@ namespace clap {
       // clap_plugin_gui_x11 //
       //---------------------//
       virtual bool implementsGuiX11() const noexcept { return false; }
-      virtual bool guiX11Attach(const char *display_name, unsigned long window) noexcept;
+      virtual bool guiX11Attach(const char *displayName, unsigned long window) noexcept;
 
       //-----------------------//
       // clap_plugin_gui_win32 //
@@ -176,11 +177,6 @@ namespace clap {
       //-------------------------------//
       virtual bool implementsGuiFreeStanding() const noexcept { return false; }
       virtual bool guiFreeStandingOpen() noexcept;
-
-      //////////////////
-      // Invalidation //
-      //////////////////
-      void invalidateAudioPortsDefinition();
 
       /////////////
       // Logging //
@@ -216,8 +212,6 @@ namespace clap {
 
       static uint32_t compareAudioPortsInfo(const clap_audio_port_info &a,
                                             const clap_audio_port_info &b) noexcept;
-
-      virtual bool isValidParamId(clap_id param_id) const noexcept;
 
       //////////////////////
       // Processing State //
