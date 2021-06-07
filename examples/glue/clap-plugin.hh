@@ -203,6 +203,7 @@ namespace clap {
       bool canUseTrackInfo() const noexcept;
       bool canUseState() const noexcept;
       bool canChangeAudioPorts() const noexcept;
+      bool canUseEventLoop() const noexcept;
 
       /////////////////////
       // Thread Checking //

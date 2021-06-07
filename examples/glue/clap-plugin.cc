@@ -727,6 +727,19 @@ namespace clap {
              hostThreadCheck_->is_main_thread;
    }
 
+   bool Plugin::canUseEventLoop() const noexcept {
+      if(!hostEventLoop_)
+        return false;
+
+    auto& x = *hostEventLoop_;
+    if(x.modify_fd && x.register_fd && x.unregister_fd && x.register_timer
+       && x.unregister_timer)
+        return true;
+
+    hostMisbehaving("clap_event_loop is partially implemented");
+    return false;
+   }
+
    /////////////////////
    // Thread Checking //
    /////////////////////
