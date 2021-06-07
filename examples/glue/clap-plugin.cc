@@ -728,16 +728,38 @@ namespace clap {
    }
 
    bool Plugin::canUseEventLoop() const noexcept {
-      if(!hostEventLoop_)
-        return false;
+      if (!hostEventLoop_)
+         return false;
 
-    auto& x = *hostEventLoop_;
-    if(x.modify_fd && x.register_fd && x.unregister_fd && x.register_timer
-       && x.unregister_timer)
-        return true;
+      auto &x = *hostEventLoop_;
+      if (x.modify_fd && x.register_fd && x.unregister_fd && x.register_timer && x.unregister_timer)
+         return true;
 
-    hostMisbehaving("clap_event_loop is partially implemented");
-    return false;
+      hostMisbehaving("clap_event_loop is partially implemented");
+      return false;
+   }
+
+   bool Plugin::canUseParams() const noexcept {
+      if (!hostParams_)
+         return false;
+
+      if (hostParams_->adjust && hostParams_->adjust_begin && hostParams_->adjust_end &&
+          hostParams_->rescan)
+         return true;
+
+      hostMisbehaving("clap_host_params is partially implemented");
+      return false;
+   }
+
+   bool Plugin::canUseLatency() const noexcept {
+      if (!hostLatency_)
+         return false;
+
+      if (hostLatency_->changed)
+         return true;
+
+      hostMisbehaving("clap_host_latency is partially implemented");
+      return false;
    }
 
    /////////////////////

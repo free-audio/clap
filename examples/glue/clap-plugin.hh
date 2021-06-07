@@ -202,8 +202,9 @@ namespace clap {
       bool canUseThreadCheck() const noexcept;
       bool canUseTrackInfo() const noexcept;
       bool canUseState() const noexcept;
-      bool canChangeAudioPorts() const noexcept;
       bool canUseEventLoop() const noexcept;
+      bool canUseParams() const noexcept;
+      bool canUseLatency() const noexcept;
 
       /////////////////////
       // Thread Checking //
