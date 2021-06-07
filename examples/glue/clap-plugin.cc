@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include <utility>
 
-#include "plugin.hh"
+#include "clap-plugin.hh"
 
 namespace clap {
 

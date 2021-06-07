@@ -1,6 +1,8 @@
 #pragma once
 
-#include "plugin.hh"
+#include <clap-plugin.hh>
+
+#include "parameters.hh"
 
 namespace clap {
    class PluginHelper : public Plugin {

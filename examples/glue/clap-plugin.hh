@@ -7,8 +7,6 @@
 
 #include <clap/all.h>
 
-#include "parameters.hh"
-
 namespace clap {
    /// @brief C++ glue and checks
    ///

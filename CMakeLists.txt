@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 project(CLAP C CXX)
 
+set(ENABLE_CLAP_GLUE TRUE CACHE BOOL "Enables the helper glue code")
 set(ENABLE_CLAP_HOST FALSE CACHE BOOL "Enables the example host")
 set(ENABLE_CLAP_PLUGINS FALSE CACHE BOOL "Enables the example plugins")
 set(ENABLE_CLAP_GUI FALSE CACHE BOOL "Enables the plugin GUI framework")
