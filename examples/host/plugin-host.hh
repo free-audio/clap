@@ -119,7 +119,7 @@ private:
    /* clap host gui callbacks */
    static bool clapGuiResize(const clap_host *host, int32_t width, int32_t height);
 
-   static void clapStateSetDirty(const clap_host *host);
+   static void clapMarkSetDirty(const clap_host *host);
 
 private:
    Engine &engine_;

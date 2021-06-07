@@ -56,7 +56,7 @@ PluginHost::PluginHost(Engine &engine) : QObject(&engine), engine_(engine) {
    hostQuickControls_.pages_changed = PluginHost::clapQuickControlsPagesChanged;
    hostQuickControls_.selected_page_changed = PluginHost::clapQuickControlsSelectedPageChanged;
 
-   hostState_.set_dirty = PluginHost::clapStateSetDirty;
+   hostState_.mark_dirty = PluginHost::clapMarkSetDirty;
 
    initThreadPool();
 }
@@ -1033,18 +1033,18 @@ bool PluginHost::loadNativePluginPreset(const std::string &path) {
    if (!pluginPresetLoad_)
       return false;
 
-   if (!pluginPresetLoad_->load_from_file)
+   if (!pluginPresetLoad_->from_file)
       throw std::logic_error("clap_plugin_preset_load does not implement load_from_file");
 
-   return pluginPresetLoad_->load_from_file(plugin_, path.c_str());
+   return pluginPresetLoad_->from_file(plugin_, path.c_str());
 }
 
-void PluginHost::clapStateSetDirty(const clap_host *host) {
+void PluginHost::clapMarkSetDirty(const clap_host *host) {
    checkForMainThread();
 
    auto h = fromHost(host);
 
-   if (!h->pluginState_ || !h->pluginState_->save || !h->pluginState_->restore)
+   if (!h->pluginState_ || !h->pluginState_->save || !h->pluginState_->load)
       throw std::logic_error("Plugin called clap_host_state.set_dirty() but the host does not "
                              "provide a complete clap_plugin_state interface.");
 
