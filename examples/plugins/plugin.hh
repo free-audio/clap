@@ -56,6 +56,12 @@ namespace clap {
       virtual bool implementsRender() const noexcept { return false; }
       virtual void renderSetMode(clap_plugin_render_mode mode) noexcept {}
 
+      //-------------------------//
+      // clap_plugin_thread_pool //
+      //-------------------------//
+      virtual bool implementsThreadPool() const noexcept { return false; }
+      virtual void threadPoolExec(uint32_t task_index) noexcept;
+
       //-------------------//
       // clap_plugin_state //
       //-------------------//
@@ -132,6 +138,13 @@ namespace clap {
       virtual int noteNameCount() noexcept { return 0; }
       virtual bool noteNameGet(int index, clap_note_name *note_name) noexcept { return false; }
 
+      //------------------------//
+      // clap_plugin_event_loop //
+      //------------------------//
+      virtual bool implementsEventLoop() const noexcept { return false; }
+      virtual void eventLoopOnTimer(clap_id timer_id) noexcept {}
+      virtual void eventLoopOnFd(clap_fd fd, uint32_t flags) noexcept {}
+
       //////////////////
       // Invalidation //
       //////////////////
@@ -186,18 +199,11 @@ namespace clap {
       }
 
    protected:
-      clap_plugin_event_filter pluginEventFilter_;
-      clap_plugin_thread_pool pluginThreadPool_;
-
-      /* state related */
-      clap_plugin_file_reference pluginFileReference_;
-
       /* GUI related */
       clap_plugin_gui pluginGui_;
       clap_plugin_gui_win32 pluginGuiWin32_;
       clap_plugin_gui_cocoa pluginGuiCocoa_;
       clap_plugin_gui_x11 pluginGuiX11_;
-      clap_plugin_event_loop pluginEventLoop_;
 
       const clap_host *const host_ = nullptr;
       const clap_host_log *hostLog_ = nullptr;
@@ -237,6 +243,9 @@ namespace clap {
       // clap_plugin_render
       static void clapRenderSetMode(const clap_plugin *plugin,
                                     clap_plugin_render_mode mode) noexcept;
+
+      // clap_plugin_thread_pool
+      static void clapThreadPoolExec(const clap_plugin *plugin, uint32_t task_index) noexcept;
 
       // clap_plugin_state
       static bool clapStateSave(const clap_plugin *plugin, clap_ostream *stream) noexcept;
@@ -287,14 +296,23 @@ namespace clap {
                                         const char *display,
                                         clap_param_value *value) noexcept;
 
-      // clap_note_name
+      // clap_plugin_note_name
       static uint32_t clapNoteNameCount(const clap_plugin *plugin) noexcept;
-      static bool
-      clapNoteNameGet(const clap_plugin *plugin, uint32_t index, clap_note_name *note_name) noexcept;
+      static bool clapNoteNameGet(const clap_plugin *plugin,
+                                  uint32_t index,
+                                  clap_note_name *note_name) noexcept;
+
+      // clap_plugin_event_loop
+      static void clapEventLoopOnTimer(const clap_plugin *plugin, clap_id timer_id) noexcept;
+      static void clapEventLoopOnFd(const clap_plugin *plugin, clap_fd fd, uint32_t flags) noexcept;
 
       // interfaces
       static const constexpr clap_plugin_render pluginRender_ = {
          clapRenderSetMode,
+      };
+
+      static const constexpr clap_plugin_thread_pool pluginThreadPool_ = {
+         clapThreadPoolExec,
       };
 
       static const constexpr clap_plugin_state pluginState_ = {
@@ -336,6 +354,11 @@ namespace clap {
       static const constexpr clap_plugin_note_name pluginNoteName_ = {
          clapNoteNameCount,
          clapNoteNameGet,
+      };
+
+      static const constexpr clap_plugin_event_loop pluginEventLoop_ = {
+         clapEventLoopOnTimer,
+         clapEventLoopOnFd,
       };
 
       // state

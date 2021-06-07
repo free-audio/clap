@@ -177,6 +177,10 @@ namespace clap {
          return &pluginParams_;
       if (!strcmp(id, CLAP_EXT_NOTE_NAME) && self.implementsNoteName())
          return &pluginNoteName_;
+      if (!strcmp(id, CLAP_EXT_THREAD_POOL) && self.implementsThreadPool())
+         return &pluginThreadPool_;
+      if (!strcmp(id, CLAP_EXT_EVENT_LOOP) && self.implementsEventLoop())
+         return &pluginEventLoop_;
 
       return from(plugin).extension(id);
    }
@@ -237,6 +241,15 @@ namespace clap {
          break;
       }
       }
+   }
+
+   //-------------------------//
+   // clap_plugin_thread_pool //
+   //-------------------------//
+   void Plugin::clapThreadPoolExec(const clap_plugin *plugin, uint32_t task_index) noexcept {
+      auto &self = from(plugin);
+
+      self.threadPoolExec(task_index);
    }
 
    //-------------------//
@@ -530,6 +543,30 @@ namespace clap {
       }
 
       return self.noteNameGet(index, note_name);
+   }
+
+   //------------------------//
+   // clap_plugin_event_loop //
+   //------------------------//
+   void Plugin::clapEventLoopOnTimer(const clap_plugin *plugin, clap_id timer_id) noexcept {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_event_loop.on_timer");
+
+      if (timer_id == CLAP_INVALID_ID) {
+         self.hostMisbehaving(
+            "Host called clap_plugin_event_loop.on_timer with an invalid timer_id");
+         return;
+      }
+
+      self.eventLoopOnTimer(timer_id);
+   }
+
+   void Plugin::clapEventLoopOnFd(const clap_plugin *plugin, clap_fd fd, uint32_t flags) noexcept
+   {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_event_loop.on_fd");
+
+      self.eventLoopOnFd(fd, flags);
    }
 
    /////////////
