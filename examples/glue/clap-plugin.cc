@@ -175,6 +175,8 @@ namespace clap {
          return &pluginAudioPorts_;
       if (!strcmp(id, CLAP_EXT_PARAMS) && self.implementsParams())
          return &pluginParams_;
+      if (!strcmp(id, CLAP_EXT_QUICK_CONTROLS) && self.implementQuickControls())
+         return &pluginQuickControls_;
       if (!strcmp(id, CLAP_EXT_NOTE_NAME) && self.implementsNoteName())
          return &pluginNoteName_;
       if (!strcmp(id, CLAP_EXT_THREAD_POOL) && self.implementsThreadPool())
@@ -524,6 +526,48 @@ namespace clap {
             return true;
       }
       return false;
+   }
+
+   //----------------------------//
+   // clap_plugin_quick_controls //
+   //----------------------------//
+   uint32_t Plugin::clapQuickControlsPageCount(const clap_plugin *plugin) noexcept {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_quick_controls.page_count");
+
+      return self.quickControlsPageCount();
+   }
+
+   bool Plugin::clapQuickControlsPageInfo(const clap_plugin *plugin,
+                                          uint32_t page_index,
+                                          clap_quick_controls_page *page) noexcept {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_quick_controls.page_info");
+
+      uint32_t count = clapQuickControlsPageCount(plugin);
+      if (page_index >= count) {
+         std::ostringstream msg;
+         msg << "Host called clap_plugin_quick_controls.page_info() with an index out of bounds: "
+             << page_index << " >= " << count;
+         self.hostMisbehaving(msg.str());
+         return false;
+      }
+
+      return self.quickControlsPageInfo(page_index, page);
+   }
+
+   void Plugin::clapQuickControlsSelectPage(const clap_plugin *plugin, clap_id page_id) noexcept {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_quick_controls.select_page");
+
+      return self.quickControlsSelectPage(page_id);
+   }
+
+   clap_id Plugin::clapQuickControlsSelectedPage(const clap_plugin *plugin) noexcept {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_quick_controls.selected_page");
+
+      return self.quickControlsSelectedPage();
    }
 
    //-----------------------//

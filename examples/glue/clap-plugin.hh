@@ -130,6 +130,16 @@ namespace clap {
       }
       virtual bool isValidParamId(clap_id paramId) const noexcept;
 
+      //----------------------------//
+      // clap_plugin_quick_controls //
+      //----------------------------//
+      virtual bool implementQuickControls() const noexcept { return false; }
+      virtual uint32_t quickControlsPageCount() noexcept;
+      virtual bool quickControlsPageInfo(uint32_t pageIndex,
+                                         clap_quick_controls_page *page) noexcept;
+      virtual void quickControlsSelectPage(clap_id pageId) noexcept;
+      virtual clap_id quickControlsSelectedPage() noexcept;
+
       //-----------------------//
       // clap_plugin_note_name //
       //-----------------------//
@@ -316,6 +326,14 @@ namespace clap {
                                         const char *display,
                                         clap_param_value *value) noexcept;
 
+      // clap_plugin_quick_controls
+      static uint32_t clapQuickControlsPageCount(const clap_plugin *plugin) noexcept;
+      static bool clapQuickControlsPageInfo(const clap_plugin *plugin,
+                                            uint32_t page_index,
+                                            clap_quick_controls_page *page) noexcept;
+      static void clapQuickControlsSelectPage(const clap_plugin *plugin, clap_id page_id) noexcept;
+      static clap_id clapQuickControlsSelectedPage(const clap_plugin *plugin) noexcept;
+
       // clap_plugin_note_name
       static uint32_t clapNoteNameCount(const clap_plugin *plugin) noexcept;
       static bool clapNoteNameGet(const clap_plugin *plugin,
@@ -386,6 +404,13 @@ namespace clap {
          clapParamsSetValue,
          clapParamsValueToText,
          clapParamsTextToValue,
+      };
+
+      static const constexpr clap_plugin_quick_controls pluginQuickControls_ = {
+         clapQuickControlsPageCount,
+         clapQuickControlsPageInfo,
+         clapQuickControlsSelectPage,
+         clapQuickControlsSelectedPage,
       };
 
       static const constexpr clap_plugin_latency pluginLatency_ = {
