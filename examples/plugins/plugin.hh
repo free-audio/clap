@@ -145,6 +145,40 @@ namespace clap {
       virtual void eventLoopOnTimer(clap_id timer_id) noexcept {}
       virtual void eventLoopOnFd(clap_fd fd, uint32_t flags) noexcept {}
 
+      //-----------------//
+      // clap_plugin_gui //
+      //-----------------//
+      virtual bool implementsGui() const noexcept { return false; }
+      virtual void guiSize(int32_t *width, int32_t *height) noexcept {}
+      virtual void guiSetScale(double scale) noexcept {}
+      virtual void guiShow() noexcept {}
+      virtual void guiHide() noexcept {}
+      virtual void guiClose() noexcept {}
+
+      //---------------------//
+      // clap_plugin_gui_x11 //
+      //---------------------//
+      virtual bool implementsGuiX11() const noexcept { return false; }
+      virtual bool guiX11Attach(const char *display_name, unsigned long window) noexcept;
+
+      //-----------------------//
+      // clap_plugin_gui_win32 //
+      //-----------------------//
+      virtual bool implementsGuiWin32() const noexcept { return false; }
+      virtual bool guiWin32Attach(clap_hwnd window) noexcept;
+
+      //-----------------------//
+      // clap_plugin_gui_cocoa //
+      //-----------------------//
+      virtual bool implementsGuiCocoa() const noexcept { return false; }
+      virtual bool guiCocoaAttach(void *nsView) noexcept;
+
+      //-------------------------------//
+      // clap_plugin_gui_free_standing //
+      //-------------------------------//
+      virtual bool implementsGuiFreeStanding() const noexcept { return false; }
+      virtual bool guiFreeStandingOpen() noexcept;
+
       //////////////////
       // Invalidation //
       //////////////////
@@ -199,12 +233,6 @@ namespace clap {
       }
 
    protected:
-      /* GUI related */
-      clap_plugin_gui pluginGui_;
-      clap_plugin_gui_win32 pluginGuiWin32_;
-      clap_plugin_gui_cocoa pluginGuiCocoa_;
-      clap_plugin_gui_x11 pluginGuiX11_;
-
       const clap_host *const host_ = nullptr;
       const clap_host_log *hostLog_ = nullptr;
       const clap_host_thread_check *hostThreadCheck_ = nullptr;
@@ -306,6 +334,27 @@ namespace clap {
       static void clapEventLoopOnTimer(const clap_plugin *plugin, clap_id timer_id) noexcept;
       static void clapEventLoopOnFd(const clap_plugin *plugin, clap_fd fd, uint32_t flags) noexcept;
 
+      // clap_plugin_gui
+      static void clapGuiSize(const clap_plugin *plugin, int32_t *width, int32_t *height) noexcept;
+      static void clapGuiSetScale(const clap_plugin *plugin, double scale) noexcept;
+      static void clapGuiShow(const clap_plugin *plugin) noexcept;
+      static void clapGuiHide(const clap_plugin *plugin) noexcept;
+      static void clapGuiClose(const clap_plugin *plugin) noexcept;
+
+      // clap_plugin_gui_x11
+      static bool clapGuiX11Attach(const clap_plugin *plugin,
+                                   const char *display_name,
+                                   unsigned long window) noexcept;
+
+      // clap_plugin_gui_win32
+      static bool clapGuiWin32Attach(const clap_plugin *plugin, clap_hwnd window) noexcept;
+
+      // clap_plugin_gui_cocoa
+      static bool clapGuiCocoaAttach(const clap_plugin *plugin, void *nsView) noexcept;
+
+      // clap_plugin_gui_free_standing
+      static bool clapGuiFreeStandingOpen(const clap_plugin *plugin) noexcept;
+
       // interfaces
       static const constexpr clap_plugin_render pluginRender_ = {
          clapRenderSetMode,
@@ -359,6 +408,30 @@ namespace clap {
       static const constexpr clap_plugin_event_loop pluginEventLoop_ = {
          clapEventLoopOnTimer,
          clapEventLoopOnFd,
+      };
+
+      static const constexpr clap_plugin_gui pluginGui_ = {
+         clapGuiSize,
+         clapGuiSetScale,
+         clapGuiShow,
+         clapGuiHide,
+         clapGuiClose,
+      };
+
+      static const constexpr clap_plugin_gui_x11 pluginGuiX11_ = {
+         clapGuiX11Attach,
+      };
+
+      static const constexpr clap_plugin_gui_win32 pluginGuiWin32_ = {
+         clapGuiWin32Attach,
+      };
+
+      static const constexpr clap_plugin_gui_cocoa pluginGuiCocoa_ = {
+         clapGuiCocoaAttach,
+      };
+
+      static const constexpr clap_plugin_gui_free_standing pluginGuiFreeStanding_ = {
+         clapGuiFreeStandingOpen,
       };
 
       // state

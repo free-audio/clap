@@ -181,6 +181,16 @@ namespace clap {
          return &pluginThreadPool_;
       if (!strcmp(id, CLAP_EXT_EVENT_LOOP) && self.implementsEventLoop())
          return &pluginEventLoop_;
+      if (!strcmp(id, CLAP_EXT_GUI) && self.implementsGui())
+         return &pluginGui_;
+      if (!strcmp(id, CLAP_EXT_GUI_X11) && self.implementsGuiX11())
+         return &pluginGuiX11_;
+      if (!strcmp(id, CLAP_EXT_GUI_WIN32) && self.implementsGuiWin32())
+         return &pluginGuiWin32_;
+      if (!strcmp(id, CLAP_EXT_GUI_COCOA) && self.implementsGuiCocoa())
+         return &pluginGuiCocoa_;
+      if (!strcmp(id, CLAP_EXT_GUI_FREE_STANDING) && self.implementsGuiFreeStanding())
+         return &pluginGuiFreeStanding_;
 
       return from(plugin).extension(id);
    }
@@ -561,12 +571,91 @@ namespace clap {
       self.eventLoopOnTimer(timer_id);
    }
 
-   void Plugin::clapEventLoopOnFd(const clap_plugin *plugin, clap_fd fd, uint32_t flags) noexcept
-   {
+   void Plugin::clapEventLoopOnFd(const clap_plugin *plugin, clap_fd fd, uint32_t flags) noexcept {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_event_loop.on_fd");
 
       self.eventLoopOnFd(fd, flags);
+   }
+
+   //-----------------//
+   // clap_plugin_gui //
+   //-----------------//
+   void Plugin::clapGuiSize(const clap_plugin *plugin, int32_t *width, int32_t *height) noexcept {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_gui.size");
+
+      self.guiSize(width, height);
+   }
+
+   void Plugin::clapGuiSetScale(const clap_plugin *plugin, double scale) noexcept {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_gui.set_scale");
+
+      self.guiSetScale(scale);
+   }
+
+   void Plugin::clapGuiShow(const clap_plugin *plugin) noexcept {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_gui.show");
+
+      self.guiShow();
+   }
+
+   void Plugin::clapGuiHide(const clap_plugin *plugin) noexcept {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_gui.hide");
+
+      self.guiHide();
+   }
+
+   void Plugin::clapGuiClose(const clap_plugin *plugin) noexcept {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_gui.close");
+
+      self.guiClose();
+   }
+
+   //---------------------//
+   // clap_plugin_gui_x11 //
+   //---------------------//
+   bool Plugin::clapGuiX11Attach(const clap_plugin *plugin,
+                                 const char *display_name,
+                                 unsigned long window) noexcept {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_gui_x11.attach");
+
+      return self.guiX11Attach(display_name, window);
+   }
+
+   //-----------------------//
+   // clap_plugin_gui_win32 //
+   //-----------------------//
+   bool Plugin::clapGuiWin32Attach(const clap_plugin *plugin, clap_hwnd window) noexcept {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_gui_win32.attach");
+
+      return self.guiWin32Attach(window);
+   }
+
+   //-----------------------//
+   // clap_plugin_gui_cocoa //
+   //-----------------------//
+   bool Plugin::clapGuiCocoaAttach(const clap_plugin *plugin, void *nsView) noexcept {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_gui_cocoa.attach");
+
+      return self.guiCocoaAttach(nsView);
+   }
+
+   //-------------------------------//
+   // clap_plugin_gui_free_standing //
+   //-------------------------------//
+   bool Plugin::clapGuiFreeStandingOpen(const clap_plugin *plugin) noexcept {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_gui_win32.attach");
+
+      return self.guiFreeStandingOpen();
    }
 
    /////////////
