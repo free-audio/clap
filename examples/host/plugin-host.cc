@@ -357,8 +357,8 @@ bool PluginHost::clapThreadPoolRequestExec(const clap_host *host, uint32_t num_t
 }
 
 bool PluginHost::clapEventLoopRegisterTimer(const clap_host *host,
-                                            uint32_t   period_ms,
-                                            clap_id *  timer_id) {
+                                            uint32_t period_ms,
+                                            clap_id *timer_id) {
    checkForMainThread();
 
    auto h = fromHost(host);
@@ -565,7 +565,7 @@ static uint32_t clap_host_event_list_size(const struct clap_event_list *list) {
 }
 
 const struct clap_event *clap_host_event_list_get(const struct clap_event_list *list,
-                                                  uint32_t                      index) {
+                                                  uint32_t index) {
    PluginHost::checkForAudioThread();
 
    auto vec = reinterpret_cast<std::vector<clap_event> *>(list->ctx);
@@ -576,7 +576,7 @@ const struct clap_event *clap_host_event_list_get(const struct clap_event_list *
 
 // Makes a copy of the event
 void clap_host_event_list_push_back(const struct clap_event_list *list,
-                                    const struct clap_event *     event) {
+                                    const struct clap_event *event) {
    PluginHost::checkForAudioThread();
 
    auto vec = reinterpret_cast<std::vector<clap_event> *>(list->ctx);
@@ -669,7 +669,7 @@ void PluginHost::idle() {
 
 PluginParam &PluginHost::checkValidParamId(const std::string_view &function,
                                            const std::string_view &param_name,
-                                           clap_id                 param_id) {
+                                           clap_id param_id) {
    checkForMainThread();
 
    if (param_id == CLAP_INVALID_ID) {
@@ -707,7 +707,12 @@ void PluginHost::checkValidParamValue(const PluginParam &param, clap_param_value
 void PluginHost::clapParamsAdjustBegin(const clap_host *host, clap_id param_id) {
    checkForMainThread();
 
-   auto  h = fromHost(host);
+   auto h = fromHost(host);
+
+   if (h->isPluginActive())
+      throw std::logic_error("Plugin called clap_host_params.begin_adjust() but the plugin is "
+                             "active, it should transmit the event via output param event");
+
    auto &param = h->checkValidParamId("clap_host_params.touch_begin()", "param_id", param_id);
 
    if (param.isBeingAdjusted()) {
@@ -724,7 +729,13 @@ void PluginHost::clapParamsAdjustBegin(const clap_host *host, clap_id param_id) 
 void PluginHost::clapParamsAdjustEnd(const clap_host *host, clap_id param_id) {
    checkForMainThread();
 
-   auto  h = fromHost(host);
+   auto h = fromHost(host);
+
+   if (h->isPluginActive())
+      throw std::logic_error(
+         "Plugin called clap_host_params.end_adjust() but the plugin is active, it should "
+         "transmit the event via output param event");
+
    auto &param = h->checkValidParamId("clap_host_params.touch_begin()", "param_id", param_id);
 
    if (!param.isBeingAdjusted()) {
@@ -741,7 +752,13 @@ void PluginHost::clapParamsAdjustEnd(const clap_host *host, clap_id param_id) {
 void PluginHost::clapParamsAdjust(const clap_host *host, clap_id param_id, clap_param_value value) {
    checkForMainThread();
 
-   auto  h = fromHost(host);
+   auto h = fromHost(host);
+
+   if (h->isPluginActive())
+      throw std::logic_error(
+         "Plugin called clap_host_params.adjust() but the plugin is active, it should transmit "
+         "the event via output param event");
+
    auto &param = h->checkValidParamId("clap_host_params.touch_begin()", "param_id", param_id);
 
    if (!param.isBeingAdjusted()) {
@@ -758,9 +775,7 @@ void PluginHost::clapParamsAdjust(const clap_host *host, clap_id param_id, clap_
       return;
 
    param.setValue(value);
-   h->appToEngineQueue_.set(param_id, value);
    h->pluginParams_->set_value(h->plugin_, param.info().id, value, value);
-   h->appToEngineQueue_.producerDone();
 }
 
 void PluginHost::setParamValueByHost(PluginParam &param, clap_param_value value) {
@@ -768,13 +783,10 @@ void PluginHost::setParamValueByHost(PluginParam &param, clap_param_value value)
 
    param.setValue(value);
 
-   if (isPluginActive())
-   {
+   if (isPluginActive()) {
       appToEngineQueue_.set(param.info().id, value);
       appToEngineQueue_.producerDone();
-   }
-   else
-   {
+   } else {
       pluginParams_->set_value(plugin_, param.info().id, value, value);
    }
 }
@@ -793,7 +805,7 @@ void PluginHost::clapParamsRescan(const clap_host *host, uint32_t flags) {
    }
 
    // 2. scan the params.
-   auto                        count = h->pluginParams_->count(h->plugin_);
+   auto count = h->pluginParams_->count(h->plugin_);
    std::unordered_set<clap_id> paramIds(count * 2);
 
    for (int32_t i = 0; i < count; ++i) {
@@ -834,7 +846,7 @@ void PluginHost::clapParamsRescan(const clap_host *host, uint32_t flags) {
          }
 
          clap_param_value value = h->getParamValue(info);
-         auto             param = std::make_unique<PluginParam>(*h, info, value);
+         auto param = std::make_unique<PluginParam>(*h, info, value);
          h->checkValidParamValue(*param, value);
          h->params_.emplace(info.id, std::move(param));
       } else {
@@ -888,7 +900,7 @@ void PluginHost::clapParamsRescan(const clap_host *host, uint32_t flags) {
       else {
          if (!(flags & CLAP_PARAM_RESCAN_ALL)) {
             std::ostringstream msg;
-            auto &             info = it->second->info();
+            auto &info = it->second->info();
             msg << "a parameter was removed, but the flag CLAP_PARAM_RESCAN_ALL was not "
                    "specified; id: "
                 << info.id << ", name: " << info.name << ", module: " << info.module << std::endl;
