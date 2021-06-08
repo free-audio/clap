@@ -17,7 +17,7 @@ namespace clap {
 
    protected:
       Plugin(const clap_plugin_descriptor *desc, const clap_host *host);
-      virtual ~Plugin() = default;
+      virtual ~Plugin();
 
       // not copyable, not moveable
       Plugin(const Plugin &) = delete;
@@ -58,7 +58,7 @@ namespace clap {
       // clap_plugin_thread_pool //
       //-------------------------//
       virtual bool implementsThreadPool() const noexcept { return false; }
-      virtual void threadPoolExec(uint32_t taskIndex) noexcept;
+      virtual void threadPoolExec(uint32_t taskIndex) noexcept {}
 
       //-------------------//
       // clap_plugin_state //
@@ -134,11 +134,13 @@ namespace clap {
       // clap_plugin_quick_controls //
       //----------------------------//
       virtual bool implementQuickControls() const noexcept { return false; }
-      virtual uint32_t quickControlsPageCount() noexcept;
+      virtual uint32_t quickControlsPageCount() noexcept { return 0; }
       virtual bool quickControlsPageInfo(uint32_t pageIndex,
-                                         clap_quick_controls_page *page) noexcept;
-      virtual void quickControlsSelectPage(clap_id pageId) noexcept;
-      virtual clap_id quickControlsSelectedPage() noexcept;
+                                         clap_quick_controls_page *page) noexcept {
+         return false;
+      }
+      virtual void quickControlsSelectPage(clap_id pageId) noexcept {}
+      virtual clap_id quickControlsSelectedPage() noexcept { return CLAP_INVALID_ID; }
 
       //-----------------------//
       // clap_plugin_note_name //
@@ -168,25 +170,27 @@ namespace clap {
       // clap_plugin_gui_x11 //
       //---------------------//
       virtual bool implementsGuiX11() const noexcept { return false; }
-      virtual bool guiX11Attach(const char *displayName, unsigned long window) noexcept;
+      virtual bool guiX11Attach(const char *displayName, unsigned long window) noexcept {
+         return false;
+      }
 
       //-----------------------//
       // clap_plugin_gui_win32 //
       //-----------------------//
       virtual bool implementsGuiWin32() const noexcept { return false; }
-      virtual bool guiWin32Attach(clap_hwnd window) noexcept;
+      virtual bool guiWin32Attach(clap_hwnd window) noexcept { return false; }
 
       //-----------------------//
       // clap_plugin_gui_cocoa //
       //-----------------------//
       virtual bool implementsGuiCocoa() const noexcept { return false; }
-      virtual bool guiCocoaAttach(void *nsView) noexcept;
+      virtual bool guiCocoaAttach(void *nsView) noexcept { return false; }
 
       //-------------------------------//
       // clap_plugin_gui_free_standing //
       //-------------------------------//
       virtual bool implementsGuiFreeStanding() const noexcept { return false; }
-      virtual bool guiFreeStandingOpen() noexcept;
+      virtual bool guiFreeStandingOpen() noexcept { return false; }
 
       /////////////
       // Logging //

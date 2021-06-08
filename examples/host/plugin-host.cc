@@ -767,10 +767,16 @@ void PluginHost::setParamValueByHost(PluginParam &param, clap_param_value value)
    checkForMainThread();
 
    param.setValue(value);
-   appToEngineQueue_.set(param.info().id, value);
-   if (pluginParams_ && pluginParams_->set_value)
+
+   if (isPluginActive())
+   {
+      appToEngineQueue_.set(param.info().id, value);
+      appToEngineQueue_.producerDone();
+   }
+   else
+   {
       pluginParams_->set_value(plugin_, param.info().id, value, value);
-   appToEngineQueue_.producerDone();
+   }
 }
 
 void PluginHost::scanParams() { clapParamsRescan(&host_, CLAP_PARAM_RESCAN_ALL); }

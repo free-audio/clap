@@ -23,6 +23,8 @@ namespace clap {
       plugin_.stop_processing = nullptr;
    }
 
+   Plugin::~Plugin() = default;
+
    /////////////////////
    // CLAP Interfaces //
    /////////////////////
