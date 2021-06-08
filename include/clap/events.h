@@ -88,6 +88,9 @@ typedef struct clap_event_param {
    // only used by the plugin for output events
    bool begin_adjust;
    bool end_adjust;
+
+   // tells the host if it should record this parameter change and create an automation point
+   bool should_record;
 } clap_event_param;
 
 typedef struct clap_event_transport {
