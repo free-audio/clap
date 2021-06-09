@@ -1,5 +1,8 @@
-clap
-====
-
-- Mailing list: https://groups.google.com/forum/#!forum/free-audio-clap
-- Warning, this specification is old and out of sync: https://free-audio.github.io/clap
+```
+_________  .____        _____   __________
+\_   ___ \ |    |      /  _  \  \______   \
+/    \  \/ |    |     /  /_\  \  |     ___/
+\     \____|    |___ /    |    \ |    |
+ \______  /|_______ \\____|__  / |____|
+        \/         \/        \/
+```
