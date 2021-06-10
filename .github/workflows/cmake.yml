@@ -37,22 +37,22 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Download and install Boost
-      uses: MarkusJx/install-boost@v1.0.1
-      id: install-boost
-      with:
-        boost_version: 1.73.0
+    # - name: Download and install Boost
+    #   uses: MarkusJx/install-boost@v1.0.1
+    #   id: install-boost
+    #   with:
+    #     boost_version: 1.73.0
 
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v2.13.2
-      id: install-qt
-      with:
-        version: 6.1.1
+    # - name: Install Qt
+    #   uses: jurplel/install-qt-action@v2.13.2
+    #   id: install-qt
+    #   with:
+    #     version: 6.0.1
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DENABLE_CLAP_GLUE=TRUE -DENABLE_CLAP_HOST=TRUE -DENABLE_CLAP_PLUGINS=TRUE -DENABLE_CLAP_GUI=true
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DENABLE_CLAP_GLUE=TRUE -DENABLE_CLAP_HOST=FALSE -DENABLE_CLAP_PLUGINS=FALSE -DENABLE_CLAP_GUI=FALSE
 
     - name: Build
       # Build your program with the given configuration
