@@ -22,15 +22,15 @@ jobs:
       matrix:
         config:
           - {
-            name: linux
+            name: "linux",
             os: ubuntu-latest
           }
           - {
-            name: windows
+            name: "windows",
             os: windows-latest
           }
           - {
-            name: linux
+            name: "linux",
             os: macos-latest
           }
 
