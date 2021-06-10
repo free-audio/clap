@@ -41,7 +41,7 @@ jobs:
       uses: MarkusJx/install-boost@v1.0.1
       id: install-boost
       with:
-        boost_version: 1.76.0
+        boost_version: 1.73.0
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v2.13.2
