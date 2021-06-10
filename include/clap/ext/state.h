@@ -10,12 +10,14 @@ extern "C" {
 #endif
 
 typedef struct clap_plugin_state {
-   /* Saves the plugin state into stream.
-    * [main-thread] */
+   // Saves the plugin state into stream.
+   // Returns true if the state was correctly saved.
+   // [main-thread]
    bool (*save)(const clap_plugin *plugin, clap_ostream *stream);
 
-   /* Loads the plugin state from stream.
-    * [main-thread] */
+   // Loads the plugin state from stream.
+   // Returns true if the state was correctly restored.
+   // [main-thread]
    bool (*load)(const clap_plugin *plugin, clap_istream *stream);
 
    // [main-thread]
@@ -23,8 +25,8 @@ typedef struct clap_plugin_state {
 } clap_plugin_state;
 
 typedef struct clap_host_state {
-   /* Tell the host that the plugin state has changed.
-    * [thread-safe] */
+   // Tell the host that the plugin state has changed and should be saved again.
+   // [thread-safe]
    void (*mark_dirty)(const clap_host *host);
 } clap_host_state;
 

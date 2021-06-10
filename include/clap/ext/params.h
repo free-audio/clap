@@ -42,17 +42,24 @@ extern "C" {
 /// The parameter automation will always target the same parameter because the param_id is stable.
 /// The MIDI CC may have a different mapping in the future and may result in a different playback.
 ///
-/// It is highly recommanded to use @ref clap_plugin_midi_mappings to let the host solve
+/// It is recommanded to use @ref clap_plugin_midi_mappings to let the host solve
 /// this problem and offer a consistent experience to the user across different plugins.
+///
+/// There is an other option to handle MIDI CC if you don't want to use @ref clap_midi_mappings,
+/// which is to set @ref clap_event_param.should_record to false. Then the host will record the
+/// MIDI CC automation, but not the parameter change and there won't be conflict at playback.
 ///
 /// Scenarios:
 ///
 /// I. Loading a preset
-/// - load the preset in a temporary state, if the plugin is activated and preset will introduce
-///   breaking change like latency, audio ports change, new parameters, ...
-///   report those to the host and wait for the host to deactivate the plugin
-///   to apply those changes. If there are no breaking changes, the plugin can apply them
-///   them right away.
+/// - load the preset in a temporary state
+/// - call @ref clap_host_params.changed() if anything changed
+/// - call @ref clap_host_latency.changed() if latency changed
+/// - invalidate any other info that may be cached by the host
+/// - if the plugin is activated and the preset will introduce breaking change
+///   (latency, audio ports, new parameters, ...) be sure to wait for the host
+///   to deactivate the plugin to apply those changes.
+///   If there are no breaking changes, the plugin can apply them them right away.
 ///   The plugin is resonsible to update both its audio processor and its gui.
 ///
 /// II. Turning a knob on the DAW interface
@@ -65,7 +72,7 @@ extern "C" {
 ///   - host_params->adjust(...) many times -> updates host's knob and record automation
 ///   - host_params->end_adjust(...)
 /// - if the plugin is active
-///   - send CLAP_PARAM_SET event and don't forget to set begin_adjust and end_adjust attributes
+///   - send CLAP_PARAM_SET event and don't forget to set begin_adjust, end_adjust and should_record attributes
 /// - the plugin is responsible to send the parameter value to its audio processor
 ///
 /// IV. Turning a knob via automation

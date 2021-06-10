@@ -9,10 +9,10 @@ extern "C" {
 #endif
 
 enum {
-   /* Default setting, used to play "realtime". */
+   // Default setting, used to play "realtime"
    CLAP_RENDER_REALTIME = 0,
 
-   /* Render setting, used while rendering the song. */
+   // Used while rendering the song; no realtime pressure
    CLAP_RENDER_OFFLINE = 1,
 };
 typedef int32_t clap_plugin_render_mode;

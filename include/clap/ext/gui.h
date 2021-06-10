@@ -18,7 +18,10 @@ typedef struct clap_plugin_gui {
    // [main-thread]
    void (*set_scale)(const clap_plugin *plugin, double scale);
 
+   // [main-thread]
    void (*show)(const clap_plugin *plugin);
+
+   // [main-thread]
    void (*hide)(const clap_plugin *plugin);
 
    // [main-thread]
