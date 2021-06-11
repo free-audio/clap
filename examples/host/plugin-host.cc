@@ -110,6 +110,7 @@ bool PluginHost::load(const QString &path, int pluginIndex) {
       unload();
 
    library_.setFileName(path);
+   library_.setLoadHints(QLibrary::ResolveAllSymbolsHint | QLibrary::DeepBindHint);
    if (!library_.load()) {
       QString err = library_.errorString();
       qWarning() << "failed to load " << path << ": " << err;
