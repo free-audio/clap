@@ -764,6 +764,17 @@ namespace clap {
       return false;
    }
 
+   bool Plugin::canUseTrackInfo() const noexcept {
+      if (!hostTrackInfo_)
+         return false;
+
+      if (hostTrackInfo_->get)
+         return true;
+
+      hostMisbehaving("clap_host_track_info is partially implemented");
+      return false;
+   }
+
    /////////////////////
    // Thread Checking //
    /////////////////////
