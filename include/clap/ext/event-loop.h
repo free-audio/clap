@@ -30,6 +30,9 @@ typedef struct clap_plugin_event_loop {
 } clap_plugin_event_loop;
 
 typedef struct clap_host_event_loop {
+   // Registers a periodic timer.
+   // The host may adjust the period if it is under a certain threshold.
+   // 30 Hz should be allowed.
    // [main-thread]
    bool (*register_timer)(const clap_host *host, uint32_t period_ms, clap_id *timer_id);
 
