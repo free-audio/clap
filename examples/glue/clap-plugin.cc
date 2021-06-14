@@ -764,6 +764,17 @@ namespace clap {
       return false;
    }
 
+   bool Plugin::canUseState() const noexcept {
+      if (!hostState_)
+         return false;
+
+      if (hostState_->mark_dirty)
+         return true;
+
+      hostMisbehaving("clap_host_state is partially implemented");
+      return false;
+   }
+
    bool Plugin::canUseTrackInfo() const noexcept {
       if (!hostTrackInfo_)
          return false;
