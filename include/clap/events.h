@@ -133,7 +133,7 @@ typedef struct clap_event_chord {
 } clap_event_chord;
 
 typedef struct clap_event_midi {
-   uint8_t data[4];
+   uint8_t data[3];
 } clap_event_midi;
 
 typedef struct clap_event_midi_sysex {
