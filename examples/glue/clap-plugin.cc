@@ -397,9 +397,9 @@ namespace clap {
    //--------------------//
    // clap_plugin_params //
    //--------------------//
-   bool Plugin::clapParamsIinfo(const clap_plugin *plugin,
-                                int32_t param_index,
-                                clap_param_info *param_info) noexcept {
+   bool Plugin::clapParamsInfo(const clap_plugin *plugin,
+                               int32_t param_index,
+                               clap_param_info *param_info) noexcept {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_params.info");
 
@@ -415,28 +415,8 @@ namespace clap {
       return self.paramsInfo(param_index, param_info);
    }
 
-   bool Plugin::clapParamsEnumValue(const clap_plugin *plugin,
-                                    clap_id param_id,
-                                    int32_t value_index,
-                                    clap_param_value *value) noexcept {
-      auto &self = from(plugin);
-      self.ensureMainThread("clap_plugin_params.enum_value");
-
-      if (!self.isValidParamId(param_id)) {
-         std::ostringstream msg;
-         msg << "clap_plugin_params.enum_value called with invalid param_id: " << param_id;
-         self.hostMisbehaving(msg.str());
-         return false;
-      }
-
-      // TODO: check the value index?
-
-      return self.paramsEnumValue(param_id, value_index, value);
-   }
-
-   bool Plugin::clapParamsValue(const clap_plugin *plugin,
-                                clap_id param_id,
-                                clap_param_value *value) noexcept {
+   bool
+   Plugin::clapParamsValue(const clap_plugin *plugin, clap_id param_id, double *value) noexcept {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_params.value");
 
@@ -452,34 +432,9 @@ namespace clap {
       return self.paramsValue(param_id, value);
    }
 
-   bool Plugin::clapParamsSetValue(const clap_plugin *plugin,
-                                   clap_id param_id,
-                                   clap_param_value value,
-                                   clap_param_value modulation) noexcept {
-      auto &self = from(plugin);
-      self.ensureMainThread("clap_plugin_params.set_value");
-
-      if (self.isActive_) {
-         self.hostMisbehaving(
-            "it is forbidden to call clap_plugin_params.set_value() if the plugin is activated");
-         return false;
-      }
-
-      if (!self.isValidParamId(param_id)) {
-         std::ostringstream msg;
-         msg << "clap_plugin_params.set_value called with invalid param_id: " << param_id;
-         self.hostMisbehaving(msg.str());
-         return false;
-      }
-
-      // TODO: extra checks
-
-      return self.paramsSetValue(param_id, value, modulation);
-   }
-
    bool Plugin::clapParamsValueToText(const clap_plugin *plugin,
                                       clap_id param_id,
-                                      clap_param_value value,
+                                      double value,
                                       char *display,
                                       uint32_t size) noexcept {
       auto &self = from(plugin);
@@ -499,7 +454,7 @@ namespace clap {
    bool Plugin::clapParamsTextToValue(const clap_plugin *plugin,
                                       clap_id param_id,
                                       const char *display,
-                                      clap_param_value *value) noexcept {
+                                      double *value) noexcept {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_params.text_to_value");
 
@@ -745,8 +700,7 @@ namespace clap {
       if (!hostParams_)
          return false;
 
-      if (hostParams_->adjust && hostParams_->adjust_begin && hostParams_->adjust_end &&
-          hostParams_->rescan)
+      if (hostParams_->rescan && hostParams_->clear)
          return true;
 
       hostMisbehaving("clap_host_params is partially implemented");

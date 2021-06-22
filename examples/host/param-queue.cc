@@ -18,7 +18,7 @@ void ParamQueue::setCapacity(size_t capacity) {
       q.reserve(2 * capacity);
 }
 
-void ParamQueue::set(clap_id id, clap_param_value value) { producer_.load()->emplace(id, value); }
+void ParamQueue::set(clap_id id, double value) { producer_.load()->emplace(id, value); }
 
 void ParamQueue::producerDone() {
    if (consumer_)
@@ -31,7 +31,7 @@ void ParamQueue::producerDone() {
    Q_ASSERT(producer_);
 }
 
-void ParamQueue::consume(const std::function<void(clap_id, clap_param_value)> consumer) {
+void ParamQueue::consume(const std::function<void(clap_id, double)> consumer) {
    Q_ASSERT(consumer);
 
    if (!consumer_)

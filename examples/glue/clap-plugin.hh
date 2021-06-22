@@ -108,24 +108,12 @@ namespace clap {
       virtual bool paramsInfo(int32_t paramIndex, clap_param_info *info) const noexcept {
          return false;
       }
+      virtual bool paramsValue(clap_id paramId, double *value) noexcept { return false; }
       virtual bool
-      paramsEnumValue(clap_id paramId, int32_t valueIndex, clap_param_value *value) noexcept {
+      paramsValueToText(clap_id paramId, double value, char *display, uint32_t size) noexcept {
          return false;
       }
-      virtual bool paramsValue(clap_id paramId, clap_param_value *value) noexcept { return false; }
-      virtual bool paramsSetValue(clap_id paramId,
-                                  clap_param_value value,
-                                  clap_param_value modulation) noexcept {
-         return false;
-      }
-      virtual bool paramsValueToText(clap_id paramId,
-                                     clap_param_value value,
-                                     char *display,
-                                     uint32_t size) noexcept {
-         return false;
-      }
-      virtual bool
-      paramsTextToValue(clap_id paramId, const char *display, clap_param_value *value) noexcept {
+      virtual bool paramsTextToValue(clap_id paramId, const char *display, double *value) noexcept {
          return false;
       }
       virtual bool isValidParamId(clap_id paramId) const noexcept;
@@ -308,29 +296,20 @@ namespace clap {
 
       // clap_plugin_params
       static uint32_t clapParamsCount(const clap_plugin *plugin) noexcept;
-      static bool clapParamsIinfo(const clap_plugin *plugin,
-                                  int32_t param_index,
-                                  clap_param_info *param_info) noexcept;
-      static bool clapParamsEnumValue(const clap_plugin *plugin,
-                                      clap_id param_id,
-                                      int32_t value_index,
-                                      clap_param_value *value) noexcept;
-      static bool clapParamsValue(const clap_plugin *plugin,
-                                  clap_id param_id,
-                                  clap_param_value *value) noexcept;
-      static bool clapParamsSetValue(const clap_plugin *plugin,
-                                     clap_id param_id,
-                                     clap_param_value value,
-                                     clap_param_value modulation) noexcept;
+      static bool clapParamsInfo(const clap_plugin *plugin,
+                                 int32_t param_index,
+                                 clap_param_info *param_info) noexcept;
+      static bool
+      clapParamsValue(const clap_plugin *plugin, clap_id param_id, double *value) noexcept;
       static bool clapParamsValueToText(const clap_plugin *plugin,
                                         clap_id param_id,
-                                        clap_param_value value,
+                                        double value,
                                         char *display,
                                         uint32_t size) noexcept;
       static bool clapParamsTextToValue(const clap_plugin *plugin,
                                         clap_id param_id,
                                         const char *display,
-                                        clap_param_value *value) noexcept;
+                                        double *value) noexcept;
 
       // clap_plugin_quick_controls
       static uint32_t clapQuickControlsPageCount(const clap_plugin *plugin) noexcept;
@@ -404,10 +383,8 @@ namespace clap {
 
       static const constexpr clap_plugin_params pluginParams_ = {
          clapParamsCount,
-         clapParamsIinfo,
-         clapParamsEnumValue,
+         clapParamsInfo,
          clapParamsValue,
-         clapParamsSetValue,
          clapParamsValueToText,
          clapParamsTextToValue,
       };

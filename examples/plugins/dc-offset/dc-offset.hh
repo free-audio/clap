@@ -3,12 +3,12 @@
 #include "../plugin-helper.hh"
 
 namespace clap {
-   class Gain final : public PluginHelper {
+   class DcOffset final : public PluginHelper {
    private:
       using super = PluginHelper;
 
    public:
-      Gain(const clap_host *host);
+      DcOffset(const clap_host *host);
 
       static const clap_plugin_descriptor *descriptor();
 
@@ -22,5 +22,6 @@ namespace clap {
 
    private:
       int channelCount_ = 1;
+      Parameter *offsetParam_ = nullptr;
    };
 } // namespace clap

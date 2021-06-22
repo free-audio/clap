@@ -48,9 +48,6 @@ PluginHost::PluginHost(Engine &engine) : QObject(&engine), engine_(engine) {
    hostEventLoop_.modify_fd = PluginHost::clapEventLoopModifyFd;
    hostEventLoop_.unregister_fd = PluginHost::clapEventLoopUnregisterFd;
 
-   hostParams_.adjust_begin = PluginHost::clapParamsAdjustBegin;
-   hostParams_.adjust_end = PluginHost::clapParamsAdjustEnd;
-   hostParams_.adjust = PluginHost::clapParamsAdjust;
    hostParams_.rescan = PluginHost::clapParamsRescan;
 
    hostQuickControls_.pages_changed = PluginHost::clapQuickControlsPagesChanged;
@@ -607,7 +604,7 @@ void PluginHost::process() {
    process_.audio_outputs_count = 1;
 
    evOut_.clear();
-   appToEngineQueue_.consume([this](clap_id param_id, clap_param_value value) {
+   appToEngineQueue_.consume([this](clap_id param_id, double value) {
       clap_event ev;
       ev.time = 0;
       ev.type = CLAP_EVENT_PARAM_SET;
@@ -616,9 +613,9 @@ void PluginHost::process() {
       ev.param.channel = -1;
       ev.param.val0 = value;
       ev.param.val1 = value;
-      ev.param.mod0.d = 0;
-      ev.param.mod1.d = 0;
-      ev.param.duration = process_.frames_count;
+      ev.param.mod0 = 0;
+      ev.param.mod1 = 0;
+      ev.param.distance = process_.frames_count;
       evIn_.push_back(ev);
    });
 
@@ -657,7 +654,7 @@ void PluginHost::idle() {
 
    // Try to send events to the audio engine
    appToEngineQueue_.producerDone();
-   engineToAppQueue_.consume([this](clap_id param_id, clap_param_value value) {
+   engineToAppQueue_.consume([this](clap_id param_id, double value) {
       auto it = params_.find(param_id);
       if (it == params_.end()) {
          std::ostringstream msg;
@@ -666,8 +663,6 @@ void PluginHost::idle() {
       }
 
       it->second->setValue(value);
-      if (pluginParams_ && pluginParams_->set_value)
-         pluginParams_->set_value(plugin_, param_id, value, value);
    });
 }
 
@@ -695,104 +690,25 @@ PluginParam &PluginHost::checkValidParamId(const std::string_view &function,
    return *it->second;
 }
 
-void PluginHost::checkValidParamValue(const PluginParam &param, clap_param_value value) {
+void PluginHost::checkValidParamValue(const PluginParam &param, double value) {
    checkForMainThread();
    if (!param.isValueValid(value)) {
       std::ostringstream msg;
       msg << "Invalid value for param. ";
       param.printInfo(msg);
-      msg << "; value: ";
-      param.printValue(value, msg);
+      msg << "; value: " << value;
       // std::cerr << msg.str() << std::endl;
       throw std::invalid_argument(msg.str());
    }
 }
 
-void PluginHost::clapParamsAdjustBegin(const clap_host *host, clap_id param_id) {
-   checkForMainThread();
-
-   auto h = fromHost(host);
-
-   if (h->isPluginActive())
-      throw std::logic_error("Plugin called clap_host_params.begin_adjust() but the plugin is "
-                             "active, it should transmit the event via output param event");
-
-   auto &param = h->checkValidParamId("clap_host_params.touch_begin()", "param_id", param_id);
-
-   if (param.isBeingAdjusted()) {
-      std::ostringstream msg;
-      msg << "Plugin called clap_host_params.adjust_end() on ";
-      param.printShortInfo(msg);
-      msg << ", but this parameter is already marked as being adjusted";
-      throw std::logic_error(msg.str());
-   }
-
-   param.beginAdjust();
-}
-
-void PluginHost::clapParamsAdjustEnd(const clap_host *host, clap_id param_id) {
-   checkForMainThread();
-
-   auto h = fromHost(host);
-
-   if (h->isPluginActive())
-      throw std::logic_error(
-         "Plugin called clap_host_params.end_adjust() but the plugin is active, it should "
-         "transmit the event via output param event");
-
-   auto &param = h->checkValidParamId("clap_host_params.touch_begin()", "param_id", param_id);
-
-   if (!param.isBeingAdjusted()) {
-      std::ostringstream msg;
-      msg << "Plugin called clap_host_params.adjust_end() on ";
-      param.printShortInfo(msg);
-      msg << ", but this parameter is not marked as being adjusted";
-      throw std::logic_error(msg.str());
-   }
-
-   param.endAdjust();
-}
-
-void PluginHost::clapParamsAdjust(const clap_host *host, clap_id param_id, clap_param_value value) {
-   checkForMainThread();
-
-   auto h = fromHost(host);
-
-   if (h->isPluginActive())
-      throw std::logic_error(
-         "Plugin called clap_host_params.adjust() but the plugin is active, it should transmit "
-         "the event via output param event");
-
-   auto &param = h->checkValidParamId("clap_host_params.touch_begin()", "param_id", param_id);
-
-   if (!param.isBeingAdjusted()) {
-      std::ostringstream msg;
-      msg << "Plugin called clap_host_params.adjust() on ";
-      param.printShortInfo(msg);
-      msg << ", but this parameter is not marked as being adjusted";
-      throw std::logic_error(msg.str());
-   }
-
-   h->checkValidParamValue(param, value);
-
-   if (param.isValueEqualTo(value))
-      return;
-
-   param.setValue(value);
-   h->pluginParams_->set_value(h->plugin_, param.info().id, value, value);
-}
-
-void PluginHost::setParamValueByHost(PluginParam &param, clap_param_value value) {
+void PluginHost::setParamValueByHost(PluginParam &param, double value) {
    checkForMainThread();
 
    param.setValue(value);
 
-   if (isPluginActive()) {
-      appToEngineQueue_.set(param.info().id, value);
-      appToEngineQueue_.producerDone();
-   } else {
-      pluginParams_->set_value(plugin_, param.info().id, value, value);
-   }
+   appToEngineQueue_.set(param.info().id, value);
+   appToEngineQueue_.producerDone();
 }
 
 void PluginHost::scanParams() { clapParamsRescan(&host_, CLAP_PARAM_RESCAN_ALL); }
@@ -849,7 +765,7 @@ void PluginHost::clapParamsRescan(const clap_host *host, uint32_t flags) {
             throw std::logic_error(msg.str());
          }
 
-         clap_param_value value = h->getParamValue(info);
+         double value = h->getParamValue(info);
          auto param = std::make_unique<PluginParam>(*h, info, value);
          h->checkValidParamValue(*param, value);
          h->params_.emplace(info.id, std::move(param));
@@ -878,8 +794,8 @@ void PluginHost::clapParamsRescan(const clap_host *host, uint32_t flags) {
             it->second->setInfo(info);
          }
 
-         clap_param_value value = h->getParamValue(info);
-         if (!it->second->isValueEqualTo(value)) {
+         double value = h->getParamValue(info);
+         if (it->second->value() != value) {
             if (!clapParamsRescanMayValueChange(flags)) {
                std::ostringstream msg;
                msg << "a parameter's value did change but, but the flag CLAP_PARAM_RESCAN_VALUES "
@@ -925,8 +841,8 @@ void PluginHost::clapParamsRescan(const clap_host *host, uint32_t flags) {
    }
 }
 
-clap_param_value PluginHost::getParamValue(const clap_param_info &info) {
-   clap_param_value value;
+double PluginHost::getParamValue(const clap_param_info &info) {
+   double value;
    if (pluginParams_->value(plugin_, info.id, &value))
       return value;
 

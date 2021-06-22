@@ -52,7 +52,7 @@ public:
    void terminateThreadPool();
    void threadPoolEntry();
 
-   void setParamValueByHost(PluginParam &param, clap_param_value value);
+   void setParamValueByHost(PluginParam &param, double value);
 
    auto &params() const { return params_; }
    auto &quickControlsPages() const { return quickControlsPages_; }
@@ -82,17 +82,15 @@ private:
    static bool clapIsMainThread(const clap_host *host);
    static bool clapIsAudioThread(const clap_host *host);
 
-   static void  clapParamsAdjustBegin(const clap_host *host, clap_id param_id);
-   static void  clapParamsAdjustEnd(const clap_host *host, clap_id param_id);
-   static void  clapParamsAdjust(const clap_host *host, clap_id param_id, clap_param_value plain_value);
    static void  clapParamsRescan(const clap_host *host, uint32_t flags);
+   static void  clapParamsClear(const clap_host *host, uint32_t flags);
    void         scanParams();
    void         scanParam(int32_t index);
    PluginParam &checkValidParamId(const std::string_view &function,
                                   const std::string_view &param_name,
                                   clap_id                 param_id);
-   void         checkValidParamValue(const PluginParam &param, clap_param_value value);
-   clap_param_value getParamValue(const clap_param_info &info);
+   void         checkValidParamValue(const PluginParam &param, double value);
+   double getParamValue(const clap_param_info &info);
    static bool      clapParamsRescanMayValueChange(uint32_t flags) {
       return flags & (CLAP_PARAM_RESCAN_ALL | CLAP_PARAM_RESCAN_VALUES);
    }

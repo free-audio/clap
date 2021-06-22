@@ -104,11 +104,10 @@ PluginParametersWidget::PluginParametersWidget(QWidget *parent, PluginHost &plug
    isPerNoteLabel_ = new QLabel;
    isPerChannelLabel_ = new QLabel;
    isPeriodicLabel_ = new QLabel;
-   isLockedLabel_ = new QLabel;
-   isAutomatableLabel_ = new QLabel;
+   isReadOnlyLabel_ = new QLabel;
    isHiddenLabel_ = new QLabel;
    isBypassLabel_ = new QLabel;
-   typeLabel_ = new QLabel;
+   isSteppedLabel_ = new QLabel;
    minValueLabel_ = new QLabel;
    maxValueLabel_ = new QLabel;
    defaultValueLabel_ = new QLabel;
@@ -126,11 +125,10 @@ PluginParametersWidget::PluginParametersWidget(QWidget *parent, PluginHost &plug
    formLayout->addRow(tr("is_per_note"), isPerNoteLabel_);
    formLayout->addRow(tr("is_per_channel"), isPerChannelLabel_);
    formLayout->addRow(tr("is_periodic"), isPeriodicLabel_);
-   formLayout->addRow(tr("is_locked"), isLockedLabel_);
-   formLayout->addRow(tr("is_automatable"), isAutomatableLabel_);
+   formLayout->addRow(tr("is_read_only"), isReadOnlyLabel_);
    formLayout->addRow(tr("is_hidden"), isHiddenLabel_);
    formLayout->addRow(tr("is_bypass"), isBypassLabel_);
-   formLayout->addRow(tr("type"), typeLabel_);
+   formLayout->addRow(tr("is_stepped"), isSteppedLabel_);
    formLayout->addRow(tr("min_value"), minValueLabel_);
    formLayout->addRow(tr("max_value"), maxValueLabel_);
    formLayout->addRow(tr("default_value"), defaultValueLabel_);
@@ -160,8 +158,8 @@ void PluginParametersWidget::computeDataModel() {
       auto &param = *it.second;
 
       QString path(param.info().module);
-      auto    modules = path.split("/", Qt::SkipEmptyParts);
-      auto    module = rootModuleItem_;
+      auto modules = path.split("/", Qt::SkipEmptyParts);
+      auto module = rootModuleItem_;
       for (auto &m : modules)
          module = &module->subModule(m);
 
@@ -235,11 +233,10 @@ void PluginParametersWidget::updateParamInfo() {
       isPerNoteLabel_->setText("-");
       isPerChannelLabel_->setText("-");
       isPeriodicLabel_->setText("-");
-      isLockedLabel_->setText("-");
-      isAutomatableLabel_->setText("-");
+      isReadOnlyLabel_->setText("-");
       isHiddenLabel_->setText("-");
       isBypassLabel_->setText("-");
-      typeLabel_->setText("-");
+      isSteppedLabel_->setText("-");
       minValueLabel_->setText("-");
       maxValueLabel_->setText("-");
       defaultValueLabel_->setText("-");
@@ -250,44 +247,18 @@ void PluginParametersWidget::updateParamInfo() {
       idLabel_->setText(QString::number(i.id));
       nameLabel_->setText(i.name);
       moduleLabel_->setText(i.module);
-      isPerNoteLabel_->setText(i.is_per_note ? "true" : "false");
-      isPerChannelLabel_->setText(i.is_per_channel ? "true" : "false");
-      isPeriodicLabel_->setText(i.is_periodic ? "true" : "false");
-      isLockedLabel_->setText(i.is_locked ? "true" : "false");
-      isAutomatableLabel_->setText(i.is_automatable ? "true" : "false");
-      isHiddenLabel_->setText(i.is_hidden ? "true" : "false");
-      isBypassLabel_->setText(i.is_bypass ? "true" : "false");
+      isPerNoteLabel_->setText(i.flags & CLAP_PARAM_IS_PER_NOTE ? "true" : "false");
+      isPerChannelLabel_->setText(i.flags & CLAP_PARAM_IS_PER_CHANNEL ? "true" : "false");
+      isPeriodicLabel_->setText(i.flags & CLAP_PARAM_IS_PERIODIC ? "true" : "false");
+      isReadOnlyLabel_->setText(i.flags & CLAP_PARAM_IS_READONLY ? "true" : "false");
+      isHiddenLabel_->setText(i.flags & CLAP_PARAM_IS_HIDDEN ? "true" : "false");
+      isBypassLabel_->setText(i.flags & CLAP_PARAM_IS_BYPASS ? "true" : "false");
       isBeingAdjusted_->setText(p.isBeingAdjusted() ? "true" : "false");
 
-      switch (i.type) {
-      case CLAP_PARAM_BOOL:
-         typeLabel_->setText("bool");
-         minValueLabel_->setText("-");
-         maxValueLabel_->setText("-");
-         defaultValueLabel_->setText(i.default_value.b ? "true" : "false");
-         break;
-
-      case CLAP_PARAM_INT:
-         typeLabel_->setText("int");
-         minValueLabel_->setText(QString::number(i.min_value.i));
-         maxValueLabel_->setText(QString::number(i.max_value.i));
-         defaultValueLabel_->setText(QString::number(i.default_value.i));
-         break;
-
-      case CLAP_PARAM_ENUM:
-         typeLabel_->setText("enum");
-         minValueLabel_->setText("-");
-         maxValueLabel_->setText("-");
-         defaultValueLabel_->setText(QString::number(i.default_value.i));
-         break;
-
-      case CLAP_PARAM_FLOAT:
-         typeLabel_->setText("float");
-         minValueLabel_->setText(QString::number(i.min_value.d));
-         maxValueLabel_->setText(QString::number(i.max_value.d));
-         defaultValueLabel_->setText(QString::number(i.default_value.d));
-         break;
-      }
+      isSteppedLabel_->setText("float");
+      minValueLabel_->setText(QString::number(i.min_value));
+      maxValueLabel_->setText(QString::number(i.max_value));
+      defaultValueLabel_->setText(QString::number(i.default_value));
    }
 }
 
@@ -309,16 +280,7 @@ void PluginParametersWidget::updateParamValue() {
 
    auto info = currentParam_->info();
    auto v = currentParam_->value();
-   switch (info.type) {
-   case CLAP_PARAM_FLOAT:
-      valueSlider_->setValue(SLIDER_RANGE * (v.d - info.min_value.d) /
-                             (info.max_value.d - info.min_value.d));
-      break;
-   case CLAP_PARAM_INT:
-      valueSlider_->setValue((SLIDER_RANGE * (v.i - info.min_value.i)) /
-                             (info.max_value.i - info.min_value.i));
-      break;
-   }
+   valueSlider_->setValue(SLIDER_RANGE * (v - info.min_value) / (info.max_value - info.min_value));
 }
 
 void PluginParametersWidget::paramInfoChanged() { updateParamInfo(); }
@@ -334,16 +296,6 @@ void PluginParametersWidget::sliderValueChanged(int newValue) {
 
    auto &info = currentParam_->info();
 
-   clap_param_value value;
-   switch (info.type) {
-   case CLAP_PARAM_FLOAT:
-      value.d = newValue * (info.max_value.d - info.min_value.d) / SLIDER_RANGE + info.min_value.d;
-      pluginHost_.setParamValueByHost(*currentParam_, value);
-      break;
-   case CLAP_PARAM_INT:
-      value.i =
-         (newValue * (info.max_value.i - info.min_value.i)) / SLIDER_RANGE + info.min_value.i;
-      pluginHost_.setParamValueByHost(*currentParam_, value);
-      break;
-   }
+   double value = newValue * (info.max_value - info.min_value) / SLIDER_RANGE + info.min_value;
+   pluginHost_.setParamValueByHost(*currentParam_, value);
 }

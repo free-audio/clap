@@ -1,66 +1,27 @@
 #include "plugin-param.hh"
 #include "plugin-host.hh"
 
-PluginParam::PluginParam(PluginHost &           pluginHost,
-                         const clap_param_info &info,
-                         clap_param_value       value)
+PluginParam::PluginParam(PluginHost &pluginHost, const clap_param_info &info, double value)
    : QObject(&pluginHost), info_(info), value_(value), modulated_value_(value) {}
 
-void PluginParam::setValue(clap_param_value v) {
-   if (isValueEqualTo(v))
+void PluginParam::setValue(double v) {
+   if (value_ == v)
       return;
+
    value_ = v;
    valueChanged();
 }
 
-void PluginParam::setModulatedValue(clap_param_value v) {
-   if (areValuesEqual(info_.type, modulated_value_, v))
+void PluginParam::setModulatedValue(double v) {
+   if (modulated_value_ == v)
       return;
+
    modulated_value_ = v;
    modulatedValueChanged();
 }
 
-bool PluginParam::hasRange() const {
-   switch (info_.type) {
-   case CLAP_PARAM_INT:
-   case CLAP_PARAM_FLOAT:
-      return true;
-   default:
-      return false;
-   }
-}
-
-bool PluginParam::areValuesEqual(clap_param_type type, clap_param_value v1, clap_param_value v2) {
-   switch (type) {
-   case CLAP_PARAM_BOOL:
-      return v1.b == v2.b;
-   case CLAP_PARAM_ENUM:
-   case CLAP_PARAM_INT:
-      return v1.i == v2.i;
-   case CLAP_PARAM_FLOAT:
-      return v1.d == v2.d;
-   default:
-      std::terminate();
-   }
-}
-
-bool PluginParam::isValueEqualTo(const clap_param_value v) const {
-   return areValuesEqual(info_.type, value_, v);
-}
-
-bool PluginParam::isValueValid(const clap_param_value v) const {
-   switch (info_.type) {
-   case CLAP_PARAM_BOOL:
-      return true;
-   case CLAP_PARAM_ENUM:
-      return enum_entries_.find(v.i) != enum_entries_.end();
-   case CLAP_PARAM_INT:
-      return info_.min_value.i <= v.i && v.i <= info_.max_value.i;
-   case CLAP_PARAM_FLOAT:
-      return info_.min_value.d <= v.d && v.d <= info_.max_value.d;
-   default:
-      std::terminate();
-   }
+bool PluginParam::isValueValid(const double v) const {
+   return info_.min_value <= v && v <= info_.max_value;
 }
 
 void PluginParam::printShortInfo(std::ostream &os) const {
@@ -69,54 +30,17 @@ void PluginParam::printShortInfo(std::ostream &os) const {
 
 void PluginParam::printInfo(std::ostream &os) const {
    printShortInfo(os);
-
-   if (hasRange()) {
-      os << ", min: ";
-      printValue(info_.min_value, os);
-      os << ", max: ";
-      printValue(info_.max_value, os);
-   }
-}
-
-void PluginParam::printValue(const clap_param_value v, std::ostream &os) const {
-   switch (info_.type) {
-   case CLAP_PARAM_BOOL:
-      os << (v.b ? "true" : "false");
-      return;
-   case CLAP_PARAM_ENUM: {
-      auto it = enum_entries_.find(v.i);
-      if (it != enum_entries_.end())
-         os << it->second << "=" << v.i;
-      else
-         os << "(unknown enum entry)=" << v.i;
-   }
-      return;
-   case CLAP_PARAM_INT:
-      os << v.i;
-      return;
-   case CLAP_PARAM_FLOAT:
-      os << v.d;
-      return;
-   default:
-      std::terminate();
-   }
+   os << ", min: " << info_.min_value << ", max: " << info_.max_value;
 }
 
 bool PluginParam::isInfoEqualTo(const clap_param_info &info) const {
-   return !isInfoCriticallyDifferentTo(info) &&
-          !strncmp(info_.name, info.name, sizeof(info.name)) &&
-          !strncmp(info_.module, info.module, sizeof(info.module)) &&
-          info_.is_used == info.is_used && info_.is_periodic == info.is_periodic &&
-          info_.is_hidden == info.is_hidden && info_.is_bypass == info.is_bypass &&
-          areValuesEqual(info.type, info_.default_value, info_.default_value);
+   return !std::memcmp(&info, &info_, sizeof(clap_param_info));
 }
 
 bool PluginParam::isInfoCriticallyDifferentTo(const clap_param_info &info) const {
-   return info_.id != info.id || info_.is_per_note != info.is_per_note ||
-          info_.is_per_channel != info.is_per_channel || info_.is_locked != info.is_locked ||
-          info_.is_automatable != info.is_automatable || info_.type != info.type ||
-          ((info.type == CLAP_PARAM_INT || info.type == CLAP_PARAM_FLOAT) &&
-              !areValuesEqual(info.type, info_.min_value, info_.min_value) ||
-           !areValuesEqual(info.type, info_.max_value, info_.max_value)) ||
-          (info.type == CLAP_PARAM_ENUM && info.enum_entry_count != info_.enum_entry_count);
+   assert(info_.id == info.id);
+   return (info_.flags & CLAP_PARAM_IS_PER_NOTE) == (info.flags & CLAP_PARAM_IS_PER_NOTE) ||
+          (info_.flags & CLAP_PARAM_IS_PER_CHANNEL) == (info.flags & CLAP_PARAM_IS_PER_CHANNEL) ||
+          (info_.flags & CLAP_PARAM_IS_READONLY) == (info.flags & CLAP_PARAM_IS_READONLY) ||
+          info_.min_value != info_.min_value || info_.max_value != info_.max_value;
 }

@@ -84,11 +84,10 @@ private:
    QLabel * isPerNoteLabel_ = nullptr;
    QLabel * isPerChannelLabel_ = nullptr;
    QLabel * isPeriodicLabel_ = nullptr;
-   QLabel * isLockedLabel_ = nullptr;
-   QLabel * isAutomatableLabel_ = nullptr;
+   QLabel * isReadOnlyLabel_ = nullptr;
    QLabel * isHiddenLabel_ = nullptr;
    QLabel * isBypassLabel_ = nullptr;
-   QLabel * typeLabel_ = nullptr;
+   QLabel * isSteppedLabel_ = nullptr;
    QLabel * minValueLabel_ = nullptr;
    QLabel * maxValueLabel_ = nullptr;
    QLabel * defaultValueLabel_ = nullptr;

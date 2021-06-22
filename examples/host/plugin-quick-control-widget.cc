@@ -63,17 +63,8 @@ void PluginQuickControlWidget::dialValueChanged(int newValue) {
 
    auto &info = param_->info();
 
-   clap_param_value value;
-   switch (info.type) {
-   case CLAP_PARAM_FLOAT:
-      value.d = newValue * (info.max_value.d - info.min_value.d) / DIAL_RANGE + info.min_value.d;
-      pluginHost_.setParamValueByHost(*param_, value);
-      break;
-   case CLAP_PARAM_INT:
-      value.i = (newValue * (info.max_value.i - info.min_value.i)) / DIAL_RANGE + info.min_value.i;
-      pluginHost_.setParamValueByHost(*param_, value);
-      break;
-   }
+   double value = newValue * (info.max_value - info.min_value) / DIAL_RANGE + info.min_value;
+   pluginHost_.setParamValueByHost(*param_, value);
 }
 void PluginQuickControlWidget::updateParamValue() {
    if (!param_)
@@ -84,16 +75,7 @@ void PluginQuickControlWidget::updateParamValue() {
 
    auto info = param_->info();
    auto v = param_->value();
-   switch (info.type) {
-   case CLAP_PARAM_FLOAT:
-      dial_->setValue(DIAL_RANGE * (v.d - info.min_value.d) /
-                      (info.max_value.d - info.min_value.d));
-      break;
-   case CLAP_PARAM_INT:
-      dial_->setValue((DIAL_RANGE * (v.i - info.min_value.i)) /
-                      (info.max_value.i - info.min_value.i));
-      break;
-   }
+   dial_->setValue(DIAL_RANGE * (v - info.min_value) / (info.max_value - info.min_value));
 }
 
 void PluginQuickControlWidget::updateParamInfo() {

@@ -27,29 +27,14 @@ namespace clap {
    };
 
    Gain::Gain(const clap_host *host) : PluginHelper(descriptor(), host) {
-      parameters_.addParameter({
-         .info =
-            {
-               .id = kParamIdGain,
-               .name = "gain",
-               .module = "/",
-               .is_per_note = false,
-               .is_per_channel = false,
-               .is_used = true,
-               .is_periodic = false,
-               .is_locked = false,
-               .is_automatable = true,
-               .is_hidden = false,
-               .is_bypass = false,
-               .type = CLAP_PARAM_FLOAT,
-               .min_value = {.d = -120},
-               .max_value = {.d = 20},
-               .default_value = {.d = 0},
-               .enum_entry_count = 0,
-            },
-         .enumDefinition = {},
-         .value = {.d = 0},
-         .modulation = {.d = 0},
+      parameters_.addParameter(clap_param_info{
+         .id = kParamIdGain,
+         .name = "gain",
+         .module = "/",
+         .flags = 0,
+         .min_value = -1,
+         .max_value = 1,
+         .default_value = 0,
       });
    }
 

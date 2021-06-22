@@ -35,33 +35,17 @@ namespace clap {
       uint32_t paramsCount() const noexcept override { return parameters_.count(); }
 
       bool paramsInfo(int32_t paramIndex, clap_param_info *info) const noexcept override {
-         *info = parameters_.getByIndex(paramIndex)->info;
+         *info = parameters_.getByIndex(paramIndex)->info();
          return true;
       }
 
-      bool paramsEnumValue(clap_id paramId,
-                           int32_t valueIndex,
-                           clap_param_value *value) noexcept override {
-         value->i = parameters_.getById(paramId)->enumDefinition.entries[valueIndex].value;
+      virtual bool paramsValue(clap_id paramId, double *value) noexcept override {
+         *value = parameters_.getById(paramId)->value();
          return true;
-      }
-
-      virtual bool paramsValue(clap_id paramId, clap_param_value *value) noexcept override {
-         *value = parameters_.getById(paramId)->value;
-         return true;
-      }
-
-      virtual bool paramsSetValue(clap_id paramId,
-                                  clap_param_value value,
-                                  clap_param_value modulation) noexcept override {
-         auto p = parameters_.getById(paramId);
-         p->value = value;
-         p->modulation = modulation;
-         return false;
       }
 
       virtual bool paramsValueToText(clap_id paramId,
-                                     clap_param_value value,
+                                     double value,
                                      char *display,
                                      uint32_t size) noexcept override {
          // TODO
@@ -70,7 +54,7 @@ namespace clap {
 
       virtual bool paramsTextToValue(clap_id param_id,
                                      const char *display,
-                                     clap_param_value *value) noexcept override {
+                                     double *value) noexcept override {
          // TODO
          return false;
       }
