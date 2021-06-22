@@ -1,12 +1,12 @@
 #pragma once
 
-#include "../clap.h"
+#include "../../clap.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define CLAP_EXT_MIDI_MAPPINGS "clap/midi-mappings"
+#define CLAP_EXT_MIDI_MAPPINGS "clap/draft/midi-mappings"
 
 enum {
    CLAP_MIDI_MAPPING_CC7,

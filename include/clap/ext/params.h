@@ -17,24 +17,14 @@ extern "C" {
 /// The host can read at any time parameters value on the [main-thread] using
 /// @ref clap_plugin_params.value().
 ///
-/// There is a single way at a time for the host to set parameters value.
-/// - if the plugin is active, send @ref CLAP_EVENT_PARAM_SET during the process call [audio-thread]
-/// - if the plugin is not active, call @ref clap_plugin_params.set_value [main-thread]
-///
-/// Rationale: Ideally there would be a single way to set parameters values.
-/// Sending @ref CLAP_EVENT_PARAM_SET via @ref clap_plugin.process is the natural way to play
-/// parameter automation. But, the process call is only possible if the plugin is active. If the
-/// plugin is not active, then everything happens on the [main-thread] using @ref clap_plugin_params
-/// and @ref clap_host_params interfaces.
+/// There is a single way for the host to set parameters value:
+/// - send @ref CLAP_EVENT_PARAM_SET during the process call [audio-thread]
 ///
 /// When the plugin changes a parameter value, it must inform the host.
-/// If the plugin is active, it will send @ref CLAP_EVENT_PARAM_SET during the process call
+/// It will send @ref CLAP_EVENT_PARAM_SET during the process call
 /// - set @ref clap_event_param.begin_adjust to mark the begining of automation recording
 /// - set @ref clap_event_param.end_adjust to mark the end of automation recording
-/// If the plugin is not active, it will use:
-/// - @ref clap_host_params.adjust_begin() - marks the begining of automation recording
-/// - @ref clap_host_params.adjust() - adds a new point in the automation recording
-/// - @ref clap_host_params.adjust_end() - marks the end of automation recording
+/// - set @ref clap_event_param.should_record to true if the event should be recorded
 ///
 /// @note MIDI CCs are a tricky because you may not know when the parameter adjustment ends.
 /// Also if the hosts records incoming MIDI CC and parameter change automation at the same time,
@@ -42,12 +32,9 @@ extern "C" {
 /// The parameter automation will always target the same parameter because the param_id is stable.
 /// The MIDI CC may have a different mapping in the future and may result in a different playback.
 ///
-/// It is recommanded to use @ref clap_plugin_midi_mappings to let the host solve
-/// this problem and offer a consistent experience to the user across different plugins.
-///
-/// There is an other option to handle MIDI CC if you don't want to use @ref clap_midi_mappings,
-/// which is to set @ref clap_event_param.should_record to false. Then the host will record the
-/// MIDI CC automation, but not the parameter change and there won't be conflict at playback.
+/// When a MIDI CC changes a parameter's value, set @ref clap_event_param.should_record to false.
+/// That way the host will record the MIDI CC automation, but not the parameter change and there
+/// won't be conflict at playback.
 ///
 /// Scenarios:
 ///
@@ -63,16 +50,11 @@ extern "C" {
 ///   The plugin is resonsible to update both its audio processor and its gui.
 ///
 /// II. Turning a knob on the DAW interface
-/// - if the plugin is active, the host will send a @ref CLAP_EVENT_PARAM_SET event to the plugin
-/// - if the plugin is not active, the host will call @ref clap_plugin_params.set_value
+/// - the host will send a @ref CLAP_EVENT_PARAM_SET event to the plugin via a process call
 ///
 /// III. Turning a knob on the Plugin interface
-/// - if the plugin is not active
-///   - host_params->begin_adjust(...)
-///   - host_params->adjust(...) many times -> updates host's knob and record automation
-///   - host_params->end_adjust(...)
-/// - if the plugin is active
-///   - send CLAP_PARAM_SET event and don't forget to set begin_adjust, end_adjust and should_record attributes
+/// - send CLAP_PARAM_SET event and don't forget to set begin_adjust, end_adjust and should_record
+///   attributes
 /// - the plugin is responsible to send the parameter value to its audio processor
 ///
 /// IV. Turning a knob via automation
@@ -80,22 +62,41 @@ extern "C" {
 /// - the plugin is responsible to update its GUI
 ///
 /// V. Turning a knob via internal MIDI mapping
-/// - the plugin sends a CLAP_EVENT_PARAM_SET output event
+/// - the plugin sends a CLAP_EVENT_PARAM_SET output event, set should_record to false
 /// - the plugin is responsible to update its GUI
 ///
 /// VI. Adding or removing parameters
 /// - call host_params->rescan(CLAP_PARAM_RESCAN_ALL)
 /// - if the plugin is activated, apply the new parameters once the host deactivates the plugin
+/// - if a parameter is created with an id that may have been used before, call:
+///   - clap_host_params.clear(host, param_id, CLAP_PARAM_CLEAR_ALL)
 
 #define CLAP_EXT_PARAMS "clap/params"
 
 enum {
-   CLAP_PARAM_FLOAT = 0, // uses value.d
-   CLAP_PARAM_BOOL = 1,  // uses value.b
-   CLAP_PARAM_INT = 2,   // uses value.i
-   CLAP_PARAM_ENUM = 3,  // uses value.i
+   // Is this param stepped? (integer values only)
+   // if so the double value is converted to integer using a cast (equivalent to trunc).
+   CLAP_PARAM_STEPPED = 1 << 0,
+
+   // Does this param supports per note automations?
+   CLAP_PARAM_IS_PER_NOTE = 1 << 1,
+
+   // Does this param supports per channel automations?
+   CLAP_PARAM_IS_PER_CHANNEL = 1 << 2,
+
+   // Useful for phase ;-)
+   CLAP_PARAM_IS_PERIODIC = 1 << 3,
+
+   // The parameter should not be shown to the user,
+   // this can be useful if a parameter is not used in a patch.
+   CLAP_PARAM_IS_HIDDEN = 1 << 4,
+
+   // This parameter bypass the sed to merge the plugin and host bypass button.
+   CLAP_PARAM_IS_BYPASS = 1 << 5,
+
+   // The parameter can't be changed by the host.
+   CLAP_PARAM_IS_READONLY = 1 << 6,
 };
-typedef uint32_t clap_param_type;
 
 /* This describes the parameter and provides the current value */
 typedef struct clap_param_info {
@@ -106,22 +107,10 @@ typedef struct clap_param_info {
                                      // "/filters/moog"; '/' will be used as a
                                      // separator to show a tree like structure.
 
-   bool is_per_note;    // does this param supports per note automations?
-   bool is_per_channel; // does this param supports per channel automations?
-   bool is_used;        // is this parameter used by the patch?
-   bool is_periodic;    // after the last value, go back to the first one
-   bool is_locked;      // if true, the parameter can't be changed by the host
-   bool is_automatable; // can the host send param event to change it in the process call?
-   bool is_hidden; // don't show it to the user, unless the parameter is already used (automation,
-                   // modulation, controller mapping)
-   bool is_bypass; // used to merge the plugin and host bypass button.
-
-   /* value */
-   clap_param_type  type;             // this field is not allowed to change for a given param id
-   clap_param_value min_value;        // minimum plain value
-   clap_param_value max_value;        // maximum plain value
-   clap_param_value default_value;    // default plain value
-   uint32_t         enum_entry_count; // the number of values in the enum, if type is an enum
+   uint32_t flags;
+   double   min_value;     // minimum plain value
+   double   max_value;     // maximum plain value
+   double   default_value; // default plain value
 } clap_param_info;
 
 typedef struct clap_plugin_params {
@@ -133,37 +122,19 @@ typedef struct clap_plugin_params {
    // [main-thread]
    bool (*info)(const clap_plugin *plugin, int32_t param_index, clap_param_info *param_info);
 
-   // [main-thread]
-   bool (*enum_value)(const clap_plugin *plugin,
-                      clap_id            param_id,
-                      int32_t            value_index,
-                      clap_param_value * value);
-
    // Gets the parameter plain value.
    // [main-thread]
-   bool (*value)(const clap_plugin *plugin, clap_id param_id, clap_param_value *value);
-
-   // Sets the parameter plain value.
-   // If the plupin is activated, then the host must send a param event
-   // in the next process call to update the audio processor.
-   // [main-thread]
-   bool (*set_value)(const clap_plugin *plugin,
-                     clap_id            param_id,
-                     clap_param_value   value,
-                     clap_param_value   modulation);
+   bool (*value)(const clap_plugin *plugin, clap_id param_id, double *value);
 
    // Formats the display text for the given parameter value.
    // [thread-safe,lock-wait-free]
-   bool (*value_to_text)(const clap_plugin *plugin,
-                         clap_id            param_id,
-                         clap_param_value   value,
-                         char *             display,
-                         uint32_t           size);
+   bool (*value_to_text)(
+      const clap_plugin *plugin, clap_id param_id, double value, char *display, uint32_t size);
 
    bool (*text_to_value)(const clap_plugin *plugin,
                          clap_id            param_id,
                          const char *       display,
-                         clap_param_value * value);
+                         double *           value);
 } clap_plugin_params;
 
 enum {
@@ -176,10 +147,7 @@ enum {
    // The parameter info did change, use this flag for:
    // - name change
    // - module change
-   // - is_modulable
-   // - is_used
-   // - is_periodic
-   // - is_hidden
+   // - flags
    // New info takes effect immediately.
    CLAP_PARAM_RESCAN_INFO = 1 << 1,
 
@@ -191,12 +159,10 @@ enum {
    // - some parameters had critical changes which requieres to invalidate the host queues:
    //   - is_per_note
    //   - is_per_channel
-   //   - is_automatable
-   //   - is_locked
+   //   - is_readonly
    //   - is_bypass
    //   - min_value
    //   - max_value
-   //   - enum definition (enum_entry_count or enum value)
    //
    // The plugin can't perform the parameter list change immediately:
    // 1. host_params->rescan(host, CLAP_PARAM_RESCAN_ALL);
@@ -209,22 +175,25 @@ enum {
    CLAP_PARAM_RESCAN_ALL = 1 << 2,
 };
 
+enum {
+   // Clears all possible references to a parameter
+   CLAP_PARAM_CLEAR_ALL = 1 << 0,
+
+   // Clears all automations to a parameter
+   CLAP_PARAM_CLEAR_AUTOMATIONS = 1 << 1,
+
+   // Clears all modulations to a parameter
+   CLAP_PARAM_CLEAR_MODULATIONS = 1 << 2,
+};
+
 typedef struct clap_host_params {
-   /* [main-thread] */
-   void (*adjust_begin)(const clap_host *host, clap_id param_id);
-
-   // If the plugin is activated, the host must send a parameter update
-   // in the next process call to update the audio processor.
-   // Only for value changes that happens in the gui.
-   // [main-thread]
-   void (*adjust)(const clap_host *host, clap_id param_id, clap_param_value value);
-
-   /* [main-thread] */
-   void (*adjust_end)(const clap_host *host, clap_id param_id);
-
    // Rescan the full list of parameters according to the flags.
    // [main-thread]
    void (*rescan)(const clap_host *host, uint32_t flags);
+
+   // Clears references to a parameter
+   // [main-thread]
+   void (*clear)(const clap_host *host, clap_id param_id, uint32_t flags);
 } clap_host_params;
 
 #ifdef __cplusplus

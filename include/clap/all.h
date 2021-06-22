@@ -26,3 +26,4 @@
 #include "ext/draft/file-reference.h"
 #include "ext/draft/vst2-convert.h"
 #include "ext/draft/vst3-convert.h"
+#include "ext/draft/midi-mappings.h"

@@ -55,16 +55,10 @@ typedef struct clap_event_note_expression {
    clap_note_expression expression_id;
    int32_t              key;     // 0..127, or -1 to match all keys
    int32_t              channel; // 0..15, or -1 to match all channels
-   double               val0;   // see expression for the range
+   double               val0;    // see expression for the range
    double               val1;
    uint32_t             duration;
 } clap_event_note_expression;
-
-typedef union clap_param_value {
-   bool    b;
-   double  d;
-   int64_t i;
-} clap_param_value;
 
 typedef struct clap_event_param {
    // selects if the events targets a specific key or channel, -1 for global;
@@ -87,11 +81,11 @@ typedef struct clap_event_param {
    //    held until the next PARAM_EVENT
    // 2. you get the next y0 which is different from the previous y1 but at
    //    the same sample time; the param jumps and may not be smoothed
-   clap_param_value val0;
-   clap_param_value val1;
-   clap_param_value mod0;
-   clap_param_value mod1;
-   uint32_t         duration;
+   double   val0;
+   double   val1;
+   double   mod0;
+   double   mod1;
+   uint32_t distance;
 
    // only used by the plugin for output events
    bool begin_adjust;
