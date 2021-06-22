@@ -55,8 +55,9 @@ typedef struct clap_event_note_expression {
    clap_note_expression expression_id;
    int32_t              key;     // 0..127, or -1 to match all keys
    int32_t              channel; // 0..15, or -1 to match all channels
-   double               value;   // see expression for the range
-   double               ramp;
+   double               val0;   // see expression for the range
+   double               val1;
+   uint32_t             duration;
 } clap_event_note_expression;
 
 typedef union clap_param_value {
@@ -73,17 +74,24 @@ typedef struct clap_event_param {
    // target parameter
    clap_id param_id;
 
-   // The value that we hear is value + modulation
+   // The following values represent a linear segment.
+   // The value that we hear is:
+   //     (val0 + mod0) * (1 - x) + (val1 + mod1) * x
    // If the plugin receives MIDI CC or overrides the automation playback because of a
    // GUI takeover, it should add the modulation and preserve the modulation playback
-   clap_param_value value;
-   clap_param_value modulation;
-
-   // the ramps are constant value that are added to value every samples
-   // they are valid until the end of the block or the next event
-   // If this event happens at time T, the value at time K is value + (K - T) * ramp.
-   double value_ramp;
-   double modulation_ramp;
+   //
+   // The modulation do no apply to enum parameter type.
+   //
+   // There are two discontinuities:
+   // 1. you get no segment info for N samples; the last value should be
+   //    held until the next PARAM_EVENT
+   // 2. you get the next y0 which is different from the previous y1 but at
+   //    the same sample time; the param jumps and may not be smoothed
+   clap_param_value val0;
+   clap_param_value val1;
+   clap_param_value mod0;
+   clap_param_value mod1;
+   uint32_t         duration;
 
    // only used by the plugin for output events
    bool begin_adjust;

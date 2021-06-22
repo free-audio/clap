@@ -614,8 +614,11 @@ void PluginHost::process() {
       ev.param.param_id = param_id;
       ev.param.key = -1;
       ev.param.channel = -1;
-      ev.param.value_ramp = 0;
-      ev.param.value = value;
+      ev.param.val0 = value;
+      ev.param.val1 = value;
+      ev.param.mod0.d = 0;
+      ev.param.mod1.d = 0;
+      ev.param.duration = process_.frames_count;
       evIn_.push_back(ev);
    });
 
@@ -633,7 +636,7 @@ void PluginHost::process() {
    for (auto &ev : evOut_) {
       switch (ev.type) {
       case CLAP_EVENT_PARAM_SET:
-         engineToAppQueue_.set(ev.param.param_id, ev.param.value);
+         engineToAppQueue_.set(ev.param.param_id, ev.param.val0);
          break;
       }
    }
