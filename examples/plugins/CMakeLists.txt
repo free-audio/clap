@@ -1,3 +1,5 @@
+find_package(Boost REQUIRED COMPONENTS serialization iostreams)
+
 add_library(
   clap-plugins SHARED
   clap-entry.cc
@@ -6,9 +8,10 @@ add_library(
   parameter-interpolator.hh
   plugin-helper.cc
   plugin-helper.hh
+  stream-helper.hh
   dc-offset/dc-offset.hh
   dc-offset/dc-offset.cc
   gain/gain.hh
   gain/gain.cc)
-target_link_libraries(clap-plugins clap-plugin-glue)
+target_link_libraries(clap-plugins clap-plugin-glue Boost::serialization Boost::iostreams)
 set_target_properties(clap-plugins PROPERTIES CXX_STANDARD 20)

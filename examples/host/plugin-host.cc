@@ -53,7 +53,7 @@ PluginHost::PluginHost(Engine &engine) : QObject(&engine), engine_(engine) {
    hostQuickControls_.pages_changed = PluginHost::clapQuickControlsPagesChanged;
    hostQuickControls_.selected_page_changed = PluginHost::clapQuickControlsSelectedPageChanged;
 
-   hostState_.mark_dirty = PluginHost::clapMarkSetDirty;
+   hostState_.mark_dirty = PluginHost::clapStateMarkDirty;
 
    initThreadPool();
 }
@@ -977,7 +977,7 @@ bool PluginHost::loadNativePluginPreset(const std::string &path) {
    return pluginPresetLoad_->from_file(plugin_, path.c_str());
 }
 
-void PluginHost::clapMarkSetDirty(const clap_host *host) {
+void PluginHost::clapStateMarkDirty(const clap_host *host) {
    checkForMainThread();
 
    auto h = fromHost(host);
@@ -986,7 +986,7 @@ void PluginHost::clapMarkSetDirty(const clap_host *host) {
       throw std::logic_error("Plugin called clap_host_state.set_dirty() but the host does not "
                              "provide a complete clap_plugin_state interface.");
 
-   // TODO set dirty
+   h->stateIsDirty_ = true;
 }
 
 void PluginHost::setPluginState(PluginState state) {

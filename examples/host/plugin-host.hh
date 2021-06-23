@@ -117,7 +117,7 @@ private:
    /* clap host gui callbacks */
    static bool clapGuiResize(const clap_host *host, int32_t width, int32_t height);
 
-   static void clapMarkSetDirty(const clap_host *host);
+   static void clapStateMarkDirty(const clap_host *host);
 
 private:
    Engine &engine_;
@@ -213,6 +213,7 @@ private:
    void setPluginState(PluginState state);
 
    PluginState state_ = Inactive;
+   bool        stateIsDirty_ = false;
    bool        scheduleDeactivateForParameterScan_ = false;
    uint32_t    scheduleParamsRescanFlags_ = 0;
 };

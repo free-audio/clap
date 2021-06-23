@@ -3,6 +3,12 @@
 #include <unordered_map>
 #include <vector>
 
+#include <boost/serialization/serialization.hpp>
+#include <boost/serialization/split_member.hpp>
+#include <boost/serialization/version.hpp>
+#include <boost/serialization/vector.hpp>
+#include <boost/serialization/utility.hpp>
+
 #include <clap/all.h>
 
 #include "parameter-interpolator.hh"
@@ -16,6 +22,10 @@ namespace clap {
       const double modulation() const noexcept { return modulation_; }
       const double modulatedValue() const noexcept { return value_ + modulation_; }
       const clap_param_info &info() const noexcept { return info_; }
+
+      void setDefaultValue() {
+         setValue(info_.default_value, 0);
+      }
 
       void setValue(double val, double mod) {
          value_ = val;
@@ -56,6 +66,16 @@ namespace clap {
       }
 
    private:
+      friend class boost::serialization::access;
+      // When the class Archive corresponds to an output archive, the
+      // & operator is defined similar to <<.  Likewise, when the class Archive
+      // is a type of input archive the & operator is defined similar to >>.
+      template <class Archive>
+      void serialize(Archive &ar, const unsigned int version) {
+         ar &info_.id;
+         ar &value_;
+      }
+
       clap_param_info info_;
 
       double value_;
@@ -83,7 +103,40 @@ namespace clap {
       Parameter *getById(clap_id id) const noexcept;
 
    private:
+      friend class boost::serialization::access;
+
+      template <class Archive>
+      void save(Archive &ar, const unsigned int version) const {
+         std::vector<std::pair<clap_id, double>> values;
+         for (auto &p : params_)
+            values.emplace_back(p->info().id, p->value());
+
+         ar << values;
+      }
+
+      template <class Archive>
+      void load(Archive &ar, const unsigned int version) {
+         std::vector<std::pair<clap_id, double>> values;
+         ar >> values;
+
+         for (auto & p : params_)
+            p->setDefaultValue();
+
+         for (auto &v : values)
+         {
+            auto *p = getById(v.first);
+            if (!p)
+               continue;
+            p->setValue(v.second, 0);
+         }
+      }
+
+      BOOST_SERIALIZATION_SPLIT_MEMBER()
+
       std::vector<std::unique_ptr<Parameter>> params_;
       std::unordered_map<clap_id, Parameter *> id2param_;
    };
+
 } // namespace clap
+
+BOOST_CLASS_VERSION(clap::Parameters, 1)

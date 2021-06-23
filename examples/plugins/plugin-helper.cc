@@ -1,4 +1,8 @@
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+
 #include "plugin-helper.hh"
+#include "stream-helper.hh"
 
 namespace clap {
 
@@ -53,4 +57,26 @@ namespace clap {
    }
 
    bool PluginHelper::audioPortsSetConfig(clap_id config_id) noexcept { return false; }
+
+   bool PluginHelper::stateSave(clap_ostream *stream) noexcept {
+      try {
+         OStream os(stream);
+         boost::archive::text_oarchive ar(os);
+         ar << parameters_;
+      } catch (...) {
+         return false;
+      }
+      return true;
+   }
+
+   bool PluginHelper::stateLoad(clap_istream *stream) noexcept {
+      try {
+         IStream is(stream);
+         boost::archive::text_iarchive ar(is);
+         ar >> parameters_;
+      } catch (...) {
+         return false;
+      }
+      return true;
+   }
 } // namespace clap

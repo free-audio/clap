@@ -66,7 +66,6 @@ namespace clap {
       virtual bool implementsState() const noexcept { return false; }
       virtual bool stateSave(clap_ostream *stream) noexcept { return false; }
       virtual bool stateLoad(clap_istream *stream) noexcept { return false; }
-      virtual bool stateIsDirty() const noexcept { return false; }
       void stateMarkDirty() const noexcept {
          if (canUseState())
             hostState_->mark_dirty(host_);
@@ -274,7 +273,6 @@ namespace clap {
       // clap_plugin_state
       static bool clapStateSave(const clap_plugin *plugin, clap_ostream *stream) noexcept;
       static bool clapStateLoad(const clap_plugin *plugin, clap_istream *stream) noexcept;
-      static bool clapStateIsDirty(const clap_plugin *plugin) noexcept;
 
       // clap_plugin_preset
       static bool clapPresetLoadFromFile(const clap_plugin *plugin, const char *path) noexcept;
@@ -362,7 +360,6 @@ namespace clap {
       static const constexpr clap_plugin_state pluginState_ = {
          clapStateSave,
          clapStateLoad,
-         clapStateIsDirty,
       };
 
       static const constexpr clap_plugin_preset_load pluginPresetLoad_ = {

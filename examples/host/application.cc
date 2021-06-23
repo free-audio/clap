@@ -22,10 +22,10 @@ Application::Application(int argc, char **argv)
    assert(!instance_);
    instance_ = this;
 
-   QApplication::setOrganizationDomain("u-he.com");
-   QApplication::setOrganizationName("u-he");
-   QApplication::setApplicationName("uhost");
-   QApplication::setApplicationVersion("1.0");
+   setOrganizationDomain("u-he.com");
+   setOrganizationName("u-he");
+   setApplicationName("uhost");
+   setApplicationVersion("1.0");
 
    parseCommandLine();
 

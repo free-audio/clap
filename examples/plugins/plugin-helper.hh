@@ -10,15 +10,21 @@ namespace clap {
       PluginHelper(const clap_plugin_descriptor *desc, const clap_host *host);
 
    protected:
-      // clap_plugin
+      //-------------//
+      // clap_plugin //
+      //-------------//
       bool init() noexcept override;
       void initTrackInfo() noexcept;
 
-      // clap_plugin_track_info
+      //------------------------//
+      // clap_plugin_track_info //
+      //------------------------//
       bool implementsTrackInfo() const noexcept override { return true; }
       void trackInfoChanged() noexcept override;
 
-      // clap_plugin_audio_ports
+      //-------------------------//
+      // clap_plugin_audio_ports //
+      //-------------------------//
       bool implementsAudioPorts() const noexcept override;
       uint32_t audioPortsCount(bool is_input) const noexcept override;
       bool audioPortsInfo(uint32_t index,
@@ -29,7 +35,9 @@ namespace clap {
                                clap_audio_ports_config *config) const noexcept override;
       bool audioPortsSetConfig(clap_id config_id) noexcept override;
 
-      // clap_plugin_params
+      //--------------------//
+      // clap_plugin_params //
+      //--------------------//
       bool implementsParams() const noexcept override { return true; }
 
       uint32_t paramsCount() const noexcept override { return parameters_.count(); }
@@ -58,6 +66,13 @@ namespace clap {
          // TODO
          return false;
       }
+
+      //-------------------//
+      // clap_plugin_state //
+      //-------------------//
+      bool implementsState() const noexcept override { return true; }
+      bool stateSave(clap_ostream *stream) noexcept override;
+      bool stateLoad(clap_istream *stream) noexcept override;
 
       //////////////////////
       // Cached Host Info //

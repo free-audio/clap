@@ -283,13 +283,6 @@ namespace clap {
       return self.stateLoad(stream);
    }
 
-   bool Plugin::clapStateIsDirty(const clap_plugin *plugin) noexcept {
-      auto &self = from(plugin);
-      self.ensureMainThread("clap_plugin_state.is_dirty");
-
-      return self.stateIsDirty();
-   }
-
    //-------------------------//
    // clap_plugin_preset_load //
    //-------------------------//
