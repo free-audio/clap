@@ -37,7 +37,7 @@
 extern "C" {
 #endif
 
-#define CLAP_VERSION CLAP_VERSION_MAKE(0, 5, 0)
+#define CLAP_VERSION CLAP_VERSION_MAKE(0, 6, 0)
 
 /////////////
 // PROCESS //
