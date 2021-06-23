@@ -19,14 +19,12 @@ typedef struct clap_plugin_state {
    // Returns true if the state was correctly restored.
    // [main-thread]
    bool (*load)(const clap_plugin *plugin, clap_istream *stream);
-
-   // [main-thread]
-   bool (*is_dirty)(const clap_plugin *plugin);
 } clap_plugin_state;
 
 typedef struct clap_host_state {
    // Tell the host that the plugin state has changed and should be saved again.
-   // [thread-safe]
+   // If a parameter value changes, then it is implicit that the state is dirty.
+   // [main-thread]
    void (*mark_dirty)(const clap_host *host);
 } clap_host_state;
 
