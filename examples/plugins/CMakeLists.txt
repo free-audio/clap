@@ -9,6 +9,11 @@ add_library(
   plugin-helper.cc
   plugin-helper.hh
   stream-helper.hh
+
+  abstract-gui.hh
+  remote-gui.hh
+  remote-gui.cc
+
   dc-offset/dc-offset.hh
   dc-offset/dc-offset.cc
   gain/gain.hh

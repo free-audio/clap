@@ -4,11 +4,13 @@
 
 namespace clap {
 
+   class PluginHelper;
    class AbstractGui {
    public:
-      virtual ~AbstractGui();
+      AbstractGui(PluginHelper &plugin) : plugin_(plugin) {}
+      virtual ~AbstractGui() = default;
 
-      virtual bool attach(void *nsView) noexcept = 0;
+      virtual bool attachCocoa(void *nsView) noexcept = 0;
       virtual bool attachWin32(clap_hwnd window) noexcept = 0;
       virtual bool attachX11(const char *display_name, unsigned long window) noexcept = 0;
 
@@ -19,6 +21,9 @@ namespace clap {
       virtual bool hide() noexcept = 0;
 
       virtual void close() noexcept = 0;
+
+   protected:
+      PluginHelper &plugin_;
    };
 
 } // namespace clap
