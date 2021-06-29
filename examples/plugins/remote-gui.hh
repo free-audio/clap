@@ -1,8 +1,13 @@
 #pragma once
 
-#include <boost/process.hpp>
+#ifdef __unix__
+#   include <sys/wait.h>
+#endif
+
+#include <memory>
 
 #include "abstract-gui.hh"
+#include "remote-channel.hh"
 
 namespace clap {
    class RemoteGui : public AbstractGui {
@@ -23,8 +28,12 @@ namespace clap {
       void close() noexcept override;
 
    private:
-      boost::process::child child_;
-      boost::process::pipe wpipe_;
-      boost::process::pipe rpipe_;
+      std::unique_ptr<RemoteChannel> channel_;
+
+#ifdef __unix__
+      pid_t child_ = -1;
+#else
+      HANDLE socket_ = nullptr;
+#endif
    };
 } // namespace clap
