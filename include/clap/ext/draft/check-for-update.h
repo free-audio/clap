@@ -1,12 +1,12 @@
 #pragma once
 
+#include "../../clap.h"
+
+static CLAP_CONSTEXPR const char CLAP_EXT_CHECK_FOR_UPDATE[] = "clap/draft/check_for_update";
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "../../clap.h"
-
-static const char CLAP_EXT_CHECK_FOR_UPDATE[] = "clap/draft/check_for_update";
 
 typedef struct clap_check_for_update_info {
    const char *version;

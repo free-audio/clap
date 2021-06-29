@@ -2,11 +2,11 @@
 
 #include "../../clap.h"
 
+static CLAP_CONSTEXPR const char CLAP_EXT_QUICK_CONTROLS[] = "clap/draft/quick-controls";
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-static const char CLAP_EXT_QUICK_CONTROLS[] = "clap/draft/quick-controls";
 
 enum { CLAP_QUICK_CONTROLS_COUNT = 8 };
 

@@ -2,13 +2,13 @@
 
 #include <stddef.h>
 
+#include "../clap.h"
+
+static CLAP_CONSTEXPR const char CLAP_EXT_EVENT_LOOP[] = "clap/event-loop";
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "../clap.h"
-
-static const char CLAP_EXT_EVENT_LOOP[] = "clap/event-loop";
 
 #ifdef _WIN32
 typedef void *clap_fd;

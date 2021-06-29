@@ -1,12 +1,12 @@
 #pragma once
 
+#include "../clap.h"
+
+static CLAP_CONSTEXPR const char CLAP_EXT_THREAD_CHECK[] = "clap/thread-check";
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "../clap.h"
-
-static const char CLAP_EXT_THREAD_CHECK[] = "clap/thread-check";
 
 // This interface is useful to do runtime checks and make
 // sure that the functions are called on the correct threads.

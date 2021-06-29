@@ -3,7 +3,7 @@
 #include "../../clap.h"
 #include "../../hash.h"
 
-static const char CLAP_EXT_FILE_REFERENCE[] = "clap/draft/file-reference";
+static CLAP_CONSTEXPR const char CLAP_EXT_FILE_REFERENCE[] = "clap/draft/file-reference";
 
 #ifdef __cplusplus
 extern "C" {
@@ -61,6 +61,7 @@ typedef struct clap_host_file_reference {
    // [main-thread]
    void (*changed)(const clap_host *host);
 
+   // [main-thread]
    void (*set_dirty)(const clap_host *host, clap_id resource_id);
 } clap_host_file_reference;
 

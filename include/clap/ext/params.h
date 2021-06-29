@@ -2,10 +2,6 @@
 
 #include "../clap.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /// @page Parameters
 /// @brief parameters management
 ///
@@ -71,7 +67,11 @@ extern "C" {
 /// - if a parameter is created with an id that may have been used before, call:
 ///   - clap_host_params.clear(host, param_id, CLAP_PARAM_CLEAR_ALL)
 
-static const char CLAP_EXT_PARAMS[] = "clap/params";
+static CLAP_CONSTEXPR const char CLAP_EXT_PARAMS[] = "clap/params";
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 enum {
    // Is this param stepped? (integer values only)

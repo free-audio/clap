@@ -3,11 +3,11 @@
 #include "../clap.h"
 #include <stdint.h>
 
+static CLAP_CONSTEXPR const char CLAP_EXT_LATENCY[] = "clap/latency";
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-static const char CLAP_EXT_LATENCY[] = "clap/latency";
 
 // The audio ports scan has to be done while the plugin is deactivated.
 typedef struct clap_plugin_latency {

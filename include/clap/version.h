@@ -17,7 +17,11 @@ typedef struct clap_version {
    int revision;
 } clap_version;
 
-static const clap_version CLAP_VERSION = {0, 7, 0};
+#ifdef __cplusplus
+}
+#endif
+
+static CLAP_CONSTEXPR const clap_version CLAP_VERSION = {0, 7, 0};
 
 static CLAP_CONSTEXPR bool clap_version_is_compatible(const clap_version &v) {
    // For version 0, we require the same minor version because we may still break the ABI at this point
@@ -26,7 +30,3 @@ static CLAP_CONSTEXPR bool clap_version_is_compatible(const clap_version &v) {
 
    return false;
 }
-
-#ifdef __cplusplus
-}
-#endif

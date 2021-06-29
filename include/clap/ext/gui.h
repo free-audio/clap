@@ -2,7 +2,7 @@
 
 #include "../clap.h"
 
-static const char CLAP_EXT_GUI[] = "clap/gui";
+static CLAP_CONSTEXPR const char CLAP_EXT_GUI[] = "clap/gui";
 
 #ifdef __cplusplus
 extern "C" {

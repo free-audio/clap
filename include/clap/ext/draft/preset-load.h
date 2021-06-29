@@ -1,12 +1,12 @@
 #pragma once
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "../../clap.h"
 
 static const char CLAP_EXT_PRESET_LOAD[] = "clap/draft/preset-load";
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct clap_plugin_preset_load {
    // Loads a preset in the plugin native preset file format from a path.

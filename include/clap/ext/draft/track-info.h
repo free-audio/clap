@@ -4,11 +4,11 @@
 #include "../../channel-map.h"
 #include "../../color.h"
 
+static CLAP_CONSTEXPR const char CLAP_EXT_TRACK_INFO[] = "clap/draft/track-info";
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-static const char CLAP_EXT_TRACK_INFO[] = "clap/draft/track-info";
 
 typedef struct clap_track_info {
    clap_id    id;

@@ -1,12 +1,12 @@
 #pragma once
 
+#include "../../clap.h"
+
+static CLAP_CONSTEXPR const char CLAP_EXT_EVENT_FILTER[] = "clap/draft/event_filter";
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "../../clap.h"
-
-static const char CLAP_EXT_EVENT_FILTER[] = "clap/draft/event_filter";
 
 // This extension lets the host know which event types the plugin is interested
 // in.

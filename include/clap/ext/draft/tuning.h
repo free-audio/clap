@@ -1,12 +1,12 @@
 #pragma once
 
+#include "../../clap.h"
+
+static CLAP_CONSTEXPR const char CLAP_EXT_TUNING[] = "clap/draft/tuning";
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "../../clap.h"
-
-static const char CLAP_EXT_TUNING[] = "clap/draft/tuning";
 
 // This extension provides a dynamic tuning table to the plugin.
 typedef struct clap_host_tuning {

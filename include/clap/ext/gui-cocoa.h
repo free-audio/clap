@@ -1,12 +1,12 @@
 #pragma once
 
+#include "../clap.h"
+
+static CLAP_CONSTEXPR const char CLAP_EXT_GUI_COCOA[] = "clap/gui-cocoa";
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "../clap.h"
-
-static const char CLAP_EXT_GUI_COCOA[] = "clap/gui-cocoa";
 
 typedef struct clap_plugin_gui_cocoa {
    // [main-thread]

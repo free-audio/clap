@@ -3,10 +3,6 @@
 #include "../clap.h"
 #include "../channel-map.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /// @page Audio Ports
 ///
 /// This extension provides a way for the plugin to describe:
@@ -33,7 +29,11 @@ extern "C" {
 /// Plugin with very complex configuration possibilities should let the user configure the ports
 /// from the plugin GUI, and call @ref clap_host_audio_ports.rescan(CLAP_AUDIO_PORTS_RESCAN_ALL).
 
-static const char CLAP_EXT_AUDIO_PORTS[] = "clap/audio-ports";
+static CLAP_CONSTEXPR const char CLAP_EXT_AUDIO_PORTS[] = "clap/audio-ports";
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct clap_audio_port_info {
    clap_id id;                   // stable identifier

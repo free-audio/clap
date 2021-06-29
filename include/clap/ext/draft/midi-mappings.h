@@ -2,11 +2,11 @@
 
 #include "../../clap.h"
 
+static CLAP_CONSTEXPR const char CLAP_EXT_MIDI_MAPPINGS[] = "clap/draft/midi-mappings";
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-static const char CLAP_EXT_MIDI_MAPPINGS[] = "clap/draft/midi-mappings";
 
 enum {
    CLAP_MIDI_MAPPING_CC7,

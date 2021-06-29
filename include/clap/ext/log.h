@@ -1,12 +1,12 @@
 #pragma once
 
+#include "../clap.h"
+
+static CLAP_CONSTEXPR const char CLAP_EXT_LOG[] = "clap/log";
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "../clap.h"
-
-static const char CLAP_EXT_LOG[] = "clap/log";
 
 enum {
    CLAP_LOG_DEBUG = 0,

@@ -1,9 +1,5 @@
 #pragma once
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "../../clap.h"
 
 /// @page
@@ -36,7 +32,11 @@ extern "C" {
 /// }
 /// @endcode
 
-static const char CLAP_EXT_THREAD_POOL[] = "clap/draft/thread-pool";
+static CLAP_CONSTEXPR const char CLAP_EXT_THREAD_POOL[] = "clap/draft/thread-pool";
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct clap_plugin_thread_pool {
    // Called by the thread pool
