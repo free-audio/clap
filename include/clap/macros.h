@@ -14,3 +14,9 @@
 #      define CLAP_EXPORT
 #   endif
 #endif
+
+#ifdef __cplusplus
+#   define CLAP_CONSTEXPR constexpr
+#else
+#   define CLAP_CONSTEXPR
+#endif

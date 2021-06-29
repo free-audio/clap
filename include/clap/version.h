@@ -2,32 +2,30 @@
 
 #include <stdint.h>
 
+#include "macros.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef uint32_t clap_version;
+typedef struct clap_version {
+   int major;
+   int minor;
+   int revision;
+} clap_version;
 
-static inline clap_version clap_version_make(uint32_t major, uint32_t minor, uint32_t revision) {
-   return (((major & 0xfff) << 20) | ((minor & 0xfff) << 8) | (revision & 0xff));
-}
+static const clap_version CLAP_VERSION = {0, 7, 0};
 
-static inline uint32_t clap_version_major(clap_version version)
+static CLAP_CONSTEXPR bool clap_version_is_compatible(const clap_version& v)
 {
-   return ((version) >> 20) & 0xfff;
-}
+   if (v.major == 0 && CLAP_VERSION.major == 0)
+      return v.minor == CLAP_VERSION.major;
 
-static inline uint32_t clap_version_minor(clap_version version)
-{
-   return ((version) >> 8) & 0xfff;
-}
+   if (v.major == 1 && CLAP_VERSION.major == 1)
+      return true;
 
-static inline uint32_t clap_version_revision(clap_version version)
-{
-   return version & 0xff;
+   return false;
 }
-
-static const clap_version CLAP_VERSION = clap_version_make(0, 7, 0);
 
 #ifdef __cplusplus
 }

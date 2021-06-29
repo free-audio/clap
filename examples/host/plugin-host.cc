@@ -135,10 +135,10 @@ bool PluginHost::load(const QString &path, int pluginIndex) {
       return false;
    }
 
-   if (desc->clap_version != CLAP_VERSION) {
-      qWarning() << "incompatible clap version: " << clap_version_major(desc->clap_version) << "."
-                 << clap_version_minor(desc->clap_version) << "."
-                 << clap_version_revision(desc->clap_version);
+   if (!clap_version_is_compatible(desc->clap_version)) {
+      qWarning() << "incompatible clap version: " << desc->clap_version.major << "."
+                 << desc->clap_version.minor << "."
+                 << desc->clap_version.revision;
       return false;
    }
 

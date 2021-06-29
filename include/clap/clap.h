@@ -96,7 +96,7 @@ typedef struct clap_process {
 //////////
 
 typedef struct clap_host {
-   int32_t clap_version; // initialized to CLAP_VERSION
+   clap_version clap_version; // initialized to CLAP_VERSION
 
    void *host_data; // reserved pointer for the host
 
