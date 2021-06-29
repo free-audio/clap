@@ -71,3 +71,5 @@ if (APPLE)
   find_library(CARBON Carbon)
   target_link_libraries(clap-host ${CARBON} ${AUDIO_UNIT} ${AUDIO_TOOLBOX} ${CORE_MIDI} ${CORE_AUDIO} ${CORE_SERVICES} ${CORE_FOUNDATION})
 endif()
+
+install(TARGETS clap-host DESTINATION "${CMAKE_INSTALL_PREFIX}/bin")

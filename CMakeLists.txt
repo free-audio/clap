@@ -12,3 +12,5 @@ add_executable(clap-compile-test-c EXCLUDE_FROM_ALL src/main.c)
 add_executable(clap-compile-test-cpp EXCLUDE_FROM_ALL src/main.cc)
 
 add_subdirectory(examples)
+
+install(DIRECTORY include DESTINATION "${CMAKE_INSTALL_PREFIX}")

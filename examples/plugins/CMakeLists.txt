@@ -22,3 +22,5 @@ add_library(
   gain/gain.cc)
 target_link_libraries(clap-plugins clap-plugin-glue Boost::serialization Boost::iostreams)
 set_target_properties(clap-plugins PROPERTIES CXX_STANDARD 20)
+
+install(TARGETS clap-plugins DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/clap")
