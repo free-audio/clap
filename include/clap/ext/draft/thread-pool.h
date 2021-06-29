@@ -36,7 +36,7 @@ extern "C" {
 /// }
 /// @endcode
 
-#define CLAP_EXT_THREAD_POOL "clap/draft/thread-pool"
+static const char CLAP_EXT_THREAD_POOL[] = "clap/draft/thread-pool";
 
 typedef struct clap_plugin_thread_pool {
    // Called by the thread pool

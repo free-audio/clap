@@ -6,7 +6,7 @@ extern "C" {
 
 #include "../../clap.h"
 
-#define CLAP_EXT_PRESET_LOAD "clap/draft/preset-load"
+static const char CLAP_EXT_PRESET_LOAD[] = "clap/draft/preset-load";
 
 typedef struct clap_plugin_preset_load {
    // Loads a preset in the plugin native preset file format from a path.

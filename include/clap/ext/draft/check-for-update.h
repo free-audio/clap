@@ -6,7 +6,7 @@ extern "C" {
 
 #include "../../clap.h"
 
-#define CLAP_EXT_CHECK_FOR_UPDATE "clap/draft/check_for_update"
+static const char CLAP_EXT_CHECK_FOR_UPDATE[] = "clap/draft/check_for_update";
 
 typedef struct clap_check_for_update_info {
    const char *version;

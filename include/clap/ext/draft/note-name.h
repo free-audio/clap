@@ -6,7 +6,7 @@ extern "C" {
 
 #include "../../clap.h"
 
-#define CLAP_EXT_NOTE_NAME "clap/draft/note-name"
+static const char CLAP_EXT_NOTE_NAME[] = "clap/draft/note-name";
 
 typedef struct clap_note_name {
    char   name[CLAP_NAME_SIZE];

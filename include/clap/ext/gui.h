@@ -1,9 +1,8 @@
-#ifndef CLAP_EXT_GUI_H
-#define CLAP_EXT_GUI_H
+#pragma once
 
 #include "../clap.h"
 
-#define CLAP_EXT_GUI "clap/gui"
+static const char CLAP_EXT_GUI[] = "clap/gui";
 
 #ifdef __cplusplus
 extern "C" {
@@ -38,5 +37,3 @@ typedef struct clap_host_gui {
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* !CLAP_EXT_GUI_H */

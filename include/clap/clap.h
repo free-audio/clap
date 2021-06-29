@@ -31,13 +31,12 @@
 
 #include "events.h"
 #include "macros.h"
+#include "version.h"
 #include "string-sizes.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#define CLAP_VERSION CLAP_VERSION_MAKE(0, 6, 0)
 
 /////////////
 // PROCESS //
@@ -143,7 +142,7 @@ enum {
 typedef int32_t clap_plugin_type;
 
 typedef struct clap_plugin_descriptor {
-   int32_t clap_version; // initialized to CLAP_VERSION
+   clap_version clap_version; // initialized to CLAP_VERSION
 
    const char *id;          // eg: "com.u-he.diva"
    const char *name;        // eg: "Diva"

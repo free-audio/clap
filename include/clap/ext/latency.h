@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-#define CLAP_EXT_LATENCY "clap/latency"
+static const char CLAP_EXT_LATENCY[] = "clap/latency";
 
 // The audio ports scan has to be done while the plugin is deactivated.
 typedef struct clap_plugin_latency {

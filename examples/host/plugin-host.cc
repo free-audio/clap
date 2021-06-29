@@ -136,9 +136,9 @@ bool PluginHost::load(const QString &path, int pluginIndex) {
    }
 
    if (desc->clap_version != CLAP_VERSION) {
-      qWarning() << "incompatible clap version: " << CLAP_VERSION_MAJ(desc->clap_version) << "."
-                 << CLAP_VERSION_MIN(desc->clap_version) << "."
-                 << CLAP_VERSION_REV(desc->clap_version);
+      qWarning() << "incompatible clap version: " << clap_version_major(desc->clap_version) << "."
+                 << clap_version_minor(desc->clap_version) << "."
+                 << clap_version_revision(desc->clap_version);
       return false;
    }
 
@@ -547,10 +547,9 @@ void PluginHost::processCC(int sampleOffset, int channel, int cc, int value) {
 
    ev.type = CLAP_EVENT_MIDI;
    ev.time = sampleOffset;
-   ev.midi.data[0] = 0;
-   ev.midi.data[1] = 0xB0 | channel;
-   ev.midi.data[2] = cc;
-   ev.midi.data[3] = value;
+   ev.midi.data[0] = 0xB0 | channel;
+   ev.midi.data[1] = cc;
+   ev.midi.data[2] = value;
 
    evIn_.push_back(ev);
 }

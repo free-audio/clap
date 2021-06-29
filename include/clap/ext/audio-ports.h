@@ -33,7 +33,7 @@ extern "C" {
 /// Plugin with very complex configuration possibilities should let the user configure the ports
 /// from the plugin GUI, and call @ref clap_host_audio_ports.rescan(CLAP_AUDIO_PORTS_RESCAN_ALL).
 
-#define CLAP_EXT_AUDIO_PORTS "clap/audio-ports"
+static const char CLAP_EXT_AUDIO_PORTS[] = "clap/audio-ports";
 
 typedef struct clap_audio_port_info {
    clap_id id;                   // stable identifier

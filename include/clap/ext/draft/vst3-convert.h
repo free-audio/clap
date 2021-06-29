@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-#define CLAP_EXT_VST3_CONVERT "clap/draft/vst3-convert"
+static const char CLAP_EXT_VST3_CONVERT[] = "clap/draft/vst3-convert";
 
 typedef struct clap_plugin_vst3_convert {
    // Copies the name and VST3 plugin id that we can convert from.

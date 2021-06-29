@@ -6,7 +6,7 @@
 extern "C" {
 #endif
 
-#define CLAP_EXT_QUICK_CONTROLS "clap/draft/quick-controls"
+static const char CLAP_EXT_QUICK_CONTROLS[] = "clap/draft/quick-controls";
 
 enum { CLAP_QUICK_CONTROLS_COUNT = 8 };
 

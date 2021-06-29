@@ -6,7 +6,7 @@ extern "C" {
 
 #include "../../clap.h"
 
-#define CLAP_EXT_EVENT_FILTER "clap/draft/event_filter"
+static const char CLAP_EXT_EVENT_FILTER[] = "clap/draft/event_filter";
 
 // This extension lets the host know which event types the plugin is interested
 // in.

@@ -6,7 +6,7 @@ extern "C" {
 
 #include "../clap.h"
 
-#define CLAP_EXT_LOG "clap/log"
+static const char CLAP_EXT_LOG[] = "clap/log";
 
 enum {
    CLAP_LOG_DEBUG = 0,

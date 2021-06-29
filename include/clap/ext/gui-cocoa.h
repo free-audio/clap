@@ -6,7 +6,7 @@ extern "C" {
 
 #include "../clap.h"
 
-#define CLAP_EXT_GUI_COCOA "clap/gui-cocoa"
+static const char CLAP_EXT_GUI_COCOA[] = "clap/gui-cocoa";
 
 typedef struct clap_plugin_gui_cocoa {
    // [main-thread]

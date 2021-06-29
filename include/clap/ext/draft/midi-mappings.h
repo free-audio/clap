@@ -6,7 +6,7 @@
 extern "C" {
 #endif
 
-#define CLAP_EXT_MIDI_MAPPINGS "clap/draft/midi-mappings"
+static const char CLAP_EXT_MIDI_MAPPINGS[] = "clap/draft/midi-mappings";
 
 enum {
    CLAP_MIDI_MAPPING_CC7,

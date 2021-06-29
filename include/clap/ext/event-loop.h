@@ -1,13 +1,14 @@
 #pragma once
 
 #include <stddef.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 #include "../clap.h"
 
-#define CLAP_EXT_EVENT_LOOP "clap/event-loop"
+static const char CLAP_EXT_EVENT_LOOP[] = "clap/event-loop";
 
 #ifdef _WIN32
 typedef void *clap_fd;

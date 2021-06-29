@@ -21,7 +21,7 @@ enum {
 typedef int32_t  clap_event_type;
 typedef uint32_t clap_id;
 
-#define CLAP_INVALID_ID UINT32_MAX
+static const clap_id CLAP_INVALID_ID = UINT32_MAX;
 
 /** Note On/Off event. */
 typedef struct clap_event_note {

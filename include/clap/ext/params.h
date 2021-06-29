@@ -71,7 +71,7 @@ extern "C" {
 /// - if a parameter is created with an id that may have been used before, call:
 ///   - clap_host_params.clear(host, param_id, CLAP_PARAM_CLEAR_ALL)
 
-#define CLAP_EXT_PARAMS "clap/params"
+static const char CLAP_EXT_PARAMS[] = "clap/params";
 
 enum {
    // Is this param stepped? (integer values only)

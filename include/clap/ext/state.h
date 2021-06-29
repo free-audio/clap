@@ -3,7 +3,7 @@
 #include "../clap.h"
 #include "../stream.h"
 
-#define CLAP_EXT_STATE "clap/state"
+static const char CLAP_EXT_STATE[] = "clap/state";
 
 #ifdef __cplusplus
 extern "C" {
