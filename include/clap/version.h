@@ -27,7 +27,7 @@ static inline uint32_t clap_version_revision(clap_version version)
    return version & 0xff;
 }
 
-static const clap_version CLAP_VERSION = clap_version_make(0, 6, 0);
+static const clap_version CLAP_VERSION = clap_version_make(0, 7, 0);
 
 #ifdef __cplusplus
 }
