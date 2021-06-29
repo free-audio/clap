@@ -11,7 +11,7 @@
 
 ```
 
-**CL**AP is an **A**udio **P**lugin API.
+**CL**ever **A**udio **P**lugin.
 
 # Learn about CLAP
 
