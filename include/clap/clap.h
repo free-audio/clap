@@ -63,14 +63,14 @@ typedef struct clap_audio_buffer {
    // Either data32 or data64 pointer will be set.
    float ** data32;
    double **data64;
-   int32_t  channel_count;
+   uint32_t channel_count;
    uint32_t latency;       // latency from/to the audio interface
    uint64_t constant_mask; // mask & (1 << N) to test if channel N is constant
 } clap_audio_buffer;
 
 typedef struct clap_process {
-   int64_t steady_time;  // a steady sample time counter, requiered
-   int32_t frames_count; // number of frame to process
+   uint64_t steady_time;  // a steady sample time counter, requiered
+   uint32_t frames_count; // number of frame to process
 
    // time info at sample 0
    // If null, then this is a free running host, no transport events will be provided
@@ -84,8 +84,8 @@ typedef struct clap_process {
    // then it gets a default stereo input and output.
    const clap_audio_buffer *audio_inputs;
    const clap_audio_buffer *audio_outputs;
-   int32_t                  audio_inputs_count;
-   int32_t                  audio_outputs_count;
+   uint32_t                 audio_inputs_count;
+   uint32_t                 audio_outputs_count;
 
    /* events */
    const clap_event_list *in_events;

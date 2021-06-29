@@ -13,15 +13,12 @@ namespace clap {
       static const clap_plugin_descriptor *descriptor();
 
    protected:
-      // clap_plugin
-      bool                init() noexcept override;
-      void                defineAudioPorts() noexcept;
-      bool                activate(int sample_rate) noexcept override;
-      void                deactivate() noexcept override;
+      bool init() noexcept override;
+      void defineAudioPorts() noexcept;
       clap_process_status process(const clap_process *process) noexcept override;
 
    private:
-      int channelCount_ = 1;
+      int channelCount_ = 2;
       Parameter *offsetParam_ = nullptr;
    };
 } // namespace clap

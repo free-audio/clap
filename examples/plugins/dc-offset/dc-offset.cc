@@ -68,22 +68,32 @@ namespace clap {
       audioOutputs_.push_back(info);
    }
 
-   bool DcOffset::activate(int sample_rate) noexcept { return true; }
-
-   void DcOffset::deactivate() noexcept { channelCount_ = 0; }
-
    clap_process_status DcOffset::process(const clap_process *process) noexcept {
       float **in = process->audio_inputs[0].data32;
       float **out = process->audio_outputs[0].data32;
       uint32_t evCount = process->in_events->size(process->in_events);
       uint32_t nextEvIndex = 0;
       const clap_event *ev = nullptr;
+      uint32_t N = process->frames_count;
 
-      for (int i = 0; i < process->frames_count; ++i) {
-         if (nextEvIndex < evCount) {
+      /* foreach frames */
+      for (uint32_t i = 0; i < process->frames_count; ++i) {
+
+         /* check if there are events to process */
+         for (; nextEvIndex < evCount; ++nextEvIndex) {
             ev = process->in_events->get(process->in_events, nextEvIndex);
-            if (ev->time != i)
+
+            if (ev->time < i) {
+               hostMisbehaving("Events must be ordered by time");
+               std::terminate();
+            }
+
+            if (ev->time > i)
+            {
+               // This event is in the future
+               N = std::min(ev->time, process->frames_count);
                break;
+            }
 
             switch (ev->type) {
             case CLAP_EVENT_PARAM_SET:
@@ -98,10 +108,13 @@ namespace clap {
             }
          }
 
-         float offset = offsetParam_->value();
-         for (int c = 0; c < channelCount_; ++c)
-            out[c][i] = in[c][i] + offset;
-         offsetParam_->step(1);
+         /* Process as many samples as possible until the next event */
+         for (; i < N; ++i) {
+            float offset = offsetParam_->value();
+            for (int c = 0; c < channelCount_; ++c)
+               out[c][i] = in[c][i] + offset;
+            offsetParam_->step(1);
+         }
       }
 
       return CLAP_PROCESS_CONTINUE_IF_NOT_QUIET;
