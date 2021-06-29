@@ -15,7 +15,7 @@
 #   endif
 #endif
 
-#ifdef __cplusplus
+#if defined(__cplusplus) && __cplusplus >= 201103L
 #   define CLAP_CONSTEXPR constexpr
 #else
 #   define CLAP_CONSTEXPR
