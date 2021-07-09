@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "../clap.h"
 
@@ -137,6 +137,16 @@ typedef struct clap_plugin_params {
                          clap_id            param_id,
                          const char *       display,
                          double *           value);
+
+   // Flushes a set of parameter changes.
+   // This call must not be concurrent to a clap_plugin->process() call and must not be used if the
+   // plugin is processing.
+   //
+   // If the plugin is activitated and not processing, it must be called on the [audio-thread].
+   // If the plugin is not activated, it must be called on the [main-thread].
+   void (*flush)(const clap_plugin *    plugin,
+                 const clap_event_list *input_parameter_changes,
+                 const clap_event_list *output_parameter_changes);
 } clap_plugin_params;
 
 enum {
@@ -196,6 +206,17 @@ typedef struct clap_host_params {
    // Clears references to a parameter
    // [main-thread]
    void (*clear)(const clap_host *host, clap_id param_id, uint32_t flags);
+
+   // Request the host to call clap_plugin_params->fush().
+   // This is useful if you have parameters value changes to report to the host but the plugin is not processing.
+   //
+   // Those change could be coming from external I/O managed by the plugin,
+   // like a USB packet, a socket.
+   //
+   // This must not be called on the [audio-thread].
+   //
+   // [thread-safe]
+   void (*request_flush)(const clap_host *host);
 } clap_host_params;
 
 #ifdef __cplusplus
