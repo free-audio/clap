@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "../clap.h"
 
@@ -127,10 +127,12 @@ typedef struct clap_plugin_params {
    bool (*value)(const clap_plugin *plugin, clap_id param_id, double *value);
 
    // Formats the display text for the given parameter value.
-   // [thread-safe,lock-wait-free]
+   // [main-thread]
    bool (*value_to_text)(
       const clap_plugin *plugin, clap_id param_id, double value, char *display, uint32_t size);
 
+   // Converts the display text to a parameter value.
+   // [main-thread]
    bool (*text_to_value)(const clap_plugin *plugin,
                          clap_id            param_id,
                          const char *       display,
