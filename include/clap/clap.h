@@ -1,4 +1,4 @@
-﻿/*
+/*
  * CLAP - CLever Audio Plugin
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~
  *
@@ -182,7 +182,7 @@ typedef struct clap_plugin {
 
    /* activation/deactivation
     * [main-thread] */
-   bool (*activate)(const struct clap_plugin *plugin, int sample_rate);
+   bool (*activate)(const struct clap_plugin *plugin, double sample_rate);
    void (*deactivate)(const struct clap_plugin *plugin);
 
    // Set to true before processing, and to false before sending the plugin to sleep.
