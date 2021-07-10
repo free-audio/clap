@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "../clap.h"
-#include "../channel-map.h"
+#include "../chmap.h"
 
 /// @page Audio Ports
 ///

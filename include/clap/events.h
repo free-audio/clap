@@ -2,6 +2,9 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stddef.h>
+
+#include "fixedpoint.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -12,9 +15,10 @@ enum {
    CLAP_EVENT_NOTE_OFF,        // note attribute
    CLAP_EVENT_NOTE_EXPRESSION, // note_expression attribute
    CLAP_EVENT_CHOKE,           // no attribute
-   CLAP_EVENT_PARAM_SET,       // param attribute
+   CLAP_EVENT_PARAM_VALUE,     // param_value attribute
+   CLAP_EVENT_PARAM_BUFFER,    // param_buffer attribute
    CLAP_EVENT_TRANSPORT,       // transport attribute
-   CLAP_EVENT_CHORD,           // chord attribute
+   CLAP_EVENT_NOTE_MASK,       // note_mask attribute
    CLAP_EVENT_MIDI,            // midi attribute
    CLAP_EVENT_MIDI_SYSEX,      // midi attribute
 };
@@ -53,86 +57,109 @@ typedef int32_t clap_note_expression;
 
 typedef struct clap_event_note_expression {
    clap_note_expression expression_id;
-   int32_t              key;     // 0..127, or -1 to match all keys
-   int32_t              channel; // 0..15, or -1 to match all channels
-   double               val0;    // see expression for the range
-   double               val1;
-   uint32_t             duration;
-} clap_event_note_expression;
-
-typedef struct clap_event_param {
-   // selects if the events targets a specific key or channel, -1 for global;
+   // target a specific key and channel, -1 for global
    int32_t key;
    int32_t channel;
 
+   double * values; // see expression for the range
+   uint32_t period;
+   uint32_t count;
+} clap_event_note_expression;
+
+enum {
+   // live user adjustment begun
+   CLAP_EVENT_PARAM_BEGIN_ADJUST,
+
+   // live user adjustment ended
+   CLAP_EVENT_PARAM_END_ADJUST,
+
+   // should record this parameter change and create an automation point?
+   CLAP_EVENT_PARAM_SHOULD_RECORD,
+};
+typedef int32_t clap_event_param_flags;
+
+typedef struct clap_event_param_value {
    // target parameter
-   clap_id param_id;
+   void *  cookie;   // @ref clap_param_info.cookie
+   clap_id param_id; // @ref clap_param_info.id
 
-   // The following values represent a linear segment.
-   // The value that we hear is:
-   //     (val0 + mod0) * (1 - x) + (val1 + mod1) * x
-   // If the plugin receives MIDI CC or overrides the automation playback because of a
-   // GUI takeover, it should add the modulation and preserve the modulation playback
-   //
-   // The modulation do no apply to enum parameter type.
-   //
-   // There are two discontinuities:
-   // 1. you get no segment info for N samples; the last value should be
-   //    held until the next PARAM_EVENT
-   // 2. you get the next y0 which is different from the previous y1 but at
-   //    the same sample time; the param jumps and may not be smoothed
-   double   val0;
-   double   val1;
-   double   mod0;
-   double   mod1;
-   uint32_t distance;
+   // target a specific key and channel, -1 for global
+   int32_t key;
+   int32_t channel;
 
-   // only used by the plugin for output events
-   bool begin_adjust;
-   bool end_adjust;
+   clap_event_param_flags flags;
 
-   // tells the host if it should record this parameter change and create an automation point
-   bool should_record;
-} clap_event_param;
+   // The value heard from this event and until the next one is value + modulation
+   double value;
+   double modulation;
+} clap_event_param_value;
+
+typedef struct clap_event_param_buffer {
+   // target parameter
+   clap_id param_id; // @ref clap_param_info.id
+   void *  cookie;   // @ref clap_param_info.cookie
+
+   // target a specific key and channel, -1 for global
+   int32_t key;
+   int32_t channel;
+
+   clap_event_param_flags flags;
+
+   // The value heard from this event and until the next one is:
+   // for (int k = 0; k < N; ++k) {
+   //    int idx = min(k / period, count - 1);
+   //    value = values[idx] + modulations[idx];
+   // }
+   double * values;
+   double * modulations;
+   uint32_t period; // in samples
+   uint32_t count;  // number of points
+} clap_event_param_buffer;
+
+enum {
+   CLAP_TRANSPORT_HAS_BEATS_TIMELINE = 1 << 0,
+   CLAP_TRANSPORT_HAS_SECONDS_TIMELINE = 1 << 1,
+   CLAP_TRANSPORT_HAS_TIME_SIGNATURE = 1 << 2,
+   CLAP_TRANSPORT_IS_PLAYING = 1 << 3,
+   CLAP_TRANSPORT_IS_RECORDING = 1 << 4,
+   CLAP_TRANSPORT_IS_LOOP_ACTIVE = 1 << 5,
+   CLAP_TRANSPORT_IS_WITHIN_PRE_ROLL = 1 << 6,
+};
+typedef uint32_t clap_transport_flags;
 
 typedef struct clap_event_transport {
-   bool has_second_timeline;
-   bool has_beats_timeline;
-   bool has_time_signature;
+   clap_transport_flags flags;
 
-   double song_pos_beats;   // position in beats
-   double song_pos_seconds; // position in seconds
+   clap_beattime song_pos_beats;   // position in beats
+   clap_sectime  song_pos_seconds; // position in seconds
 
-   double tempo;      // in bpm
-   double tempo_ramp; // tempo increment for each samples and until the next
-                      // time info event
+   double tempo;     // in bpm
+   double tempo_inc; // tempo increment for each samples and until the next
+                     // time info event
 
-   double  bar_start;  // start pos of the current bar
-   int32_t bar_number; // bar at song pos 0 has the number 0
+   clap_beattime bar_start;  // start pos of the current bar
+   int32_t       bar_number; // bar at song pos 0 has the number 0
 
-   bool is_playing;
-   bool is_recording;
-
-   bool   is_loop_active;
-   double loop_start_beats;
-   double loop_end_beats;
-   double loop_start_seconds;
-   double loop_end_seconds;
+   clap_beattime loop_start_beats;
+   clap_beattime loop_end_beats;
+   clap_sectime  loop_start_seconds;
+   clap_sectime  loop_end_seconds;
 
    int16_t tsig_num;   // time signature numerator
    int16_t tsig_denom; // time signature denominator
 } clap_event_transport;
 
-typedef struct clap_event_chord {
+typedef struct clap_event_note_mask {
    // bitset of active keys:
    // - 11 bits
    // - root note is not part of the bitset
    // - bit N is: root note + N + 1
-   // 0000 0000 0100 0100 -> minor chord
-   // 0000 0000 0100 1000 -> major chord
+   // 000 0100 0100 -> minor chord
+   // 000 0100 1000 -> major chord
+   // 010 1011 0101 -> locrian scale
    uint16_t note_mask;
    uint8_t  root_note; // 0..11, 0 for C
-} clap_event_chord;
+} clap_event_note_mask;
 
 typedef struct clap_event_midi {
    uint8_t data[3];
@@ -150,9 +177,10 @@ typedef struct clap_event {
    union {
       clap_event_note            note;
       clap_event_note_expression note_expression;
-      clap_event_param           param;
+      clap_event_param_value     param_value;
+      clap_event_param_buffer    param_buffer;
       clap_event_transport       time_info;
-      clap_event_chord           chord;
+      clap_event_note_mask       note_mask;
       clap_event_midi            midi;
       clap_event_midi_sysex      midi_sysex;
    };

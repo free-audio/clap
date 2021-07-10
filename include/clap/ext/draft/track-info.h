@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../clap.h"
-#include "../../channel-map.h"
+#include "../../chmap.h"
 #include "../../color.h"
 
 static CLAP_CONSTEXPR const char CLAP_EXT_TRACK_INFO[] = "clap/draft/track-info";
