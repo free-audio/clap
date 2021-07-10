@@ -10,6 +10,7 @@ include_directories(include)
 
 add_executable(clap-compile-test-c EXCLUDE_FROM_ALL src/main.c)
 add_executable(clap-compile-test-cpp EXCLUDE_FROM_ALL src/main.cc)
+add_custom_target(clap-compile-tests DEPENDS clap-compile-test-c clap-compile-test-cpp)
 
 add_subdirectory(examples)
 
