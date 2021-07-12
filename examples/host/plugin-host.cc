@@ -603,18 +603,15 @@ void PluginHost::process() {
    process_.audio_outputs_count = 1;
 
    evOut_.clear();
-   appToEngineQueue_.consume([this](clap_id param_id, double value) {
+   appToEngineQueue_.consume([this](clap_id param_id, void *cookie, double value) {
       clap_event ev;
       ev.time = 0;
-      ev.type = CLAP_EVENT_PARAM_SET;
-      ev.param.param_id = param_id;
-      ev.param.key = -1;
-      ev.param.channel = -1;
-      ev.param.val0 = value;
-      ev.param.val1 = value;
-      ev.param.mod0 = 0;
-      ev.param.mod1 = 0;
-      ev.param.distance = process_.frames_count;
+      ev.type = CLAP_EVENT_PARAM_VALUE;
+      ev.param_value.param_id = param_id;
+      ev.param_value.cookie = cookie;
+      ev.param_value.key = -1;
+      ev.param_value.channel = -1;
+      ev.param_value.value = value;
       evIn_.push_back(ev);
    });
 
@@ -631,8 +628,8 @@ void PluginHost::process() {
 
    for (auto &ev : evOut_) {
       switch (ev.type) {
-      case CLAP_EVENT_PARAM_SET:
-         engineToAppQueue_.set(ev.param.param_id, ev.param.val0);
+      case CLAP_EVENT_PARAM_VALUE:
+         engineToAppQueue_.set(ev.param_value.param_id, ev.param_value.cookie, ev.param_value.value);
          break;
       }
    }
@@ -653,7 +650,7 @@ void PluginHost::idle() {
 
    // Try to send events to the audio engine
    appToEngineQueue_.producerDone();
-   engineToAppQueue_.consume([this](clap_id param_id, double value) {
+   engineToAppQueue_.consume([this](clap_id param_id, void *cookie, double value) {
       auto it = params_.find(param_id);
       if (it == params_.end()) {
          std::ostringstream msg;
@@ -706,7 +703,7 @@ void PluginHost::setParamValueByHost(PluginParam &param, double value) {
 
    param.setValue(value);
 
-   appToEngineQueue_.set(param.info().id, value);
+   appToEngineQueue_.set(param.info().id, param.info().cookie, value);
    appToEngineQueue_.producerDone();
 }
 
