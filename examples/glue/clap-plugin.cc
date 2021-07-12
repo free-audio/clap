@@ -53,7 +53,7 @@ namespace clap {
       delete &from(plugin);
    }
 
-   bool Plugin::clapActivate(const clap_plugin *plugin, int sample_rate) noexcept {
+   bool Plugin::clapActivate(const clap_plugin *plugin, double sample_rate) noexcept {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin.activate");
 
