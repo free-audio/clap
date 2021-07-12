@@ -7,7 +7,7 @@
 /// We use fixed point representation of beat time and seconds time
 /// Usage:
 ///   double x = ...; // in beats
-///   clap_beattime y = CLAP_BEATTIME_FACTOR * x;
+///   clap_beattime y = round(CLAP_BEATTIME_FACTOR * x);
 
 // This will never change
 static const CLAP_CONSTEXPR int64_t CLAP_BEATTIME_FACTOR = 1LL << 31;
