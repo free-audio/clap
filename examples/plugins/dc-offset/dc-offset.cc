@@ -30,9 +30,9 @@ namespace clap {
    DcOffset::DcOffset(const clap_host *host) : PluginHelper(descriptor(), host) {
       parameters_.addParameter(clap_param_info{
          .id = kParamIdOffset,
+         .flags = 0,
          .name = "offset",
          .module = "/",
-         .flags = 0,
          .min_value = -1,
          .max_value = 1,
          .default_value = 0,
@@ -88,25 +88,26 @@ namespace clap {
                std::terminate();
             }
 
-            if (ev->time > i)
-            {
+            if (ev->time > i) {
                // This event is in the future
                N = std::min(ev->time, process->frames_count);
                break;
             }
 
             switch (ev->type) {
-            case CLAP_EVENT_PARAM_VALUE:
+            case CLAP_EVENT_PARAM_VALUE: {
                auto p = parameters_.getById(ev->param_value.param_id);
                if (p)
                   p->setValue(ev->param_value.value);
                break;
+            }
 
-            case CLAP_EVENT_PARAM_MOD:
+            case CLAP_EVENT_PARAM_MOD: {
                auto p = parameters_.getById(ev->param_mod.param_id);
                if (p)
                   p->setModulation(ev->param_mod.amount);
                break;
+            }
             }
          }
 

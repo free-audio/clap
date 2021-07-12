@@ -29,9 +29,9 @@ namespace clap {
    Gain::Gain(const clap_host *host) : PluginHelper(descriptor(), host) {
       parameters_.addParameter(clap_param_info{
          .id = kParamIdGain,
+         .flags = 0,
          .name = "gain",
          .module = "/",
-         .flags = 0,
          .min_value = -1,
          .max_value = 1,
          .default_value = 0,

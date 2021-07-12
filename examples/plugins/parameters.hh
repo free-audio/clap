@@ -32,6 +32,10 @@ namespace clap {
 
       void setModulation(double mod) { modulation_ = mod; }
 
+      void step(uint32_t n) {
+         // TODO smooth
+      }
+
    private:
       clap_param_info info_;
 
