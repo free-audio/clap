@@ -16,7 +16,6 @@ namespace clap {
       // clap_plugin
       bool                init() noexcept override;
       void                defineAudioPorts() noexcept;
-      bool                activate(int sample_rate) noexcept override;
       void                deactivate() noexcept override;
       clap_process_status process(const clap_process *process) noexcept override;
 

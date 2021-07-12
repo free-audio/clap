@@ -67,10 +67,6 @@ namespace clap {
       audioOutputs_.push_back(info);
    }
 
-   bool Gain::activate(int sample_rate) noexcept {
-      return true;
-   }
-
    void Gain::deactivate() noexcept { channelCount_ = 0; }
 
    clap_process_status Gain::process(const clap_process *process) noexcept {

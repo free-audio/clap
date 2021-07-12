@@ -96,14 +96,16 @@ namespace clap {
             }
 
             switch (ev->type) {
-            case CLAP_EVENT_PARAM_SET:
-               auto p = parameters_.getById(ev->param.param_id);
+            case CLAP_EVENT_PARAM_VALUE:
+               auto p = parameters_.getById(ev->param_value.param_id);
                if (p)
-                  p->setInterpolationData(ev->param.val0,
-                                          ev->param.val1,
-                                          ev->param.mod0,
-                                          ev->param.mod1,
-                                          ev->param.distance);
+                  p->setValue(ev->param_value.value);
+               break;
+
+            case CLAP_EVENT_PARAM_MOD:
+               auto p = parameters_.getById(ev->param_mod.param_id);
+               if (p)
+                  p->setModulation(ev->param_mod.amount);
                break;
             }
          }
