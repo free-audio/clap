@@ -16,7 +16,7 @@ enum {
    CLAP_EVENT_NOTE_EXPRESSION, // note_expression attribute
    CLAP_EVENT_CHOKE,           // no attribute
    CLAP_EVENT_PARAM_VALUE,     // param_value attribute
-   CLAP_EVENT_PARAM_BUFFER,    // param_buffer attribute
+   CLAP_EVENT_PARAM_MOD,       // param_mod attribute
    CLAP_EVENT_TRANSPORT,       // transport attribute
    CLAP_EVENT_NOTE_MASK,       // note_mask attribute
    CLAP_EVENT_MIDI,            // midi attribute
@@ -89,32 +89,20 @@ typedef struct clap_event_param_value {
 
    clap_event_param_flags flags;
 
-   // The value heard from this event and until the next one is value + modulation
    double value;
-   double modulation;
 } clap_event_param_value;
 
-typedef struct clap_event_param_buffer {
+typedef struct clap_event_param_mod {
    // target parameter
-   clap_id param_id; // @ref clap_param_info.id
    void *  cookie;   // @ref clap_param_info.cookie
+   clap_id param_id; // @ref clap_param_info.id
 
    // target a specific key and channel, -1 for global
    int32_t key;
    int32_t channel;
 
-   clap_event_param_flags flags;
-
-   // The value heard from this event and until the next one is:
-   // for (int k = 0; k < N; ++k) {
-   //    int idx = min(k / period, count - 1);
-   //    value = values[idx] + modulations[idx];
-   // }
-   double * values;
-   double * modulations;
-   uint32_t period; // in samples
-   uint32_t count;  // number of points
-} clap_event_param_buffer;
+   double amount; // modulation amount
+} clap_event_param_mod;
 
 enum {
    CLAP_TRANSPORT_HAS_BEATS_TIMELINE = 1 << 0,
@@ -178,7 +166,7 @@ typedef struct clap_event {
       clap_event_note            note;
       clap_event_note_expression note_expression;
       clap_event_param_value     param_value;
-      clap_event_param_buffer    param_buffer;
+      clap_event_param_mod       param_mod;
       clap_event_transport       time_info;
       clap_event_note_mask       note_mask;
       clap_event_midi            midi;

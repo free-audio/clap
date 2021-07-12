@@ -146,10 +146,6 @@ typedef struct clap_param_info {
    double min_value;     // minimum plain value
    double max_value;     // maximum plain value
    double default_value; // default plain value
-
-   // This is a hint for the host, samples duration between two automation points.
-   // 0 if it only supports one value per process call
-   uint32_t control_period;
 } clap_param_info;
 
 typedef struct clap_plugin_params {
