@@ -22,7 +22,8 @@ enum {
    CLAP_EVENT_MIDI,            // midi attribute
    CLAP_EVENT_MIDI_SYSEX,      // midi attribute
 };
-typedef int32_t  clap_event_type;
+typedef int32_t clap_event_type;
+
 typedef uint32_t clap_id;
 
 static const clap_id CLAP_INVALID_ID = UINT32_MAX;
@@ -61,7 +62,7 @@ typedef struct clap_event_note_expression {
    int32_t key;
    int32_t channel;
 
-   double * values; // see expression for the range
+   double   value; // see expression for the range
    uint32_t period;
    uint32_t count;
 } clap_event_note_expression;
