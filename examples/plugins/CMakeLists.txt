@@ -15,6 +15,7 @@ add_library(
   remote-gui.cc
   remote-channel.hh
   remote-channel.cc
+  buffer.hh
 
   dc-offset/dc-offset.hh
   dc-offset/dc-offset.cc

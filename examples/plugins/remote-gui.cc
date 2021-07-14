@@ -40,7 +40,7 @@ namespace clap {
          ::close(sockets[1]);
       }
 
-      channel_.reset(new RemoteChannel(sockets[0]));
+      channel_.reset(new RemoteChannel(*this, *this, sockets[0]));
 
       return true;
 #else

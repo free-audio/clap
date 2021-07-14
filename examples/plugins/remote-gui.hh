@@ -10,7 +10,7 @@
 #include "remote-channel.hh"
 
 namespace clap {
-   class RemoteGui : public AbstractGui {
+   class RemoteGui : public AbstractGui, public RemoteChannel::Handler, public RemoteChannel::EventControl {
       RemoteGui(PluginHelper &plugin) : AbstractGui(plugin) {}
 
       bool spawn();
@@ -26,6 +26,11 @@ namespace clap {
       bool hide() noexcept override;
 
       void close() noexcept override;
+
+      // RemoteChannel::Handler
+      void beginAdjust(clap_id paramId) override;
+      void adjust(clap_id paramId, double value) override;
+      void endAdjust(clap_id paramId) override;
 
    private:
       std::unique_ptr<RemoteChannel> channel_;
