@@ -18,9 +18,10 @@ typedef struct clap_plugin_latency {
 
 typedef struct clap_host_latency {
    // Tell the host that the latency changed.
-   // The new latency will be effective after deactivation of the plugin.
+   // The latency is only allowed to change if the plugin is deactivated.
+   // If the plugin is activated, call host->request_restart()
    // [main-thread]
-   void (*changed)(const clap_host *host, uint32_t new_latency);
+   void (*changed)(const clap_host *host);
 } clap_host_latency;
 
 #ifdef __cplusplus

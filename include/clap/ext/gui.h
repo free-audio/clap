@@ -9,13 +9,22 @@ extern "C" {
 #endif
 
 typedef struct clap_plugin_gui {
-   // Get the size of the plugin UI.
-   // [main-thread]
-   void (*size)(const clap_plugin *plugin, int32_t *width, int32_t *height);
-
    // Set the GUI scaling factor.
    // [main-thread]
    void (*set_scale)(const clap_plugin *plugin, double scale);
+
+   // Get the size of the plugin UI, with the scaling applied.
+   // [main-thread]
+   void (*size)(const clap_plugin *plugin, int32_t *width, int32_t *height);
+
+   // [main-thread]
+   bool (*can_resize)(const clap_plugin *plugin);
+
+   // If the plugin gui is resizable, then the plugin will return the closest size
+   // to the given arguments.
+   //
+   // [main-thread]
+   void (*round_size)(const clap_plugin *plugin, int32_t *width, int32_t *height);
 
    // [main-thread]
    void (*show)(const clap_plugin *plugin);

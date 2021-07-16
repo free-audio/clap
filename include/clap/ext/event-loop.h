@@ -28,6 +28,11 @@ typedef struct clap_plugin_event_loop {
    // [main-thread]
    void (*on_timer)(const clap_plugin *plugin, clap_id timer_id);
 
+   // This callback is "level-triggered".
+   // It means that a writable fd will continuously produce "on_fd()" events;
+   // don't forget using modify_fd() to remove the write notification once you're
+   // done writting.
+   //
    // [main-thread]
    void (*on_fd)(const clap_plugin *plugin, clap_fd fd, clap_fd_flags flags);
 } clap_plugin_event_loop;

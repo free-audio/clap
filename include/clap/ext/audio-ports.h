@@ -12,8 +12,10 @@
 ///
 /// If the plugin does not implement this extension, it will have a stereo input and output.
 ///
+/// The plugin is only allowed to change its ports configuration while it is deactivated.
+///
 /// During @ref clap_plugin.init, the plugin may query @ref clap_host_track_info and select a
-/// configuration adapted to the track it belongs to.
+/// configuration adapted to the track.
 ///
 /// After the plugin initialization, the host may scan the list of configurations and eventually
 /// select one that fits the plugin context. The host can only select a configuration if the plugin
@@ -23,8 +25,7 @@
 /// - it describes the main input and output ports
 /// - it has a name that can be displayed to the user
 ///
-/// It is very easy for the host to offer a list of possible configurations and let the user choose
-/// one.
+/// The idea behind the configurations, is to let the user choose one via a menu.
 ///
 /// Plugin with very complex configuration possibilities should let the user configure the ports
 /// from the plugin GUI, and call @ref clap_host_audio_ports.rescan(CLAP_AUDIO_PORTS_RESCAN_ALL).
@@ -92,8 +93,10 @@ typedef struct clap_plugin_audio_ports {
 } clap_plugin_audio_ports;
 
 enum {
-   // The ports have changed, the host shall deactivate the plugin
-   // and perform a full scan of the ports.
+   // The ports have changed, the host shall perform a full scan of the ports.
+   // This flag can only be used if the plugin is not active.
+   // If the plugin active, call host->request_restart() and then call rescan()
+   // when the host calls deactivate()
    CLAP_AUDIO_PORTS_RESCAN_ALL = 1 << 0,
 
    // The ports name did change, the host can scan them right away.

@@ -110,10 +110,10 @@ typedef struct clap_host {
    // [thread-safe]
    const void *(*extension)(const struct clap_host *host, const char *extension_id);
 
-   // Ask the host to deactivate and then reactivate the plugin.
+   // Request the host to deactivate and then reactivate the plugin.
    // The operation may be delayed by the host.
    // [thread-safe]
-   void (*restart)(const struct clap_host *host);
+   void (*request_restart)(const struct clap_host *host);
 
    // Request the host to activate and start processing the plugin.
    // This is useful if you have external IO and need to wake up the plugin from "sleep".
