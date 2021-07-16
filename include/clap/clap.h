@@ -220,9 +220,12 @@ typedef struct clap_plugin_invalidation_source {
 } clap_plugin_invalidation_source;
 
 // This interface is the entry point of the dynamic library.
+//
 // There is an invalidation mechanism for the set of plugins which is based on files.
 // The host can watch the plugin DSO's mtime and a set of files's mtime provided by
 // get_clap_invalidation_source().
+//
+// The set of plugins must not change, except during a call to refresh() by the host.
 //
 // Every methods must be thread-safe.
 struct clap_plugin_entry {
@@ -254,6 +257,10 @@ struct clap_plugin_entry {
    // Get the invalidation source by its index.
    // [thread-safe]
    const clap_plugin_invalidation_source *(*get_invalidation_sources)(uint32_t index);
+
+   // In case the host detected a invalidation event, it can call refresh() to let the
+   // plugin_entry scan the set of plugins available.
+   void (*refresh)(void);
 };
 
 /* Entry point */

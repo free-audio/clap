@@ -29,7 +29,7 @@ PluginHost::PluginHost(Engine &engine) : QObject(&engine), engine_(engine) {
    host_.clap_version = CLAP_VERSION;
    host_.extension = PluginHost::clapExtension;
    host_.name = "Clap Test Host";
-   host_.version = "0.0.1";
+   host_.version = "0.1.0";
    host_.vendor = "clap";
    host_.url = "https://github.com/free-audio/clap";
 

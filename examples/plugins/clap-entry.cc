@@ -61,9 +61,13 @@ static uint32_t clap_get_invalidation_sources_count(void)
    return 0;
 }
 
-static const clap_plugin_invalidation_source *get_invalidation_sources(uint32_t index)
+static const clap_plugin_invalidation_source *clap_get_invalidation_sources(uint32_t index)
 {
    return nullptr;
+}
+
+static void clap_refresh(void)
+{
 }
 
 CLAP_EXPORT const struct clap_plugin_entry clap_plugin_entry = {
@@ -74,5 +78,6 @@ CLAP_EXPORT const struct clap_plugin_entry clap_plugin_entry = {
    clap_get_plugin_descriptor,
    clap_create_plugin,
    clap_get_invalidation_sources_count,
-   get_invalidation_sources,
+   clap_get_invalidation_sources,
+   clap_refresh,
 };
