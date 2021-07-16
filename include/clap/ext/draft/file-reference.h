@@ -3,7 +3,7 @@
 #include "../../clap.h"
 #include "../../hash.h"
 
-static CLAP_CONSTEXPR const char CLAP_EXT_FILE_REFERENCE[] = "clap/draft/file-reference";
+static CLAP_CONSTEXPR const char CLAP_EXT_FILE_REFERENCE[] = "clap.file-reference.draft/0";
 
 #ifdef __cplusplus
 extern "C" {

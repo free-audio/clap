@@ -2,7 +2,7 @@
 
 #include "../clap.h"
 
-static CLAP_CONSTEXPR const char CLAP_EXT_GUI_WIN32[] = "clap/gui-win32";
+static CLAP_CONSTEXPR const char CLAP_EXT_GUI_WIN32[] = "clap.gui-win32";
 
 #ifdef __cplusplus
 extern "C" {

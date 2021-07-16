@@ -4,7 +4,7 @@
 #include "../../chmap.h"
 #include "../../color.h"
 
-static CLAP_CONSTEXPR const char CLAP_EXT_TRACK_INFO[] = "clap/draft/track-info";
+static CLAP_CONSTEXPR const char CLAP_EXT_TRACK_INFO[] = "clap.track-info.draft/0";
 
 #ifdef __cplusplus
 extern "C" {

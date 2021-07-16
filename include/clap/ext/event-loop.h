@@ -4,7 +4,7 @@
 
 #include "../clap.h"
 
-static CLAP_CONSTEXPR const char CLAP_EXT_EVENT_LOOP[] = "clap/event-loop";
+static CLAP_CONSTEXPR const char CLAP_EXT_EVENT_LOOP[] = "clap.event-loop";
 
 #ifdef __cplusplus
 extern "C" {

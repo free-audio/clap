@@ -2,7 +2,7 @@
 
 #include "../../clap.h"
 
-static CLAP_CONSTEXPR const char CLAP_EXT_MIDI_MAPPINGS[] = "clap/draft/midi-mappings";
+static CLAP_CONSTEXPR const char CLAP_EXT_MIDI_MAPPINGS[] = "clap.midi-mappings.draft/0";
 
 #ifdef __cplusplus
 extern "C" {

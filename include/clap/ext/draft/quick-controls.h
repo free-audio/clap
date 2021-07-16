@@ -2,7 +2,7 @@
 
 #include "../../clap.h"
 
-static CLAP_CONSTEXPR const char CLAP_EXT_QUICK_CONTROLS[] = "clap/draft/quick-controls";
+static CLAP_CONSTEXPR const char CLAP_EXT_QUICK_CONTROLS[] = "clap.quick-controls.draft/0";
 
 #ifdef __cplusplus
 extern "C" {

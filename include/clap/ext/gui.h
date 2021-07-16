@@ -2,7 +2,7 @@
 
 #include "../clap.h"
 
-static CLAP_CONSTEXPR const char CLAP_EXT_GUI[] = "clap/gui";
+static CLAP_CONSTEXPR const char CLAP_EXT_GUI[] = "clap.gui";
 
 #ifdef __cplusplus
 extern "C" {
@@ -40,7 +40,7 @@ typedef struct clap_host_gui {
    /* Request the host to resize the client area to width, height.
     * Return true on success, false otherwise.
     * [thread-safe] */
-   bool (*resize)(const clap_host *host, int32_t width, int32_t height);
+   bool (*resize)(const clap_host *host, uint32_t width, uint32_t height);
 } clap_host_gui;
 
 #ifdef __cplusplus

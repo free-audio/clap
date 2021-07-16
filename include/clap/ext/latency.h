@@ -3,7 +3,7 @@
 #include "../clap.h"
 #include <stdint.h>
 
-static CLAP_CONSTEXPR const char CLAP_EXT_LATENCY[] = "clap/latency";
+static CLAP_CONSTEXPR const char CLAP_EXT_LATENCY[] = "clap.latency";
 
 #ifdef __cplusplus
 extern "C" {

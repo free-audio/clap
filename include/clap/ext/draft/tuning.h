@@ -2,7 +2,7 @@
 
 #include "../../clap.h"
 
-static CLAP_CONSTEXPR const char CLAP_EXT_TUNING[] = "clap/draft/tuning";
+static CLAP_CONSTEXPR const char CLAP_EXT_TUNING[] = "clap.tuning.draft/0";
 
 #ifdef __cplusplus
 extern "C" {

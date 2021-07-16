@@ -3,7 +3,7 @@
 #include "../../clap.h"
 #include "../../stream.h"
 
-static CLAP_CONSTEXPR const char CLAP_EXT_VST3_CONVERT[] = "clap/draft/vst3-convert";
+static CLAP_CONSTEXPR const char CLAP_EXT_VST3_CONVERT[] = "clap.vst3-convert.draft/0";
 
 #ifdef __cplusplus
 extern "C" {

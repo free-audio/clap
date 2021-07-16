@@ -2,7 +2,7 @@
 
 #include "../clap.h"
 
-static CLAP_CONSTEXPR const char CLAP_EXT_RENDER[] = "clap/render";
+static CLAP_CONSTEXPR const char CLAP_EXT_RENDER[] = "clap.render";
 
 #ifdef __cplusplus
 extern "C" {

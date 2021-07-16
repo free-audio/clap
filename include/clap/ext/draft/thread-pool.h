@@ -32,7 +32,7 @@
 /// }
 /// @endcode
 
-static CLAP_CONSTEXPR const char CLAP_EXT_THREAD_POOL[] = "clap/draft/thread-pool";
+static CLAP_CONSTEXPR const char CLAP_EXT_THREAD_POOL[] = "clap.thread-pool.draft/0";
 
 #ifdef __cplusplus
 extern "C" {

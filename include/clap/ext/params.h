@@ -73,7 +73,7 @@
 ///   - if a parameter is created with an id that may have been used before,
 ///     call clap_host_params.clear(host, param_id, CLAP_PARAM_CLEAR_ALL)
 
-static CLAP_CONSTEXPR const char CLAP_EXT_PARAMS[] = "clap/params";
+static CLAP_CONSTEXPR const char CLAP_EXT_PARAMS[] = "clap.params";
 
 #ifdef __cplusplus
 extern "C" {

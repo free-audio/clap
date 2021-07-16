@@ -2,7 +2,7 @@
 
 #include "../../clap.h"
 
-static const char CLAP_EXT_PRESET_LOAD[] = "clap/draft/preset-load";
+static const char CLAP_EXT_PRESET_LOAD[] = "clap.preset-load.draft/0";
 
 #ifdef __cplusplus
 extern "C" {

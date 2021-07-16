@@ -1,13 +1,13 @@
 #pragma once
 
 
-#include "../../clap.h"
+#include "../clap.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-static CLAP_CONSTEXPR const char CLAP_EXT_NOTE_NAME[] = "clap/draft/note-name";
+static CLAP_CONSTEXPR const char CLAP_EXT_NOTE_NAME[] = "clap.note-name";
 
 typedef struct clap_note_name {
    char   name[CLAP_NAME_SIZE];

@@ -2,7 +2,7 @@
 
 #include "../../clap.h"
 
-static CLAP_CONSTEXPR const char CLAP_EXT_CHECK_FOR_UPDATE[] = "clap/draft/check_for_update";
+static CLAP_CONSTEXPR const char CLAP_EXT_CHECK_FOR_UPDATE[] = "clap.check_for_update.draft/0";
 
 #ifdef __cplusplus
 extern "C" {

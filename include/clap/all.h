@@ -15,9 +15,9 @@
 #include "ext/latency.h"
 #include "ext/thread-check.h"
 #include "ext/event-loop.h"
+#include "ext/note-name.h"
+#include "ext/event-filter.h"
 
-#include "ext/draft/event-filter.h"
-#include "ext/draft/note-name.h"
 #include "ext/draft/preset-load.h"
 #include "ext/draft/quick-controls.h"
 #include "ext/draft/thread-pool.h"

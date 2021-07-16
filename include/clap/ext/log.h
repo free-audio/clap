@@ -2,7 +2,7 @@
 
 #include "../clap.h"
 
-static CLAP_CONSTEXPR const char CLAP_EXT_LOG[] = "clap/log";
+static CLAP_CONSTEXPR const char CLAP_EXT_LOG[] = "clap.log";
 
 #ifdef __cplusplus
 extern "C" {

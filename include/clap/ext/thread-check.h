@@ -2,7 +2,7 @@
 
 #include "../clap.h"
 
-static CLAP_CONSTEXPR const char CLAP_EXT_THREAD_CHECK[] = "clap/thread-check";
+static CLAP_CONSTEXPR const char CLAP_EXT_THREAD_CHECK[] = "clap.thread-check";
 
 #ifdef __cplusplus
 extern "C" {
