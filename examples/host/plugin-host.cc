@@ -247,8 +247,8 @@ void PluginHost::setParentWindow(WId parentWindow) {
    // else (pluginGuiFreeStanding_)
    //   pluginGuiFreeStanding_->open(plugin_);
 
-   int width = 0;
-   int height = 0;
+   uint32_t width = 0;
+   uint32_t height = 0;
 
    if (pluginGui_)
       pluginGui_->size(plugin_, &width, &height);

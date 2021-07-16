@@ -13,18 +13,18 @@ typedef struct clap_plugin_gui {
    // [main-thread]
    void (*set_scale)(const clap_plugin *plugin, double scale);
 
-   // Get the size of the plugin UI, with the scaling applied.
+   // Get the current size of the plugin UI, with the scaling applied.
    // [main-thread]
-   void (*size)(const clap_plugin *plugin, int32_t *width, int32_t *height);
+   void (*size)(const clap_plugin *plugin, uint32_t *width, uint32_t *height);
 
    // [main-thread]
    bool (*can_resize)(const clap_plugin *plugin);
 
-   // If the plugin gui is resizable, then the plugin will return the closest size
-   // to the given arguments.
+   // If the plugin gui is resizable, then the plugin will return the closest
+   // usable size to the given arguments.
    //
    // [main-thread]
-   void (*round_size)(const clap_plugin *plugin, int32_t *width, int32_t *height);
+   void (*round_size)(const clap_plugin *plugin, uint32_t *width, uint32_t *height);
 
    // [main-thread]
    void (*show)(const clap_plugin *plugin);

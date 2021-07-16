@@ -575,11 +575,25 @@ namespace clap {
    //-----------------//
    // clap_plugin_gui //
    //-----------------//
-   void Plugin::clapGuiSize(const clap_plugin *plugin, int32_t *width, int32_t *height) noexcept {
+   void Plugin::clapGuiSize(const clap_plugin *plugin, uint32_t *width, uint32_t *height) noexcept {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_gui.size");
 
       self.guiSize(width, height);
+   }
+
+   bool Plugin::clapGuiCanResize(const clap_plugin *plugin) noexcept {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_gui.can_resize");
+
+      return self.guiCanResize();
+   }
+
+   void Plugin::clapGuiRoundSize(const clap_plugin *plugin, uint32_t *width, uint32_t *height) noexcept {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_gui.round_size");
+
+      self.guiRoundSize(width, height);
    }
 
    void Plugin::clapGuiSetScale(const clap_plugin *plugin, double scale) noexcept {
