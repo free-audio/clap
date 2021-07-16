@@ -37,9 +37,9 @@ static bool clap_init(const char *plugin_path) {
 
 static void clap_deinit(void) { g_plugins.clear(); }
 
-static int32_t clap_get_plugin_count(void) { return g_plugins.size(); }
+static uint32_t clap_get_plugin_count(void) { return g_plugins.size(); }
 
-static const clap_plugin_descriptor *clap_get_plugin_descriptor(int32_t index) {
+static const clap_plugin_descriptor *clap_get_plugin_descriptor(uint32_t index) {
    if (index < 0 || index >= g_plugins.size()) {
       std::ostringstream msg;
       msg << "index out of bounds: " << index << " not in 0.." << g_plugins.size();
@@ -56,10 +56,23 @@ static const clap_plugin *clap_create_plugin(const clap_host *host, const char *
    return nullptr;
 }
 
+static uint32_t clap_get_invalidation_sources_count(void)
+{
+   return 0;
+}
+
+static const clap_plugin_invalidation_source *get_invalidation_sources(uint32_t index)
+{
+   return nullptr;
+}
+
 CLAP_EXPORT const struct clap_plugin_entry clap_plugin_entry = {
+   CLAP_VERSION,
    clap_init,
    clap_deinit,
    clap_get_plugin_count,
    clap_get_plugin_descriptor,
    clap_create_plugin,
+   clap_get_invalidation_sources_count,
+   get_invalidation_sources,
 };
