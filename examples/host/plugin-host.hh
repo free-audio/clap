@@ -115,7 +115,7 @@ private:
    static const void *clapExtension(const clap_host *host, const char *extension);
 
    /* clap host gui callbacks */
-   static bool clapGuiResize(const clap_host *host, int32_t width, int32_t height);
+   static bool clapGuiResize(const clap_host *host, uint32_t width, uint32_t height);
 
    static void clapStateMarkDirty(const clap_host *host);
 
@@ -214,6 +214,6 @@ private:
 
    PluginState state_ = Inactive;
    bool        stateIsDirty_ = false;
-   bool        scheduleDeactivateForParameterScan_ = false;
-   uint32_t    scheduleParamsRescanFlags_ = 0;
+
+   bool scheduleRestart_ = false;
 };

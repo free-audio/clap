@@ -137,8 +137,7 @@ bool PluginHost::load(const QString &path, int pluginIndex) {
 
    if (!clap_version_is_compatible(desc->clap_version)) {
       qWarning() << "incompatible clap version: " << desc->clap_version.major << "."
-                 << desc->clap_version.minor << "."
-                 << desc->clap_version.revision;
+                 << desc->clap_version.minor << "." << desc->clap_version.revision;
       return false;
    }
 
@@ -205,7 +204,7 @@ bool PluginHost::canActivate() const {
       return false;
    if (isPluginActive())
       return false;
-   if (scheduleDeactivateForParameterScan_)
+   if (scheduleRestart_)
       return false;
    return true;
 }
@@ -496,7 +495,7 @@ void PluginHost::eventLoopSetFdNotifierFlags(clap_fd fd, uint32_t flags) {
       it->second->err->setEnabled(false);
 }
 
-bool PluginHost::clapGuiResize(const clap_host *host, int32_t width, int32_t height) {
+bool PluginHost::clapGuiResize(const clap_host *host, uint32_t width, uint32_t height) {
    checkForMainThread();
 
    PluginHost *h = static_cast<PluginHost *>(host->host_data);
@@ -629,14 +628,15 @@ void PluginHost::process() {
    for (auto &ev : evOut_) {
       switch (ev.type) {
       case CLAP_EVENT_PARAM_VALUE:
-         engineToAppQueue_.set(ev.param_value.param_id, ev.param_value.cookie, ev.param_value.value);
+         engineToAppQueue_.set(
+            ev.param_value.param_id, ev.param_value.cookie, ev.param_value.value);
          break;
       }
    }
    evOut_.clear();
    evIn_.clear();
 
-   if (scheduleDeactivateForParameterScan_) {
+   if (scheduleRestart_) {
       plugin_->stop_processing(plugin_);
       setPluginState(ActiveAndReadyToDeactivate);
    }
@@ -713,10 +713,10 @@ void PluginHost::clapParamsRescan(const clap_host *host, uint32_t flags) {
    checkForMainThread();
    auto h = fromHost(host);
 
-   // 1. if the plugin is activated, check if we need to deactivate it
+   // 1. it is forbidden to use CLAP_PARAM_RESCAN_ALL if the plugin is active
    if (h->isPluginActive() && (flags & CLAP_PARAM_RESCAN_ALL)) {
-      h->scheduleDeactivateForParameterScan_ = true;
-      h->scheduleParamsRescanFlags_ |= flags;
+      throw std::logic_error(
+         "clap_host_params.recan(CLAP_PARAM_RESCAN_ALL) was called while the plugin is active!");
       return;
    }
 
@@ -826,15 +826,8 @@ void PluginHost::clapParamsRescan(const clap_host *host, uint32_t flags) {
       }
    }
 
-   if (flags & CLAP_PARAM_RESCAN_ALL) {
-      h->scheduleDeactivateForParameterScan_ = false;
-      h->scheduleParamsRescanFlags_ = 0;
-
-      if (h->canActivate())
-         h->plugin_->activate(h->plugin_, h->engine_.sampleRate());
-
+   if (flags & CLAP_PARAM_RESCAN_ALL)
       h->paramsChanged();
-   }
 }
 
 double PluginHost::getParamValue(const clap_param_info &info) {
