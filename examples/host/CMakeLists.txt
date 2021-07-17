@@ -6,9 +6,12 @@ find_package(Qt6Widgets REQUIRED)
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(PortAudio REQUIRED IMPORTED_TARGET portaudio-2.0)
-if (UNIX AND NOT APPLE)
-  pkg_check_modules(PortMidi REQUIRED IMPORTED_TARGET portmidi)
-endif()
+
+# PortMidi do not provide pkgconfig it seems
+# if (UNIX AND NOT APPLE)
+#   pkg_check_modules(PortMidi REQUIRED IMPORTED_TARGET portmidi)
+# endif()
+
 if (APPLE)
   add_library(portmidi INTERFACE)
   target_link_options(portmidi INTERFACE -L/usr/local/lib)
