@@ -43,8 +43,8 @@ the [draft](include/clap/ext/draft) folder.
 An extension comes with:
 - an header `#include <clap/ext/xxx.h>`
 - an extension identifier: `#define CLAP_EXT_XXX "clap/XXX"`
-- host interfaces are named like: `stuct clap_host_xxx`
-- plugin interfaces are named like: `stuct clap_plugin_xxx`
+- host interfaces are named like: `struct clap_host_xxx`
+- plugin interfaces are named like: `struct clap_plugin_xxx`
 - each methods must have a clear thread specification
 
 You can create your own extensions and share them, make sure that the extension identifier
@@ -86,3 +86,18 @@ and use to get a basic plugin experience:
 ## Examples
 
 Visit the [examples](examples) folder.
+
+## Building on various platforms
+
+### macOS
+
+To build the example host on macOS you need a few extra libraries, qt6, boost, portmidi and portaudio.
+These are all available by homebrew and the CMake setup will find them assuming a standard
+(/usr/local) homebrew setup. Before your first build do
+
+```shell
+brew install qt6
+brew install boost
+brew install portaudio
+brew install portmidi
+```
