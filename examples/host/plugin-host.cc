@@ -602,7 +602,7 @@ void PluginHost::process() {
    process_.audio_outputs_count = 1;
 
    evOut_.clear();
-   appToEngineQueue_.consume([this](clap_id param_id, void *cookie, double value) {
+   appToEngineValueQueue_.consume([this](clap_id param_id, void *cookie, double value) {
       clap_event ev;
       ev.time = 0;
       ev.type = CLAP_EVENT_PARAM_VALUE;
@@ -611,6 +611,19 @@ void PluginHost::process() {
       ev.param_value.key = -1;
       ev.param_value.channel = -1;
       ev.param_value.value = value;
+      ev.param_value.flags = 0;
+      evIn_.push_back(ev);
+   });
+
+   appToEngineModQueue_.consume([this](clap_id param_id, void *cookie, double value) {
+      clap_event ev;
+      ev.time = 0;
+      ev.type = CLAP_EVENT_PARAM_MOD;
+      ev.param_mod.param_id = param_id;
+      ev.param_mod.cookie = cookie;
+      ev.param_mod.key = -1;
+      ev.param_mod.channel = -1;
+      ev.param_mod.amount = value;
       evIn_.push_back(ev);
    });
 
@@ -628,7 +641,7 @@ void PluginHost::process() {
    for (auto &ev : evOut_) {
       switch (ev.type) {
       case CLAP_EVENT_PARAM_VALUE:
-         engineToAppQueue_.set(
+         engineToAppValueQueue_.set(
             ev.param_value.param_id, ev.param_value.cookie, ev.param_value.value);
          break;
       }
@@ -641,7 +654,7 @@ void PluginHost::process() {
       setPluginState(ActiveAndReadyToDeactivate);
    }
 
-   engineToAppQueue_.producerDone();
+   engineToAppValueQueue_.producerDone();
    g_thread_type = Unknown;
 }
 
@@ -649,8 +662,10 @@ void PluginHost::idle() {
    checkForMainThread();
 
    // Try to send events to the audio engine
-   appToEngineQueue_.producerDone();
-   engineToAppQueue_.consume([this](clap_id param_id, void *cookie, double value) {
+   appToEngineValueQueue_.producerDone();
+   appToEngineModQueue_.producerDone();
+
+   engineToAppValueQueue_.consume([this](clap_id param_id, void *cookie, double value) {
       auto it = params_.find(param_id);
       if (it == params_.end()) {
          std::ostringstream msg;
@@ -703,8 +718,8 @@ void PluginHost::setParamValueByHost(PluginParam &param, double value) {
 
    param.setValue(value);
 
-   appToEngineQueue_.set(param.info().id, param.info().cookie, value);
-   appToEngineQueue_.producerDone();
+   appToEngineValueQueue_.set(param.info().id, param.info().cookie, value);
+   appToEngineValueQueue_.producerDone();
 }
 
 void PluginHost::scanParams() { clapParamsRescan(&host_, CLAP_PARAM_RESCAN_ALL); }

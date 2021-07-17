@@ -59,9 +59,9 @@ public:
    auto quickControlsSelectedPage() const { return quickControlsSelectedPage_; }
    void setQuickControlsSelectedPageByHost(clap_id page_id);
 
-   bool loadNativePluginPreset(const std::string& path);
-   bool loadStateFromFile(const std::string& path);
-   bool saveStateToFile(const std::string& path);
+   bool loadNativePluginPreset(const std::string &path);
+   bool loadStateFromFile(const std::string &path);
+   bool saveStateToFile(const std::string &path);
 
    static void checkForMainThread();
    static void checkForAudioThread();
@@ -82,16 +82,16 @@ private:
    static bool clapIsMainThread(const clap_host *host);
    static bool clapIsAudioThread(const clap_host *host);
 
-   static void  clapParamsRescan(const clap_host *host, uint32_t flags);
-   static void  clapParamsClear(const clap_host *host, uint32_t flags);
-   void         scanParams();
-   void         scanParam(int32_t index);
+   static void clapParamsRescan(const clap_host *host, uint32_t flags);
+   static void clapParamsClear(const clap_host *host, uint32_t flags);
+   void scanParams();
+   void scanParam(int32_t index);
    PluginParam &checkValidParamId(const std::string_view &function,
                                   const std::string_view &param_name,
-                                  clap_id                 param_id);
-   void         checkValidParamValue(const PluginParam &param, double value);
+                                  clap_id param_id);
+   void checkValidParamValue(const PluginParam &param, double value);
    double getParamValue(const clap_param_info &info);
-   static bool      clapParamsRescanMayValueChange(uint32_t flags) {
+   static bool clapParamsRescanMayValueChange(uint32_t flags) {
       return flags & (CLAP_PARAM_RESCAN_ALL | CLAP_PARAM_RESCAN_VALUES);
    }
    static bool clapParamsRescanMayInfoChange(uint32_t flags) {
@@ -103,12 +103,13 @@ private:
    static void clapQuickControlsPagesChanged(const clap_host *host);
    static void clapQuickControlsSelectedPageChanged(const clap_host *host, clap_id page_id);
 
-   static bool clapEventLoopRegisterTimer(const clap_host *host, uint32_t period_ms, clap_id *timer_id);
+   static bool
+   clapEventLoopRegisterTimer(const clap_host *host, uint32_t period_ms, clap_id *timer_id);
    static bool clapEventLoopUnregisterTimer(const clap_host *host, clap_id timer_id);
    static bool clapEventLoopRegisterFd(const clap_host *host, clap_fd fd, uint32_t flags);
    static bool clapEventLoopModifyFd(const clap_host *host, clap_fd fd, uint32_t flags);
    static bool clapEventLoopUnregisterFd(const clap_host *host, clap_fd fd);
-   void        eventLoopSetFdNotifierFlags(clap_fd fd, uint32_t flags);
+   void eventLoopSetFdNotifierFlags(clap_fd fd, uint32_t flags);
 
    static bool clapThreadPoolRequestExec(const clap_host *host, uint32_t num_tasks);
 
@@ -124,36 +125,36 @@ private:
 
    QLibrary library_;
 
-   clap_host                host_;
-   clap_host_log            hostLog_;
-   clap_host_gui            hostGui_;
-   clap_host_audio_ports    hostAudioPorts_;
-   clap_host_params         hostParams_;
+   clap_host host_;
+   clap_host_log hostLog_;
+   clap_host_gui hostGui_;
+   clap_host_audio_ports hostAudioPorts_;
+   clap_host_params hostParams_;
    clap_host_quick_controls hostQuickControls_;
-   clap_host_event_loop     hostEventLoop_;
-   clap_host_thread_check   hostThreadCheck_;
-   clap_host_thread_pool    hostThreadPool_;
+   clap_host_event_loop hostEventLoop_;
+   clap_host_thread_check hostThreadCheck_;
+   clap_host_thread_pool hostThreadPool_;
    clap_host_state hostState_;
 
-   const struct clap_plugin_entry *     pluginEntry_ = nullptr;
-   const clap_plugin *                        plugin_ = nullptr;
-   const clap_plugin_params *           pluginParams_ = nullptr;
-   const clap_plugin_quick_controls *   pluginQuickControls_ = nullptr;
-   const clap_plugin_audio_ports *      pluginAudioPorts_ = nullptr;
-   const clap_plugin_gui *              pluginGui_ = nullptr;
-   const clap_plugin_gui_x11 *          pluginGuiX11_ = nullptr;
-   const clap_plugin_gui_win32 *        pluginGuiWin32_ = nullptr;
-   const clap_plugin_gui_cocoa *        pluginGuiCocoa_ = nullptr;
+   const struct clap_plugin_entry *pluginEntry_ = nullptr;
+   const clap_plugin *plugin_ = nullptr;
+   const clap_plugin_params *pluginParams_ = nullptr;
+   const clap_plugin_quick_controls *pluginQuickControls_ = nullptr;
+   const clap_plugin_audio_ports *pluginAudioPorts_ = nullptr;
+   const clap_plugin_gui *pluginGui_ = nullptr;
+   const clap_plugin_gui_x11 *pluginGuiX11_ = nullptr;
+   const clap_plugin_gui_win32 *pluginGuiWin32_ = nullptr;
+   const clap_plugin_gui_cocoa *pluginGuiCocoa_ = nullptr;
    const clap_plugin_gui_free_standing *pluginGuiFreeStanding_ = nullptr;
-   const clap_plugin_event_loop *       pluginEventLoop_ = nullptr;
-   const clap_plugin_thread_pool *      pluginThreadPool_ = nullptr;
-   const clap_plugin_preset_load *      pluginPresetLoad_ = nullptr;
-   const clap_plugin_state *            pluginState_ = nullptr;
+   const clap_plugin_event_loop *pluginEventLoop_ = nullptr;
+   const clap_plugin_thread_pool *pluginThreadPool_ = nullptr;
+   const clap_plugin_preset_load *pluginPresetLoad_ = nullptr;
+   const clap_plugin_state *pluginState_ = nullptr;
 
    bool pluginExtensionsAreInitialized_ = false;
 
    /* timers */
-   clap_id                                              nextTimerId_ = 0;
+   clap_id nextTimerId_ = 0;
    std::unordered_map<clap_id, std::unique_ptr<QTimer>> timers_;
 
    /* fd events */
@@ -166,22 +167,24 @@ private:
 
    /* thread pool */
    std::vector<std::unique_ptr<QThread>> threadPool_;
-   std::atomic<bool>                     threadPoolStop_ = {false};
-   std::atomic<int>                      threadPoolTaskIndex_ = {0};
-   QSemaphore                            threadPoolSemaphoreProd_;
-   QSemaphore                            threadPoolSemaphoreDone_;
+   std::atomic<bool> threadPoolStop_ = {false};
+   std::atomic<int> threadPoolTaskIndex_ = {0};
+   QSemaphore threadPoolSemaphoreProd_;
+   QSemaphore threadPoolSemaphoreDone_;
 
    /* process stuff */
-   clap_audio_buffer       audioIn_ = {};
-   clap_audio_buffer       audioOut_ = {};
+   clap_audio_buffer audioIn_ = {};
+   clap_audio_buffer audioOut_ = {};
    std::vector<clap_event> evIn_;
    std::vector<clap_event> evOut_;
-   clap_process            process_;
+   clap_process process_;
 
    /* param update queues */
    std::unordered_map<clap_id, std::unique_ptr<PluginParam>> params_;
-   ParamQueue                                                appToEngineQueue_;
-   ParamQueue                                                engineToAppQueue_;
+
+   ParamQueue appToEngineValueQueue_;
+   ParamQueue appToEngineModQueue_;
+   ParamQueue engineToAppValueQueue_;
 
    std::unordered_map<clap_id, std::unique_ptr<clap_quick_controls_page>> quickControlsPages_;
    clap_id quickControlsSelectedPage_ = CLAP_INVALID_ID;
@@ -213,7 +216,7 @@ private:
    void setPluginState(PluginState state);
 
    PluginState state_ = Inactive;
-   bool        stateIsDirty_ = false;
+   bool stateIsDirty_ = false;
 
    bool scheduleRestart_ = false;
 };
