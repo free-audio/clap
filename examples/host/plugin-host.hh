@@ -53,6 +53,7 @@ public:
    void threadPoolEntry();
 
    void setParamValueByHost(PluginParam &param, double value);
+   void setParamModulationByHost(PluginParam &param, double value);
 
    auto &params() const { return params_; }
    auto &quickControlsPages() const { return quickControlsPages_; }

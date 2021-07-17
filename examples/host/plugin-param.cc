@@ -2,7 +2,7 @@
 #include "plugin-host.hh"
 
 PluginParam::PluginParam(PluginHost &pluginHost, const clap_param_info &info, double value)
-   : QObject(&pluginHost), info_(info), value_(value), modulated_value_(value) {}
+   : QObject(&pluginHost), info_(info), value_(value) {}
 
 void PluginParam::setValue(double v) {
    if (value_ == v)
@@ -12,11 +12,11 @@ void PluginParam::setValue(double v) {
    valueChanged();
 }
 
-void PluginParam::setModulatedValue(double v) {
-   if (modulated_value_ == v)
+void PluginParam::setModulation(double v) {
+   if (modulation_ == v)
       return;
 
-   modulated_value_ = v;
+   modulation_ = v;
    modulatedValueChanged();
 }
 

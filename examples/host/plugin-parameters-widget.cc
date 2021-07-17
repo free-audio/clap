@@ -112,11 +112,18 @@ PluginParametersWidget::PluginParametersWidget(QWidget *parent, PluginHost &plug
    maxValueLabel_ = new QLabel;
    defaultValueLabel_ = new QLabel;
    isBeingAdjusted_ = new QLabel;
+
    valueSlider_ = new QSlider;
    valueSlider_->setMinimum(0);
    valueSlider_->setMaximum(SLIDER_RANGE);
    valueSlider_->setOrientation(Qt::Horizontal);
    connect(valueSlider_, &QSlider::valueChanged, this, &PluginParametersWidget::sliderValueChanged);
+
+   modulationSlider_ = new QSlider;
+   modulationSlider_->setMinimum(SLIDER_RANGE);
+   modulationSlider_->setMaximum(SLIDER_RANGE);
+   modulationSlider_->setOrientation(Qt::Horizontal);
+   connect(modulationSlider_, &QSlider::valueChanged, this, &PluginParametersWidget::sliderModulationChanged);
 
    auto formLayout = new QFormLayout(infoWidget);
    formLayout->addRow(tr("id"), idLabel_);
@@ -134,6 +141,7 @@ PluginParametersWidget::PluginParametersWidget(QWidget *parent, PluginHost &plug
    formLayout->addRow(tr("default_value"), defaultValueLabel_);
    formLayout->addRow(tr("is_being_adjusted"), isBeingAdjusted_);
    formLayout->addRow(tr("value"), valueSlider_);
+   formLayout->addRow(tr("modulation"), modulationSlider_);
 
    infoWidget->setLayout(formLayout);
 
@@ -222,6 +230,7 @@ void PluginParametersWidget::disconnectFromParam() {
 void PluginParametersWidget::updateAll() {
    updateParamInfo();
    updateParamValue();
+   updateParamModulation();
    updateParamIsBeingAjustedChanged();
 }
 
@@ -283,6 +292,18 @@ void PluginParametersWidget::updateParamValue() {
    valueSlider_->setValue(SLIDER_RANGE * (v - info.min_value) / (info.max_value - info.min_value));
 }
 
+void PluginParametersWidget::updateParamModulation() {
+   if (valueSlider_->isSliderDown())
+      return;
+
+   if (!currentParam_)
+      return;
+
+   auto info = currentParam_->info();
+   auto v = currentParam_->value();
+   valueSlider_->setValue(SLIDER_RANGE * (v - info.min_value) / (info.max_value - info.min_value));
+}
+
 void PluginParametersWidget::paramInfoChanged() { updateParamInfo(); }
 
 void PluginParametersWidget::paramValueChanged() { updateParamValue(); }
@@ -298,4 +319,18 @@ void PluginParametersWidget::sliderValueChanged(int newValue) {
 
    double value = newValue * (info.max_value - info.min_value) / SLIDER_RANGE + info.min_value;
    pluginHost_.setParamValueByHost(*currentParam_, value);
+}
+
+void PluginParametersWidget::sliderModulationChanged(int newValue) {
+   if (!currentParam_)
+      return;
+
+   if (!modulationSlider_->isSliderDown())
+      return;
+
+   auto &info = currentParam_->info();
+
+   double dist = info.max_value - info.min_value;
+   double value = newValue * dist / SLIDER_RANGE;
+   pluginHost_.setParamModulationByHost(*currentParam_, value);
 }

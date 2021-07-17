@@ -722,6 +722,15 @@ void PluginHost::setParamValueByHost(PluginParam &param, double value) {
    appToEngineValueQueue_.producerDone();
 }
 
+void PluginHost::setParamModulationByHost(PluginParam &param, double value) {
+   checkForMainThread();
+
+   param.setModulation(value);
+
+   appToEngineModQueue_.set(param.info().id, param.info().cookie, value);
+   appToEngineModQueue_.producerDone();
+}
+
 void PluginHost::scanParams() { clapParamsRescan(&host_, CLAP_PARAM_RESCAN_ALL); }
 
 void PluginHost::clapParamsRescan(const clap_host *host, uint32_t flags) {
@@ -819,7 +828,7 @@ void PluginHost::clapParamsRescan(const clap_host *host, uint32_t flags) {
             // update param value
             h->checkValidParamValue(*it->second, value);
             it->second->setValue(value);
-            it->second->setModulatedValue(value);
+            it->second->setModulation(value);
          }
       }
    }

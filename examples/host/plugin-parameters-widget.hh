@@ -64,10 +64,12 @@ private:
    void paramInfoChanged();
    void paramValueChanged();
    void sliderValueChanged(int newValue);
+   void sliderModulationChanged(int newValue);
 
    void updateAll();
    void updateParamInfo();
    void updateParamValue();
+   void updateParamModulation();
    void updateParamIsBeingAjustedChanged();
 
    static const constexpr int SLIDER_RANGE = 10000;
@@ -93,4 +95,5 @@ private:
    QLabel * defaultValueLabel_ = nullptr;
    QLabel * isBeingAdjusted_ = nullptr;
    QSlider *valueSlider_ = nullptr;
+   QSlider *modulationSlider_ = nullptr;
 };

@@ -17,8 +17,12 @@ public:
    double value() const { return value_; }
    void setValue(double v);
 
-   double modulatedValue() const { return modulated_value_; }
-   void setModulatedValue(double v);
+   double modulation() const { return modulation_; }
+   void setModulation(double v);
+
+   double modulatedValue() const {
+      return std::min(info_.max_value, std::max(info_.min_value, value_ + modulation_));
+   }
 
    bool isValueValid(const double v) const;
 
@@ -52,7 +56,7 @@ signals:
 private:
    bool is_being_adjusted_ = false;
    clap_param_info info_;
-   double value_;
-   double modulated_value_;
+   double value_ = 0;
+   double modulation_ = 0;
    std::unordered_map<int64_t, std::string> enum_entries_;
 };
