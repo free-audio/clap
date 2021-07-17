@@ -15,4 +15,13 @@ add_custom_target(clap-compile-tests DEPENDS clap-compile-test-c clap-compile-te
 
 add_subdirectory(examples)
 
+# If you use clap as a submodule of your plugin you need some interface projects
+# to allow you to link. clap-core gives you the include directory and clap-plugin-core
+# gives you the core + plugin-glue.
+add_library(clap-core INTERFACE)
+target_include_directories(clap-core INTERFACE include)
+
+add_library(clap-plugin-core INTERFACE)
+target_link_libraries(clap-plugin-core INTERFACE clap-core clap-plugin-glue)
+
 install(DIRECTORY include DESTINATION "${CMAKE_INSTALL_PREFIX}")
