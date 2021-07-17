@@ -4,9 +4,16 @@ set(CMAKE_AUTOMOC ON)
 find_package(Qt6Core REQUIRED)
 find_package(Qt6Widgets REQUIRED)
 
-#find_package(PkgConfig REQUIRED)
-#pkg_check_modules(PortAudio REQUIRED IMPORTED_TARGET portaudio-2.0)
-#pkg_check_modules(PortMidi REQUIRED IMPORTED_TARGET portmidi)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(PortAudio REQUIRED IMPORTED_TARGET portaudio-2.0)
+if (UNIX AND NOT APPLE)
+  pkg_check_modules(PortMidi REQUIRED IMPORTED_TARGET portmidi)
+endif()
+if (APPLE)
+  add_library(portmidi INTERFACE)
+  target_link_options(portmidi INTERFACE -L/usr/local/lib)
+  target_link_libraries(portmidi INTERFACE libportmidi.dylib)
+endif()
 
 add_executable(clap-host
   application.cc
