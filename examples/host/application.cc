@@ -22,8 +22,8 @@ Application::Application(int argc, char **argv)
    assert(!instance_);
    instance_ = this;
 
-   setOrganizationDomain("u-he.com");
-   setOrganizationName("u-he");
+   setOrganizationDomain("github.com/free-audio/clap");
+   setOrganizationName("clap");
    setApplicationName("uhost");
    setApplicationVersion("1.0");
 
@@ -68,7 +68,7 @@ void Application::parseCommandLine() {
                                      tr("plugin-index"),
                                      "0");
 
-   parser.setApplicationDescription("u-he standalone host");
+   parser.setApplicationDescription("clap standalone host");
    parser.addHelpOption();
    parser.addVersionOption();
    parser.addOption(pluginOpt);
