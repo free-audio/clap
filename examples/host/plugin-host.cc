@@ -110,13 +110,14 @@ bool PluginHost::load(const QString &path, int pluginIndex) {
    library_.setLoadHints(QLibrary::ResolveAllSymbolsHint | QLibrary::DeepBindHint);
    if (!library_.load()) {
       QString err = library_.errorString();
-      qWarning() << "failed to load " << path << ": " << err;
+      qWarning() << "Failed to load plugin '" << path << "': " << err;
       return false;
    }
 
    pluginEntry_ =
       reinterpret_cast<const struct clap_plugin_entry *>(library_.resolve("clap_plugin_entry"));
    if (!pluginEntry_) {
+      qWarning() << "Unable to resolve entry point 'clap_plugin_entry' in '" << path << "'";
       library_.unload();
       return false;
    }

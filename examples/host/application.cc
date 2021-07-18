@@ -38,6 +38,16 @@ Application::Application(int argc, char **argv)
 
    engine_->setParentWindow(mainWindow_->getEmbedWindowId());
 
+   /*
+    * This is here JUST because macOS and QT don't process command lines properly
+    * and I'm not sure why yet.
+    */
+   if (getenv("CLAP_HOST_FORCE_PLUGIN")) {
+      qWarning() << "Warning: Loading plugin from ENV, not command line";
+      pluginPath_ = getenv("CLAP_HOST_FORCE_PLUGIN");
+      pluginIndex_ = 0;
+   }
+
    if (engine_->loadPlugin(pluginPath_, pluginIndex_))
       engine_->start();
 }
