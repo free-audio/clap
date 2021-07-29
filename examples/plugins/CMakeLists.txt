@@ -13,15 +13,12 @@ add_library(
   abstract-gui.hh
   remote-gui.hh
   remote-gui.cc
-  remote-channel.hh
-  remote-channel.cc
-  buffer.hh
 
   dc-offset/dc-offset.hh
   dc-offset/dc-offset.cc
   gain/gain.hh
   gain/gain.cc)
-target_link_libraries(clap-plugins clap-plugin-glue Boost::serialization Boost::iostreams)
+target_link_libraries(clap-plugins clap-plugin-glue clap-io Boost::serialization Boost::iostreams)
 target_link_libraries(clap-plugins -Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/linux-clap-plugins.version)
 set_target_properties(clap-plugins PROPERTIES CXX_STANDARD 20 SUFFIX ".clap" PREFIX "")
 

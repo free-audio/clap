@@ -58,9 +58,6 @@ namespace clap {
       // Called when data can be written, non-blocking
       void onWrite();
 
-
-
-
    private:
       using ReadBuffer = Buffer<uint8_t, 128 * 1024>;
       using WriteBuffer = Buffer<uint8_t, 32 * 1024>;
