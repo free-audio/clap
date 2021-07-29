@@ -575,11 +575,11 @@ namespace clap {
    //-----------------//
    // clap_plugin_gui //
    //-----------------//
-   void Plugin::clapGuiSize(const clap_plugin *plugin, uint32_t *width, uint32_t *height) noexcept {
+   bool Plugin::clapGuiSize(const clap_plugin *plugin, uint32_t *width, uint32_t *height) noexcept {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_gui.size");
 
-      self.guiSize(width, height);
+      return self.guiSize(width, height);
    }
 
    bool Plugin::clapGuiCanResize(const clap_plugin *plugin) noexcept {
@@ -594,6 +594,13 @@ namespace clap {
       self.ensureMainThread("clap_plugin_gui.round_size");
 
       self.guiRoundSize(width, height);
+   }
+
+   bool Plugin::clapGuiSetSize(const clap_plugin *plugin, uint32_t width, uint32_t height) noexcept {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_gui.set_size");
+
+      return self.guiSetSize(width, height);
    }
 
    void Plugin::clapGuiSetScale(const clap_plugin *plugin, double scale) noexcept {
@@ -615,6 +622,13 @@ namespace clap {
       self.ensureMainThread("clap_plugin_gui.hide");
 
       self.guiHide();
+   }
+
+   bool Plugin::clapGuiCreate(const clap_plugin *plugin) noexcept {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin_gui.create");
+
+      return self.guiCreate();
    }
 
    void Plugin::clapGuiClose(const clap_plugin *plugin) noexcept {

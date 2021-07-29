@@ -32,13 +32,17 @@ namespace clap {
       void adjust(clap_id paramId, double value) override;
       void endAdjust(clap_id paramId) override;
 
+      // RemoteChannel::EventControl
+      void modifyFd(clap_fd_flags flags) override;
+
    private:
       std::unique_ptr<RemoteChannel> channel_;
 
 #ifdef __unix__
       pid_t child_ = -1;
 #else
-      HANDLE socket_ = nullptr;
+      STARTUPINFO si;
+      PROCESS_INFORMATION childInfo_;
 #endif
    };
 } // namespace clap

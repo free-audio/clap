@@ -3,6 +3,7 @@
 #include <clap-plugin.hh>
 
 #include "parameters.hh"
+#include "remote-gui.hh"
 
 namespace clap {
    class PluginHelper : public Plugin {
@@ -74,6 +75,46 @@ namespace clap {
       bool stateSave(clap_ostream *stream) noexcept override;
       bool stateLoad(clap_istream *stream) noexcept override;
 
+      //-----------------//
+      // clap_plugin_gui //
+      //-----------------//
+      bool implementsGui() const noexcept override { return true; }
+      bool guiCanResize() const noexcept override { return false; }
+      bool guiSize(uint32_t *width, uint32_t *height) noexcept override;
+      void guiRoundSize(uint32_t *width, uint32_t *height) noexcept override {
+         guiSize(width, height);
+      }
+      void guiSetScale(double scale) noexcept override {}
+      void guiShow() noexcept override {}
+      void guiHide() noexcept override {}
+      void guiClose() noexcept override {}
+
+      //---------------------//
+      // clap_plugin_gui_x11 //
+      //---------------------//
+      bool implementsGuiX11() const noexcept override { return false; }
+      bool guiX11Attach(const char *displayName, unsigned long window) noexcept override {
+         return false;
+      }
+
+      //-----------------------//
+      // clap_plugin_gui_win32 //
+      //-----------------------//
+      bool implementsGuiWin32() const noexcept override { return false; }
+      bool guiWin32Attach(clap_hwnd window) noexcept override { return false; }
+
+      //-----------------------//
+      // clap_plugin_gui_cocoa //
+      //-----------------------//
+      bool implementsGuiCocoa() const noexcept override { return false; }
+      bool guiCocoaAttach(void *nsView) noexcept override { return false; }
+
+      //-------------------------------//
+      // clap_plugin_gui_free_standing //
+      //-------------------------------//
+      bool implementsGuiFreeStanding() const noexcept override { return false; }
+      bool guiFreeStandingOpen() noexcept override { return false; }
+
       //////////////////////
       // Cached Host Info //
       //////////////////////
@@ -96,6 +137,8 @@ namespace clap {
       std::vector<clap_audio_port_info> audioInputs_;
       std::vector<clap_audio_port_info> audioOutputs_;
       std::vector<clap_audio_ports_config> audioConfigs_;
+
+      std::unique_ptr<RemoteGui> remoteGui_;
 
       Parameters parameters_;
    };

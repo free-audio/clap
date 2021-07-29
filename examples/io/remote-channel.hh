@@ -12,7 +12,7 @@ namespace clap {
    public:
       class EventControl {
       public:
-         virtual void modifyFd(clap_fd_flags flags);
+         virtual void modifyFd(clap_fd_flags flags) = 0;
       };
 
       class Handler {

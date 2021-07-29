@@ -147,8 +147,10 @@ namespace clap {
       // clap_plugin_gui //
       //-----------------//
       virtual bool implementsGui() const noexcept { return false; }
+      virtual bool guiCreate() noexcept { return false; }
       virtual bool guiCanResize() const noexcept { return false; }
-      virtual void guiSize(uint32_t *width, uint32_t *height) noexcept {}
+      virtual bool guiSize(uint32_t *width, uint32_t *height) noexcept { return false; }
+      virtual bool guiSetSize(uint32_t width, uint32_t height) noexcept { return false; }
       virtual void guiRoundSize(uint32_t *width, uint32_t *height) noexcept {
          guiSize(width, height);
       }
@@ -332,11 +334,16 @@ namespace clap {
       static void clapEventLoopOnFd(const clap_plugin *plugin, clap_fd fd, uint32_t flags) noexcept;
 
       // clap_plugin_gui
+      static bool clapGuiCreate(const clap_plugin *plugin) noexcept;
       static void clapGuiSetScale(const clap_plugin *plugin, double scale) noexcept;
-      static void clapGuiSize(const clap_plugin *plugin, uint32_t *width, uint32_t *height) noexcept;
+      static bool
+      clapGuiSize(const clap_plugin *plugin, uint32_t *width, uint32_t *height) noexcept;
+      static bool
+      clapGuiSetSize(const clap_plugin *plugin, uint32_t width, uint32_t height) noexcept;
       static void clapGuiShow(const clap_plugin *plugin) noexcept;
       static bool clapGuiCanResize(const clap_plugin *plugin) noexcept;
-      static void clapGuiRoundSize(const clap_plugin *plugin, uint32_t *width, uint32_t *height) noexcept;
+      static void
+      clapGuiRoundSize(const clap_plugin *plugin, uint32_t *width, uint32_t *height) noexcept;
       static void clapGuiHide(const clap_plugin *plugin) noexcept;
       static void clapGuiClose(const clap_plugin *plugin) noexcept;
 
@@ -414,13 +421,15 @@ namespace clap {
       };
 
       static const constexpr clap_plugin_gui pluginGui_ = {
+         clapGuiCreate,
+         clapGuiClose,
          clapGuiSetScale,
          clapGuiSize,
          clapGuiCanResize,
          clapGuiRoundSize,
+         clapGuiSetSize,
          clapGuiShow,
          clapGuiHide,
-         clapGuiClose,
       };
 
       static const constexpr clap_plugin_gui_x11 pluginGuiX11_ = {
