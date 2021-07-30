@@ -80,12 +80,30 @@ namespace clap {
       return true;
    }
 
-   bool PluginHelper::guiSize(uint32_t *width, uint32_t *height) noexcept
-   {
+   bool PluginHelper::guiSize(uint32_t *width, uint32_t *height) noexcept {
       if (!remoteGui_)
          return false;
 
-      // TODO: synchronous call
-      return false;
+      return remoteGui_->size(width, height);
+   }
+
+   void PluginHelper::guiSetScale(double scale) noexcept {
+      if (remoteGui_)
+         remoteGui_->setScale(scale);
+   }
+
+   void PluginHelper::guiShow() noexcept {
+      if (remoteGui_)
+         remoteGui_->show();
+   }
+
+   void PluginHelper::guiHide() noexcept {
+      if (remoteGui_)
+         remoteGui_->hide();
+   }
+
+   void PluginHelper::guiClose() noexcept {
+      if (remoteGui_)
+         remoteGui_->close();
    }
 } // namespace clap

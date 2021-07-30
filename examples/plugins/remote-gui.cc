@@ -6,6 +6,7 @@
 #include <cassert>
 
 #include "remote-gui.hh"
+#include <messages.hh>
 
 namespace clap {
 
@@ -40,12 +41,25 @@ namespace clap {
          ::close(sockets[1]);
       }
 
-      channel_.reset(new RemoteChannel(*this, *this, sockets[0]));
+      channel_.reset(new RemoteChannel(
+         [this](const RemoteChannel::Message &msg) { onMessage(msg); }, *this, sockets[0], true));
 
       return true;
 #else
       return false;
 #endif
+   }
+
+   bool RemoteGui::size(uint32_t *width, uint32_t *height) noexcept {
+      channel_->sendMessageSync(
+         RemoteChannel::Message(messages::SizeRequest{}, channel_->computeNextCookie()),
+         [width, height](const RemoteChannel::Message &m) {
+            auto &response = m.get<messages::SizeResponse>();
+            *width = response.width;
+            *height = response.height;
+         });
+
+      return true;
    }
 
 } // namespace clap

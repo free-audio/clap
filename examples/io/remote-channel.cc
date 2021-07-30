@@ -7,8 +7,11 @@
 
 namespace clap {
 
-   RemoteChannel::RemoteChannel(Handler &handler, EventControl &evControl, int socket)
-      : handler_(handler), evControl_(evControl), socket_(socket) {}
+   RemoteChannel::RemoteChannel(const MessageHandler &handler,
+                                EventControl &evControl,
+                                int socket,
+                                bool cookieHalf)
+      : cookieHalf_(cookieHalf), handler_(handler), evControl_(evControl), socket_(socket) {}
 
    RemoteChannel::~RemoteChannel() { close(); }
 
@@ -27,7 +30,8 @@ namespace clap {
       inputBuffer_.rewind();
    }
 
-   void RemoteChannel::write(const uint8_t *data, size_t size) {
+   void RemoteChannel::write(const void *_data, size_t size) {
+      const uint8_t *data = static_cast<const uint8_t *>(_data);
       while (size > 0) {
          auto &buffer = nextWriteBuffer();
          buffer.write(data, size);
@@ -84,5 +88,29 @@ namespace clap {
 
       ::close(socket_);
       socket_ = -1;
+   }
+
+   uint32_t RemoteChannel::computeNextCookie() noexcept {
+      uint32_t cookie = nextCookie_;
+      if (cookieHalf_)
+         cookie |= (1ULL << 31);
+      else
+         cookie &= ~(1ULL << 31);
+
+      ++nextCookie_; // overflow is fine
+      return cookie;
+   }
+
+   bool RemoteChannel::sendMessageAsync(const Message &msg) {
+      write(&msg.type, sizeof(msg.type));
+      write(&msg.cookie, sizeof(msg.cookie));
+      write(&msg.size, sizeof(msg.size));
+      write(msg.data, msg.size);
+      onWrite();
+      return true;
+   }
+
+   bool RemoteChannel::sendMessageSync(const Message &msg, const MessageHandler &handler) {
+      return true;
    }
 } // namespace clap

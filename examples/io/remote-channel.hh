@@ -1,7 +1,10 @@
 #pragma once
 
-#include <queue>
+#include <cstring>
+#include <functional>
 #include <memory>
+#include <queue>
+#include <unordered_map>
 
 #include <clap/all.h>
 
@@ -15,31 +18,35 @@ namespace clap {
          virtual void modifyFd(clap_fd_flags flags) = 0;
       };
 
-      class Handler {
-      public:
-         virtual ~Handler() = default;
+      struct Message final {
+         uint32_t type;
+         uint32_t cookie;
+         uint32_t size;
+         const void *data;
 
-         // GUI callbacks
-         virtual void defineParameter(const clap_param_info &info) {}
-         virtual bool attachCocoa(void *nsView) { return false; }
-         virtual bool attachWin32(clap_hwnd window) { return false; }
-         virtual bool attachX11(const char *display_name, unsigned long window) { return false; }
+         template <typename T>
+         Message(const T &msg, uint32_t c) : cookie(c) {
+            set(msg);
+         }
 
-         virtual void size(int32_t *width, int32_t *height) {}
-         virtual void setScale(double scale) {}
+         template <typename T>
+         const T &get() const noexcept {
+            return *reinterpret_cast<const T *>(data);
+         }
 
-         virtual bool show() { return false; }
-         virtual bool hide() { return false; }
-
-         virtual void close() {}
-
-         // Plugin callbacks
-         virtual void beginAdjust(clap_id paramId) {}
-         virtual void adjust(clap_id paramId, double value) {}
-         virtual void endAdjust(clap_id paramId) {}
+         template <typename T>
+         void set(const T &msg) noexcept {
+            type = T::type;
+            data = &msg;
+         }
       };
 
-      RemoteChannel(Handler &handler, EventControl &evControl, clap_fd socket);
+      using MessageHandler = std::function<void(const Message &response)>;
+
+      RemoteChannel(const MessageHandler &handler,
+                    EventControl &evControl,
+                    clap_fd socket,
+                    bool cookieHalf);
       ~RemoteChannel();
 
       RemoteChannel(const RemoteChannel &) = delete;
@@ -47,8 +54,10 @@ namespace clap {
       RemoteChannel &operator=(const RemoteChannel &) = delete;
       RemoteChannel &operator=(RemoteChannel &&) = delete;
 
-      void defineParameter(const clap_param_info &info);
-      void setParameterValue(clap_id paramId, double value);
+      uint32_t computeNextCookie() noexcept;
+
+      bool sendMessageAsync(const Message &msg);
+      bool sendMessageSync(const Message &msg, const MessageHandler &handler);
 
       void close();
 
@@ -62,12 +71,16 @@ namespace clap {
       using ReadBuffer = Buffer<uint8_t, 128 * 1024>;
       using WriteBuffer = Buffer<uint8_t, 32 * 1024>;
 
-      void write(const uint8_t *data, size_t size);
-      WriteBuffer& nextWriteBuffer();
+      void write(const void *data, size_t size);
+      WriteBuffer &nextWriteBuffer();
 
       void parseInput();
 
-      Handler &handler_;
+      const bool cookieHalf_;
+      uint32_t nextCookie_ = 0;
+
+      const MessageHandler &handler_;
+      std::unordered_map<uint32_t /* cookie */, MessageHandler &> syncHandlers_;
       EventControl &evControl_;
       clap_fd socket_;
 

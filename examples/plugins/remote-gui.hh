@@ -10,7 +10,8 @@
 #include "remote-channel.hh"
 
 namespace clap {
-   class RemoteGui : public AbstractGui, public RemoteChannel::Handler, public RemoteChannel::EventControl {
+   class RemoteGui : public AbstractGui, public RemoteChannel::EventControl {
+   public:
       RemoteGui(PluginHelper &plugin) : AbstractGui(plugin) {}
 
       bool spawn();
@@ -19,7 +20,7 @@ namespace clap {
       bool attachWin32(clap_hwnd window) noexcept override;
       bool attachX11(const char *display_name, unsigned long window) noexcept override;
 
-      void size(int32_t *width, int32_t *height) noexcept override;
+      bool size(uint32_t *width, uint32_t *height) noexcept override;
       void setScale(double scale) noexcept override;
 
       bool show() noexcept override;
@@ -27,15 +28,12 @@ namespace clap {
 
       void close() noexcept override;
 
-      // RemoteChannel::Handler
-      void beginAdjust(clap_id paramId) override;
-      void adjust(clap_id paramId, double value) override;
-      void endAdjust(clap_id paramId) override;
-
       // RemoteChannel::EventControl
       void modifyFd(clap_fd_flags flags) override;
 
    private:
+      void onMessage(const RemoteChannel::Message& msg);
+
       std::unique_ptr<RemoteChannel> channel_;
 
 #ifdef __unix__
