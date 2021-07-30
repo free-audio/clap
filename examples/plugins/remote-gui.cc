@@ -62,4 +62,9 @@ namespace clap {
       return true;
    }
 
+   void RemoteGui::setScale(double scale) noexcept {
+      channel_->sendMessageAsync(
+         RemoteChannel::Message(messages::SetScaleRequest{scale}, channel_->computeNextCookie()));
+   }
+
 } // namespace clap

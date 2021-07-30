@@ -19,10 +19,12 @@ namespace clap {
       };
 
       struct Message final {
-         uint32_t type;
-         uint32_t cookie;
-         uint32_t size;
-         const void *data;
+         uint32_t type = 0;
+         uint32_t cookie = 0;
+         uint32_t size = 0;
+         const void *data = nullptr;
+
+         Message() = default;
 
          template <typename T>
          Message(const T &msg, uint32_t c) : cookie(c) {
@@ -67,6 +69,8 @@ namespace clap {
       // Called when data can be written, non-blocking
       void onWrite();
 
+      void runOnce();
+
    private:
       using ReadBuffer = Buffer<uint8_t, 128 * 1024>;
       using WriteBuffer = Buffer<uint8_t, 32 * 1024>;
@@ -74,13 +78,13 @@ namespace clap {
       void write(const void *data, size_t size);
       WriteBuffer &nextWriteBuffer();
 
-      void parseInput();
+      void processInput();
 
       const bool cookieHalf_;
       uint32_t nextCookie_ = 0;
 
       const MessageHandler &handler_;
-      std::unordered_map<uint32_t /* cookie */, MessageHandler &> syncHandlers_;
+      std::unordered_map<uint32_t /* cookie */, const MessageHandler &> syncHandlers_;
       EventControl &evControl_;
       clap_fd socket_;
 

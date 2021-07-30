@@ -26,8 +26,7 @@ namespace clap {
       }
 
       inputBuffer_.wrote(nbytes);
-      parseInput();
-      inputBuffer_.rewind();
+      processInput();
    }
 
    void RemoteChannel::write(const void *_data, size_t size) {
@@ -101,6 +100,34 @@ namespace clap {
       return cookie;
    }
 
+   void RemoteChannel::processInput() {
+      while (inputBuffer_.readAvail() > 12) {
+         const auto *data = inputBuffer_.readData();
+         Message msg;
+
+         std::memcpy(&msg.type, data, 4);
+         std::memcpy(&msg.cookie, data + 4, 4);
+         std::memcpy(&msg.size, data + 8, 4);
+         msg.data = data + 12;
+
+         uint32_t totalSize = 12 + msg.size;
+         if (inputBuffer_.readAvail() < totalSize)
+            return;
+
+         auto it = syncHandlers_.find(msg.cookie);
+         if (it != syncHandlers_.end()) {
+            it->second(msg);
+            syncHandlers_.erase(msg.cookie);
+         } else {
+            handler_(msg);
+         }
+
+         inputBuffer_.read(totalSize);
+      }
+
+      inputBuffer_.rewind();
+   }
+
    bool RemoteChannel::sendMessageAsync(const Message &msg) {
       write(&msg.type, sizeof(msg.type));
       write(&msg.cookie, sizeof(msg.cookie));
@@ -111,6 +138,16 @@ namespace clap {
    }
 
    bool RemoteChannel::sendMessageSync(const Message &msg, const MessageHandler &handler) {
+      sendMessageAsync(msg);
+
+      syncHandlers_.emplace(msg.cookie, handler);
+
+      while (syncHandlers_.count(msg.cookie) > 0)
+         runOnce();
+
+      syncHandlers_.erase(msg.cookie);
       return true;
    }
+
+   void RemoteChannel::runOnce() {}
 } // namespace clap
