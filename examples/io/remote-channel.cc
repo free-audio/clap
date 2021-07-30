@@ -1,5 +1,6 @@
 #ifdef __unix__
 #   include <errno.h>
+#   include <poll.h>
 #   include <unistd.h>
 #endif
 
@@ -62,7 +63,7 @@ namespace clap {
             auto nbytes = ::write(socket_, buffer.readData(), avail);
             if (nbytes == -1) {
                if (errno == EWOULDBLOCK || errno == EAGAIN || errno == EINTR) {
-                  evControl_.modifyFd(CLAP_FD_READ | CLAP_FD_WRITE);
+                  modifyFd(CLAP_FD_READ | CLAP_FD_WRITE);
                   return;
                }
 
@@ -78,7 +79,7 @@ namespace clap {
          outputBuffers_.pop();
       }
 
-      evControl_.modifyFd(CLAP_FD_READ);
+      modifyFd(CLAP_FD_READ);
    }
 
    void RemoteChannel::close() {
@@ -149,5 +150,31 @@ namespace clap {
       return true;
    }
 
-   void RemoteChannel::runOnce() {}
+   void RemoteChannel::modifyFd(clap_fd_flags flags)
+   {
+      if (flags == ioFlags_)
+         return;
+
+      ioFlags_ = flags;
+      evControl_.modifyFd(flags);
+   }
+
+   void RemoteChannel::runOnce() {
+#ifdef __unix__
+      pollfd pfd;
+      pfd.fd = socket_;
+      pfd.events = POLLIN | (ioFlags_ & CLAP_FD_WRITE ? POLLOUT : 0);
+      pfd.revents = 0;
+
+      int ret = ::poll(&pfd, 1, 0);
+      if (ret < 1)
+         // TODO error handling
+         return;
+
+      if (pfd.revents & POLLOUT)
+         onWrite();
+      if (pfd.revents & POLLIN)
+         onRead();
+#endif
+   }
 } // namespace clap

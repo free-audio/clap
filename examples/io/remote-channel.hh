@@ -80,6 +80,8 @@ namespace clap {
 
       void processInput();
 
+      void modifyFd(clap_fd_flags flags);
+
       const bool cookieHalf_;
       uint32_t nextCookie_ = 0;
 
@@ -87,6 +89,7 @@ namespace clap {
       std::unordered_map<uint32_t /* cookie */, const MessageHandler &> syncHandlers_;
       EventControl &evControl_;
       clap_fd socket_;
+      clap_fd_flags ioFlags_ = 0;
 
       ReadBuffer inputBuffer_;
       std::queue<WriteBuffer> outputBuffers_;
