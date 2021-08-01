@@ -6,7 +6,8 @@
 #include <cassert>
 
 #include "remote-gui.hh"
-#include <messages.hh>
+#include "path-provider.hh"
+#include "../io/messages.hh"
 
 namespace clap {
 
@@ -34,7 +35,7 @@ namespace clap {
          ::close(sockets[0]);
          char socketStr[16];
          ::snprintf(socketStr, sizeof(socketStr), "%d", sockets[1]);
-         ::execl("clap-gui", "--socket", socketStr);
+         ::execl(PathProvider::instance()->getGuiExecutable().c_str(), "--socket", socketStr);
          std::terminate();
       } else {
          // Parent

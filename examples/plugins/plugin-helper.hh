@@ -79,6 +79,8 @@ namespace clap {
       // clap_plugin_gui //
       //-----------------//
       bool implementsGui() const noexcept override { return true; }
+      bool guiCreate() noexcept override;
+      void guiDestroy() noexcept override;
       bool guiCanResize() const noexcept override { return false; }
       bool guiSize(uint32_t *width, uint32_t *height) noexcept override;
       void guiRoundSize(uint32_t *width, uint32_t *height) noexcept override {
@@ -87,7 +89,6 @@ namespace clap {
       void guiSetScale(double scale) noexcept override;
       void guiShow() noexcept override;
       void guiHide() noexcept override;
-      void guiDestroy() noexcept override;
 
       //---------------------//
       // clap_plugin_gui_x11 //

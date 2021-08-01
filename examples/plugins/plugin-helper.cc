@@ -80,6 +80,23 @@ namespace clap {
       return true;
    }
 
+   bool PluginHelper::guiCreate() noexcept {
+      remoteGui_.reset(new RemoteGui(*this));
+
+      if (!remoteGui_->spawn())
+      {
+         remoteGui_.reset();
+         return false;
+      }
+
+      return true;
+   }
+
+   void PluginHelper::guiDestroy() noexcept {
+      if (remoteGui_)
+         remoteGui_->destroy();
+   }
+
    bool PluginHelper::guiSize(uint32_t *width, uint32_t *height) noexcept {
       if (!remoteGui_)
          return false;
@@ -100,10 +117,5 @@ namespace clap {
    void PluginHelper::guiHide() noexcept {
       if (remoteGui_)
          remoteGui_->hide();
-   }
-
-   void PluginHelper::guiDestroy() noexcept {
-      if (remoteGui_)
-         remoteGui_->destroy();
    }
 } // namespace clap
