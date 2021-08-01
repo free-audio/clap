@@ -16,6 +16,8 @@ namespace clap {
 
       bool spawn();
 
+      void defineParameter(const clap_param_info&) noexcept override;
+
       bool attachCocoa(void *nsView) noexcept override;
       bool attachWin32(clap_hwnd window) noexcept override;
       bool attachX11(const char *display_name, unsigned long window) noexcept override;

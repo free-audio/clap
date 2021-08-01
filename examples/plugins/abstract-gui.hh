@@ -10,6 +10,8 @@ namespace clap {
       AbstractGui(PluginHelper &plugin) : plugin_(plugin) {}
       virtual ~AbstractGui() = default;
 
+      virtual void defineParameter(const clap_param_info&) noexcept = 0;
+
       virtual bool attachCocoa(void *nsView) noexcept = 0;
       virtual bool attachWin32(clap_hwnd window) noexcept = 0;
       virtual bool attachX11(const char *display_name, unsigned long window) noexcept = 0;

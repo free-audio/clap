@@ -6,8 +6,9 @@
 #include <sstream>
 #include <vector>
 
-#include "gain/gain.hh"
 #include "dc-offset/dc-offset.hh"
+#include "gain/gain.hh"
+#include "path-provider.hh"
 
 struct PluginEntry {
    using create_func = std::function<const clap_plugin *(const clap_host *)>;
@@ -15,7 +16,7 @@ struct PluginEntry {
    PluginEntry(const clap_plugin_descriptor *d, create_func &&func)
       : desc(d), create(std::move(func)) {}
 
-   const clap_plugin_descriptor *            desc;
+   const clap_plugin_descriptor *desc;
    std::function<const clap_plugin *(const clap_host *)> create;
 };
 
@@ -30,12 +31,17 @@ static void addPlugin() {
 }
 
 static bool clap_init(const char *plugin_path) {
+   clap::PathProvider::createInstance(plugin_path);
+
    addPlugin<clap::Gain>();
    addPlugin<clap::DcOffset>();
    return true;
 }
 
-static void clap_deinit(void) { g_plugins.clear(); }
+static void clap_deinit(void) {
+   g_plugins.clear();
+   clap::PathProvider::destroyInstance();
+}
 
 static uint32_t clap_get_plugin_count(void) { return g_plugins.size(); }
 
@@ -56,19 +62,13 @@ static const clap_plugin *clap_create_plugin(const clap_host *host, const char *
    return nullptr;
 }
 
-static uint32_t clap_get_invalidation_sources_count(void)
-{
-   return 0;
-}
+static uint32_t clap_get_invalidation_sources_count(void) { return 0; }
 
-static const clap_plugin_invalidation_source *clap_get_invalidation_sources(uint32_t index)
-{
+static const clap_plugin_invalidation_source *clap_get_invalidation_sources(uint32_t index) {
    return nullptr;
 }
 
-static void clap_refresh(void)
-{
-}
+static void clap_refresh(void) {}
 
 CLAP_EXPORT const struct clap_plugin_entry clap_plugin_entry = {
    CLAP_VERSION,

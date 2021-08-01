@@ -10,6 +10,9 @@ add_library(
   plugin-helper.hh
   stream-helper.hh
 
+  path-provider.hh
+  path-provider.cc
+
   abstract-gui.hh
   remote-gui.hh
   remote-gui.cc
