@@ -579,6 +579,12 @@ namespace clap {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_gui.size");
 
+      if (!self.isGuiCreated_) {
+         self.hostMisbehaving("clap_plugin_gui.size() was called without a prior call to "
+                              "clap_plugin_gui.create()");
+         return false;
+      }
+
       return self.guiSize(width, height);
    }
 
@@ -586,19 +592,56 @@ namespace clap {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_gui.can_resize");
 
+      if (!self.isGuiCreated_) {
+         self.hostMisbehaving("clap_plugin_gui.can_resize() was called without a prior call to "
+                              "clap_plugin_gui.create()");
+         return false;
+      }
+
       return self.guiCanResize();
    }
 
-   void Plugin::clapGuiRoundSize(const clap_plugin *plugin, uint32_t *width, uint32_t *height) noexcept {
+   void
+   Plugin::clapGuiRoundSize(const clap_plugin *plugin, uint32_t *width, uint32_t *height) noexcept {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_gui.round_size");
+
+      if (!self.isGuiCreated_) {
+         self.hostMisbehaving("clap_plugin_gui.round_size() was called without a prior call to "
+                              "clap_plugin_gui.create()");
+         return;
+      }
 
       self.guiRoundSize(width, height);
    }
 
-   bool Plugin::clapGuiSetSize(const clap_plugin *plugin, uint32_t width, uint32_t height) noexcept {
+   bool
+   Plugin::clapGuiSetSize(const clap_plugin *plugin, uint32_t width, uint32_t height) noexcept {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_gui.set_size");
+
+      if (!self.isGuiCreated_) {
+         self.hostMisbehaving("clap_plugin_gui.set_size() was called without a prior call to "
+                              "clap_plugin_gui.create()");
+         return false;
+      }
+
+      if (!self.guiCanResize()) {
+         self.hostMisbehaving("clap_plugin_gui.set_size() was called but the gui is not resizable");
+         return false;
+      }
+
+      uint32_t testWidth = width;
+      uint32_t testHeight = height;
+      self.guiRoundSize(&testWidth, &testHeight);
+
+      if (width != testWidth || height != testHeight) {
+         std::ostringstream os;
+         os << "clap_plugin_gui.set_size() was called with a size which was not adjusted by "
+               "clap_plugin_gui.round_size(): "
+            << width << "x" << height << " vs " << testWidth << "x" << testHeight;
+         self.hostMisbehaving(os.str());
+      }
 
       return self.guiSetSize(width, height);
    }
@@ -607,12 +650,29 @@ namespace clap {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_gui.set_scale");
 
+      if (!self.isGuiCreated_) {
+         self.hostMisbehaving("clap_plugin_gui.set_scale() was called without a prior call to "
+                              "clap_plugin_gui.create()");
+         return;
+      }
+
       self.guiSetScale(scale);
    }
 
    void Plugin::clapGuiShow(const clap_plugin *plugin) noexcept {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_gui.show");
+
+      if (!self.isGuiCreated_) {
+         self.hostMisbehaving(
+            "clap_plugin_gui.show() was called without a prior call to clap_plugin_gui.create()");
+         return;
+      }
+
+      if (!self.isGuiAttached_) {
+         self.hostMisbehaving("clap_plugin_gui.show() but the gui was not attached first");
+         return;
+      }
 
       self.guiShow();
    }
@@ -621,6 +681,17 @@ namespace clap {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_gui.hide");
 
+      if (!self.isGuiCreated_) {
+         self.hostMisbehaving(
+            "clap_plugin_gui.hide() was called without a prior call to clap_plugin_gui.create()");
+         return;
+      }
+
+      if (!self.isGuiAttached_) {
+         self.hostMisbehaving("clap_plugin_gui.hide() but the gui was not attached first");
+         return;
+      }
+
       self.guiHide();
    }
 
@@ -628,14 +699,33 @@ namespace clap {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_gui.create");
 
-      return self.guiCreate();
+      if (self.isGuiCreated_) {
+         self.hostMisbehaving(
+            "clap_plugin_gui.create() was called while the plugin gui was already created");
+         return true;
+      }
+
+      if (!self.guiCreate())
+         return false;
+
+      self.isGuiCreated_ = true;
+      self.isGuiAttached_ = false;
+      return true;
    }
 
    void Plugin::clapGuiDestroy(const clap_plugin *plugin) noexcept {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_gui.destroy");
 
+      if (!self.isGuiCreated_) {
+         self.hostMisbehaving(
+            "clap_plugin_gui.destroy() was called while the plugin gui not created");
+         return;
+      }
+
       self.guiDestroy();
+      self.isGuiCreated_ = false;
+      self.isGuiAttached_ = false;
    }
 
    //---------------------//
@@ -647,7 +737,22 @@ namespace clap {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_gui_x11.attach");
 
-      return self.guiX11Attach(display_name, window);
+      if (!self.isGuiCreated_) {
+         self.hostMisbehaving(
+            "clap_plugin_gui_x11.attach() was called without a prior call to clap_plugin_gui.create()");
+         return false;
+      }
+
+      if (self.isGuiAttached_) {
+         self.hostMisbehaving("clap_plugin_gui_x11.attach() but the gui was already attached");
+         return true;
+      }
+
+      if (!self.guiX11Attach(display_name, window))
+         return false;
+
+      self.isGuiAttached_ = true;
+      return true;
    }
 
    //-----------------------//
@@ -657,7 +762,22 @@ namespace clap {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_gui_win32.attach");
 
-      return self.guiWin32Attach(window);
+      if (!self.isGuiCreated_) {
+         self.hostMisbehaving(
+            "clap_plugin_gui_win32.attach() was called without a prior call to clap_plugin_gui.create()");
+         return false;
+      }
+
+      if (self.isGuiAttached_) {
+         self.hostMisbehaving("clap_plugin_gui_win32.attach() but the gui was already attached");
+         return true;
+      }
+
+      if (!self.guiWin32Attach(window))
+         return false;
+
+      self.isGuiAttached_ = true;
+      return true;
    }
 
    //-----------------------//
@@ -667,7 +787,22 @@ namespace clap {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_gui_cocoa.attach");
 
-      return self.guiCocoaAttach(nsView);
+      if (!self.isGuiCreated_) {
+         self.hostMisbehaving(
+            "clap_plugin_gui_cocoa.attach() was called without a prior call to clap_plugin_gui.create()");
+         return false;
+      }
+
+      if (self.isGuiAttached_) {
+         self.hostMisbehaving("clap_plugin_gui_cocoa.attach() but the gui was already attached");
+         return true;
+      }
+
+      if (!self.guiCocoaAttach(nsView))
+         return false;
+
+      self.isGuiAttached_ = true;
+      return true;
    }
 
    //-------------------------------//
@@ -675,9 +810,24 @@ namespace clap {
    //-------------------------------//
    bool Plugin::clapGuiFreeStandingOpen(const clap_plugin *plugin) noexcept {
       auto &self = from(plugin);
-      self.ensureMainThread("clap_plugin_gui_win32.attach");
+      self.ensureMainThread("clap_plugin_gui_free_standing.open");
 
-      return self.guiFreeStandingOpen();
+      if (!self.isGuiCreated_) {
+         self.hostMisbehaving(
+            "clap_plugin_gui_free_standing.open() was called without a prior call to clap_plugin_gui.create()");
+         return false;
+      }
+
+      if (self.isGuiAttached_) {
+         self.hostMisbehaving("clap_plugin_gui_free_standing.open() but the gui was already attached");
+         return true;
+      }
+
+      if (!self.guiFreeStandingOpen())
+         return false;
+
+      self.isGuiAttached_ = true;
+      return true;
    }
 
    /////////////

@@ -452,5 +452,8 @@ namespace clap {
       bool isActive_ = false;
       bool isProcessing_ = false;
       double sampleRate_ = 0;
+
+      bool isGuiCreated_ = false;
+      bool isGuiAttached_ = false;
    };
 } // namespace clap
