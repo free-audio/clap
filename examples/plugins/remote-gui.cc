@@ -73,4 +73,11 @@ namespace clap {
       return channel_->sendMessageSync(request, response);
    }
 
+   bool RemoteGui::hide() noexcept {
+      messages::HideRequest request;
+      messages::HideResponse response;
+
+      return channel_->sendMessageSync(request, response);
+   }
+
 } // namespace clap

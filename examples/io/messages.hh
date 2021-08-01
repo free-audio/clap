@@ -22,6 +22,7 @@ namespace clap::messages {
       kShowRequest,
       kShowResponse,
       kHideRequest,
+      kHideResponse,
       kCloseRequest,
 
       // Gui, Plugin->Host
@@ -76,6 +77,10 @@ namespace clap::messages {
 
    struct HideRequest final {
       static const constexpr Type type = kHideRequest;
+   };
+
+   struct HideResponse final {
+      static const constexpr Type type = kHideResponse;
    };
 
    struct CloseRequest final {

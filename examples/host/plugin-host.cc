@@ -182,7 +182,7 @@ void PluginHost::unload() {
       return;
 
    if (pluginGui_)
-      pluginGui_->close(plugin_);
+      pluginGui_->destroy(plugin_);
 
    if (isPluginActive()) {
       plugin_->deactivate(plugin_);

@@ -102,8 +102,8 @@ namespace clap {
          remoteGui_->hide();
    }
 
-   void PluginHelper::guiClose() noexcept {
+   void PluginHelper::guiDestroy() noexcept {
       if (remoteGui_)
-         remoteGui_->close();
+         remoteGui_->destroy();
    }
 } // namespace clap

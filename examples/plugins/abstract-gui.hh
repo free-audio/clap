@@ -20,7 +20,7 @@ namespace clap {
       virtual bool show() noexcept = 0;
       virtual bool hide() noexcept = 0;
 
-      virtual void close() noexcept = 0;
+      virtual void destroy() noexcept = 0;
 
    protected:
       PluginHelper &plugin_;

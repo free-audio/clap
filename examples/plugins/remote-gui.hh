@@ -26,7 +26,7 @@ namespace clap {
       bool show() noexcept override;
       bool hide() noexcept override;
 
-      void close() noexcept override;
+      void destroy() noexcept override;
 
       // RemoteChannel::EventControl
       void modifyFd(clap_fd_flags flags) override;

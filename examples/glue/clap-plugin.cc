@@ -631,11 +631,11 @@ namespace clap {
       return self.guiCreate();
    }
 
-   void Plugin::clapGuiClose(const clap_plugin *plugin) noexcept {
+   void Plugin::clapGuiDestroy(const clap_plugin *plugin) noexcept {
       auto &self = from(plugin);
-      self.ensureMainThread("clap_plugin_gui.close");
+      self.ensureMainThread("clap_plugin_gui.destroy");
 
-      self.guiClose();
+      self.guiDestroy();
    }
 
    //---------------------//

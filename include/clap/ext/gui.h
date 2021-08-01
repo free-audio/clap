@@ -37,7 +37,7 @@ typedef struct clap_plugin_gui {
 
    // Free all resources associated with the gui.
    // [main-thread]
-   void (*close)(const clap_plugin *plugin);
+   void (*destroy)(const clap_plugin *plugin);
 
    // Set the absolute GUI scaling factor.
    // [main-thread]
