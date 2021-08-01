@@ -37,6 +37,11 @@ namespace clap::messages {
       kResizeResponse,
    };
 
+   struct DefineParameterRequest final {
+      static const constexpr Type type = kDefineParameterRequest;
+      clap_param_info info;
+   };
+
    struct SetScaleRequest final {
       static const constexpr Type type = kSetScaleRequest;
       double scale;

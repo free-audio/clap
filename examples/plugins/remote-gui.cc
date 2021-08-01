@@ -5,18 +5,25 @@
 
 #include <cassert>
 
-#include "remote-gui.hh"
-#include "path-provider.hh"
 #include "../io/messages.hh"
+#include "path-provider.hh"
+#include "remote-gui.hh"
+#include "plugin-helper.hh"
 
 namespace clap {
+   RemoteGui::~RemoteGui()
+   {
+      if (channel_)
+         destroy();
+
+      assert(!channel_);
+   }
 
    bool RemoteGui::spawn() {
       assert(child_ == -1);
-
-#ifdef __unix__
       assert(!channel_);
 
+#ifdef __unix__
       /* create a socket pair */
       int sockets[2];
       if (::socketpair(AF_UNIX, SOCK_STREAM, 0, sockets)) {
@@ -42,6 +49,8 @@ namespace clap {
          ::close(sockets[1]);
       }
 
+      plugin_.hostEventLoop_->register_fd(plugin_.host_, channel_->fd(), CLAP_FD_READ | CLAP_FD_ERROR);
+
       channel_.reset(new RemoteChannel(
          [this](const RemoteChannel::Message &msg) { onMessage(msg); }, *this, sockets[0], true));
 
@@ -49,6 +58,19 @@ namespace clap {
 #else
       return false;
 #endif
+   }
+
+   void RemoteGui::modifyFd(clap_fd_flags flags)
+   {
+      plugin_.hostEventLoop_->modify_fd(plugin_.host_, channel_->fd(), flags);
+   }
+
+   void RemoteGui::onMessage(const RemoteChannel::Message &msg) {
+      switch (msg.type) {}
+   }
+
+   void RemoteGui::defineParameter(const clap_param_info &info) noexcept {
+      channel_->sendMessageAsync(messages::DefineParameterRequest{info});
    }
 
    bool RemoteGui::size(uint32_t *width, uint32_t *height) noexcept {
@@ -82,10 +104,15 @@ namespace clap {
    }
 
    void RemoteGui::destroy() noexcept {
+      if (!channel_)
+         return;
+
       messages::DestroyRequest request;
       messages::DestroyResponse response;
 
       channel_->sendMessageSync(request, response);
+      plugin_.hostEventLoop_->unregister_fd(plugin_.host_, channel_->fd());
+      channel_.reset();
    }
 
    bool RemoteGui::attachCocoa(void *nsView) noexcept {
@@ -105,7 +132,7 @@ namespace clap {
       messages::AttachResponse response;
 
       request.window = window;
-      std::snprintf(request.display, sizeof (request.display), "%s", display_name);
+      std::snprintf(request.display, sizeof(request.display), "%s", display_name);
 
       return channel_->sendMessageSync(request, response);
    }

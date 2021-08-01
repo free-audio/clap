@@ -93,6 +93,8 @@ namespace clap {
 
       void runOnce();
 
+      clap_fd fd() const { return socket_; }
+
    private:
       using ReadBuffer = Buffer<uint8_t, 128 * 1024>;
       using WriteBuffer = Buffer<uint8_t, 32 * 1024>;

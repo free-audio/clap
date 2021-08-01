@@ -132,6 +132,8 @@ namespace clap {
       }
 
    protected:
+      friend class RemoteGui;
+
       bool hasTrackInfo_ = false;
       clap_track_info trackInfo_;
 

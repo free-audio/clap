@@ -26,6 +26,8 @@ namespace clap {
       const std::filesystem::path prefix_;
    };
 
+   std::unique_ptr<PathProvider> PathProvider::instance_;
+
    const PathProvider *PathProvider::createInstance(const std::string &pluginPath) {
       assert(!instance_);
 
