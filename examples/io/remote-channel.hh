@@ -32,6 +32,19 @@ namespace clap {
          }
 
          template <typename T>
+         void get(T &obj) const noexcept {
+            constexpr const auto sz = sizeof(T);
+
+            if (size != sz)
+               std::terminate();
+
+            if (type != T::type)
+               std::terminate();
+
+            std::memcpy(&obj, data, sizeof(obj));
+         }
+
+         template <typename T>
          const T &get() const noexcept {
             return *reinterpret_cast<const T *>(data);
          }
@@ -58,8 +71,17 @@ namespace clap {
 
       uint32_t computeNextCookie() noexcept;
 
-      bool sendMessageAsync(const Message &msg);
-      bool sendMessageSync(const Message &msg, const MessageHandler &handler);
+      template <typename Request>
+      bool sendMessageAsync(const Request &request) {
+         return sendMessageAsync(RemoteChannel::Message(request, computeNextCookie()));
+      }
+
+      template <typename Request, typename Response>
+      bool sendMessageSync(const Request &request, Response &response) {
+         sendMessageSync(RemoteChannel::Message(request, computeNextCookie()),
+                         [&response](const RemoteChannel::Message &m) { m.get(response); });
+         return true;
+      }
 
       void close();
 
@@ -81,6 +103,9 @@ namespace clap {
       void processInput();
 
       void modifyFd(clap_fd_flags flags);
+
+      bool sendMessageAsync(const Message &msg);
+      bool sendMessageSync(const Message &msg, const MessageHandler &handler);
 
       const bool cookieHalf_;
       uint32_t nextCookie_ = 0;

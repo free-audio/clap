@@ -51,20 +51,26 @@ namespace clap {
    }
 
    bool RemoteGui::size(uint32_t *width, uint32_t *height) noexcept {
-      channel_->sendMessageSync(
-         RemoteChannel::Message(messages::SizeRequest{}, channel_->computeNextCookie()),
-         [width, height](const RemoteChannel::Message &m) {
-            auto &response = m.get<messages::SizeResponse>();
-            *width = response.width;
-            *height = response.height;
-         });
+      messages::SizeRequest request;
+      messages::SizeResponse response;
 
+      if (!channel_->sendMessageSync(request, response))
+         return false;
+
+      *width = response.width;
+      *height = response.height;
       return true;
    }
 
    void RemoteGui::setScale(double scale) noexcept {
-      channel_->sendMessageAsync(
-         RemoteChannel::Message(messages::SetScaleRequest{scale}, channel_->computeNextCookie()));
+      channel_->sendMessageAsync(messages::SetScaleRequest{scale});
+   }
+
+   bool RemoteGui::show() noexcept {
+      messages::ShowRequest request;
+      messages::ShowResponse response;
+
+      return channel_->sendMessageSync(request, response);
    }
 
 } // namespace clap

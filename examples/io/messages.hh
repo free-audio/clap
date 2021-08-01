@@ -20,6 +20,7 @@ namespace clap::messages {
       kSetSizeRequest,
       kSetSizeResponse,
       kShowRequest,
+      kShowResponse,
       kHideRequest,
       kCloseRequest,
 
@@ -67,6 +68,10 @@ namespace clap::messages {
 
    struct ShowRequest final {
       static const constexpr Type type = kShowRequest;
+   };
+
+   struct ShowResponse final {
+      static const constexpr Type type = kShowResponse;
    };
 
    struct HideRequest final {
