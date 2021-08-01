@@ -80,4 +80,33 @@ namespace clap {
       return channel_->sendMessageSync(request, response);
    }
 
+   void RemoteGui::destroy() noexcept {
+      messages::DestroyRequest request;
+      messages::DestroyResponse response;
+
+      channel_->sendMessageSync(request, response);
+   }
+
+   bool RemoteGui::attachCocoa(void *nsView) noexcept {
+      // TODO
+      return false;
+   }
+
+   bool RemoteGui::attachWin32(clap_hwnd window) noexcept {
+      messages::AttachWin32Request request{window};
+      messages::AttachResponse response;
+
+      return channel_->sendMessageSync(request, response);
+   }
+
+   bool RemoteGui::attachX11(const char *display_name, unsigned long window) noexcept {
+      messages::AttachX11Request request;
+      messages::AttachResponse response;
+
+      request.window = window;
+      std::snprintf(request.display, sizeof (request.display), "%s", display_name);
+
+      return channel_->sendMessageSync(request, response);
+   }
+
 } // namespace clap

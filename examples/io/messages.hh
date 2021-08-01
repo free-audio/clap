@@ -1,5 +1,7 @@
 #include <stdint.h>
 
+#include <clap/all.h>
+
 namespace clap::messages {
 
    enum Type : uint32_t {
@@ -23,7 +25,12 @@ namespace clap::messages {
       kShowResponse,
       kHideRequest,
       kHideResponse,
-      kCloseRequest,
+      kDestroyRequest,
+      kDestroyResponse,
+      kAttachWin32Request,
+      kAttachCocoaRequest,
+      kAttachX11Request,
+      kAttachResponse,
 
       // Gui, Plugin->Host
       kResizeRequest,
@@ -83,8 +90,12 @@ namespace clap::messages {
       static const constexpr Type type = kHideResponse;
    };
 
-   struct CloseRequest final {
-      static const constexpr Type type = kCloseRequest;
+   struct DestroyRequest final {
+      static const constexpr Type type = kDestroyRequest;
+   };
+
+   struct DestroyResponse final {
+      static const constexpr Type type = kDestroyResponse;
    };
 
    struct ResizeRequest final {
@@ -95,5 +106,20 @@ namespace clap::messages {
 
    struct ResizeResponse final {
       static const constexpr Type type = kResizeResponse;
+   };
+
+   struct AttachWin32Request final {
+      static const constexpr Type type = kAttachWin32Request;
+      clap_hwnd hwnd;
+   };
+
+   struct AttachX11Request final {
+      static const constexpr Type type = kAttachX11Request;
+      unsigned long window;
+      char display[128];
+   };
+
+   struct AttachResponse final {
+      static const constexpr Type type = kAttachResponse;
    };
 } // namespace clap::messages
