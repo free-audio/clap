@@ -82,6 +82,8 @@ namespace clap {
       modifyFd(CLAP_FD_READ);
    }
 
+   void RemoteChannel::onError() { close(); }
+
    void RemoteChannel::close() {
       if (socket_ == -1)
          return;
@@ -150,8 +152,7 @@ namespace clap {
       return true;
    }
 
-   void RemoteChannel::modifyFd(clap_fd_flags flags)
-   {
+   void RemoteChannel::modifyFd(clap_fd_flags flags) {
       if (flags == ioFlags_)
          return;
 

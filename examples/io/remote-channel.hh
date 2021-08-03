@@ -91,6 +91,9 @@ namespace clap {
       // Called when data can be written, non-blocking
       void onWrite();
 
+      // Called on socket exception
+      void onError();
+
       void runOnce();
 
       clap_fd fd() const { return socket_; }
