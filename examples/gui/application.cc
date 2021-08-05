@@ -1,11 +1,12 @@
 #include <QCommandLineParser>
-#include <QQmlApplicationEngine>
+#include <QQuickView>
+#include <QWindow>
 
 #include "../io/messages.hh"
 #include "application.hh"
 
 Application::Application(int argc, char **argv)
-   : QGuiApplication(argc, argv), qmlEngine_(new QQmlApplicationEngine(this)) {
+   : QGuiApplication(argc, argv), quickView_(new QQuickView()) {
 
    QCommandLineParser parser;
 
@@ -18,9 +19,7 @@ Application::Application(int argc, char **argv)
 
    parser.process(*this);
 
-   qmlEngine_->load(parser.value(qmlOpt));
-   if (qmlEngine_->rootObjects().empty())
-      throw std::invalid_argument("bad qml file");
+   quickView_->setSource(parser.value(qmlOpt));
 
    auto socket = parser.value(socketOpt).toULongLong();
 
@@ -62,6 +61,38 @@ void Application::onMessage(const clap::RemoteChannel::Message &msg) {
    case clap::messages::kDefineParameterRequest: {
       clap::messages::DefineParameterRequest rq;
       msg.get(rq);
+      // TODO
+      break;
+   }
+
+   case clap::messages::kAttachX11Request: {
+      clap::messages::AttachX11Request rq;
+      msg.get(rq);
+      hostWindow_.reset(QWindow::fromWinId(rq.window));
+      quickView_->setParent(hostWindow_.get());
+
+      clap::messages::AttachResponse rp;
+      remoteChannel_->sendMessageAsync(rp);
+      break;
+   }
+
+   case clap::messages::kShowRequest: {
+      clap::messages::ShowRequest rq;
+      msg.get(rq);
+
+      quickView_->show();
+      clap::messages::ShowResponse rp;
+      remoteChannel_->sendMessageAsync(rp);
+      break;
+   }
+
+   case clap::messages::kHideRequest: {
+      clap::messages::HideRequest rq;
+      msg.get(rq);
+
+      quickView_->hide();
+      clap::messages::HideResponse rp;
+      remoteChannel_->sendMessageAsync(rp);
       break;
    }
    }
