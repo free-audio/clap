@@ -185,6 +185,13 @@ void PluginHost::unload() {
       pluginGui_->destroy(plugin_);
 
    if (isPluginActive()) {
+      if (isPluginProcessing()) {
+         plugin_->stop_processing(plugin_);
+         setPluginState(ActiveAndReadyToDeactivate);
+      } else if (isPluginSleeping()) {
+         setPluginState(ActiveAndReadyToDeactivate);
+      }
+
       plugin_->deactivate(plugin_);
       setPluginState(Inactive);
    }
@@ -234,6 +241,15 @@ void PluginHost::setPorts(int numInputs, float **inputs, int numOutputs, float *
 void PluginHost::setParentWindow(WId parentWindow) {
    checkForMainThread();
 
+   if (!pluginGui_->create(plugin_))
+      return;
+
+   uint32_t width = 0;
+   uint32_t height = 0;
+
+   if (pluginGui_)
+      pluginGui_->size(plugin_, &width, &height);
+
 #if defined(Q_OS_LINUX)
    if (pluginGuiX11_)
       pluginGuiX11_->attach(plugin_, nullptr, parentWindow);
@@ -247,13 +263,9 @@ void PluginHost::setParentWindow(WId parentWindow) {
    // else (pluginGuiFreeStanding_)
    //   pluginGuiFreeStanding_->open(plugin_);
 
-   uint32_t width = 0;
-   uint32_t height = 0;
-
-   if (pluginGui_)
-      pluginGui_->size(plugin_, &width, &height);
-
    Application::instance().mainWindow()->resizePluginView(width, height);
+
+   pluginGui_->show(plugin_);
 }
 
 void PluginHost::clapLog(const clap_host *host, clap_log_severity severity, const char *msg) {
@@ -1047,3 +1059,5 @@ bool PluginHost::isPluginActive() const {
 }
 
 bool PluginHost::isPluginProcessing() const { return state_ == ActiveAndProcessing; }
+
+bool PluginHost::isPluginSleeping() const { return state_ == ActiveAndSleeping; }

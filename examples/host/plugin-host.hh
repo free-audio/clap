@@ -214,6 +214,7 @@ private:
 
    bool isPluginActive() const;
    bool isPluginProcessing() const;
+   bool isPluginSleeping() const;
    void setPluginState(PluginState state);
 
    PluginState state_ = Inactive;
