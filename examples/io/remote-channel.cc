@@ -23,7 +23,7 @@ namespace clap {
    RemoteChannel::~RemoteChannel() { close(); }
 
    void RemoteChannel::onRead() {
-      ssize_t nbytes = ::read(socket_, inputBuffer_.writeData(), inputBuffer_.writeAvail());
+      ssize_t nbytes = ::read(socket_, inputBuffer_.writePtr(), inputBuffer_.writeAvail());
       if (nbytes < 0) {
          if (errno == EWOULDBLOCK || errno == EAGAIN || errno == EINTR)
             return;
@@ -64,9 +64,8 @@ namespace clap {
       while (!outputBuffers_.empty()) {
          auto &buffer = outputBuffers_.front();
 
-         auto avail = buffer.readAvail();
-         while (avail > 0) {
-            auto nbytes = ::write(socket_, buffer.readData(), avail);
+         for (auto avail = buffer.readAvail(); avail > 0; avail = buffer.readAvail()) {
+            auto nbytes = ::write(socket_, buffer.readPtr(), avail);
             if (nbytes == -1) {
                if (errno == EWOULDBLOCK || errno == EAGAIN || errno == EINTR) {
                   modifyFd(CLAP_FD_READ | CLAP_FD_WRITE);
@@ -77,9 +76,7 @@ namespace clap {
                return;
             }
 
-            buffer.wrote(nbytes);
-            avail -= nbytes;
-            assert(avail == buffer.readAvail());
+            buffer.read(nbytes);
          }
 
          outputBuffers_.pop();
@@ -110,8 +107,8 @@ namespace clap {
    }
 
    void RemoteChannel::processInput() {
-      while (inputBuffer_.readAvail() > 12) {
-         const auto *data = inputBuffer_.readData();
+      while (inputBuffer_.readAvail() >= 12) {
+         const auto *data = inputBuffer_.readPtr();
          Message msg;
 
          std::memcpy(&msg.type, data, 4);
@@ -173,7 +170,7 @@ namespace clap {
       pfd.events = POLLIN | (ioFlags_ & CLAP_FD_WRITE ? POLLOUT : 0);
       pfd.revents = 0;
 
-      int ret = ::poll(&pfd, 1, 0);
+      int ret = ::poll(&pfd, 1, -1);
       if (ret < 1)
          // TODO error handling
          return;

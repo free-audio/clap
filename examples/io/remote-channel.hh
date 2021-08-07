@@ -115,8 +115,8 @@ namespace clap {
       const bool cookieHalf_;
       uint32_t nextCookie_ = 0;
 
-      const MessageHandler &handler_;
-      std::unordered_map<uint32_t /* cookie */, const MessageHandler &> syncHandlers_;
+      MessageHandler handler_;
+      std::unordered_map<uint32_t /* cookie */, const MessageHandler&> syncHandlers_;
       EventControl &evControl_;
       clap_fd socket_;
       clap_fd_flags ioFlags_ = 0;

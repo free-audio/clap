@@ -8,6 +8,10 @@
 Application::Application(int argc, char **argv)
    : QGuiApplication(argc, argv), quickView_(new QQuickView()) {
 
+   bool waitForDebbugger = true;
+   while (waitForDebbugger)
+      ;
+
    QCommandLineParser parser;
 
    QCommandLineOption qmlOpt("qml", tr("path to the QML skin"), tr("path"));
@@ -24,12 +28,12 @@ Application::Application(int argc, char **argv)
    auto socket = parser.value(socketOpt).toULongLong();
 
    socketReadNotifier_ = new QSocketNotifier(socket, QSocketNotifier::Read, this);
-   connect(
-      socketReadNotifier_,
-      &QSocketNotifier::activated,
-      [this](QSocketDescriptor socket, QSocketNotifier::Type type) {
-         printf("ON READ\n");
-         remoteChannel_->onRead(); });
+   connect(socketReadNotifier_,
+           &QSocketNotifier::activated,
+           [this](QSocketDescriptor socket, QSocketNotifier::Type type) {
+              printf("ON READ\n");
+              remoteChannel_->onRead();
+           });
 
    socketWriteNotifier_ = new QSocketNotifier(socket, QSocketNotifier::Write, this);
    connect(
@@ -60,6 +64,7 @@ void Application::modifyFd(clap_fd_flags flags) {
 }
 
 void Application::onMessage(const clap::RemoteChannel::Message &msg) {
+   printf("ON MESSAGE\n");
    switch (msg.type) {
    case clap::messages::kDefineParameterRequest: {
       clap::messages::DefineParameterRequest rq;
@@ -80,9 +85,6 @@ void Application::onMessage(const clap::RemoteChannel::Message &msg) {
    }
 
    case clap::messages::kShowRequest: {
-      clap::messages::ShowRequest rq;
-      msg.get(rq);
-
       quickView_->show();
       clap::messages::ShowResponse rp;
       remoteChannel_->sendMessageAsync(rp);
@@ -90,9 +92,6 @@ void Application::onMessage(const clap::RemoteChannel::Message &msg) {
    }
 
    case clap::messages::kHideRequest: {
-      clap::messages::HideRequest rq;
-      msg.get(rq);
-
       quickView_->hide();
       clap::messages::HideResponse rp;
       remoteChannel_->sendMessageAsync(rp);
@@ -100,9 +99,6 @@ void Application::onMessage(const clap::RemoteChannel::Message &msg) {
    }
 
    case clap::messages::kSizeRequest: {
-      clap::messages::SizeRequest rq;
-      msg.get(rq);
-
       clap::messages::SizeResponse rp;
       rp.width = quickView_->width();
       rp.height = quickView_->height();

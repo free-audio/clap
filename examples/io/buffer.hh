@@ -16,25 +16,32 @@ namespace clap {
       Buffer<T, CAPACITY> &operator=(const Buffer<T, CAPACITY> &) = delete;
       Buffer<T, CAPACITY> &operator=(Buffer<T, CAPACITY> &&) = delete;
 
-      const T *readData() const noexcept { return &data_[roff_]; }
+      const T *readPtr() const noexcept { return &data_[roff_]; }
       size_t readAvail() const noexcept { return woff_ - roff_; }
-      void read(size_t bytes) noexcept {
-         roff_ += bytes;
+
+      T *writePtr() noexcept { return &data_[woff_]; }
+      size_t writeAvail() const noexcept { return CAPACITY - woff_; }
+
+      /* Consume nbytes from the buffer */
+      void read(size_t nbytes) noexcept {
+         roff_ += nbytes;
+         assert(checkInvariants());
+      }
+
+      /* Produce nbytes into the buffer */
+      void wrote(size_t nbytes) noexcept {
+         woff_ += nbytes;
          assert(checkInvariants());
       }
 
       void write(const T *&data, size_t &size) {
-         auto avail = std::min(size, writeAvail());
+         size_t avail = writeAvail();
+         avail = std::min(size, avail);
          auto end = data + avail;
-         std::copy(data, data + avail, writeData());
+         std::copy(data, end, writePtr());
+         wrote(size);
          data = end;
          size -= avail;
-      }
-      T *writeData() noexcept { return &data_[woff_]; }
-      size_t writeAvail() const noexcept { return CAPACITY - woff_; }
-      void wrote(size_t bytes) noexcept {
-         woff_ += bytes;
-         assert(checkInvariants());
       }
 
       void rewind() noexcept {
@@ -43,7 +50,7 @@ namespace clap {
 
          // this is inefficient but simple
          // TODO: use scatter/gather IO
-         auto rptr = readData();
+         auto rptr = readPtr();
          auto avail = readAvail();
          std::copy(rptr, rptr + avail, &data_[0]);
 
