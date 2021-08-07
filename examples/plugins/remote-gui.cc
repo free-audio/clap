@@ -7,12 +7,11 @@
 
 #include "../io/messages.hh"
 #include "path-provider.hh"
-#include "remote-gui.hh"
 #include "plugin-helper.hh"
+#include "remote-gui.hh"
 
 namespace clap {
-   RemoteGui::~RemoteGui()
-   {
+   RemoteGui::~RemoteGui() {
       if (channel_)
          destroy();
 
@@ -30,6 +29,10 @@ namespace clap {
          return false;
       }
 
+      printf("About to start GUI: %s --socket %d\n",
+             PathProvider::instance()->getGuiExecutable().c_str(),
+             sockets[0]);
+
       child_ = ::fork();
       if (child_ == -1) {
          ::close(sockets[0]);
@@ -42,15 +45,16 @@ namespace clap {
          ::close(sockets[0]);
          char socketStr[16];
          ::snprintf(socketStr, sizeof(socketStr), "%d", sockets[1]);
-         ::execl(PathProvider::instance()->getGuiExecutable().c_str(), "--socket", socketStr);
+         auto path = PathProvider::instance()->getGuiExecutable();
+         ::execl(path.c_str(), path.c_str(), "--socket", socketStr, nullptr);
+         printf("Failed to start child process: %m\n");
          std::terminate();
       } else {
          // Parent
          ::close(sockets[1]);
       }
 
-      plugin_.hostEventLoop_->register_fd(plugin_.host_, channel_->fd(), CLAP_FD_READ | CLAP_FD_ERROR);
-
+      plugin_.hostEventLoop_->register_fd(plugin_.host_, sockets[0], CLAP_FD_READ | CLAP_FD_ERROR);
       channel_.reset(new RemoteChannel(
          [this](const RemoteChannel::Message &msg) { onMessage(msg); }, *this, sockets[0], true));
 
@@ -60,9 +64,19 @@ namespace clap {
 #endif
    }
 
-   void RemoteGui::modifyFd(clap_fd_flags flags)
-   {
+   void RemoteGui::modifyFd(clap_fd_flags flags) {
       plugin_.hostEventLoop_->modify_fd(plugin_.host_, channel_->fd(), flags);
+   }
+
+   clap_fd RemoteGui::fd() const { return channel_ ? channel_->fd() : -1; }
+
+   void RemoteGui::onFd(clap_fd_flags flags) {
+      if (flags & CLAP_FD_READ)
+         channel_->onRead();
+      if (flags & CLAP_FD_WRITE)
+         channel_->onWrite();
+      if (flags & CLAP_FD_ERROR)
+         channel_->onError();
    }
 
    void RemoteGui::onMessage(const RemoteChannel::Message &msg) {

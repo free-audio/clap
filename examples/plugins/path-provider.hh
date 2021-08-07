@@ -11,6 +11,7 @@ namespace clap {
       static const PathProvider *instance() { return instance_.get(); }
 
       virtual std::string getGuiExecutable() const = 0;
+      virtual bool isValid() const = 0;
 
    private:
       static std::unique_ptr<PathProvider> instance_;

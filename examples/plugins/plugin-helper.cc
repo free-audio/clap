@@ -83,8 +83,7 @@ namespace clap {
    bool PluginHelper::guiCreate() noexcept {
       remoteGui_.reset(new RemoteGui(*this));
 
-      if (!remoteGui_->spawn())
-      {
+      if (!remoteGui_->spawn()) {
          remoteGui_.reset();
          return false;
       }
@@ -117,5 +116,10 @@ namespace clap {
    void PluginHelper::guiHide() noexcept {
       if (remoteGui_)
          remoteGui_->hide();
+   }
+
+   void PluginHelper::eventLoopOnFd(clap_fd fd, uint32_t flags) noexcept {
+      if (remoteGui_ && fd == remoteGui_->fd())
+         remoteGui_->onFd(flags);
    }
 } // namespace clap

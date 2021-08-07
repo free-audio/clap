@@ -131,6 +131,12 @@ namespace clap {
          return hasTrackInfo_ ? trackInfo_.channel_map : CLAP_CHMAP_STEREO;
       }
 
+      //------------------------//
+      // clap_plugin_event_loop //
+      //------------------------//
+      bool implementsEventLoop() const noexcept override { return true; }
+      void eventLoopOnFd(clap_fd fd, uint32_t flags) noexcept override;
+
    protected:
       friend class RemoteGui;
 

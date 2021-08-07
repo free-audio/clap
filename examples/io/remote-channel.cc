@@ -1,5 +1,6 @@
 #ifdef __unix__
 #   include <errno.h>
+#   include <fcntl.h>
 #   include <poll.h>
 #   include <unistd.h>
 #endif
@@ -12,7 +13,12 @@ namespace clap {
                                 EventControl &evControl,
                                 int socket,
                                 bool cookieHalf)
-      : cookieHalf_(cookieHalf), handler_(handler), evControl_(evControl), socket_(socket) {}
+      : cookieHalf_(cookieHalf), handler_(handler), evControl_(evControl), socket_(socket) {
+#ifdef __unix__
+      int flags = ::fcntl(socket_, F_GETFL);
+      ::fcntl(socket_, F_SETFL, flags | O_NONBLOCK);
+#endif
+   }
 
    RemoteChannel::~RemoteChannel() { close(); }
 

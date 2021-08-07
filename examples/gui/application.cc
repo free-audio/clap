@@ -24,21 +24,20 @@ Application::Application(int argc, char **argv)
    auto socket = parser.value(socketOpt).toULongLong();
 
    socketReadNotifier_ = new QSocketNotifier(socket, QSocketNotifier::Read, this);
-   socketReadNotifier_->setEnabled(true);
    connect(
       socketReadNotifier_,
       &QSocketNotifier::activated,
-      [this](QSocketDescriptor socket, QSocketNotifier::Type type) { remoteChannel_->onRead(); });
+      [this](QSocketDescriptor socket, QSocketNotifier::Type type) {
+         printf("ON READ\n");
+         remoteChannel_->onRead(); });
 
    socketWriteNotifier_ = new QSocketNotifier(socket, QSocketNotifier::Write, this);
-   socketWriteNotifier_->setEnabled(false);
    connect(
       socketWriteNotifier_,
       &QSocketNotifier::activated,
       [this](QSocketDescriptor socket, QSocketNotifier::Type type) { remoteChannel_->onWrite(); });
 
    socketErrorNotifier_ = new QSocketNotifier(socket, QSocketNotifier::Exception, this);
-   socketErrorNotifier_->setEnabled(false);
    connect(socketErrorNotifier_,
            &QSocketNotifier::activated,
            [this](QSocketDescriptor socket, QSocketNotifier::Type type) {
@@ -48,6 +47,10 @@ Application::Application(int argc, char **argv)
 
    remoteChannel_.reset(new clap::RemoteChannel(
       [this](const clap::RemoteChannel::Message &msg) { onMessage(msg); }, *this, socket, false));
+
+   socketReadNotifier_->setEnabled(true);
+   socketWriteNotifier_->setEnabled(false);
+   socketErrorNotifier_->setEnabled(false);
 }
 
 void Application::modifyFd(clap_fd_flags flags) {
@@ -92,6 +95,17 @@ void Application::onMessage(const clap::RemoteChannel::Message &msg) {
 
       quickView_->hide();
       clap::messages::HideResponse rp;
+      remoteChannel_->sendMessageAsync(rp);
+      break;
+   }
+
+   case clap::messages::kSizeRequest: {
+      clap::messages::SizeRequest rq;
+      msg.get(rq);
+
+      clap::messages::SizeResponse rp;
+      rp.width = quickView_->width();
+      rp.height = quickView_->height();
       remoteChannel_->sendMessageAsync(rp);
       break;
    }

@@ -20,7 +20,9 @@ namespace clap {
          return m[1];
       }
 
-      std::string getGuiExecutable() const override { return prefix_ / "/bin/clap-gui"; }
+      std::string getGuiExecutable() const override { return prefix_ / "bin/clap-gui"; }
+
+      bool isValid() const noexcept override { return !prefix_.empty(); }
 
    private:
       const std::filesystem::path prefix_;
@@ -51,10 +53,10 @@ namespace clap {
       }
 
       std::string getGuiExecutable() const override {
-         return buildRoot_ / "/examples/gui/clap-gui";
+         return buildRoot_ / "examples/gui/clap-gui";
       }
 
-      bool isValid() const noexcept { return !srcRoot_.empty() && !buildRoot_.empty(); }
+      bool isValid() const noexcept override { return !srcRoot_.empty() && !buildRoot_.empty(); }
 
    private:
       const std::filesystem::path srcRoot_;
@@ -68,10 +70,16 @@ namespace clap {
 
 #ifdef __linux__
       {
-         auto ptr = std::make_unique<LinuxDevelopmentPathProvider>(pluginPath);
-         if (ptr->isValid())
-            return ptr.release();
-         return new LinuxPathProvider(pluginPath);
+         instance_.reset(new LinuxDevelopmentPathProvider(pluginPath));
+         if (instance_->isValid())
+            return instance_.get();
+
+         instance_.reset(new LinuxPathProvider(pluginPath));
+         if (instance_->isValid())
+            return instance_.get();
+
+         instance_.reset();
+         return nullptr;
       }
 #endif
 

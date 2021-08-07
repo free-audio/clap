@@ -416,8 +416,8 @@ bool PluginHost::clapEventLoopRegisterFd(const clap_host *host, clap_fd fd, uint
    h->initPluginExtensions();
    if (!h->pluginEventLoop_ || !h->pluginEventLoop_->on_fd)
       throw std::logic_error(
-         "Called unregister_timer() without providing clap_plugin_event_loop to "
-         "receive the timer event.");
+         "Called register_fd() without providing clap_plugin_event_loop to "
+         "receive the fd event.");
 
    auto it = h->fds_.find(fd);
    if (it != h->fds_.end())
@@ -435,7 +435,7 @@ bool PluginHost::clapEventLoopModifyFd(const clap_host *host, clap_fd fd, uint32
    auto h = fromHost(host);
    if (!h->pluginEventLoop_ || !h->pluginEventLoop_->on_fd)
       throw std::logic_error(
-         "Called unregister_timer() without providing clap_plugin_event_loop to "
+         "Called modify_fd() without providing clap_plugin_event_loop to "
          "receive the timer event.");
 
    auto it = h->fds_.find(fd);
@@ -454,8 +454,8 @@ bool PluginHost::clapEventLoopUnregisterFd(const clap_host *host, clap_fd fd) {
    auto h = fromHost(host);
    if (!h->pluginEventLoop_ || !h->pluginEventLoop_->on_fd)
       throw std::logic_error(
-         "Called unregister_timer() without providing clap_plugin_event_loop to "
-         "receive the timer event.");
+         "Called unregister_fd() without providing clap_plugin_event_loop to "
+         "receive the fd event.");
 
    auto it = h->fds_.find(fd);
    if (it == h->fds_.end())
