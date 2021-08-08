@@ -9,10 +9,10 @@ add_executable(clap-gui
     application.hh
     application.cc
 
-    qml-parameter.hh
-    qml-parameter.cc
-    qml-plugin.hh
-    qml-plugin.cc
+    parameter-proxy.hh
+    parameter-proxy.cc
+    plugin-proxy.hh
+    plugin-proxy.cc
 )
 target_compile_options(clap-gui PRIVATE -fsanitize=address)
 target_link_options(clap-gui PRIVATE -fsanitize=address)
