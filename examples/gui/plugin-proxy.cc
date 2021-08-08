@@ -8,3 +8,8 @@ ParameterProxy *PluginProxy::param(clap_id paramId) const {
 }
 
 QString PluginProxy::toString() const { return "Plugin"; }
+
+void PluginProxy::defineParameter(const clap_param_info &info)
+{
+
+}

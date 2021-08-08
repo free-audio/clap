@@ -15,10 +15,14 @@ class Application : public QGuiApplication, public clap::RemoteChannel::EventCon
 public:
    Application(int argc, char **argv);
 
+   clap::RemoteChannel& remoteChannel() const { return *remoteChannel_; }
    void modifyFd(clap_fd_flags flags) override;
-   void onMessage(const clap::RemoteChannel::Message& msg);
+
+   static Application& instance() { return *dynamic_cast<Application *>(QCoreApplication::instance()); }
 
 private:
+   void onMessage(const clap::RemoteChannel::Message& msg);
+
    QQuickView *quickView_ = nullptr;
    QSocketNotifier *socketReadNotifier_ = nullptr;
    QSocketNotifier *socketWriteNotifier_ = nullptr;
