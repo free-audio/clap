@@ -8,7 +8,7 @@
 Application::Application(int argc, char **argv)
    : QGuiApplication(argc, argv), quickView_(new QQuickView()) {
 
-   bool waitForDebbugger = true;
+   bool waitForDebbugger = false;
    while (waitForDebbugger)
       ;
 
@@ -55,6 +55,8 @@ Application::Application(int argc, char **argv)
    socketReadNotifier_->setEnabled(true);
    socketWriteNotifier_->setEnabled(false);
    socketErrorNotifier_->setEnabled(false);
+
+   QCoreApplication::arguments();
 }
 
 void Application::modifyFd(clap_fd_flags flags) {
@@ -70,6 +72,14 @@ void Application::onMessage(const clap::RemoteChannel::Message &msg) {
       clap::messages::DefineParameterRequest rq;
       msg.get(rq);
       // TODO
+      break;
+   }
+
+   case clap::messages::kSizeRequest: {
+      clap::messages::SizeResponse rp;
+      rp.width = 300; //quickView_->width();
+      rp.height = 200; //quickView_->height();
+      remoteChannel_->sendResponseAsync(rp, msg.cookie);
       break;
    }
 
@@ -94,14 +104,6 @@ void Application::onMessage(const clap::RemoteChannel::Message &msg) {
    case clap::messages::kHideRequest: {
       quickView_->hide();
       clap::messages::HideResponse rp;
-      remoteChannel_->sendResponseAsync(rp, msg.cookie);
-      break;
-   }
-
-   case clap::messages::kSizeRequest: {
-      clap::messages::SizeResponse rp;
-      rp.width = 400; //quickView_->width();
-      rp.height = 500; //quickView_->height();
       remoteChannel_->sendResponseAsync(rp, msg.cookie);
       break;
    }

@@ -149,7 +149,7 @@ namespace clap {
       messages::AttachResponse response;
 
       request.window = window;
-      std::snprintf(request.display, sizeof(request.display), "%s", display_name);
+      std::snprintf(request.display, sizeof(request.display), "%s", display_name ? : "");
 
       return channel_->sendRequestSync(request, response);
    }

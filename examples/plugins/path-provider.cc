@@ -67,9 +67,10 @@ namespace clap {
       const std::string pluginName_;
    };
 
-   std::unique_ptr<PathProvider> PathProvider::create(const std::string &pluginPath, const std::string& pluginName) {
+   std::unique_ptr<PathProvider> PathProvider::create(const std::string &_pluginPath, const std::string& pluginName) {
 #ifdef __linux__
       {
+         auto pluginPath = std::filesystem::absolute(_pluginPath);
          auto devPtr = std::make_unique<LinuxDevelopmentPathProvider>(pluginPath, pluginName);
          if (devPtr->isValid())
             return std::move(devPtr);

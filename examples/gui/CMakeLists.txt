@@ -9,6 +9,8 @@ add_executable(clap-gui
     application.hh
     application.cc
 )
+target_compile_options(clap-gui PRIVATE -fsanitize=address)
+target_link_options(clap-gui PRIVATE -fsanitize=address)
 target_link_libraries(clap-gui clap-io Qt6::Quick)
 
 set_target_properties(clap-gui PROPERTIES CXX_STANDARD 17)
