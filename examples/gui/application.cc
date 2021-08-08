@@ -25,11 +25,11 @@ Application::Application(int argc, char **argv)
 
    parser.process(*this);
 
-   plugin_ = new PluginProxy(this);
+   pluginProxy_ = new PluginProxy(this);
 
    quickView_->setSource(parser.value(skinOpt) + "/main.qml");
    auto qmlContext = quickView_->engine()->rootContext();
-   qmlContext->setContextProperty("plugin", plugin_);
+   qmlContext->setContextProperty("plugin", pluginProxy_);
 
    auto socket = parser.value(socketOpt).toULongLong();
 
@@ -77,7 +77,7 @@ void Application::onMessage(const clap::RemoteChannel::Message &msg) {
    case clap::messages::kDefineParameterRequest: {
       clap::messages::DefineParameterRequest rq;
       msg.get(rq);
-      // TODO
+      pluginProxy_->defineParameter(rq.info);
       break;
    }
 
