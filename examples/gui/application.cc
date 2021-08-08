@@ -1,5 +1,7 @@
 #include <QCommandLineParser>
 #include <QQuickView>
+#include <QQmlEngine>
+#include <QQmlContext>
 #include <QWindow>
 
 #include "../io/messages.hh"
@@ -23,7 +25,11 @@ Application::Application(int argc, char **argv)
 
    parser.process(*this);
 
+   plugin_ = new PluginProxy(this);
+
    quickView_->setSource(parser.value(skinOpt) + "/main.qml");
+   auto qmlContext = quickView_->engine()->rootContext();
+   qmlContext->setContextProperty("plugin", plugin_);
 
    auto socket = parser.value(socketOpt).toULongLong();
 

@@ -5,6 +5,7 @@
 #include <QWindow>
 
 #include "../io/remote-channel.hh"
+#include "plugin-proxy.hh"
 
 class QQuickView;
 
@@ -26,4 +27,5 @@ private:
    std::unique_ptr<QWindow> hostWindow_ = nullptr;
 
    std::unique_ptr<clap::RemoteChannel> remoteChannel_;
+   PluginProxy *plugin_ = nullptr;
 };

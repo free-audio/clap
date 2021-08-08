@@ -49,7 +49,7 @@ namespace clap {
          ::snprintf(socketStr, sizeof(socketStr), "%d", sockets[1]);
          auto path = pathProvider.getGuiExecutable();
          auto skin = pathProvider.getSkinDirectory();
-         ::execl(path.c_str(), path.c_str(), "--socket", socketStr, "--skin", skin.c_str(), nullptr);
+         ::execl(path.c_str(), path.c_str(), "--socket", socketStr, "--skin", skin.c_str(), (const char *)nullptr);
          printf("Failed to start child process: %m\n");
          std::terminate();
       } else {
