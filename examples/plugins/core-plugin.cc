@@ -124,4 +124,30 @@ namespace clap {
       if (remoteGui_ && fd == remoteGui_->fd())
          remoteGui_->onFd(flags);
    }
+
+   bool CorePlugin::guiX11Attach(const char *displayName, unsigned long window) noexcept {
+      if (remoteGui_)
+         return remoteGui_->attachX11(displayName, window);
+
+      return false;
+   }
+
+   bool CorePlugin::guiWin32Attach(clap_hwnd window) noexcept {
+      if (remoteGui_)
+         return remoteGui_->attachWin32(window);
+
+      return false;
+   }
+
+   bool CorePlugin::guiCocoaAttach(void *nsView) noexcept {
+      if (remoteGui_)
+         return remoteGui_->attachWin32(nsView);
+
+      return false;
+   }
+
+   bool CorePlugin::guiFreeStandingOpen() noexcept {
+      // TODO
+      return false;
+   }
 } // namespace clap

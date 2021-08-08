@@ -32,6 +32,9 @@ namespace clap {
          return;
       }
 
+      if (nbytes == 0)
+         return;
+
       inputBuffer_.wrote(nbytes);
       processInput();
       inputBuffer_.rewind();

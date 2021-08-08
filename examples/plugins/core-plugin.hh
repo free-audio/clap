@@ -5,15 +5,17 @@
 #include <clap-plugin.hh>
 
 #include "parameters.hh"
-#include "remote-gui.hh"
 #include "path-provider.hh"
+#include "remote-gui.hh"
 
 namespace clap {
    class CorePlugin : public Plugin {
    public:
-      CorePlugin(std::unique_ptr<PathProvider>&& pathProvider, const clap_plugin_descriptor *desc, const clap_host *host);
+      CorePlugin(std::unique_ptr<PathProvider> &&pathProvider,
+                 const clap_plugin_descriptor *desc,
+                 const clap_host *host);
 
-      const PathProvider& pathProvider() const noexcept { return *pathProvider_; }
+      const PathProvider &pathProvider() const noexcept { return *pathProvider_; }
 
    protected:
       //-------------//
@@ -66,9 +68,8 @@ namespace clap {
          return false;
       }
 
-      virtual bool paramsTextToValue(clap_id param_id,
-                                     const char *display,
-                                     double *value) noexcept override {
+      virtual bool
+      paramsTextToValue(clap_id param_id, const char *display, double *value) noexcept override {
          // TODO
          return false;
       }
@@ -98,28 +99,26 @@ namespace clap {
       //---------------------//
       // clap_plugin_gui_x11 //
       //---------------------//
-      bool implementsGuiX11() const noexcept override { return false; }
-      bool guiX11Attach(const char *displayName, unsigned long window) noexcept override {
-         return false;
-      }
+      bool implementsGuiX11() const noexcept override { return true; }
+      bool guiX11Attach(const char *displayName, unsigned long window) noexcept override;
 
       //-----------------------//
       // clap_plugin_gui_win32 //
       //-----------------------//
-      bool implementsGuiWin32() const noexcept override { return false; }
-      bool guiWin32Attach(clap_hwnd window) noexcept override { return false; }
+      bool implementsGuiWin32() const noexcept override { return true; }
+      bool guiWin32Attach(clap_hwnd window) noexcept override;
 
       //-----------------------//
       // clap_plugin_gui_cocoa //
       //-----------------------//
-      bool implementsGuiCocoa() const noexcept override { return false; }
-      bool guiCocoaAttach(void *nsView) noexcept override { return false; }
+      bool implementsGuiCocoa() const noexcept override { return true; }
+      bool guiCocoaAttach(void *nsView) noexcept override;
 
       //-------------------------------//
       // clap_plugin_gui_free_standing //
       //-------------------------------//
-      bool implementsGuiFreeStanding() const noexcept override { return false; }
-      bool guiFreeStandingOpen() noexcept override { return false; }
+      bool implementsGuiFreeStanding() const noexcept override { return true; }
+      bool guiFreeStandingOpen() noexcept override;
 
       //////////////////////
       // Cached Host Info //

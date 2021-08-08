@@ -8,7 +8,7 @@
 Application::Application(int argc, char **argv)
    : QGuiApplication(argc, argv), quickView_(new QQuickView()) {
 
-   bool waitForDebbugger = false;
+   bool waitForDebbugger = true;
    while (waitForDebbugger)
       ;
 
