@@ -53,6 +53,7 @@ namespace clap {
          void set(const T &msg) noexcept {
             type = T::type;
             data = &msg;
+            size = sizeof (T);
          }
       };
 
@@ -72,12 +73,17 @@ namespace clap {
       uint32_t computeNextCookie() noexcept;
 
       template <typename Request>
-      bool sendMessageAsync(const Request &request) {
+      bool sendRequestAsync(const Request &request) {
          return sendMessageAsync(RemoteChannel::Message(request, computeNextCookie()));
       }
 
+      template <typename Response>
+      bool sendResponseAsync(const Response &response, uint32_t cookie) {
+         return sendMessageAsync(RemoteChannel::Message(response, cookie));
+      }
+
       template <typename Request, typename Response>
-      bool sendMessageSync(const Request &request, Response &response) {
+      bool sendRequestSync(const Request &request, Response &response) {
          sendMessageSync(RemoteChannel::Message(request, computeNextCookie()),
                          [&response](const RemoteChannel::Message &m) { m.get(response); });
          return true;

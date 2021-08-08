@@ -34,6 +34,7 @@ namespace clap {
 
       inputBuffer_.wrote(nbytes);
       processInput();
+      inputBuffer_.rewind();
    }
 
    void RemoteChannel::write(const void *_data, size_t size) {
@@ -123,15 +124,13 @@ namespace clap {
          auto it = syncHandlers_.find(msg.cookie);
          if (it != syncHandlers_.end()) {
             it->second(msg);
-            syncHandlers_.erase(msg.cookie);
+            syncHandlers_.erase(it);
          } else {
             handler_(msg);
          }
 
          inputBuffer_.read(totalSize);
       }
-
-      inputBuffer_.rewind();
    }
 
    bool RemoteChannel::sendMessageAsync(const Message &msg) {

@@ -8,7 +8,7 @@
 Application::Application(int argc, char **argv)
    : QGuiApplication(argc, argv), quickView_(new QQuickView()) {
 
-   bool waitForDebbugger = true;
+   bool waitForDebbugger = false;
    while (waitForDebbugger)
       ;
 
@@ -80,29 +80,29 @@ void Application::onMessage(const clap::RemoteChannel::Message &msg) {
       quickView_->setParent(hostWindow_.get());
 
       clap::messages::AttachResponse rp;
-      remoteChannel_->sendMessageAsync(rp);
+      remoteChannel_->sendResponseAsync(rp, msg.cookie);
       break;
    }
 
    case clap::messages::kShowRequest: {
       quickView_->show();
       clap::messages::ShowResponse rp;
-      remoteChannel_->sendMessageAsync(rp);
+      remoteChannel_->sendResponseAsync(rp, msg.cookie);
       break;
    }
 
    case clap::messages::kHideRequest: {
       quickView_->hide();
       clap::messages::HideResponse rp;
-      remoteChannel_->sendMessageAsync(rp);
+      remoteChannel_->sendResponseAsync(rp, msg.cookie);
       break;
    }
 
    case clap::messages::kSizeRequest: {
       clap::messages::SizeResponse rp;
-      rp.width = quickView_->width();
-      rp.height = quickView_->height();
-      remoteChannel_->sendMessageAsync(rp);
+      rp.width = 400; //quickView_->width();
+      rp.height = 500; //quickView_->height();
+      remoteChannel_->sendResponseAsync(rp, msg.cookie);
       break;
    }
    }

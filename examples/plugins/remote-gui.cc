@@ -84,14 +84,14 @@ namespace clap {
    }
 
    void RemoteGui::defineParameter(const clap_param_info &info) noexcept {
-      channel_->sendMessageAsync(messages::DefineParameterRequest{info});
+      channel_->sendRequestAsync(messages::DefineParameterRequest{info});
    }
 
    bool RemoteGui::size(uint32_t *width, uint32_t *height) noexcept {
       messages::SizeRequest request;
       messages::SizeResponse response;
 
-      if (!channel_->sendMessageSync(request, response))
+      if (!channel_->sendRequestSync(request, response))
          return false;
 
       *width = response.width;
@@ -100,21 +100,21 @@ namespace clap {
    }
 
    void RemoteGui::setScale(double scale) noexcept {
-      channel_->sendMessageAsync(messages::SetScaleRequest{scale});
+      channel_->sendRequestAsync(messages::SetScaleRequest{scale});
    }
 
    bool RemoteGui::show() noexcept {
       messages::ShowRequest request;
       messages::ShowResponse response;
 
-      return channel_->sendMessageSync(request, response);
+      return channel_->sendRequestSync(request, response);
    }
 
    bool RemoteGui::hide() noexcept {
       messages::HideRequest request;
       messages::HideResponse response;
 
-      return channel_->sendMessageSync(request, response);
+      return channel_->sendRequestSync(request, response);
    }
 
    void RemoteGui::destroy() noexcept {
@@ -124,7 +124,7 @@ namespace clap {
       messages::DestroyRequest request;
       messages::DestroyResponse response;
 
-      channel_->sendMessageSync(request, response);
+      channel_->sendRequestSync(request, response);
       plugin_.hostEventLoop_->unregister_fd(plugin_.host_, channel_->fd());
       channel_.reset();
    }
@@ -138,7 +138,7 @@ namespace clap {
       messages::AttachWin32Request request{window};
       messages::AttachResponse response;
 
-      return channel_->sendMessageSync(request, response);
+      return channel_->sendRequestSync(request, response);
    }
 
    bool RemoteGui::attachX11(const char *display_name, unsigned long window) noexcept {
@@ -148,7 +148,7 @@ namespace clap {
       request.window = window;
       std::snprintf(request.display, sizeof(request.display), "%s", display_name);
 
-      return channel_->sendMessageSync(request, response);
+      return channel_->sendRequestSync(request, response);
    }
 
 } // namespace clap
