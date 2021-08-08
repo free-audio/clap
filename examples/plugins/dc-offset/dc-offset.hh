@@ -1,14 +1,14 @@
 #pragma once
 
-#include "../plugin-helper.hh"
+#include "../core-plugin.hh"
 
 namespace clap {
-   class DcOffset final : public PluginHelper {
+   class DcOffset final : public CorePlugin {
    private:
-      using super = PluginHelper;
+      using super = CorePlugin;
 
    public:
-      DcOffset(const clap_host *host);
+      DcOffset(const std::string& pluginPath, const clap_host *host);
 
       static const clap_plugin_descriptor *descriptor();
 

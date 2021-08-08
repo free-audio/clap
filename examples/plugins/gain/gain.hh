@@ -1,14 +1,14 @@
 #pragma once
 
-#include "../plugin-helper.hh"
+#include "../core-plugin.hh"
 
 namespace clap {
-   class Gain final : public PluginHelper {
+   class Gain final : public CorePlugin {
    private:
-      using super = PluginHelper;
+      using super = CorePlugin;
 
    public:
-      Gain(const clap_host *host);
+      Gain(const std::string& pluginPath, const clap_host *host);
 
       static const clap_plugin_descriptor *descriptor();
 

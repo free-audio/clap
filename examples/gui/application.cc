@@ -14,16 +14,16 @@ Application::Application(int argc, char **argv)
 
    QCommandLineParser parser;
 
-   QCommandLineOption qmlOpt("qml", tr("path to the QML skin"), tr("path"));
+   QCommandLineOption skinOpt("skin", tr("path to the skin directory"), tr("path"));
    QCommandLineOption socketOpt("socket", tr("path to the QML skin"), tr("path"));
 
-   parser.addOption(qmlOpt);
+   parser.addOption(skinOpt);
    parser.addOption(socketOpt);
    parser.addHelpOption();
 
    parser.process(*this);
 
-   quickView_->setSource(parser.value(qmlOpt));
+   quickView_->setSource(parser.value(skinOpt) + "/main.qml");
 
    auto socket = parser.value(socketOpt).toULongLong();
 

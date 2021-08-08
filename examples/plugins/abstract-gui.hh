@@ -4,10 +4,10 @@
 
 namespace clap {
 
-   class PluginHelper;
+   class CorePlugin;
    class AbstractGui {
    public:
-      AbstractGui(PluginHelper &plugin) : plugin_(plugin) {}
+      AbstractGui(CorePlugin &plugin) : plugin_(plugin) {}
       virtual ~AbstractGui() = default;
 
       virtual void defineParameter(const clap_param_info&) noexcept = 0;
@@ -25,7 +25,7 @@ namespace clap {
       virtual void destroy() noexcept = 0;
 
    protected:
-      PluginHelper &plugin_;
+      CorePlugin &plugin_;
    };
 
 } // namespace clap

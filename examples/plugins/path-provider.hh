@@ -1,3 +1,5 @@
+#pragma once
+
 #include <memory>
 #include <string>
 
@@ -6,14 +8,11 @@ namespace clap {
    public:
       virtual ~PathProvider() = default;
 
-      static const PathProvider *createInstance(const std::string &pluginPath);
-      static void destroyInstance() { instance_.reset(); }
-      static const PathProvider *instance() { return instance_.get(); }
+      static std::unique_ptr<PathProvider> create(const std::string &pluginPath, const std::string& pluginName);
 
       virtual std::string getGuiExecutable() const = 0;
-      virtual bool isValid() const = 0;
+      virtual std::string getSkinDirectory() const = 0;
 
-   private:
-      static std::unique_ptr<PathProvider> instance_;
+      virtual bool isValid() const = 0;
    };
 } // namespace clap

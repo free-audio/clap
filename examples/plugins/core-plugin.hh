@@ -1,14 +1,19 @@
 #pragma once
 
+#include <memory>
+
 #include <clap-plugin.hh>
 
 #include "parameters.hh"
 #include "remote-gui.hh"
+#include "path-provider.hh"
 
 namespace clap {
-   class PluginHelper : public Plugin {
+   class CorePlugin : public Plugin {
    public:
-      PluginHelper(const clap_plugin_descriptor *desc, const clap_host *host);
+      CorePlugin(std::unique_ptr<PathProvider>&& pathProvider, const clap_plugin_descriptor *desc, const clap_host *host);
+
+      const PathProvider& pathProvider() const noexcept { return *pathProvider_; }
 
    protected:
       //-------------//
@@ -139,6 +144,8 @@ namespace clap {
 
    protected:
       friend class RemoteGui;
+
+      std::unique_ptr<PathProvider> pathProvider_;
 
       bool hasTrackInfo_ = false;
       clap_track_info trackInfo_;

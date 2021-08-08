@@ -6,8 +6,8 @@ add_library(
   parameters.cc
   parameters.hh
   parameter-interpolator.hh
-  plugin-helper.cc
-  plugin-helper.hh
+  core-plugin.hh
+  core-plugin.cc
   stream-helper.hh
 
   path-provider.hh

@@ -7,7 +7,7 @@
 
 #include "../io/messages.hh"
 #include "path-provider.hh"
-#include "plugin-helper.hh"
+#include "core-plugin.hh"
 #include "remote-gui.hh"
 
 namespace clap {
@@ -22,6 +22,8 @@ namespace clap {
       assert(child_ == -1);
       assert(!channel_);
 
+      auto& pathProvider = plugin_.pathProvider();
+
 #ifdef __unix__
       /* create a socket pair */
       int sockets[2];
@@ -30,7 +32,7 @@ namespace clap {
       }
 
       printf("About to start GUI: %s --socket %d\n",
-             PathProvider::instance()->getGuiExecutable().c_str(),
+             pathProvider.getGuiExecutable().c_str(),
              sockets[0]);
 
       child_ = ::fork();
@@ -45,8 +47,9 @@ namespace clap {
          ::close(sockets[0]);
          char socketStr[16];
          ::snprintf(socketStr, sizeof(socketStr), "%d", sockets[1]);
-         auto path = PathProvider::instance()->getGuiExecutable();
-         ::execl(path.c_str(), path.c_str(), "--socket", socketStr, nullptr);
+         auto path = pathProvider.getGuiExecutable();
+         auto skin = pathProvider.getSkinDirectory();
+         ::execl(path.c_str(), path.c_str(), "--socket", socketStr, "--skin", skin.c_str(), nullptr);
          printf("Failed to start child process: %m\n");
          std::terminate();
       } else {

@@ -26,7 +26,7 @@ namespace clap {
       kParamIdGain = 0,
    };
 
-   Gain::Gain(const clap_host *host) : PluginHelper(descriptor(), host) {
+   Gain::Gain(const std::string& pluginPath, const clap_host *host) : CorePlugin(PathProvider::create(pluginPath, "gain"), descriptor(), host) {
       parameters_.addParameter(clap_param_info{
          .id = kParamIdGain,
          .flags = 0,

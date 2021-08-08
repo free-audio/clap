@@ -12,7 +12,7 @@
 namespace clap {
    class RemoteGui : public AbstractGui, public RemoteChannel::EventControl {
    public:
-      RemoteGui(PluginHelper &plugin) : AbstractGui(plugin) {}
+      RemoteGui(CorePlugin &plugin) : AbstractGui(plugin) {}
       ~RemoteGui();
 
       bool spawn();

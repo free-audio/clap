@@ -21,17 +21,18 @@ struct PluginEntry {
 };
 
 static std::vector<PluginEntry> g_plugins;
+static std::string g_pluginPath;
 
 template <typename T>
 static void addPlugin() {
    g_plugins.emplace_back(T::descriptor(), [](const clap_host *host) -> const clap_plugin * {
-      auto plugin = new T(host);
+      auto plugin = new T(g_pluginPath, host);
       return plugin->clapPlugin();
    });
 }
 
 static bool clap_init(const char *plugin_path) {
-   clap::PathProvider::createInstance(plugin_path);
+   g_pluginPath = plugin_path;
 
    addPlugin<clap::Gain>();
    addPlugin<clap::DcOffset>();
@@ -40,7 +41,7 @@ static bool clap_init(const char *plugin_path) {
 
 static void clap_deinit(void) {
    g_plugins.clear();
-   clap::PathProvider::destroyInstance();
+   g_pluginPath.clear();
 }
 
 static uint32_t clap_get_plugin_count(void) { return g_plugins.size(); }

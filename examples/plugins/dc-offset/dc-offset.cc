@@ -27,7 +27,7 @@ namespace clap {
       kParamIdOffset = 0,
    };
 
-   DcOffset::DcOffset(const clap_host *host) : PluginHelper(descriptor(), host) {
+   DcOffset::DcOffset(const std::string& pluginPath, const clap_host *host) : CorePlugin(PathProvider::create(pluginPath, "dc-offset"), descriptor(), host) {
       parameters_.addParameter(clap_param_info{
          .id = kParamIdOffset,
          .flags = 0,
