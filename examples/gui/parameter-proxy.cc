@@ -25,6 +25,7 @@ void ParameterProxy::setValueFromUI(double value) {
 
    clap::messages::AdjustRequest rq{id_, value_};
    Application::instance().remoteChannel().sendRequestAsync(rq);
+   valueChanged();
 }
 
 void ParameterProxy::setValueFromPlugin(double value) {
