@@ -10,7 +10,10 @@ class ParameterProxy : public QObject {
    Q_PROPERTY(QString name READ getName NOTIFY nameChanged)
    Q_PROPERTY(QString module READ getModule)
    Q_PROPERTY(double value READ getValue WRITE setValueFromUI NOTIFY valueChanged)
+   Q_PROPERTY(double normalizedValue READ getNormalizedValue WRITE setNormalizedValueFromUI NOTIFY
+                 valueChanged)
    Q_PROPERTY(double modulation READ getModulation NOTIFY modulationChanged)
+   Q_PROPERTY(double normalizedModulation READ getNormalizedModulation)
    Q_PROPERTY(double minValue READ getMinValue NOTIFY minValueChanged)
    Q_PROPERTY(double maxValue READ getMaxValue NOTIFY maxValueChanged)
    Q_PROPERTY(double defaultValue READ getDefaultValue NOTIFY defaultValueChanged)
@@ -27,8 +30,13 @@ public:
    void setValueFromUI(double value);
    void setValueFromPlugin(double value);
 
+   double getNormalizedValue() const { return normalize(getValue()); }
+   void setNormalizedValueFromUI(double value) { setValueFromUI(denormalize(value)); }
+
    double getModulation() const { return modulation_; }
    void setModulationFromPlugin(double mod);
+
+   double getNormalizedModulation() const { return normalize(getModulation()); }
 
    bool isAdjusting() const { return isAdjusting_; }
    void setIsAdjusting(bool isAdjusting);
@@ -39,6 +47,18 @@ public:
    void setMaxValueFromPlugin(double maxValue);
    double getDefaultValue() const { return defaultValue_; }
    void setDefaultValueFromPlugin(double defaultValue);
+
+   double normalize(double value) const {
+      double delta = maxValue_ - minValue_;
+      return delta != 0 ? (value - minValue_) / delta : 0;
+   }
+
+   double denormalize(double value) const {
+      Q_ASSERT(value >= 0);
+      Q_ASSERT(value <= 1);
+      double delta = maxValue_ - minValue_;
+      return minValue_ + value * delta;
+   }
 
 signals:
    void nameChanged();
