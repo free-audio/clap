@@ -1,11 +1,13 @@
-import QtQuick 2.0
+import QtQuick 2.1
+import QtQuick.Controls 2.1
 
 Rectangle {
     width: 300
     height: 200
     color: "#224477"
 
-    Text {
-        text: "Hello World!"
+    Dial {
+        property QtObject param: plugin.getParam(0)
+        inputMode: Dial.Vertical
     }
 }

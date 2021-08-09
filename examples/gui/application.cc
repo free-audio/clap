@@ -1,7 +1,8 @@
 #include <QCommandLineParser>
-#include <QQuickView>
-#include <QQmlEngine>
 #include <QQmlContext>
+#include <QQmlEngine>
+#include <QQuickView>
+#include <QQuickItem>
 #include <QWindow>
 
 #include "../io/messages.hh"
@@ -34,12 +35,10 @@ Application::Application(int argc, char **argv)
    auto socket = parser.value(socketOpt).toULongLong();
 
    socketReadNotifier_ = new QSocketNotifier(socket, QSocketNotifier::Read, this);
-   connect(socketReadNotifier_,
-           &QSocketNotifier::activated,
-           [this](QSocketDescriptor socket, QSocketNotifier::Type type) {
-              printf("ON READ\n");
-              remoteChannel_->onRead();
-           });
+   connect(
+      socketReadNotifier_,
+      &QSocketNotifier::activated,
+      [this](QSocketDescriptor socket, QSocketNotifier::Type type) { remoteChannel_->onRead(); });
 
    socketWriteNotifier_ = new QSocketNotifier(socket, QSocketNotifier::Write, this);
    connect(
@@ -72,7 +71,6 @@ void Application::modifyFd(clap_fd_flags flags) {
 }
 
 void Application::onMessage(const clap::RemoteChannel::Message &msg) {
-   printf("ON MESSAGE\n");
    switch (msg.type) {
    case clap::messages::kDefineParameterRequest: {
       clap::messages::DefineParameterRequest rq;
@@ -83,8 +81,9 @@ void Application::onMessage(const clap::RemoteChannel::Message &msg) {
 
    case clap::messages::kSizeRequest: {
       clap::messages::SizeResponse rp;
-      rp.width = 300; //quickView_->width();
-      rp.height = 200; //quickView_->height();
+      auto rootItem = quickView_->rootObject();
+      rp.width = rootItem ? rootItem->width() : 500;
+      rp.height = rootItem ? rootItem->height() : 300;
       remoteChannel_->sendResponseAsync(rp, msg.cookie);
       break;
    }
