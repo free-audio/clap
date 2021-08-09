@@ -13,7 +13,7 @@ class ParameterProxy : public QObject {
    Q_PROPERTY(double normalizedValue READ getNormalizedValue WRITE setNormalizedValueFromUI NOTIFY
                  valueChanged)
    Q_PROPERTY(double modulation READ getModulation NOTIFY modulationChanged)
-   Q_PROPERTY(double normalizedModulation READ getNormalizedModulation)
+   Q_PROPERTY(double normalizedModulation READ getNormalizedModulation NOTIFY modulationChanged)
    Q_PROPERTY(double minValue READ getMinValue NOTIFY minValueChanged)
    Q_PROPERTY(double maxValue READ getMaxValue NOTIFY maxValueChanged)
    Q_PROPERTY(double defaultValue READ getDefaultValue NOTIFY defaultValueChanged)
