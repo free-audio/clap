@@ -101,6 +101,20 @@ void Application::onMessage(const clap::RemoteChannel::Message &msg) {
       break;
    }
 
+   case clap::messages::kParameterValueRequest: {
+      clap::messages::ParameterValueRequest rq;
+      msg.get(rq);
+      pluginProxy_->param(rq.paramId)->setValueFromPlugin(rq.value);
+      break;
+   }
+
+   case clap::messages::kParameterModulationRequest: {
+      clap::messages::ParameterModulationRequest rq;
+      msg.get(rq);
+      pluginProxy_->param(rq.paramId)->setModulationFromPlugin(rq.modulation);
+      break;
+   }
+
    case clap::messages::kSizeRequest: {
       clap::messages::SizeResponse rp;
       auto rootItem = quickView_->rootObject();
