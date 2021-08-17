@@ -79,7 +79,7 @@ private:
    double value_ = 0;
    double modulation_ = 0;
    double minValue_ = 0;
-   double maxValue_ = 0;
+   double maxValue_ = 1;
    double defaultValue_ = 0;
    bool isAdjusting_ = false;
 };

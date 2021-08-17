@@ -7,7 +7,11 @@ Rectangle {
     color: "#224477"
 
     Dial {
+        id: dc_offset_knob
         property QtObject param: plugin.param(0)
+        from: param.minValue
+        to: param.maxValue
+        value: param.value
         inputMode: Dial.Vertical
     }
 }
