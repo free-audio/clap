@@ -95,6 +95,7 @@ namespace clap {
       void guiSetScale(double scale) noexcept override;
       void guiShow() noexcept override;
       void guiHide() noexcept override;
+      void guiDefineParameters();
 
       //---------------------//
       // clap_plugin_gui_x11 //

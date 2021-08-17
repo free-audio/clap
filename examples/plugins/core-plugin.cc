@@ -90,7 +90,19 @@ namespace clap {
          return false;
       }
 
+      if (!remoteGui_)
+         return false;
+
+      guiDefineParameters();
       return true;
+   }
+
+   void CorePlugin::guiDefineParameters() {
+      for (int i = 0; i < paramsCount(); ++i) {
+         clap_param_info info;
+         paramsInfo(i, &info);
+         remoteGui_->defineParameter(info);
+      }
    }
 
    void CorePlugin::guiDestroy() noexcept {
