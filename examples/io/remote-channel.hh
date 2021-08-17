@@ -16,6 +16,7 @@ namespace clap {
       class EventControl {
       public:
          virtual void modifyFd(clap_fd_flags flags) = 0;
+         virtual void removeFd() = 0;
       };
 
       struct Message final {
@@ -53,7 +54,7 @@ namespace clap {
          void set(const T &msg) noexcept {
             type = T::type;
             data = &msg;
-            size = sizeof (T);
+            size = sizeof(T);
          }
       };
 
@@ -103,6 +104,7 @@ namespace clap {
       void runOnce();
 
       clap_fd fd() const { return socket_; }
+      bool isOpen() const noexcept { return socket_ != -1; }
 
    private:
       using ReadBuffer = Buffer<uint8_t, 128 * 1024>;
@@ -122,7 +124,7 @@ namespace clap {
       uint32_t nextCookie_ = 0;
 
       MessageHandler handler_;
-      std::unordered_map<uint32_t /* cookie */, const MessageHandler&> syncHandlers_;
+      std::unordered_map<uint32_t /* cookie */, const MessageHandler &> syncHandlers_;
       EventControl &evControl_;
       clap_fd socket_;
       clap_fd_flags ioFlags_ = 0;

@@ -95,6 +95,9 @@ namespace clap {
       if (socket_ == -1)
          return;
 
+      modifyFd(0);
+      evControl_.removeFd();
+
       ::close(socket_);
       socket_ = -1;
    }
@@ -166,6 +169,9 @@ namespace clap {
    }
 
    void RemoteChannel::runOnce() {
+      if (!isOpen())
+         return;
+
 #ifdef __unix__
       pollfd pfd;
       pfd.fd = socket_;
@@ -173,14 +179,19 @@ namespace clap {
       pfd.revents = 0;
 
       int ret = ::poll(&pfd, 1, -1);
-      if (ret < 1)
-         // TODO error handling
+      if (ret < 1) {
+         if (errno == EAGAIN || errno == EINTR)
+            return;
+         close();
          return;
+      }
 
       if (pfd.revents & POLLOUT)
          onWrite();
-      if (pfd.revents & POLLIN)
+      if (isOpen() && pfd.revents & POLLIN)
          onRead();
+      if (isOpen() && pfd.revents & POLLERR)
+         close();
 #endif
    }
 } // namespace clap

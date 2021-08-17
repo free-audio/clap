@@ -33,11 +33,14 @@ namespace clap {
 
       // RemoteChannel::EventControl
       void modifyFd(clap_fd_flags flags) override;
+      void removeFd() override;
+
       clap_fd fd() const;
       void onFd(clap_fd_flags flags);
 
    private:
       void onMessage(const RemoteChannel::Message& msg);
+      void waitChild();
 
       std::unique_ptr<RemoteChannel> channel_;
 

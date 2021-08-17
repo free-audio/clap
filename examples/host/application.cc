@@ -55,11 +55,11 @@ Application::Application(int argc, char **argv)
 Application::~Application() {
    saveSettings();
 
-   delete mainWindow_;
-   mainWindow_ = nullptr;
-
    delete engine_;
    engine_ = nullptr;
+
+   delete mainWindow_;
+   mainWindow_ = nullptr;
 
    delete settings_;
    settings_ = nullptr;

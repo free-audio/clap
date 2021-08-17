@@ -6,8 +6,8 @@
 #include <cassert>
 
 #include "../io/messages.hh"
-#include "path-provider.hh"
 #include "core-plugin.hh"
+#include "path-provider.hh"
 #include "remote-gui.hh"
 
 namespace clap {
@@ -22,7 +22,7 @@ namespace clap {
       assert(child_ == -1);
       assert(!channel_);
 
-      auto& pathProvider = plugin_.pathProvider();
+      auto &pathProvider = plugin_.pathProvider();
 
 #ifdef __unix__
       /* create a socket pair */
@@ -49,7 +49,13 @@ namespace clap {
          ::snprintf(socketStr, sizeof(socketStr), "%d", sockets[1]);
          auto path = pathProvider.getGuiExecutable();
          auto skin = pathProvider.getSkinDirectory();
-         ::execl(path.c_str(), path.c_str(), "--socket", socketStr, "--skin", skin.c_str(), (const char *)nullptr);
+         ::execl(path.c_str(),
+                 path.c_str(),
+                 "--socket",
+                 socketStr,
+                 "--skin",
+                 skin.c_str(),
+                 (const char *)nullptr);
          printf("Failed to start child process: %m\n");
          std::terminate();
       } else {
@@ -69,6 +75,10 @@ namespace clap {
 
    void RemoteGui::modifyFd(clap_fd_flags flags) {
       plugin_.hostEventLoop_->modify_fd(plugin_.host_, channel_->fd(), flags);
+   }
+
+   void RemoteGui::removeFd() {
+      plugin_.hostEventLoop_->unregister_fd(plugin_.host_, channel_->fd());
    }
 
    clap_fd RemoteGui::fd() const { return channel_ ? channel_->fd() : -1; }
@@ -128,8 +138,25 @@ namespace clap {
       messages::DestroyResponse response;
 
       channel_->sendRequestSync(request, response);
-      plugin_.hostEventLoop_->unregister_fd(plugin_.host_, channel_->fd());
+      channel_->close();
       channel_.reset();
+
+      waitChild();
+   }
+
+   void RemoteGui::waitChild() {
+#ifdef __unix__
+      if (child_ == -1)
+         return;
+      int stat = 0;
+      int ret;
+
+      do {
+         ret = ::waitpid(child_, &stat, 0);
+      } while (ret == -1 && errno == EINTR);
+
+      child_ = -1;
+#endif
    }
 
    bool RemoteGui::attachCocoa(void *nsView) noexcept {
@@ -149,7 +176,7 @@ namespace clap {
       messages::AttachResponse response;
 
       request.window = window;
-      std::snprintf(request.display, sizeof(request.display), "%s", display_name ? : "");
+      std::snprintf(request.display, sizeof(request.display), "%s", display_name ?: "");
 
       return channel_->sendRequestSync(request, response);
    }

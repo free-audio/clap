@@ -1,15 +1,15 @@
 #include <QCommandLineParser>
 #include <QQmlContext>
 #include <QQmlEngine>
-#include <QQuickView>
 #include <QQuickItem>
+#include <QQuickView>
 #include <QWindow>
 
 #include "../io/messages.hh"
 #include "application.hh"
 
-Application::Application(int argc, char **argv)
-   : QGuiApplication(argc, argv), quickView_(new QQuickView()) {
+Application::Application(int& argc, char **argv)
+   : QApplication(argc, argv), quickView_(new QQuickView()) {
 
    bool waitForDebbugger = false;
    while (waitForDebbugger)
@@ -34,20 +34,28 @@ Application::Application(int argc, char **argv)
 
    auto socket = parser.value(socketOpt).toULongLong();
 
-   socketReadNotifier_ = new QSocketNotifier(socket, QSocketNotifier::Read, this);
-   connect(
-      socketReadNotifier_,
-      &QSocketNotifier::activated,
-      [this](QSocketDescriptor socket, QSocketNotifier::Type type) { remoteChannel_->onRead(); });
+   socketReadNotifier_.reset(new QSocketNotifier(socket, QSocketNotifier::Read, this));
+   connect(socketReadNotifier_.get(),
+           &QSocketNotifier::activated,
+           [this](QSocketDescriptor socket, QSocketNotifier::Type type) {
+              remoteChannel_->onRead();
+              if (!remoteChannel_->isOpen())
+                 quit();
+           });
 
-   socketWriteNotifier_ = new QSocketNotifier(socket, QSocketNotifier::Write, this);
-   connect(
-      socketWriteNotifier_,
-      &QSocketNotifier::activated,
-      [this](QSocketDescriptor socket, QSocketNotifier::Type type) { remoteChannel_->onWrite(); });
+   socketWriteNotifier_.reset(new QSocketNotifier(socket, QSocketNotifier::Write, this));
+   connect(socketWriteNotifier_.get(),
+           &QSocketNotifier::activated,
+           [this](QSocketDescriptor socket, QSocketNotifier::Type type) {
+              remoteChannel_->onWrite();
+              if (!remoteChannel_->isOpen())
+              {
+                 quit();
+              }
+           });
 
-   socketErrorNotifier_ = new QSocketNotifier(socket, QSocketNotifier::Exception, this);
-   connect(socketErrorNotifier_,
+   socketErrorNotifier_.reset(new QSocketNotifier(socket, QSocketNotifier::Exception, this));
+   connect(socketErrorNotifier_.get(),
            &QSocketNotifier::activated,
            [this](QSocketDescriptor socket, QSocketNotifier::Type type) {
               remoteChannel_->onError();
@@ -70,8 +78,19 @@ void Application::modifyFd(clap_fd_flags flags) {
    socketErrorNotifier_->setEnabled(flags & CLAP_FD_ERROR);
 }
 
+void Application::removeFd() {
+   socketReadNotifier_.reset();
+   socketWriteNotifier_.reset();
+   socketErrorNotifier_.reset();
+}
+
 void Application::onMessage(const clap::RemoteChannel::Message &msg) {
    switch (msg.type) {
+   case clap::messages::kDestroyRequest:
+      clap::messages::DestroyResponse rp;
+      remoteChannel_->sendResponseAsync(rp, msg.cookie);
+      break;
+
    case clap::messages::kDefineParameterRequest: {
       clap::messages::DefineParameterRequest rq;
       msg.get(rq);
