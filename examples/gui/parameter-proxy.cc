@@ -4,7 +4,31 @@
 
 ParameterProxy::ParameterProxy(const clap_param_info &info, QObject *parent)
    : QObject(parent), id_(info.id), name_(info.name), module_(info.module),
-     minValue_(info.min_value), maxValue_(info.max_value), defaultValue_(info.default_value) {}
+     value_(info.default_value), minValue_(info.min_value), maxValue_(info.max_value),
+     defaultValue_(info.default_value) {}
+
+ParameterProxy::ParameterProxy(clap_id param_id, QObject *parent)
+   : QObject(parent), id_(param_id) {}
+
+void ParameterProxy::redefine(const clap_param_info &info) {
+   Q_ASSERT(id_ == info.id);
+
+   if (name_ != info.name) {
+      name_ = info.name;
+      nameChanged();
+   }
+
+   if (module_ != info.module) {
+      module_ = info.module;
+      moduleChanged();
+   }
+
+   setMinValueFromPlugin(info.min_value);
+   setMaxValueFromPlugin(info.max_value);
+   setDefaultValueFromPlugin(info.default_value);
+
+   setValueFromPlugin(std::min(maxValue_, std::max(minValue_, value_)));
+}
 
 void ParameterProxy::setIsAdjusting(bool isAdjusting) {
    if (isAdjusting == isAdjusting_)

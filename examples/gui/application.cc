@@ -28,9 +28,10 @@ Application::Application(int& argc, char **argv)
 
    pluginProxy_ = new PluginProxy(this);
 
-   quickView_->setSource(parser.value(skinOpt) + "/main.qml");
    auto qmlContext = quickView_->engine()->rootContext();
    qmlContext->setContextProperty("plugin", pluginProxy_);
+
+   quickView_->setSource(parser.value(skinOpt) + "/main.qml");
 
    auto socket = parser.value(socketOpt).toULongLong();
 

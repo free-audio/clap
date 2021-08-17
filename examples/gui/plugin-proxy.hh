@@ -15,7 +15,7 @@ public:
 
    void defineParameter(const clap_param_info& info);
 
-   Q_INVOKABLE ParameterProxy *param(clap_id paramId) const;
+   Q_INVOKABLE ParameterProxy *param(clap_id paramId);
    Q_INVOKABLE QString toString() const;
 
 private:

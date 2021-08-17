@@ -6,8 +6,8 @@ Rectangle {
     height: 200
     color: "#224477"
 
-    /*Dial {
-        property QtObject param: plugin.getParam(0)
+    Dial {
+        property QtObject param: plugin.param(0)
         inputMode: Dial.Vertical
-    }*/
+    }
 }

@@ -8,7 +8,7 @@ class ParameterProxy : public QObject {
    Q_OBJECT
    Q_PROPERTY(uint32_t id READ getId)
    Q_PROPERTY(QString name READ getName NOTIFY nameChanged)
-   Q_PROPERTY(QString module READ getModule)
+   Q_PROPERTY(QString module READ getModule NOTIFY moduleChanged)
    Q_PROPERTY(double value READ getValue WRITE setValueFromUI NOTIFY valueChanged)
    Q_PROPERTY(double normalizedValue READ getNormalizedValue WRITE setNormalizedValueFromUI NOTIFY
                  valueChanged)
@@ -21,6 +21,9 @@ class ParameterProxy : public QObject {
 
 public:
    ParameterProxy(const clap_param_info &info, QObject *parent = nullptr);
+   ParameterProxy(clap_id param_id, QObject *parent = nullptr);
+
+   void redefine(const clap_param_info &info);
 
    uint32_t getId() const { return id_; }
    const QString &getModule() const { return module_; }
@@ -62,6 +65,7 @@ public:
 
 signals:
    void nameChanged();
+   void moduleChanged();
    void valueChanged();
    void modulationChanged();
    void minValueChanged();
