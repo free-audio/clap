@@ -9,7 +9,7 @@
 #include "application.hh"
 
 Application::Application(int& argc, char **argv)
-   : QApplication(argc, argv), quickView_(new QQuickView()) {
+   : QGuiApplication(argc, argv), quickView_(new QQuickView()) {
 
    bool waitForDebbugger = false;
    while (waitForDebbugger)
@@ -82,6 +82,7 @@ void Application::removeFd() {
    socketReadNotifier_.reset();
    socketWriteNotifier_.reset();
    socketErrorNotifier_.reset();
+   quit();
 }
 
 void Application::onMessage(const clap::RemoteChannel::Message &msg) {
@@ -89,6 +90,7 @@ void Application::onMessage(const clap::RemoteChannel::Message &msg) {
    case clap::messages::kDestroyRequest:
       clap::messages::DestroyResponse rp;
       remoteChannel_->sendResponseAsync(rp, msg.cookie);
+      quit();
       break;
 
    case clap::messages::kDefineParameterRequest: {
