@@ -93,7 +93,28 @@ namespace clap {
    }
 
    void RemoteGui::onMessage(const RemoteChannel::Message &msg) {
-      switch (msg.type) {}
+      switch (msg.type) {
+      case messages::kBeginAdjustRequest: {
+         messages::BeginAdjustRequest rq;
+         msg.get(rq);
+         // TODO
+         break;
+      }
+
+      case messages::kAdjustRequest: {
+         messages::AdjustRequest rq;
+         msg.get(rq);
+         // TODO
+         break;
+      }
+
+      case messages::kEndAdjustRequest: {
+         messages::EndAdjustRequest rq;
+         msg.get(rq);
+         // TODO
+         break;
+      }
+      }
    }
 
    void RemoteGui::defineParameter(const clap_param_info &info) noexcept {
