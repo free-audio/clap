@@ -94,6 +94,8 @@ void Engine::start() {
 }
 
 void Engine::stop() {
+   pluginHost_->deactivate();
+
    if (state_ == kStateRunning)
       state_ = kStateStopping;
 
@@ -107,6 +109,8 @@ void Engine::stop() {
       Pm_Close(midi_);
       midi_ = nullptr;
    }
+
+   state_ = kStateStopped;
 }
 
 int Engine::audioCallback(const void *  input,

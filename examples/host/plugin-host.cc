@@ -1,4 +1,4 @@
-﻿#include <exception>
+#include <exception>
 #include <iostream>
 #include <memory>
 #include <sstream>
@@ -186,17 +186,7 @@ void PluginHost::unload() {
    if (pluginGui_)
       pluginGui_->destroy(plugin_);
 
-   if (isPluginActive()) {
-      if (isPluginProcessing()) {
-         plugin_->stop_processing(plugin_);
-         setPluginState(ActiveAndReadyToDeactivate);
-      } else if (isPluginSleeping()) {
-         setPluginState(ActiveAndReadyToDeactivate);
-      }
-
-      plugin_->deactivate(plugin_);
-      setPluginState(Inactive);
-   }
+   deactivate();
 
    plugin_->destroy(plugin_);
    plugin_ = nullptr;
@@ -224,6 +214,21 @@ void PluginHost::activate(int32_t sample_rate) {
       setPluginState(ActiveAndSleeping);
    else
       setPluginState(InactiveWithError);
+}
+
+void PluginHost::deactivate() {
+   if (!isPluginActive())
+      return;
+
+   if (isPluginProcessing()) {
+      plugin_->stop_processing(plugin_);
+      setPluginState(ActiveAndReadyToDeactivate);
+   } else if (isPluginSleeping()) {
+      setPluginState(ActiveAndReadyToDeactivate);
+   }
+
+   plugin_->deactivate(plugin_);
+   setPluginState(Inactive);
 }
 
 void PluginHost::setPorts(int numInputs, float **inputs, int numOutputs, float **outputs) {

@@ -102,6 +102,8 @@ namespace clap {
       }
 
       self.deactivate();
+      self.isActive_ = false;
+      self.sampleRate_ = 0;
    }
 
    bool Plugin::clapStartProcessing(const clap_plugin *plugin) noexcept {
