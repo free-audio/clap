@@ -158,7 +158,7 @@ namespace clap {
 
    bool CorePlugin::guiCocoaAttach(void *nsView) noexcept {
       if (remoteGui_)
-         return remoteGui_->attachWin32(nsView);
+         return remoteGui_->attachCocoa(nsView);
 
       return false;
    }
