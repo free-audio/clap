@@ -120,7 +120,7 @@ PluginParametersWidget::PluginParametersWidget(QWidget *parent, PluginHost &plug
    connect(valueSlider_, &QSlider::valueChanged, this, &PluginParametersWidget::sliderValueChanged);
 
    modulationSlider_ = new QSlider;
-   modulationSlider_->setMinimum(SLIDER_RANGE);
+   modulationSlider_->setMinimum(-SLIDER_RANGE);
    modulationSlider_->setMaximum(SLIDER_RANGE);
    modulationSlider_->setOrientation(Qt::Horizontal);
    connect(modulationSlider_, &QSlider::valueChanged, this, &PluginParametersWidget::sliderModulationChanged);
