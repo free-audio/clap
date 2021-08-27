@@ -8,7 +8,7 @@
 #include "../io/messages.hh"
 #include "application.hh"
 
-Application::Application(int& argc, char **argv)
+Application::Application(int &argc, char **argv)
    : QGuiApplication(argc, argv), quickView_(new QQuickView()) {
 
    bool waitForDebbugger = false;
@@ -49,8 +49,7 @@ Application::Application(int& argc, char **argv)
            &QSocketNotifier::activated,
            [this](QSocketDescriptor socket, QSocketNotifier::Type type) {
               remoteChannel_->onWrite();
-              if (!remoteChannel_->isOpen())
-              {
+              if (!remoteChannel_->isOpen()) {
                  quit();
               }
            });
@@ -126,11 +125,46 @@ void Application::onMessage(const clap::RemoteChannel::Message &msg) {
 
    case clap::messages::kAttachX11Request: {
       clap::messages::AttachX11Request rq;
+      clap::messages::AttachResponse rp{false};
       msg.get(rq);
+
+#ifdef Q_OS_LINUX
       hostWindow_.reset(QWindow::fromWinId(rq.window));
       quickView_->setParent(hostWindow_.get());
+      rp.succeed = true;
+#endif
 
-      clap::messages::AttachResponse rp;
+      remoteChannel_->sendResponseAsync(rp, msg.cookie);
+      break;
+   }
+
+   case clap::messages::kAttachWin32Request: {
+      clap::messages::AttachWin32Request rq;
+      clap::messages::AttachResponse rp{false};
+      msg.get(rq);
+
+#ifdef Q_OS_WIN
+      hostWindow_.reset(QWindow::fromWinId(rq.hwnd));
+      quickView_->setParent(hostWindow_.get());
+      rp.succeed = true;
+#endif
+
+      remoteChannel_->sendResponseAsync(rp, msg.cookie);
+      break;
+   }
+
+   case clap::messages::kAttachCocoaRequest: {
+      clap::messages::AttachCocoaRequest rq;
+      clap::messages::AttachResponse rp{false};
+
+      msg.get(rq);
+
+#ifdef Q_OS_MACOS
+      hostWindow_.reset(QWindow::fromWinId(rq.nsView));
+      quickView_->setParent(hostWindow_.get());
+      rp.succeed = true;
+#endif
+
       remoteChannel_->sendResponseAsync(rp, msg.cookie);
       break;
    }

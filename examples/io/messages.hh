@@ -157,7 +157,13 @@ namespace clap::messages {
       char display[128];
    };
 
+   struct AttachCocoaRequest final {
+      static const constexpr Type type = kAttachCocoaRequest;
+      void *nsView;
+   };
+
    struct AttachResponse final {
       static const constexpr Type type = kAttachResponse;
+      bool succeed;
    };
 } // namespace clap::messages

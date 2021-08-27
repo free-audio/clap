@@ -181,8 +181,10 @@ namespace clap {
    }
 
    bool RemoteGui::attachCocoa(void *nsView) noexcept {
-      // TODO
-      return false;
+      messages::AttachCocoaRequest request{nsView};
+      messages::AttachResponse response;
+
+      return channel_->sendRequestSync(request, response);
    }
 
    bool RemoteGui::attachWin32(clap_hwnd window) noexcept {
