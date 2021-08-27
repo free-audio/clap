@@ -13,5 +13,8 @@ Rectangle {
         to: param.maxValue
         value: param.value
         inputMode: Dial.Vertical
+        onMoved: {
+            param.value = value;
+        }
     }
 }
