@@ -1,4 +1,4 @@
-#include <exception>
+﻿#include <exception>
 #include <iostream>
 #include <memory>
 #include <sstream>
@@ -422,9 +422,8 @@ bool PluginHost::clapEventLoopRegisterFd(const clap_host *host, clap_fd fd, uint
    auto h = fromHost(host);
    h->initPluginExtensions();
    if (!h->pluginEventLoop_ || !h->pluginEventLoop_->on_fd)
-      throw std::logic_error(
-         "Called register_fd() without providing clap_plugin_event_loop to "
-         "receive the fd event.");
+      throw std::logic_error("Called register_fd() without providing clap_plugin_event_loop to "
+                             "receive the fd event.");
 
    auto it = h->fds_.find(fd);
    if (it != h->fds_.end())
@@ -441,9 +440,8 @@ bool PluginHost::clapEventLoopModifyFd(const clap_host *host, clap_fd fd, uint32
 
    auto h = fromHost(host);
    if (!h->pluginEventLoop_ || !h->pluginEventLoop_->on_fd)
-      throw std::logic_error(
-         "Called modify_fd() without providing clap_plugin_event_loop to "
-         "receive the timer event.");
+      throw std::logic_error("Called modify_fd() without providing clap_plugin_event_loop to "
+                             "receive the timer event.");
 
    auto it = h->fds_.find(fd);
    if (it == h->fds_.end())
@@ -460,9 +458,8 @@ bool PluginHost::clapEventLoopUnregisterFd(const clap_host *host, clap_fd fd) {
 
    auto h = fromHost(host);
    if (!h->pluginEventLoop_ || !h->pluginEventLoop_->on_fd)
-      throw std::logic_error(
-         "Called unregister_fd() without providing clap_plugin_event_loop to "
-         "receive the fd event.");
+      throw std::logic_error("Called unregister_fd() without providing clap_plugin_event_loop to "
+                             "receive the fd event.");
 
    auto it = h->fds_.find(fd);
    if (it == h->fds_.end())
@@ -620,7 +617,7 @@ void PluginHost::process() {
    process_.audio_outputs_count = 1;
 
    evOut_.clear();
-   appToEngineValueQueue_.consume([this](clap_id param_id, const ParamQueueValue& value) {
+   appToEngineValueQueue_.consume([this](clap_id param_id, const ParamQueueValue &value) {
       clap_event ev;
       ev.time = 0;
       ev.type = CLAP_EVENT_PARAM_VALUE;
@@ -633,7 +630,7 @@ void PluginHost::process() {
       evIn_.push_back(ev);
    });
 
-   appToEngineModQueue_.consume([this](clap_id param_id, const ParamQueueValue& value) {
+   appToEngineModQueue_.consume([this](clap_id param_id, const ParamQueueValue &value) {
       clap_event ev;
       ev.time = 0;
       ev.type = CLAP_EVENT_PARAM_MOD;
@@ -659,8 +656,8 @@ void PluginHost::process() {
    for (auto &ev : evOut_) {
       switch (ev.type) {
       case CLAP_EVENT_PARAM_VALUE:
-         engineToAppValueQueue_.set(
-            ev.param_value.param_id, {ev.param_value.cookie, ev.param_value.value});
+         engineToAppValueQueue_.set(ev.param_value.param_id,
+                                    {ev.param_value.cookie, ev.param_value.value});
          break;
       }
    }
@@ -683,7 +680,7 @@ void PluginHost::idle() {
    appToEngineValueQueue_.producerDone();
    appToEngineModQueue_.producerDone();
 
-   engineToAppValueQueue_.consume([this](clap_id param_id, const ParamQueueValue& value) {
+   engineToAppValueQueue_.consume([this](clap_id param_id, const ParamQueueValue &value) {
       auto it = params_.find(param_id);
       if (it == params_.end()) {
          std::ostringstream msg;
