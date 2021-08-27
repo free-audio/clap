@@ -137,6 +137,11 @@ namespace clap {
          remoteGui_->onFd(flags);
    }
 
+   void CorePlugin::eventLoopOnTimer(clap_id timerId) noexcept {
+      if (remoteGui_ && timerId == remoteGui_->timerId())
+         remoteGui_->onTimer();
+   }
+
    bool CorePlugin::guiX11Attach(const char *displayName, unsigned long window) noexcept {
       if (remoteGui_)
          return remoteGui_->attachX11(displayName, window);

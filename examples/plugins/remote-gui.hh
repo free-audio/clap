@@ -38,6 +38,7 @@ namespace clap {
       clap_fd fd() const;
       void onFd(clap_fd_flags flags);
 
+      clap_id timerId() const noexcept { return timerId_; }
       void onTimer();
 
    private:
@@ -45,6 +46,8 @@ namespace clap {
       void waitChild();
 
       std::unique_ptr<RemoteChannel> channel_;
+
+      clap_id timerId_ = CLAP_INVALID_ID;
 
 #ifdef __unix__
       pid_t child_ = -1;

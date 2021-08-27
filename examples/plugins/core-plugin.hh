@@ -143,6 +143,7 @@ namespace clap {
       //------------------------//
       bool implementsEventLoop() const noexcept override { return true; }
       void eventLoopOnFd(clap_fd fd, uint32_t flags) noexcept override;
+      void eventLoopOnTimer(clap_id timerId) noexcept override;
 
    protected:
       friend class RemoteGui;
