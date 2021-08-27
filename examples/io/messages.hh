@@ -7,7 +7,6 @@ namespace clap::messages {
    enum Type : uint32_t {
       // DSP->GUI
       kDefineParameterRequest,
-      kParameterModulationRequest,
       kParameterValueRequest,
 
       // GUI->DSP
@@ -54,11 +53,6 @@ namespace clap::messages {
       static const constexpr Type type = kParameterValueRequest;
       clap_id paramId;
       double value;
-   };
-
-   struct ParameterModulationRequest final {
-      static const constexpr Type type = kParameterModulationRequest;
-      clap_id paramId;
       double modulation;
    };
 

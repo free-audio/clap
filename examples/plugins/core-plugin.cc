@@ -163,9 +163,29 @@ namespace clap {
       return false;
    }
 
-   void CorePlugin::guiAdjust(clap_id paramId, double value, clap_event_param_flags flags)
-   {
+   void CorePlugin::guiAdjust(clap_id paramId, double value, clap_event_param_flags flags) {
       guiToPluginQueue_.set(paramId, {value, flags});
       guiToPluginQueue_.producerDone();
+   }
+
+   void CorePlugin::processGuiEvents(const clap_process *process) {
+      guiToPluginQueue_.consume([this, process](clap_id paramId, const GuiToPluginValue &value) {
+         auto p = parameters_.getById(paramId);
+         if (!p)
+            return;
+         p->setValue(value.value);
+
+         clap_event ev;
+         ev.time = 0;
+         ev.type = CLAP_EVENT_PARAM_VALUE;
+         ev.param_value.param_id = paramId;
+         ev.param_value.value = value.value;
+         ev.param_value.channel = -1;
+         ev.param_value.key = -1;
+         ev.param_value.flags = value.flags;
+         ev.param_value.cookie = p;
+
+         process->out_events->push_back(process->out_events, &ev);
+      });
    }
 } // namespace clap

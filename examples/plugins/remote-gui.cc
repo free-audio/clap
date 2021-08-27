@@ -190,4 +190,12 @@ namespace clap {
       return channel_->sendRequestSync(request, response);
    }
 
+   void RemoteGui::onTimer() {
+      plugin_.pluginToGuiQueue_.consume(
+         [this](clap_id paramId, const CorePlugin::PluginToGuiValue &value) {
+            messages::ParameterValueRequest rq{paramId, value.value, value.mod};
+            channel_->sendRequestAsync(rq);
+         });
+   }
+
 } // namespace clap

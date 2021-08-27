@@ -78,24 +78,7 @@ namespace clap {
       const clap_event *ev = nullptr;
       uint32_t N = process->frames_count;
 
-      guiToPluginQueue_.consume([this, process] (clap_id paramId, const ParamQueueValue& value) {
-         auto p = parameters_.getById(paramId);
-         if (!p)
-            return;
-         p->setValue(value.value);
-
-         clap_event ev;
-         ev.time = 0;
-         ev.type = CLAP_EVENT_PARAM_VALUE;
-         ev.param_value.param_id = paramId;
-         ev.param_value.value = value.value;
-         ev.param_value.channel = -1;
-         ev.param_value.key = -1;
-         ev.param_value.flags = value.flags;
-         ev.param_value.cookie = p;
-
-         process->out_events->push_back(process->out_events, &ev);
-      });
+      processGuiEvents(process);
 
       /* foreach frames */
       for (uint32_t i = 0; i < process->frames_count; ++i) {
@@ -117,16 +100,22 @@ namespace clap {
 
             switch (ev->type) {
             case CLAP_EVENT_PARAM_VALUE: {
-               auto p = parameters_.getById(ev->param_value.param_id);
-               if (p)
+               auto id = ev->param_value.param_id;
+               auto p = parameters_.getById(id);
+               if (p) {
                   p->setValue(ev->param_value.value);
+                  pluginToGuiQueue_.set(id, {ev->param_value.value, p->modulation()});
+               }
                break;
             }
 
             case CLAP_EVENT_PARAM_MOD: {
-               auto p = parameters_.getById(ev->param_mod.param_id);
-               if (p)
+               auto id = ev->param_mod.param_id;
+               auto p = parameters_.getById(id);
+               if (p) {
                   p->setModulation(ev->param_mod.amount);
+                  pluginToGuiQueue_.set(id, {p->value(), ev->param_mod.amount});
+               }
                break;
             }
             }
@@ -140,6 +129,8 @@ namespace clap {
             offsetParam_->step(1);
          }
       }
+
+      pluginToGuiQueue_.producerDone();
 
       return CLAP_PROCESS_CONTINUE_IF_NOT_QUIET;
    }

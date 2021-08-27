@@ -148,14 +148,20 @@ namespace clap {
       friend class RemoteGui;
 
       void guiAdjust(clap_id paramId, double value, clap_event_param_flags flags);
+      void processGuiEvents(const clap_process *process);
 
-      struct ParamQueueValue {
+      struct GuiToPluginValue {
          double value;
          clap_event_param_flags flags;
       };
 
-      ParamQueue<ParamQueueValue> guiToPluginQueue_;
-      ParamQueue<ParamQueueValue> pluginToGuiQueue_;
+      struct PluginToGuiValue {
+         double value;
+         double mod;
+      };
+
+      ParamQueue<GuiToPluginValue> guiToPluginQueue_;
+      ParamQueue<PluginToGuiValue> pluginToGuiQueue_;
 
       std::unique_ptr<PathProvider> pathProvider_;
 

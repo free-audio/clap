@@ -38,6 +38,8 @@ namespace clap {
       clap_fd fd() const;
       void onFd(clap_fd_flags flags);
 
+      void onTimer();
+
    private:
       void onMessage(const RemoteChannel::Message& msg);
       void waitChild();

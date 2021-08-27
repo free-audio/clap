@@ -103,14 +103,9 @@ void Application::onMessage(const clap::RemoteChannel::Message &msg) {
    case clap::messages::kParameterValueRequest: {
       clap::messages::ParameterValueRequest rq;
       msg.get(rq);
-      pluginProxy_->param(rq.paramId)->setValueFromPlugin(rq.value);
-      break;
-   }
-
-   case clap::messages::kParameterModulationRequest: {
-      clap::messages::ParameterModulationRequest rq;
-      msg.get(rq);
-      pluginProxy_->param(rq.paramId)->setModulationFromPlugin(rq.modulation);
+      auto p = pluginProxy_->param(rq.paramId);
+      p->setValueFromPlugin(rq.value);
+      p->setModulationFromPlugin(rq.modulation);
       break;
    }
 
