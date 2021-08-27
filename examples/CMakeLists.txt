@@ -1,3 +1,5 @@
+add_subdirectory(common)
+
 if(ENABLE_CLAP_GLUE)
   add_subdirectory(glue)
 endif()

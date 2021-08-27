@@ -13,6 +13,8 @@
 #include "main-window.hh"
 #include "plugin-host.hh"
 
+#include "../common/param-queue.hxx"
+
 enum ThreadType {
    Unknown,
    MainThread,
@@ -511,8 +513,6 @@ void PluginHost::eventLoopSetFdNotifierFlags(clap_fd fd, uint32_t flags) {
 bool PluginHost::clapGuiResize(const clap_host *host, uint32_t width, uint32_t height) {
    checkForMainThread();
 
-   PluginHost *h = static_cast<PluginHost *>(host->host_data);
-
    Application::instance().mainWindow()->resizePluginView(width, height);
    return true;
 }
@@ -615,28 +615,28 @@ void PluginHost::process() {
    process_.audio_outputs_count = 1;
 
    evOut_.clear();
-   appToEngineValueQueue_.consume([this](clap_id param_id, void *cookie, double value) {
+   appToEngineValueQueue_.consume([this](clap_id param_id, const ParamQueueValue& value) {
       clap_event ev;
       ev.time = 0;
       ev.type = CLAP_EVENT_PARAM_VALUE;
       ev.param_value.param_id = param_id;
-      ev.param_value.cookie = cookie;
+      ev.param_value.cookie = value.cookie;
       ev.param_value.key = -1;
       ev.param_value.channel = -1;
-      ev.param_value.value = value;
+      ev.param_value.value = value.value;
       ev.param_value.flags = 0;
       evIn_.push_back(ev);
    });
 
-   appToEngineModQueue_.consume([this](clap_id param_id, void *cookie, double value) {
+   appToEngineModQueue_.consume([this](clap_id param_id, const ParamQueueValue& value) {
       clap_event ev;
       ev.time = 0;
       ev.type = CLAP_EVENT_PARAM_MOD;
       ev.param_mod.param_id = param_id;
-      ev.param_mod.cookie = cookie;
+      ev.param_mod.cookie = value.cookie;
       ev.param_mod.key = -1;
       ev.param_mod.channel = -1;
-      ev.param_mod.amount = value;
+      ev.param_mod.amount = value.value;
       evIn_.push_back(ev);
    });
 
@@ -655,7 +655,7 @@ void PluginHost::process() {
       switch (ev.type) {
       case CLAP_EVENT_PARAM_VALUE:
          engineToAppValueQueue_.set(
-            ev.param_value.param_id, ev.param_value.cookie, ev.param_value.value);
+            ev.param_value.param_id, {ev.param_value.cookie, ev.param_value.value});
          break;
       }
    }
@@ -678,7 +678,7 @@ void PluginHost::idle() {
    appToEngineValueQueue_.producerDone();
    appToEngineModQueue_.producerDone();
 
-   engineToAppValueQueue_.consume([this](clap_id param_id, void *cookie, double value) {
+   engineToAppValueQueue_.consume([this](clap_id param_id, const ParamQueueValue& value) {
       auto it = params_.find(param_id);
       if (it == params_.end()) {
          std::ostringstream msg;
@@ -686,7 +686,7 @@ void PluginHost::idle() {
          throw std::invalid_argument(msg.str());
       }
 
-      it->second->setValue(value);
+      it->second->setValue(value.value);
    });
 }
 
@@ -731,7 +731,7 @@ void PluginHost::setParamValueByHost(PluginParam &param, double value) {
 
    param.setValue(value);
 
-   appToEngineValueQueue_.set(param.info().id, param.info().cookie, value);
+   appToEngineValueQueue_.set(param.info().id, {param.info().cookie, value});
    appToEngineValueQueue_.producerDone();
 }
 
@@ -740,7 +740,7 @@ void PluginHost::setParamModulationByHost(PluginParam &param, double value) {
 
    param.setModulation(value);
 
-   appToEngineModQueue_.set(param.info().id, param.info().cookie, value);
+   appToEngineModQueue_.set(param.info().id, {param.info().cookie, value});
    appToEngineModQueue_.producerDone();
 }
 

@@ -78,6 +78,25 @@ namespace clap {
       const clap_event *ev = nullptr;
       uint32_t N = process->frames_count;
 
+      guiToPluginQueue_.consume([this, process] (clap_id paramId, const ParamQueueValue& value) {
+         auto p = parameters_.getById(paramId);
+         if (!p)
+            return;
+         p->setValue(value.value);
+
+         clap_event ev;
+         ev.time = 0;
+         ev.type = CLAP_EVENT_PARAM_VALUE;
+         ev.param_value.param_id = paramId;
+         ev.param_value.value = value.value;
+         ev.param_value.channel = -1;
+         ev.param_value.key = -1;
+         ev.param_value.flags = value.flags;
+         ev.param_value.cookie = p;
+
+         process->out_events->push_back(process->out_events, &ev);
+      });
+
       /* foreach frames */
       for (uint32_t i = 0; i < process->frames_count; ++i) {
 

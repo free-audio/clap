@@ -28,8 +28,6 @@ add_executable(clap-host
 
   plugin-param.cc
   plugin-param.hh
-  param-queue.cc
-  param-queue.hh
   plugin-host.cc
   plugin-host.hh
   plugin-quick-control-widget.cc

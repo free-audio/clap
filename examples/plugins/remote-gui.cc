@@ -94,24 +94,10 @@ namespace clap {
 
    void RemoteGui::onMessage(const RemoteChannel::Message &msg) {
       switch (msg.type) {
-      case messages::kBeginAdjustRequest: {
-         messages::BeginAdjustRequest rq;
-         msg.get(rq);
-         // TODO
-         break;
-      }
-
       case messages::kAdjustRequest: {
          messages::AdjustRequest rq;
          msg.get(rq);
-         // TODO
-         break;
-      }
-
-      case messages::kEndAdjustRequest: {
-         messages::EndAdjustRequest rq;
-         msg.get(rq);
-         // TODO
+         plugin_.guiAdjust(rq.paramId, rq.value, rq.flags);
          break;
       }
       }

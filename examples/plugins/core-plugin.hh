@@ -8,6 +8,8 @@
 #include "path-provider.hh"
 #include "remote-gui.hh"
 
+#include "../common/param-queue.hxx"
+
 namespace clap {
    class CorePlugin : public Plugin {
    public:
@@ -144,6 +146,16 @@ namespace clap {
 
    protected:
       friend class RemoteGui;
+
+      void guiAdjust(clap_id paramId, double value, clap_event_param_flags flags);
+
+      struct ParamQueueValue {
+         double value;
+         clap_event_param_flags flags;
+      };
+
+      ParamQueue<ParamQueueValue> guiToPluginQueue_;
+      ParamQueue<ParamQueueValue> pluginToGuiQueue_;
 
       std::unique_ptr<PathProvider> pathProvider_;
 

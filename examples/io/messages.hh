@@ -11,9 +11,7 @@ namespace clap::messages {
       kParameterValueRequest,
 
       // GUI->DSP
-      kBeginAdjustRequest,
       kAdjustRequest,
-      kEndAdjustRequest,
 
       // Gui, Host->Plugin
       kSetScaleRequest,
@@ -39,23 +37,12 @@ namespace clap::messages {
       kResizeResponse,
    };
 
-   struct BeginAdjustRequest final {
-      static const constexpr Type type = clap::messages::kBeginAdjustRequest;
-
-      clap_id paramId;
-   };
-
    struct AdjustRequest final {
       static const constexpr Type type = clap::messages::kAdjustRequest;
 
       clap_id paramId;
       double value;
-   };
-
-   struct EndAdjustRequest final {
-      static const constexpr Type type = clap::messages::kEndAdjustRequest;
-
-      clap_id paramId;
+      clap_event_param_flags flags;
    };
 
    struct DefineParameterRequest final {

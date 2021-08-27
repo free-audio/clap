@@ -34,20 +34,14 @@ void ParameterProxy::setIsAdjusting(bool isAdjusting) {
    if (isAdjusting == isAdjusting_)
       return;
 
-   isAdjusting_ = isAdjusting;
-   if (isAdjusting) {
-      clap::messages::BeginAdjustRequest rq{id_};
-      Application::instance().remoteChannel().sendRequestAsync(rq);
-   } else {
-      clap::messages::EndAdjustRequest rq{id_};
-      Application::instance().remoteChannel().sendRequestAsync(rq);
-   }
+   clap::messages::AdjustRequest rq{id_, value_, isAdjusting ? CLAP_EVENT_PARAM_BEGIN_ADJUST : CLAP_EVENT_PARAM_END_ADJUST};
+   Application::instance().remoteChannel().sendRequestAsync(rq);
 }
 
 void ParameterProxy::setValueFromUI(double value) {
    value_ = value;
 
-   clap::messages::AdjustRequest rq{id_, value_};
+   clap::messages::AdjustRequest rq{id_, value_, 0};
    Application::instance().remoteChannel().sendRequestAsync(rq);
    valueChanged();
 }

@@ -162,4 +162,10 @@ namespace clap {
       // TODO
       return false;
    }
+
+   void CorePlugin::guiAdjust(clap_id paramId, double value, clap_event_param_flags flags)
+   {
+      guiToPluginQueue_.set(paramId, {value, flags});
+      guiToPluginQueue_.producerDone();
+   }
 } // namespace clap

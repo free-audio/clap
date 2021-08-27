@@ -16,7 +16,7 @@
 #include <clap/all.h>
 
 #include "engine.hh"
-#include "param-queue.hh"
+#include "../common/param-queue.hh"
 #include "plugin-param.hh"
 
 class Engine;
@@ -183,9 +183,14 @@ private:
    /* param update queues */
    std::unordered_map<clap_id, std::unique_ptr<PluginParam>> params_;
 
-   ParamQueue appToEngineValueQueue_;
-   ParamQueue appToEngineModQueue_;
-   ParamQueue engineToAppValueQueue_;
+   struct ParamQueueValue {
+      void *cookie;
+      double value;
+   };
+
+   ParamQueue<ParamQueueValue> appToEngineValueQueue_;
+   ParamQueue<ParamQueueValue> appToEngineModQueue_;
+   ParamQueue<ParamQueueValue> engineToAppValueQueue_;
 
    std::unordered_map<clap_id, std::unique_ptr<clap_quick_controls_page>> quickControlsPages_;
    clap_id quickControlsSelectedPage_ = CLAP_INVALID_ID;
