@@ -39,6 +39,8 @@ namespace clap {
          1,
          0,
       });
+
+      offsetParam_ = parameters_.getById(kParamIdOffset);
    }
 
    bool DcOffset::init() noexcept {
