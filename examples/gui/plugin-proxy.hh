@@ -11,7 +11,7 @@ class PluginProxy : public QObject {
    Q_OBJECT
 
 public:
-   PluginProxy(QObject *parent = nullptr);
+   explicit PluginProxy(QObject *parent = nullptr);
 
    void defineParameter(const clap_param_info& info);
 

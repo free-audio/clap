@@ -20,8 +20,8 @@ class ParameterProxy : public QObject {
    Q_PROPERTY(bool isAdjusting READ isAdjusting WRITE setIsAdjusting)
 
 public:
-   ParameterProxy(const clap_param_info &info, QObject *parent = nullptr);
-   ParameterProxy(clap_id param_id, QObject *parent = nullptr);
+   explicit ParameterProxy(const clap_param_info &info, QObject *parent = nullptr);
+   explicit ParameterProxy(clap_id param_id, QObject *parent = nullptr);
 
    void redefine(const clap_param_info &info);
 
