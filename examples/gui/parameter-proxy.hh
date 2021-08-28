@@ -53,14 +53,12 @@ public:
 
    double normalize(double value) const {
       double delta = maxValue_ - minValue_;
-      return delta != 0 ? (value - minValue_) / delta : 0;
+      return delta != 0 ? std::min(1., std::max(0., (value - minValue_) / delta)) : 0;
    }
 
    double denormalize(double value) const {
-      Q_ASSERT(value >= 0);
-      Q_ASSERT(value <= 1);
       double delta = maxValue_ - minValue_;
-      return minValue_ + value * delta;
+      return minValue_ + std::min(1., std::max(0., value)) * delta;
    }
 
 signals:

@@ -12,6 +12,7 @@ namespace clap {
 
       virtual std::string getGuiExecutable() const = 0;
       virtual std::string getSkinDirectory() const = 0;
+      virtual std::string getQmlLibDirectory() const = 0;
 
       virtual bool isValid() const = 0;
    };

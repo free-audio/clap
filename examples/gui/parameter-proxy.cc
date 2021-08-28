@@ -39,6 +39,10 @@ void ParameterProxy::setIsAdjusting(bool isAdjusting) {
 }
 
 void ParameterProxy::setValueFromUI(double value) {
+   value = std::max(minValue_, std::min(maxValue_, value));
+   if (value == value_)
+      return;
+
    value_ = value;
 
    clap::messages::AdjustRequest rq{id_, value_, 0};

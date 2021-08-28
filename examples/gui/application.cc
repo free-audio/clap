@@ -19,9 +19,11 @@ Application::Application(int &argc, char **argv)
 
    QCommandLineOption skinOpt("skin", tr("path to the skin directory"), tr("path"));
    QCommandLineOption socketOpt("socket", tr("path to the QML skin"), tr("path"));
+   QCommandLineOption qmlLibOpt("qml-import", tr("QML import path"), tr("path"));
 
    parser.addOption(skinOpt);
    parser.addOption(socketOpt);
+   parser.addOption(qmlLibOpt);
    parser.addHelpOption();
 
    parser.process(*this);
@@ -29,6 +31,8 @@ Application::Application(int &argc, char **argv)
    pluginProxy_ = new PluginProxy(this);
 
    auto qmlContext = quickView_->engine()->rootContext();
+   for (const auto &str : parser.values(qmlLibOpt))
+      quickView_->engine()->addImportPath(str);
    qmlContext->setContextProperty("plugin", pluginProxy_);
 
    quickView_->setSource(parser.value(skinOpt) + "/main.qml");

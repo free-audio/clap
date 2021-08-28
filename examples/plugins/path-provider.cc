@@ -24,6 +24,8 @@ namespace clap {
 
       std::string getSkinDirectory() const override { return prefix_ / "lib/clap/" / pluginName_ / "skin"; }
 
+      std::string getQmlLibDirectory() const override { return prefix_ / "lib/clap" / pluginName_ / "qml"; }
+
       bool isValid() const noexcept override { return !prefix_.empty(); }
 
    private:
@@ -58,6 +60,8 @@ namespace clap {
       std::string getGuiExecutable() const override { return buildRoot_ / "examples/gui/clap-gui"; }
 
       std::string getSkinDirectory() const override { return srcRoot_ / "examples/plugins/" / pluginName_ / "skin"; }
+
+      std::string getQmlLibDirectory() const override { return srcRoot_ / "examples/plugins/qml"; }
 
       bool isValid() const noexcept override { return !srcRoot_.empty() && !buildRoot_.empty(); }
 
