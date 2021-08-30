@@ -248,8 +248,18 @@ void PluginHost::setPorts(int numInputs, float **inputs, int numOutputs, float *
 void PluginHost::setParentWindow(WId parentWindow) {
    checkForMainThread();
 
+   if (isGuiCreated_)
+   {
+      pluginGui_->destroy(plugin_);
+      isGuiCreated_ = false;
+      isGuiVisible_ = false;
+   }
+
    if (!pluginGui_->create(plugin_))
       return;
+
+   isGuiCreated_ = true;
+   assert(isGuiVisible_ == false);
 
    uint32_t width = 0;
    uint32_t height = 0;
@@ -272,7 +282,23 @@ void PluginHost::setParentWindow(WId parentWindow) {
 
    Application::instance().mainWindow()->resizePluginView(width, height);
 
-   pluginGui_->show(plugin_);
+   setPluginWindowVisibility(true);
+}
+
+void PluginHost::setPluginWindowVisibility(bool isVisible) {
+   assert(clapIsMainThread(&host_));
+
+   if (!isGuiCreated_)
+      return;
+
+   if (isVisible && !isGuiVisible_) {
+      pluginGui_->show(plugin_);
+      isGuiVisible_ = true;
+   } else if (!isVisible && isGuiVisible_)
+   {
+      pluginGui_->hide(plugin_);
+      isGuiVisible_ = false;
+   }
 }
 
 void PluginHost::clapLog(const clap_host *host, clap_log_severity severity, const char *msg) {

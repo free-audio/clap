@@ -26,6 +26,10 @@ public:
 private:
    void createMenu();
 
+   void togglePluginWindowVisibility();
+   void recreatePluginWindow();
+   void scalePluginWindow();
+
    Application &   application_;
    SettingsDialog *settingsDialog_ = nullptr;
    QWindow *       pluginViewWindow_ = nullptr;

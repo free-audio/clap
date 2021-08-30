@@ -34,6 +34,9 @@ public:
    void activate(int32_t sample_rate);
    void deactivate();
 
+   void recreatePluginWindow();
+   void setPluginWindowVisibility(bool isVisible);
+
    void setPorts(int numInputs, float **inputs, int numOutputs, float **outputs);
    void setParentWindow(WId parentWindow);
 
@@ -226,4 +229,7 @@ private:
    bool stateIsDirty_ = false;
 
    bool scheduleRestart_ = false;
+
+   bool isGuiCreated_ = false;
+   bool isGuiVisible_ = false;
 };

@@ -77,6 +77,19 @@ void MainWindow::createMenu() {
            &QAction::triggered,
            this,
            &MainWindow::showPluginQuickControlsWindow);
+   menuBar->addSeparator();
+   connect(windowsMenu->addAction(tr("Toggle Plugin Window Visibility")),
+           &QAction::triggered,
+           this,
+           &MainWindow::togglePluginWindowVisibility);
+   connect(windowsMenu->addAction(tr("Recreate Plugin Window")),
+           &QAction::triggered,
+           this,
+           &MainWindow::recreatePluginWindow);
+   connect(windowsMenu->addAction(tr("Scale Plugin Window")),
+           &QAction::triggered,
+           this,
+           &MainWindow::scalePluginWindow);
 
    QMenu *helpMenu = menuBar->addMenu(tr("Help"));
    helpMenu->addAction(tr("Manual"));
@@ -108,4 +121,21 @@ void MainWindow::loadNativePluginPreset()
       return;
 
    application_.engine()->pluginHost().loadNativePluginPreset(file.toStdString());
+}
+
+void MainWindow::togglePluginWindowVisibility()
+{
+   bool isVisible = !pluginViewWidget_->isVisible();
+   pluginViewWidget_->setVisible(isVisible);
+   application_.engine()->pluginHost().setPluginWindowVisibility(isVisible);
+}
+
+void MainWindow::recreatePluginWindow()
+{
+   application_.engine()->pluginHost().setParentWindow(pluginViewWindow_->winId());
+}
+
+void MainWindow::scalePluginWindow()
+{
+   // TODO
 }
