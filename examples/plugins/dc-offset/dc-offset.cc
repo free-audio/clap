@@ -83,7 +83,7 @@ namespace clap {
       processGuiEvents(process);
 
       /* foreach frames */
-      for (uint32_t i = 0; i < process->frames_count; ++i) {
+      for (uint32_t i = 0; i < process->frames_count;) {
 
          /* check if there are events to process */
          for (; nextEvIndex < evCount; ++nextEvIndex) {
@@ -122,6 +122,9 @@ namespace clap {
             }
             }
          }
+
+         if (nextEvIndex == evCount)
+            N = process->frames_count;
 
          /* Process as many samples as possible until the next event */
          for (; i < N; ++i) {
