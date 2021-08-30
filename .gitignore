@@ -46,6 +46,8 @@ CMakeSettings.json
 .vscode
 .cache
 
+# C++ IDE helpers
+compile_commands.json
 
 # IntelliJ IDEA
 .idea
@@ -53,7 +55,6 @@ CMakeSettings.json
 # CMake common patterns
 build/
 cmake-build-*/
-
 
 # A place to store stuff and get it git ignored
 ignore/*

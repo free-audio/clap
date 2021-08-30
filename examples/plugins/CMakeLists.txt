@@ -27,3 +27,4 @@ target_link_libraries(clap-plugins -Wl,-z,defs)
 set_target_properties(clap-plugins PROPERTIES CXX_STANDARD 20 SUFFIX ".clap" PREFIX "")
 
 install(TARGETS clap-plugins DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/clap")
+install(DIRECTORY qml DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/clap")
