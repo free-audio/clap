@@ -638,7 +638,7 @@ void PluginHost::process() {
    g_thread_type = AudioThread;
    checkForAudioThread();
 
-   if (!isPluginActive())
+   if (!isPluginProcessing() && !isPluginSleeping())
       return;
 
    process_.transport = nullptr;

@@ -107,7 +107,7 @@ namespace clap {
 
    void CorePlugin::guiDestroy() noexcept {
       if (remoteGui_)
-         remoteGui_->destroy();
+         remoteGui_.reset();
    }
 
    bool CorePlugin::guiSize(uint32_t *width, uint32_t *height) noexcept {

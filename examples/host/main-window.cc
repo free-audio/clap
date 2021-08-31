@@ -132,7 +132,7 @@ void MainWindow::togglePluginWindowVisibility()
 
 void MainWindow::recreatePluginWindow()
 {
-   application_.engine()->pluginHost().setParentWindow(pluginViewWindow_->winId());
+   application_.engine()->pluginHost().setParentWindow(getEmbedWindowId());
 }
 
 void MainWindow::scalePluginWindow()
