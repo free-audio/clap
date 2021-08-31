@@ -3,11 +3,11 @@
 #include "parameters.hh"
 
 namespace clap {
-   void clap::Parameters::addParameter(const Parameter &param) {
-      assert(id2param_.find(param.info().id) == id2param_.end());
+   void clap::Parameters::addParameter(const clap_param_info &info) {
+      assert(id2param_.find(info.id) == id2param_.end());
 
-      auto p = std::make_unique<Parameter>(param);
-      id2param_.emplace(param.info().id, p.get());
+      auto p = std::make_unique<Parameter>(info);
+      id2param_.emplace(info.id, p.get());
       params_.emplace_back(std::move(p));
    }
 

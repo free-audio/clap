@@ -16,7 +16,14 @@
 namespace clap {
    class Parameter {
    public:
-      Parameter(const clap_param_info &info) : info_(info) {}
+      explicit Parameter(const clap_param_info &info) : info_(info) {
+         info_.cookie = this;
+      }
+
+      Parameter(const Parameter&) = delete;
+      Parameter(Parameter&&) = delete;
+      Parameter& operator=(const Parameter&) = delete;
+      Parameter& operator=(Parameter&&) = delete;
 
       const double value() const noexcept { return value_; }
       const double modulation() const noexcept { return modulation_; }
@@ -50,6 +57,7 @@ namespace clap {
       Parameters() = default;
       Parameters(const Parameters &parameters);
 
+      void addParameter(const clap_param_info &info);
       void addParameter(const Parameter &param);
 
       size_t count() const noexcept;
