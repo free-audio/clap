@@ -150,6 +150,8 @@ namespace clap {
 
       void guiAdjust(clap_id paramId, double value, clap_event_param_flags flags);
       void processGuiEvents(const clap_process *process);
+      uint32_t
+      processEvents(const clap_process *process, uint32_t& index, uint32_t count, uint32_t time);
 
       struct GuiToPluginValue {
          double value;

@@ -77,7 +77,6 @@ namespace clap {
       float **out = process->audio_outputs[0].data32;
       uint32_t evCount = process->in_events->size(process->in_events);
       uint32_t nextEvIndex = 0;
-      const clap_event *ev = nullptr;
       uint32_t N = process->frames_count;
 
       processGuiEvents(process);
@@ -85,46 +84,7 @@ namespace clap {
       /* foreach frames */
       for (uint32_t i = 0; i < process->frames_count;) {
 
-         /* check if there are events to process */
-         for (; nextEvIndex < evCount; ++nextEvIndex) {
-            ev = process->in_events->get(process->in_events, nextEvIndex);
-
-            if (ev->time < i) {
-               hostMisbehaving("Events must be ordered by time");
-               std::terminate();
-            }
-
-            if (ev->time > i) {
-               // This event is in the future
-               N = std::min(ev->time, process->frames_count);
-               break;
-            }
-
-            switch (ev->type) {
-            case CLAP_EVENT_PARAM_VALUE: {
-               auto id = ev->param_value.param_id;
-               auto p = parameters_.getById(id);
-               if (p) {
-                  p->setValue(ev->param_value.value);
-                  pluginToGuiQueue_.set(id, {ev->param_value.value, p->modulation()});
-               }
-               break;
-            }
-
-            case CLAP_EVENT_PARAM_MOD: {
-               auto id = ev->param_mod.param_id;
-               auto p = parameters_.getById(id);
-               if (p) {
-                  p->setModulation(ev->param_mod.amount);
-                  pluginToGuiQueue_.set(id, {p->value(), ev->param_mod.amount});
-               }
-               break;
-            }
-            }
-         }
-
-         if (nextEvIndex == evCount)
-            N = process->frames_count;
+         N = processEvents(process, nextEvIndex, evCount, i);
 
          /* Process as many samples as possible until the next event */
          for (; i < N; ++i) {

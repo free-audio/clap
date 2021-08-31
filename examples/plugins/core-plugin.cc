@@ -1,6 +1,8 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
+#include <sstream>
+
 #include "core-plugin.hh"
 #include "stream-helper.hh"
 
@@ -192,5 +194,60 @@ namespace clap {
 
          process->out_events->push_back(process->out_events, &ev);
       });
+   }
+
+   uint32_t CorePlugin::processEvents(const clap_process *process,
+                                      uint32_t &index,
+                                      uint32_t count,
+                                      uint32_t time) {
+      for (; index < count; ++index) {
+         auto ev = process->in_events->get(process->in_events, index);
+
+         if (ev->time < time) {
+            hostMisbehaving("Events must be ordered by time");
+            std::terminate();
+         }
+
+         if (ev->time > time) {
+            // This event is in the future
+            return std::min(ev->time, process->frames_count);
+         }
+
+         switch (ev->type) {
+         case CLAP_EVENT_PARAM_VALUE: {
+            auto p = reinterpret_cast<Parameter *>(ev->param_value.cookie);
+            if (p) {
+               if (p->info().id != ev->param_value.param_id) {
+                  std::ostringstream os;
+                  os << "Host provided invalid cookie for param id: " << ev->param_value.param_id;
+                  hostMisbehaving(os.str());
+                  std::terminate();
+               }
+
+               p->setValue(ev->param_value.value);
+               pluginToGuiQueue_.set(p->info().id, {ev->param_value.value, p->modulation()});
+            }
+            break;
+         }
+
+         case CLAP_EVENT_PARAM_MOD: {
+            auto p = reinterpret_cast<Parameter *>(ev->param_mod.cookie);
+            if (p) {
+               if (p->info().id != ev->param_mod.param_id) {
+                  std::ostringstream os;
+                  os << "Host provided invalid cookie for param id: " << ev->param_mod.param_id;
+                  hostMisbehaving(os.str());
+                  std::terminate();
+               }
+
+               p->setModulation(ev->param_mod.amount);
+               pluginToGuiQueue_.set(p->info().id, {p->value(), ev->param_mod.amount});
+            }
+            break;
+         }
+         }
+      }
+
+      return process->frames_count;
    }
 } // namespace clap
