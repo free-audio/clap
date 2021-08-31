@@ -180,7 +180,7 @@ namespace clap {
          auto p = parameters_.getById(paramId);
          if (!p)
             return;
-         p->setValue(value.value);
+         p->setValueSmoothed(value.value, 128);
 
          clap_event ev;
          ev.time = 0;
@@ -224,7 +224,7 @@ namespace clap {
                   std::terminate();
                }
 
-               p->setValue(ev->param_value.value);
+               p->setValueSmoothed(ev->param_value.value, 128);
                pluginToGuiQueue_.set(p->info().id, {ev->param_value.value, p->modulation()});
             }
             break;
@@ -240,7 +240,7 @@ namespace clap {
                   std::terminate();
                }
 
-               p->setModulation(ev->param_mod.amount);
+               p->setModulationSmoothed(ev->param_mod.amount, 128);
                pluginToGuiQueue_.set(p->info().id, {p->value(), ev->param_mod.amount});
             }
             break;

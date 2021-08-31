@@ -88,7 +88,7 @@ namespace clap {
 
          /* Process as many samples as possible until the next event */
          for (; i < N; ++i) {
-            float offset = offsetParam_->step(1);
+            float offset = offsetParam_->step();
             for (int c = 0; c < channelCount_; ++c)
                out[c][i] = in[c][i] + offset;
          }

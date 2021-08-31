@@ -16,14 +16,12 @@
 namespace clap {
    class Parameter {
    public:
-      explicit Parameter(const clap_param_info &info) : info_(info) {
-         info_.cookie = this;
-      }
+      explicit Parameter(const clap_param_info &info) : info_(info) { info_.cookie = this; }
 
-      Parameter(const Parameter&) = delete;
-      Parameter(Parameter&&) = delete;
-      Parameter& operator=(const Parameter&) = delete;
-      Parameter& operator=(Parameter&&) = delete;
+      Parameter(const Parameter &) = delete;
+      Parameter(Parameter &&) = delete;
+      Parameter &operator=(const Parameter &) = delete;
+      Parameter &operator=(Parameter &&) = delete;
 
       const double value() const noexcept { return value_; }
       const double modulation() const noexcept { return modulation_; }
@@ -35,21 +33,78 @@ namespace clap {
          modulation_ = 0;
       }
 
-      void setValue(double val) { value_ = val; }
+      void setValueImmediately(double val) {
+         value_ = val;
+         valueRamp_ = 0;
+         valueSteps_ = 0;
+      }
+      void setModulationImmediately(double mod) {
+         modulation_ = mod;
+         modulationRamp_ = 0;
+         modulationSteps_ = 0;
+      }
 
-      void setModulation(double mod) { modulation_ = mod; }
+      void setValueSmoothed(double val, uint16_t steps)
+      {
+         assert(steps > 0);
+         valueRamp_ = (val - value_) / steps;
+         valueSteps_ = steps;
+      }
+
+      void setModulationSmoothed(double mod, uint16_t steps)
+      {
+         assert(steps > 0);
+         modulationRamp_ = (mod - modulation_) / steps;
+         modulationSteps_ = steps;
+      }
+
+      // Advances the value by 1 samples and return the new value + modulation
+      double step() {
+         if (valueSteps_ > 0) [[unlikely]]
+         {
+            value_ += valueRamp_;
+            --valueSteps_;
+         }
+
+         if (modulationSteps_ > 0) [[unlikely]]
+         {
+            modulation_ += modulationRamp_;
+            --modulationSteps_;
+         }
+
+         return value_ + modulation_;
+      }
 
       // Advances the value by n samples and return the new value + modulation
       double step(uint32_t n) {
-         // TODO smooth
+         if (valueSteps_ > 0) [[unlikely]]
+         {
+            auto k = std::min<uint32_t>(valueSteps_, n);
+            value_ += k * valueRamp_;
+            valueSteps_ -= k;
+         }
+
+         if (modulationSteps_ > 0) [[unlikely]]
+         {
+            auto k = std::min<uint32_t>(valueSteps_, n);
+            modulation_ += k * modulationRamp_;
+            modulationSteps_ -= k;
+         }
+
          return value_ + modulation_;
       }
 
    private:
       clap_param_info info_;
 
-      double value_;
-      double modulation_;
+      double value_ = 0;
+      double modulation_ = 0;
+
+      double valueRamp_ = 0;
+      double modulationRamp_ = 0;
+
+      uint16_t valueSteps_ = 0;
+      uint16_t modulationSteps_ = 0;
    };
 
    class Parameters {
@@ -90,7 +145,7 @@ namespace clap {
             auto *p = getById(v.first);
             if (!p)
                continue;
-            p->setValue(v.second);
+            p->setValueImmediately(v.second);
          }
       }
 
