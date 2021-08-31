@@ -54,7 +54,7 @@ compile_commands.json
 
 # CMake common patterns
 build/
-cmake-build-*/
+cmake-build*/
 
 # A place to store stuff and get it git ignored
 ignore/*
