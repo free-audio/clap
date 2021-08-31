@@ -158,6 +158,8 @@ bool PluginHost::load(const QString &path, int pluginIndex) {
 }
 
 void PluginHost::initPluginExtensions() {
+   checkForMainThread();
+
    if (pluginExtensionsAreInitialized_)
       return;
 
@@ -200,6 +202,8 @@ void PluginHost::unload() {
 }
 
 bool PluginHost::canActivate() const {
+   checkForMainThread();
+
    if (!engine_.isRunning())
       return false;
    if (isPluginActive())
@@ -210,6 +214,8 @@ bool PluginHost::canActivate() const {
 }
 
 void PluginHost::activate(int32_t sample_rate) {
+   checkForMainThread();
+
    if (plugin_->activate(plugin_, sample_rate))
       setPluginState(ActiveAndSleeping);
    else
@@ -217,15 +223,16 @@ void PluginHost::activate(int32_t sample_rate) {
 }
 
 void PluginHost::deactivate() {
+   checkForMainThread();
+
    if (!isPluginActive())
       return;
 
-   if (isPluginProcessing()) {
-      plugin_->stop_processing(plugin_);
-      setPluginState(ActiveAndReadyToDeactivate);
-   } else if (isPluginSleeping()) {
-      setPluginState(ActiveAndReadyToDeactivate);
+   while (isPluginProcessing() || isPluginSleeping()) {
+      scheduleDeactivate_ = true;
+      QThread::msleep(10);
    }
+   scheduleDeactivate_ = false;
 
    plugin_->deactivate(plugin_);
    setPluginState(Inactive);
@@ -286,7 +293,7 @@ void PluginHost::setParentWindow(WId parentWindow) {
 }
 
 void PluginHost::setPluginWindowVisibility(bool isVisible) {
-   assert(clapIsMainThread(&host_));
+   checkForMainThread();
 
    if (!isGuiCreated_)
       return;
@@ -322,11 +329,10 @@ void PluginHost::clapLog(const clap_host *host, clap_log_severity severity, cons
 
 template <typename T>
 void PluginHost::initPluginExtension(const T *&ext, const char *id) {
-   if (ext)
-      return;
-
    checkForMainThread();
-   ext = static_cast<const T *>(plugin_->extension(plugin_, id));
+
+   if (!ext)
+      ext = static_cast<const T *>(plugin_->extension(plugin_, id));
 }
 
 const void *PluginHost::clapExtension(const clap_host *host, const char *extension) {
@@ -546,13 +552,16 @@ bool PluginHost::clapGuiResize(const clap_host *host, uint32_t width, uint32_t h
 }
 
 void PluginHost::processInit(int nframes) {
+   checkForAudioThread();
+
    process_.frames_count = nframes;
    process_.steady_time = engine_.steadyTime_;
 }
 
 void PluginHost::processNoteOn(int sampleOffset, int channel, int key, int velocity) {
-   clap_event ev;
+   checkForAudioThread();
 
+   clap_event ev;
    ev.type = CLAP_EVENT_NOTE_ON;
    ev.time = sampleOffset;
    ev.note.key = key;
@@ -563,8 +572,9 @@ void PluginHost::processNoteOn(int sampleOffset, int channel, int key, int veloc
 }
 
 void PluginHost::processNoteOff(int sampleOffset, int channel, int key, int velocity) {
-   clap_event ev;
+   checkForAudioThread();
 
+   clap_event ev;
    ev.type = CLAP_EVENT_NOTE_OFF;
    ev.time = sampleOffset;
    ev.note.key = key;
@@ -575,14 +585,20 @@ void PluginHost::processNoteOff(int sampleOffset, int channel, int key, int velo
 }
 
 void PluginHost::processNoteAt(int sampleOffset, int channel, int key, int pressure) {
+   checkForAudioThread();
+
    // TODO
 }
 
 void PluginHost::processPitchBend(int sampleOffset, int channel, int value) {
+   checkForAudioThread();
+
    // TODO
 }
 
 void PluginHost::processCC(int sampleOffset, int channel, int cc, int value) {
+   checkForAudioThread();
+
    clap_event ev;
 
    ev.type = CLAP_EVENT_MIDI;
@@ -622,6 +638,7 @@ void clap_host_event_list_push_back(const struct clap_event_list *list,
 
 void PluginHost::process() {
    g_thread_type = AudioThread;
+   checkForAudioThread();
 
    if (!isPluginActive())
       return;
@@ -690,7 +707,8 @@ void PluginHost::process() {
    evOut_.clear();
    evIn_.clear();
 
-   if (scheduleRestart_) {
+   if (scheduleDeactivate_) {
+      scheduleDeactivate_ = false;
       plugin_->stop_processing(plugin_);
       setPluginState(ActiveAndReadyToDeactivate);
    }
@@ -896,6 +914,7 @@ void PluginHost::clapParamsRescan(const clap_host *host, uint32_t flags) {
 }
 
 double PluginHost::getParamValue(const clap_param_info &info) {
+   checkForMainThread();
    double value;
    if (pluginParams_->value(plugin_, info.id, &value))
       return value;
@@ -966,6 +985,7 @@ void PluginHost::scanQuickControls() {
 }
 
 void PluginHost::quickControlsSetSelectedPage(clap_id pageId) {
+   checkForMainThread();
    if (pageId == quickControlsSelectedPage_)
       return;
 
@@ -983,6 +1003,7 @@ void PluginHost::quickControlsSetSelectedPage(clap_id pageId) {
 }
 
 void PluginHost::setQuickControlsSelectedPageByHost(clap_id page_id) {
+   checkForMainThread();
    Q_ASSERT(page_id != CLAP_INVALID_ID);
 
    checkForMainThread();

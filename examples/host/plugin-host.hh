@@ -229,6 +229,7 @@ private:
    bool stateIsDirty_ = false;
 
    bool scheduleRestart_ = false;
+   bool scheduleDeactivate_ = false;
 
    bool isGuiCreated_ = false;
    bool isGuiVisible_ = false;
