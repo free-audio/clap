@@ -32,8 +32,10 @@ namespace clap {
 
       void setModulation(double mod) { modulation_ = mod; }
 
-      void step(uint32_t n) {
+      // Advances the value by n samples and return the new value + modulation
+      double step(uint32_t n) {
          // TODO smooth
+         return value_ + modulation_;
       }
 
    private:
