@@ -551,9 +551,7 @@ bool PluginHost::clapGuiResize(const clap_host *host, uint32_t width, uint32_t h
    return true;
 }
 
-void PluginHost::processInit(int nframes) {
-   checkForAudioThread();
-
+void PluginHost::processBegin(int nframes) {
    process_.frames_count = nframes;
    process_.steady_time = engine_.steadyTime_;
 }
@@ -1087,7 +1085,7 @@ void PluginHost::setPluginState(PluginState state) {
       break;
 
    case ActiveAndReadyToDeactivate:
-      Q_ASSERT(state_ == ActiveAndSleeping || state_ == ActiveWithError);
+      Q_ASSERT(state_ == ActiveAndProcessing || state_ == ActiveAndSleeping || state_ == ActiveWithError);
       break;
 
    default:

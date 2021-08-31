@@ -40,7 +40,7 @@ public:
    void setPorts(int numInputs, float **inputs, int numOutputs, float **outputs);
    void setParentWindow(WId parentWindow);
 
-   void processInit(int nframes);
+   void processBegin(int nframes);
    void processNoteOn(int sampleOffset, int channel, int key, int velocity);
    void processNoteOff(int sampleOffset, int channel, int key, int velocity);
    void processNoteAt(int sampleOffset, int channel, int key, int pressure);

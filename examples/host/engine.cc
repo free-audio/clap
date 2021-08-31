@@ -137,7 +137,7 @@ int Engine::audioCallback(const void *  input,
       }
    }
 
-   thiz->pluginHost_->processInit(frameCount);
+   thiz->pluginHost_->processBegin(frameCount);
 
    MidiSettings &ms = thiz->settings_.midiSettings();
 
