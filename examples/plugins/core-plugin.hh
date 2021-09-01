@@ -178,5 +178,7 @@ namespace clap {
       std::unique_ptr<RemoteGui> remoteGui_;
 
       Parameters parameters_;
+
+      static const constexpr uint32_t paramSmoothingDuration_ = 64;
    };
 } // namespace clap

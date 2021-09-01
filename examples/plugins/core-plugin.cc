@@ -224,7 +224,8 @@ namespace clap {
                   std::terminate();
                }
 
-               p->setValueSmoothed(ev->param_value.value, 128);
+               p->setValueSmoothed(ev->param_value.value, paramSmoothingDuration_);
+               //p->setValueImmediately(ev->param_value.value);
                pluginToGuiQueue_.set(p->info().id, {ev->param_value.value, p->modulation()});
             }
             break;
@@ -240,7 +241,7 @@ namespace clap {
                   std::terminate();
                }
 
-               p->setModulationSmoothed(ev->param_mod.amount, 128);
+               p->setModulationSmoothed(ev->param_mod.amount, paramSmoothingDuration_);
                pluginToGuiQueue_.set(p->info().id, {p->value(), ev->param_mod.amount});
             }
             break;
