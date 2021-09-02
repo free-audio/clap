@@ -31,9 +31,15 @@ namespace clap {
          return false;
       }
 
-      printf("About to start GUI: %s --socket %d\n",
-             pathProvider.getGuiExecutable().c_str(),
-             sockets[0]);
+      auto path = pathProvider.getGuiExecutable();
+      auto skin = pathProvider.getSkinDirectory();
+      auto qmlLib = pathProvider.getQmlLibDirectory();
+
+      printf("About to start GUI: %s --socket %d --skin %s --qml-import %s\n",
+             path.c_str(),
+             sockets[0],
+             skin.c_str(),
+             qmlLib.c_str());
 
       child_ = ::fork();
       if (child_ == -1) {
@@ -47,9 +53,6 @@ namespace clap {
          ::close(sockets[0]);
          char socketStr[16];
          ::snprintf(socketStr, sizeof(socketStr), "%d", sockets[1]);
-         auto path = pathProvider.getGuiExecutable();
-         auto skin = pathProvider.getSkinDirectory();
-         auto qmlLib = pathProvider.getQmlLibDirectory();
          ::execl(path.c_str(),
                  path.c_str(),
                  "--socket",
