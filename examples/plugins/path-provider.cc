@@ -39,7 +39,7 @@ namespace clap {
          : srcRoot_(computeSrcRoot(pluginPath)), buildRoot_(computeBuildRoot(pluginPath)), pluginName_(pluginName) {}
 
       static std::string computeSrcRoot(const std::string &pluginPath) {
-         static const std::regex r("(/.*)/cmake-builds/.*$", std::regex::optimize);
+         static const std::regex r("(/.*)/.*build.*/.*$", std::regex::optimize);
 
          std::smatch m;
          if (!std::regex_match(pluginPath, m, r))
@@ -48,7 +48,7 @@ namespace clap {
       }
 
       static std::string computeBuildRoot(const std::string &pluginPath) {
-         static const std::regex r("(/.*/cmake-builds/.*)/examples/plugins/.*\\.clap$",
+         static const std::regex r("(/.*/.*build.*(/.*)?)/examples/plugins/.*\\.clap$",
                                    std::regex::optimize);
 
          std::smatch m;
