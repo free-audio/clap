@@ -46,7 +46,7 @@ typedef struct clap_plugin_gui {
    // Get the current size of the plugin UI, with the scaling applied.
    // clap_plugin_gui->create() must have been called prior to asking the size.
    // [main-thread]
-   bool (*size)(const clap_plugin *plugin, uint32_t *width, uint32_t *height);
+   bool (*get_size)(const clap_plugin *plugin, uint32_t *width, uint32_t *height);
 
    // [main-thread]
    bool (*can_resize)(const clap_plugin *plugin);

@@ -12,7 +12,7 @@ extern "C" {
 // in.
 typedef struct clap_plugin_event_filter {
    // Returns true if the plugin is interested in the given event type.
-   // [audio-thread]
+   // [main-thread]
    bool (*accepts)(const clap_plugin *plugin, clap_event_type event_type);
 } clap_plugin_event_filter;
 

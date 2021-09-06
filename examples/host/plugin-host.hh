@@ -15,8 +15,8 @@
 
 #include <clap/all.h>
 
-#include "engine.hh"
 #include "../common/param-queue.hh"
+#include "engine.hh"
 #include "plugin-param.hh"
 
 class Engine;
@@ -47,6 +47,7 @@ public:
    void processPitchBend(int sampleOffset, int channel, int value);
    void processCC(int sampleOffset, int channel, int cc, int value);
    void process();
+   void processEnd(int nframes);
 
    void idle();
 
@@ -104,15 +105,14 @@ private:
 
    void scanQuickControls();
    void quickControlsSetSelectedPage(clap_id pageId);
-   static void clapQuickControlsPagesChanged(const clap_host *host);
-   static void clapQuickControlsSelectedPageChanged(const clap_host *host, clap_id page_id);
+   static void clapQuickControlsChanged(const clap_host *host, clap_quick_controls_changed_flags flags);
 
    static bool
-   clapEventLoopRegisterTimer(const clap_host *host, uint32_t period_ms, clap_id *timer_id);
-   static bool clapEventLoopUnregisterTimer(const clap_host *host, clap_id timer_id);
-   static bool clapEventLoopRegisterFd(const clap_host *host, clap_fd fd, uint32_t flags);
-   static bool clapEventLoopModifyFd(const clap_host *host, clap_fd fd, uint32_t flags);
-   static bool clapEventLoopUnregisterFd(const clap_host *host, clap_fd fd);
+   clapRegisterTimer(const clap_host *host, uint32_t period_ms, clap_id *timer_id);
+   static bool clapUnregisterTimer(const clap_host *host, clap_id timer_id);
+   static bool clapRegisterFd(const clap_host *host, clap_fd fd, uint32_t flags);
+   static bool clapModifyFd(const clap_host *host, clap_fd fd, uint32_t flags);
+   static bool clapUnregisterFd(const clap_host *host, clap_fd fd);
    void eventLoopSetFdNotifierFlags(clap_fd fd, uint32_t flags);
 
    static bool clapThreadPoolRequestExec(const clap_host *host, uint32_t num_tasks);
@@ -130,15 +130,39 @@ private:
    QLibrary library_;
 
    clap_host host_;
-   clap_host_log hostLog_;
-   clap_host_gui hostGui_;
-   clap_host_audio_ports hostAudioPorts_;
-   clap_host_params hostParams_;
-   clap_host_quick_controls hostQuickControls_;
-   clap_host_event_loop hostEventLoop_;
-   clap_host_thread_check hostThreadCheck_;
-   clap_host_thread_pool hostThreadPool_;
-   clap_host_state hostState_;
+   static const constexpr clap_host_log hostLog_ = {
+      PluginHost::clapLog,
+   };
+   static const constexpr clap_host_gui hostGui_ = {
+      PluginHost::clapGuiResize,
+   };
+   //static const constexpr clap_host_audio_ports hostAudioPorts_;
+   //static const constexpr clap_host_audio_ports_config hostAudioPortsConfig_;
+   static const constexpr clap_host_params hostParams_ = {
+PluginHost::clapParamsRescan,
+   };
+   static const constexpr clap_host_quick_controls hostQuickControls_ = {
+      PluginHost::clapQuickControlsChanged,
+   };
+   static const constexpr clap_host_timer_support hostTimerSupport_ = {
+      PluginHost::clapRegisterTimer,
+      PluginHost::clapUnregisterTimer,
+   };
+   static const constexpr clap_host_fd_support hostFdSupport_ = {
+      PluginHost::clapRegisterFd,
+      PluginHost::clapModifyFd,
+      PluginHost::clapUnregisterFd,
+   };
+   static const constexpr clap_host_thread_check hostThreadCheck_ = {
+      PluginHost::clapIsMainThread,
+      PluginHost::clapIsAudioThread,
+   };
+   static const constexpr clap_host_thread_pool hostThreadPool_ = {
+      PluginHost::clapThreadPoolRequestExec,
+   };
+   static const constexpr clap_host_state hostState_ = {
+      PluginHost::clapStateMarkDirty,
+   };
 
    const struct clap_plugin_entry *pluginEntry_ = nullptr;
    const clap_plugin *plugin_ = nullptr;
@@ -150,7 +174,8 @@ private:
    const clap_plugin_gui_win32 *pluginGuiWin32_ = nullptr;
    const clap_plugin_gui_cocoa *pluginGuiCocoa_ = nullptr;
    const clap_plugin_gui_free_standing *pluginGuiFreeStanding_ = nullptr;
-   const clap_plugin_event_loop *pluginEventLoop_ = nullptr;
+   const clap_plugin_timer_support *pluginTimerSupport_ = nullptr;
+   const clap_plugin_fd_support *pluginFdSupport_ = nullptr;
    const clap_plugin_thread_pool *pluginThreadPool_ = nullptr;
    const clap_plugin_preset_load *pluginPresetLoad_ = nullptr;
    const clap_plugin_state *pluginState_ = nullptr;

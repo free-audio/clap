@@ -51,45 +51,18 @@ typedef struct clap_audio_port_info {
 
 } clap_audio_port_info;
 
-// Minimalistic description of ports configuration
-typedef struct clap_audio_ports_config {
-   clap_id id;
-   char    name[CLAP_NAME_SIZE];
-
-   // main input info
-   uint32_t   input_channel_count;
-   clap_chmap input_channel_map;
-
-   // main output info
-   uint32_t   output_channel_count;
-   clap_chmap output_channel_map;
-} clap_audio_ports_config;
-
 // The audio ports scan has to be done while the plugin is deactivated.
 typedef struct clap_plugin_audio_ports {
    // number of ports, for either input or output
    // [main-thread]
-   uint32_t (*port_count)(const clap_plugin *plugin, bool is_input);
+   uint32_t (*count)(const clap_plugin *plugin, bool is_input);
 
    // get info about about an audio port.
    // [main-thread]
-   bool (*port_info)(const clap_plugin *   plugin,
-                     uint32_t              index,
-                     bool                  is_input,
-                     clap_audio_port_info *info);
-
-   // gets the number of available configurations
-   // [main-thread]
-   uint32_t (*config_count)(const clap_plugin *plugin);
-
-   // gets information about a configuration
-   // [main-thread]
-   bool (*config_info)(const clap_plugin *plugin, uint32_t index, clap_audio_ports_config *config);
-
-   // selects the configuration designated by id
-   // returns true if the configuration could be applied
-   // [main-thread,plugin-deactivated]
-   bool (*select_config)(const clap_plugin *plugin, clap_id config_id);
+   bool (*get)(const clap_plugin *   plugin,
+               uint32_t              index,
+               bool                  is_input,
+               clap_audio_port_info *info);
 } clap_plugin_audio_ports;
 
 enum {
@@ -101,14 +74,11 @@ enum {
 
    // The ports name did change, the host can scan them right away.
    CLAP_AUDIO_PORTS_RESCAN_NAMES = 1 << 1,
-
-   // The list of configurations did change.
-   CLAP_AUDIO_PORTS_RESCAN_CONFIGS = 1 << 2,
 };
 
 typedef struct clap_host_audio_ports {
    // [main-thread]
-   uint32_t (*preferred_sample_size)(const clap_host *host);
+   uint32_t (*get_preferred_sample_size)(const clap_host *host);
 
    // Rescan the full list of audio ports according to the flags.
    // [main-thread]

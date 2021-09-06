@@ -15,7 +15,7 @@ namespace clap {
       plugin_.desc = desc;
       plugin_.init = Plugin::clapInit;
       plugin_.destroy = Plugin::clapDestroy;
-      plugin_.extension = nullptr;
+      plugin_.get_extension = nullptr;
       plugin_.process = nullptr;
       plugin_.activate = nullptr;
       plugin_.deactivate = nullptr;
@@ -35,7 +35,7 @@ namespace clap {
    bool Plugin::clapInit(const clap_plugin *plugin) noexcept {
       auto &self = from(plugin);
 
-      self.plugin_.extension = Plugin::clapExtension;
+      self.plugin_.get_extension = Plugin::clapExtension;
       self.plugin_.process = Plugin::clapProcess;
       self.plugin_.activate = Plugin::clapActivate;
       self.plugin_.deactivate = Plugin::clapDeactivate;
@@ -185,8 +185,10 @@ namespace clap {
          return &pluginNoteName_;
       if (!strcmp(id, CLAP_EXT_THREAD_POOL) && self.implementsThreadPool())
          return &pluginThreadPool_;
-      if (!strcmp(id, CLAP_EXT_EVENT_LOOP) && self.implementsEventLoop())
-         return &pluginEventLoop_;
+      if (!strcmp(id, CLAP_EXT_TIMER_SUPPORT) && self.implementsTimerSupport())
+         return &pluginTimerSupport_;
+      if (!strcmp(id, CLAP_EXT_FD_SUPPORT) && self.implementsFdSupport())
+         return &pluginFdSupport_;
       if (!strcmp(id, CLAP_EXT_GUI) && self.implementsGui())
          return &pluginGui_;
       if (!strcmp(id, CLAP_EXT_GUI_X11) && self.implementsGuiX11())
@@ -206,8 +208,8 @@ namespace clap {
       assert(!ptr);
       assert(id);
 
-      if (host_->extension)
-         ptr = static_cast<const T *>(host_->extension(host_, id));
+      if (host_->get_extension)
+         ptr = static_cast<const T *>(host_->get_extension(host_, id));
    }
 
    void Plugin::initInterfaces() noexcept {
@@ -215,7 +217,8 @@ namespace clap {
       initInterface(hostThreadCheck_, CLAP_EXT_THREAD_CHECK);
       initInterface(hostThreadPool_, CLAP_EXT_THREAD_POOL);
       initInterface(hostAudioPorts_, CLAP_EXT_AUDIO_PORTS);
-      initInterface(hostEventLoop_, CLAP_EXT_EVENT_LOOP);
+      initInterface(hostTimerSupport_, CLAP_EXT_TIMER_SUPPORT);
+      initInterface(hostFdSupport_, CLAP_EXT_FD_SUPPORT);
       initInterface(hostEventFilter_, CLAP_EXT_EVENT_FILTER);
       initInterface(hostFileReference_, CLAP_EXT_FILE_REFERENCE);
       initInterface(hostLatency_, CLAP_EXT_LATENCY);
@@ -554,7 +557,7 @@ namespace clap {
    //------------------------//
    // clap_plugin_event_loop //
    //------------------------//
-   void Plugin::clapEventLoopOnTimer(const clap_plugin *plugin, clap_id timer_id) noexcept {
+   void Plugin::clapOnTimer(const clap_plugin *plugin, clap_id timer_id) noexcept {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_event_loop.on_timer");
 
@@ -564,14 +567,14 @@ namespace clap {
          return;
       }
 
-      self.eventLoopOnTimer(timer_id);
+      self.onTimer(timer_id);
    }
 
-   void Plugin::clapEventLoopOnFd(const clap_plugin *plugin, clap_fd fd, uint32_t flags) noexcept {
+   void Plugin::clapOnFd(const clap_plugin *plugin, clap_fd fd, uint32_t flags) noexcept {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_event_loop.on_fd");
 
-      self.eventLoopOnFd(fd, flags);
+      self.onFd(fd, flags);
    }
 
    //-----------------//
@@ -857,15 +860,27 @@ namespace clap {
              hostThreadCheck_->is_main_thread;
    }
 
-   bool Plugin::canUseEventLoop() const noexcept {
-      if (!hostEventLoop_)
+   bool Plugin::canUseTimerSupport() const noexcept {
+      if (!hostTimerSupport_)
          return false;
 
-      auto &x = *hostEventLoop_;
-      if (x.modify_fd && x.register_fd && x.unregister_fd && x.register_timer && x.unregister_timer)
+      auto &x = *hostTimerSupport_;
+      if (x.register_timer && x.unregister_timer)
          return true;
 
-      hostMisbehaving("clap_event_loop is partially implemented");
+      hostMisbehaving("clap_timer_support is partially implemented");
+      return false;
+   }
+
+   bool Plugin::canUseFdSupport() const noexcept {
+      if (!hostFdSupport_)
+         return false;
+
+      auto &x = *hostFdSupport_;
+      if (x.modify_fd && x.register_fd && x.unregister_fd)
+         return true;
+
+      hostMisbehaving("clap_fd_support is partially implemented");
       return false;
    }
 

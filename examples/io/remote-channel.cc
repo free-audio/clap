@@ -95,7 +95,6 @@ namespace clap {
       if (socket_ == -1)
          return;
 
-      modifyFd(0);
       evControl_.removeFd();
 
       ::close(socket_);

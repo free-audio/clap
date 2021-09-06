@@ -11,16 +11,17 @@ extern "C" {
 #endif
 
 enum {
-   CLAP_EVENT_NOTE_ON,         // note attribute
-   CLAP_EVENT_NOTE_OFF,        // note attribute
-   CLAP_EVENT_NOTE_EXPRESSION, // note_expression attribute
-   CLAP_EVENT_CHOKE,           // no attribute
-   CLAP_EVENT_PARAM_VALUE,     // param_value attribute
-   CLAP_EVENT_PARAM_MOD,       // param_mod attribute
-   CLAP_EVENT_TRANSPORT,       // transport attribute
-   CLAP_EVENT_NOTE_MASK,       // note_mask attribute
-   CLAP_EVENT_MIDI,            // midi attribute
-   CLAP_EVENT_MIDI_SYSEX,      // midi attribute
+   CLAP_EVENT_NOTE_ON,         // press a key; note attribute
+   CLAP_EVENT_NOTE_OFF,        // release a key; note attribute
+   CLAP_EVENT_NOTE_END,        // playback of a note is terminated (sent by the plugin); note attribute
+   CLAP_EVENT_NOTE_CHOKE,      // chokes a set of notes; note attribute
+   CLAP_EVENT_NOTE_EXPRESSION, // plays standard note expression; note_expression attribute
+   CLAP_EVENT_NOTE_MASK,       // current chord/scale; note_mask attribute
+   CLAP_EVENT_PARAM_VALUE,     // sets a parameter value; param_value attribute
+   CLAP_EVENT_PARAM_MOD,       // sets a parameter modulation; param_mod attribute
+   CLAP_EVENT_TRANSPORT,       // update the transport info; transport attribute
+   CLAP_EVENT_MIDI,            // raw midi event; midi attribute
+   CLAP_EVENT_MIDI_SYSEX,      // raw midi sysex event; midi_sysex attribute
 };
 typedef int32_t clap_event_type;
 
@@ -28,7 +29,12 @@ typedef uint32_t clap_id;
 
 static const clap_id CLAP_INVALID_ID = UINT32_MAX;
 
-/** Note On/Off event. */
+/**
+ * Note on, off, end and choke events.
+ * In the case of note choke or end events:
+ * - the velocity is ignored.
+ * - key and channel are used to match active notes, a value of -1 matches all.
+ */
 typedef struct clap_event_note {
    int32_t key;      // 0..127
    int32_t channel;  // 0..15

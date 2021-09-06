@@ -134,12 +134,12 @@ namespace clap {
          remoteGui_->hide();
    }
 
-   void CorePlugin::eventLoopOnFd(clap_fd fd, uint32_t flags) noexcept {
+   void CorePlugin::onFd(clap_fd fd, uint32_t flags) noexcept {
       if (remoteGui_ && fd == remoteGui_->fd())
          remoteGui_->onFd(flags);
    }
 
-   void CorePlugin::eventLoopOnTimer(clap_id timerId) noexcept {
+   void CorePlugin::onTimer(clap_id timerId) noexcept {
       if (remoteGui_ && timerId == remoteGui_->timerId())
          remoteGui_->onTimer();
    }

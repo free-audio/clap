@@ -136,12 +136,17 @@ namespace clap {
       virtual int noteNameCount() noexcept { return 0; }
       virtual bool noteNameGet(int index, clap_note_name *noteName) noexcept { return false; }
 
+      //---------------------------//
+      // clap_plugin_timer_support //
+      //---------------------------//
+      virtual bool implementsTimerSupport() const noexcept { return false; }
+      virtual void onTimer(clap_id timerId) noexcept {}
+
       //------------------------//
-      // clap_plugin_event_loop //
+      // clap_plugin_fd_support //
       //------------------------//
-      virtual bool implementsEventLoop() const noexcept { return false; }
-      virtual void eventLoopOnTimer(clap_id timerId) noexcept {}
-      virtual void eventLoopOnFd(clap_fd fd, uint32_t flags) noexcept {}
+      virtual bool implementsFdSupport() const noexcept { return false; }
+      virtual void onFd(clap_fd fd, uint32_t flags) noexcept {}
 
       //-----------------//
       // clap_plugin_gui //
@@ -199,7 +204,8 @@ namespace clap {
       bool canUseThreadCheck() const noexcept;
       bool canUseTrackInfo() const noexcept;
       bool canUseState() const noexcept;
-      bool canUseEventLoop() const noexcept;
+      bool canUseTimerSupport() const noexcept;
+      bool canUseFdSupport() const noexcept;
       bool canUseParams() const noexcept;
       bool canUseLatency() const noexcept;
 
@@ -243,7 +249,8 @@ namespace clap {
       const clap_host_file_reference *hostFileReference_ = nullptr;
       const clap_host_latency *hostLatency_ = nullptr;
       const clap_host_gui *hostGui_ = nullptr;
-      const clap_host_event_loop *hostEventLoop_ = nullptr;
+      const clap_host_timer_support *hostTimerSupport_ = nullptr;
+      const clap_host_fd_support *hostFdSupport_ = nullptr;
       const clap_host_params *hostParams_ = nullptr;
       const clap_host_track_info *hostTrackInfo_ = nullptr;
       const clap_host_state *hostState_ = nullptr;
@@ -329,9 +336,11 @@ namespace clap {
                                   uint32_t index,
                                   clap_note_name *note_name) noexcept;
 
-      // clap_plugin_event_loop
-      static void clapEventLoopOnTimer(const clap_plugin *plugin, clap_id timer_id) noexcept;
-      static void clapEventLoopOnFd(const clap_plugin *plugin, clap_fd fd, uint32_t flags) noexcept;
+      // clap_plugin_timer_support
+      static void clapOnTimer(const clap_plugin *plugin, clap_id timer_id) noexcept;
+
+      // clap_plugin_fd_support
+      static void clapOnFd(const clap_plugin *plugin, clap_fd fd, uint32_t flags) noexcept;
 
       // clap_plugin_gui
       static bool clapGuiCreate(const clap_plugin *plugin) noexcept;
@@ -385,7 +394,10 @@ namespace clap {
 
       static const constexpr clap_plugin_audio_ports pluginAudioPorts_ = {
          clapAudioPortsCount,
-         clapAudioPortsInfo,
+         clapAudioPortsInfo
+      };
+
+      static const constexpr clap_plugin_audio_ports_config pluginAudioPortsConfig_ = {
          clapAudioPortsConfigCount,
          clapAudioPortsGetConfig,
          clapAudioPortsSetConfig,
@@ -415,9 +427,12 @@ namespace clap {
          clapNoteNameGet,
       };
 
-      static const constexpr clap_plugin_event_loop pluginEventLoop_ = {
-         clapEventLoopOnTimer,
-         clapEventLoopOnFd,
+      static const constexpr clap_plugin_timer_support pluginTimerSupport_ = {
+         clapOnTimer
+      };
+
+      static const constexpr clap_plugin_fd_support pluginFdSupport_ = {
+         clapOnFd,
       };
 
       static const constexpr clap_plugin_gui pluginGui_ = {

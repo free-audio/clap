@@ -19,28 +19,28 @@ typedef struct clap_quick_controls_page {
 
 typedef struct clap_plugin_quick_controls {
    // [main-thread]
-   uint32_t (*page_count)(const clap_plugin *plugin);
+   uint32_t (*count)(const clap_plugin *plugin);
 
    // [main-thread]
-   bool (*page_info)(const clap_plugin *       plugin,
-                     uint32_t                  page_index,
-                     clap_quick_controls_page *page);
+   bool (*get)(const clap_plugin *plugin, uint32_t page_index, clap_quick_controls_page *page);
 
    // [main-thread]
-   void (*select_page)(const clap_plugin *plugin, clap_id page_id);
+   void (*select)(const clap_plugin *plugin, clap_id page_id);
 
    // [main-thread]
-   clap_id (*selected_page)(const clap_plugin *plugin);
-} clap_host_plugin_info;
+   clap_id (*get_selected)(const clap_plugin *plugin);
+} clap_plugin_quick_controls;
+
+enum {
+   CLAP_QUICK_CONTROLS_PAGES_CHANGED = 1 << 0,
+   CLAP_QUICK_CONTROLS_SELECTED_PAGE_CHANGED = 1 << 1,
+};
+typedef uint32_t clap_quick_controls_changed_flags;
 
 typedef struct clap_host_quick_controls {
-   // Informs the host that the quick controls pages has changed.
+   // Informs the host that the quick controls have changed.
    // [main-thread]
-   void (*pages_changed)(const clap_host *host);
-
-   // Informs the host that the user did change the selected page, from the plugin.
-   // [main-thread]
-   void (*selected_page_changed)(const clap_host *host, clap_id page_id);
+   void (*changed)(const clap_host *host, clap_quick_controls_changed_flags flags);
 } clap_host_quick_controls;
 
 #ifdef __cplusplus

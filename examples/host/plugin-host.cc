@@ -29,33 +29,11 @@ PluginHost::PluginHost(Engine &engine) : QObject(&engine), engine_(engine) {
 
    host_.host_data = this;
    host_.clap_version = CLAP_VERSION;
-   host_.extension = PluginHost::clapExtension;
+   host_.get_extension = PluginHost::clapExtension;
    host_.name = "Clap Test Host";
    host_.version = "0.1.0";
    host_.vendor = "clap";
    host_.url = "https://github.com/free-audio/clap";
-
-   hostLog_.log = PluginHost::clapLog;
-
-   hostGui_.resize = PluginHost::clapGuiResize;
-
-   hostThreadCheck_.is_main_thread = PluginHost::clapIsMainThread;
-   hostThreadCheck_.is_audio_thread = PluginHost::clapIsAudioThread;
-
-   hostThreadPool_.request_exec = PluginHost::clapThreadPoolRequestExec;
-
-   hostEventLoop_.register_timer = PluginHost::clapEventLoopRegisterTimer;
-   hostEventLoop_.unregister_timer = PluginHost::clapEventLoopUnregisterTimer;
-   hostEventLoop_.register_fd = PluginHost::clapEventLoopRegisterFd;
-   hostEventLoop_.modify_fd = PluginHost::clapEventLoopModifyFd;
-   hostEventLoop_.unregister_fd = PluginHost::clapEventLoopUnregisterFd;
-
-   hostParams_.rescan = PluginHost::clapParamsRescan;
-
-   hostQuickControls_.pages_changed = PluginHost::clapQuickControlsPagesChanged;
-   hostQuickControls_.selected_page_changed = PluginHost::clapQuickControlsSelectedPageChanged;
-
-   hostState_.mark_dirty = PluginHost::clapStateMarkDirty;
 
    initThreadPool();
 }
@@ -171,7 +149,8 @@ void PluginHost::initPluginExtensions() {
    initPluginExtension(pluginGuiWin32_, CLAP_EXT_GUI_WIN32);
    initPluginExtension(pluginGuiCocoa_, CLAP_EXT_GUI_COCOA);
    initPluginExtension(pluginGuiFreeStanding_, CLAP_EXT_GUI_FREE_STANDING);
-   initPluginExtension(pluginEventLoop_, CLAP_EXT_EVENT_LOOP);
+   initPluginExtension(pluginTimerSupport_, CLAP_EXT_TIMER_SUPPORT);
+   initPluginExtension(pluginFdSupport_, CLAP_EXT_FD_SUPPORT);
    initPluginExtension(pluginThreadPool_, CLAP_EXT_THREAD_POOL);
    initPluginExtension(pluginPresetLoad_, CLAP_EXT_PRESET_LOAD);
    initPluginExtension(pluginState_, CLAP_EXT_STATE);
@@ -255,8 +234,7 @@ void PluginHost::setPorts(int numInputs, float **inputs, int numOutputs, float *
 void PluginHost::setParentWindow(WId parentWindow) {
    checkForMainThread();
 
-   if (isGuiCreated_)
-   {
+   if (isGuiCreated_) {
       pluginGui_->destroy(plugin_);
       isGuiCreated_ = false;
       isGuiVisible_ = false;
@@ -272,7 +250,7 @@ void PluginHost::setParentWindow(WId parentWindow) {
    uint32_t height = 0;
 
    if (pluginGui_)
-      pluginGui_->size(plugin_, &width, &height);
+      pluginGui_->get_size(plugin_, &width, &height);
 
 #if defined(Q_OS_LINUX)
    if (pluginGuiX11_)
@@ -301,8 +279,7 @@ void PluginHost::setPluginWindowVisibility(bool isVisible) {
    if (isVisible && !isGuiVisible_) {
       pluginGui_->show(plugin_);
       isGuiVisible_ = true;
-   } else if (!isVisible && isGuiVisible_)
-   {
+   } else if (!isVisible && isGuiVisible_) {
       pluginGui_->hide(plugin_);
       isGuiVisible_ = false;
    }
@@ -332,7 +309,7 @@ void PluginHost::initPluginExtension(const T *&ext, const char *id) {
    checkForMainThread();
 
    if (!ext)
-      ext = static_cast<const T *>(plugin_->extension(plugin_, id));
+      ext = static_cast<const T *>(plugin_->get_extension(plugin_, id));
 }
 
 const void *PluginHost::clapExtension(const clap_host *host, const char *extension) {
@@ -349,8 +326,10 @@ const void *PluginHost::clapExtension(const clap_host *host, const char *extensi
       return &h->hostLog_;
    if (!strcmp(extension, CLAP_EXT_THREAD_CHECK))
       return &h->hostThreadCheck_;
-   if (!strcmp(extension, CLAP_EXT_EVENT_LOOP))
-      return &h->hostEventLoop_;
+   if (!strcmp(extension, CLAP_EXT_TIMER_SUPPORT))
+      return &h->hostTimerSupport_;
+   if (!strcmp(extension, CLAP_EXT_FD_SUPPORT))
+      return &h->hostFdSupport_;
    if (!strcmp(extension, CLAP_EXT_PARAMS))
       return &h->hostParams_;
    if (!strcmp(extension, CLAP_EXT_QUICK_CONTROLS))
@@ -405,16 +384,15 @@ bool PluginHost::clapThreadPoolRequestExec(const clap_host *host, uint32_t num_t
    return true;
 }
 
-bool PluginHost::clapEventLoopRegisterTimer(const clap_host *host,
-                                            uint32_t period_ms,
-                                            clap_id *timer_id) {
+bool PluginHost::clapRegisterTimer(const clap_host *host, uint32_t period_ms, clap_id *timer_id) {
    checkForMainThread();
 
    auto h = fromHost(host);
    h->initPluginExtensions();
-   if (!h->pluginEventLoop_ || !h->pluginEventLoop_->on_timer)
-      throw std::logic_error("Called register_timer() without providing clap_plugin_event_loop to "
-                             "receive the timer event.");
+   if (!h->pluginTimerSupport_ || !h->pluginTimerSupport_->on_timer)
+      throw std::logic_error(
+         "Called register_timer() without providing clap_plugin_timer_support.on_timer() to "
+         "receive the timer event.");
 
    auto id = h->nextTimerId_++;
    *timer_id = id;
@@ -422,7 +400,7 @@ bool PluginHost::clapEventLoopRegisterTimer(const clap_host *host,
 
    QObject::connect(timer.get(), &QTimer::timeout, [h, id] {
       checkForMainThread();
-      h->pluginEventLoop_->on_timer(h->plugin_, id);
+      h->pluginTimerSupport_->on_timer(h->plugin_, id);
    });
 
    auto t = timer.get();
@@ -431,13 +409,13 @@ bool PluginHost::clapEventLoopRegisterTimer(const clap_host *host,
    return true;
 }
 
-bool PluginHost::clapEventLoopUnregisterTimer(const clap_host *host, clap_id timer_id) {
+bool PluginHost::clapUnregisterTimer(const clap_host *host, clap_id timer_id) {
    checkForMainThread();
 
    auto h = fromHost(host);
-   if (!h->pluginEventLoop_ || !h->pluginEventLoop_->on_timer)
+   if (!h->pluginTimerSupport_ || !h->pluginTimerSupport_->on_timer)
       throw std::logic_error(
-         "Called unregister_timer() without providing clap_plugin_event_loop to "
+         "Called unregister_timer() without providing clap_plugin_timer_support.on_timer() to "
          "receive the timer event.");
 
    auto it = h->timers_.find(timer_id);
@@ -448,13 +426,13 @@ bool PluginHost::clapEventLoopUnregisterTimer(const clap_host *host, clap_id tim
    return true;
 }
 
-bool PluginHost::clapEventLoopRegisterFd(const clap_host *host, clap_fd fd, uint32_t flags) {
+bool PluginHost::clapRegisterFd(const clap_host *host, clap_fd fd, uint32_t flags) {
    checkForMainThread();
 
    auto h = fromHost(host);
    h->initPluginExtensions();
-   if (!h->pluginEventLoop_ || !h->pluginEventLoop_->on_fd)
-      throw std::logic_error("Called register_fd() without providing clap_plugin_event_loop to "
+   if (!h->pluginFdSupport_ || !h->pluginFdSupport_->on_fd)
+      throw std::logic_error("Called register_fd() without providing clap_plugin_fd_support to "
                              "receive the fd event.");
 
    auto it = h->fds_.find(fd);
@@ -467,12 +445,12 @@ bool PluginHost::clapEventLoopRegisterFd(const clap_host *host, clap_fd fd, uint
    return true;
 }
 
-bool PluginHost::clapEventLoopModifyFd(const clap_host *host, clap_fd fd, uint32_t flags) {
+bool PluginHost::clapModifyFd(const clap_host *host, clap_fd fd, uint32_t flags) {
    checkForMainThread();
 
    auto h = fromHost(host);
-   if (!h->pluginEventLoop_ || !h->pluginEventLoop_->on_fd)
-      throw std::logic_error("Called modify_fd() without providing clap_plugin_event_loop to "
+   if (!h->pluginFdSupport_ || !h->pluginFdSupport_->on_fd)
+      throw std::logic_error("Called modify_fd() without providing clap_plugin_fd_support to "
                              "receive the timer event.");
 
    auto it = h->fds_.find(fd);
@@ -485,12 +463,12 @@ bool PluginHost::clapEventLoopModifyFd(const clap_host *host, clap_fd fd, uint32
    return true;
 }
 
-bool PluginHost::clapEventLoopUnregisterFd(const clap_host *host, clap_fd fd) {
+bool PluginHost::clapUnregisterFd(const clap_host *host, clap_fd fd) {
    checkForMainThread();
 
    auto h = fromHost(host);
-   if (!h->pluginEventLoop_ || !h->pluginEventLoop_->on_fd)
-      throw std::logic_error("Called unregister_fd() without providing clap_plugin_event_loop to "
+   if (!h->pluginFdSupport_ || !h->pluginFdSupport_->on_fd)
+      throw std::logic_error("Called unregister_fd() without providing clap_plugin_fd_support to "
                              "receive the fd event.");
 
    auto it = h->fds_.find(fd);
@@ -512,7 +490,7 @@ void PluginHost::eventLoopSetFdNotifierFlags(clap_fd fd, uint32_t flags) {
          it->second->rd.reset(new QSocketNotifier(fd, QSocketNotifier::Read));
          QObject::connect(it->second->rd.get(), &QSocketNotifier::activated, [this, fd] {
             checkForMainThread();
-            this->pluginEventLoop_->on_fd(this->plugin_, fd, CLAP_FD_READ);
+            this->pluginFdSupport_->on_fd(this->plugin_, fd, CLAP_FD_READ);
          });
       }
       it->second->rd->setEnabled(true);
@@ -524,7 +502,7 @@ void PluginHost::eventLoopSetFdNotifierFlags(clap_fd fd, uint32_t flags) {
          it->second->wr.reset(new QSocketNotifier(fd, QSocketNotifier::Write));
          QObject::connect(it->second->wr.get(), &QSocketNotifier::activated, [this, fd] {
             checkForMainThread();
-            this->pluginEventLoop_->on_fd(this->plugin_, fd, CLAP_FD_WRITE);
+            this->pluginFdSupport_->on_fd(this->plugin_, fd, CLAP_FD_WRITE);
          });
       }
       it->second->wr->setEnabled(true);
@@ -536,7 +514,7 @@ void PluginHost::eventLoopSetFdNotifierFlags(clap_fd fd, uint32_t flags) {
          it->second->err.reset(new QSocketNotifier(fd, QSocketNotifier::Exception));
          QObject::connect(it->second->err.get(), &QSocketNotifier::activated, [this, fd] {
             checkForMainThread();
-            this->pluginEventLoop_->on_fd(this->plugin_, fd, CLAP_FD_ERROR);
+            this->pluginFdSupport_->on_fd(this->plugin_, fd, CLAP_FD_ERROR);
          });
       }
       it->second->err->setEnabled(true);
@@ -552,6 +530,15 @@ bool PluginHost::clapGuiResize(const clap_host *host, uint32_t width, uint32_t h
 }
 
 void PluginHost::processBegin(int nframes) {
+   g_thread_type = AudioThread;
+
+   process_.frames_count = nframes;
+   process_.steady_time = engine_.steadyTime_;
+}
+
+void PluginHost::processEnd(int nframes) {
+   g_thread_type = Unknown;
+
    process_.frames_count = nframes;
    process_.steady_time = engine_.steadyTime_;
 }
@@ -635,7 +622,6 @@ void clap_host_event_list_push_back(const struct clap_event_list *list,
 }
 
 void PluginHost::process() {
-   g_thread_type = AudioThread;
    checkForAudioThread();
 
    if (!isPluginProcessing() && !isPluginSleeping())
@@ -807,7 +793,7 @@ void PluginHost::clapParamsRescan(const clap_host *host, uint32_t flags) {
 
    for (int32_t i = 0; i < count; ++i) {
       clap_param_info info;
-      if (!h->pluginParams_->info(h->plugin_, i, &info))
+      if (!h->pluginParams_->get_info(h->plugin_, i, &info))
          throw std::logic_error("clap_plugin_params.get_info did return false!");
 
       if (info.id == CLAP_INVALID_ID) {
@@ -914,7 +900,7 @@ void PluginHost::clapParamsRescan(const clap_host *host, uint32_t flags) {
 double PluginHost::getParamValue(const clap_param_info &info) {
    checkForMainThread();
    double value;
-   if (pluginParams_->value(plugin_, info.id, &value))
+   if (pluginParams_->get_value(plugin_, info.id, &value))
       return value;
 
    std::ostringstream msg;
@@ -929,7 +915,7 @@ void PluginHost::scanQuickControls() {
    if (!pluginQuickControls_)
       return;
 
-   if (!pluginQuickControls_->page_info || !pluginQuickControls_->page_count) {
+   if (!pluginQuickControls_->get || !pluginQuickControls_->count) {
       std::ostringstream msg;
       msg << "clap_plugin_quick_controls is partially implemented.";
       throw std::logic_error(msg.str());
@@ -938,7 +924,7 @@ void PluginHost::scanQuickControls() {
    quickControlsSetSelectedPage(CLAP_INVALID_ID);
    quickControlsPages_.clear();
 
-   const auto N = pluginQuickControls_->page_count(plugin_);
+   const auto N = pluginQuickControls_->count(plugin_);
    if (N == 0)
       return;
 
@@ -947,7 +933,7 @@ void PluginHost::scanQuickControls() {
    clap_id firstPageId = CLAP_INVALID_ID;
    for (int i = 0; i < N; ++i) {
       auto page = std::make_unique<clap_quick_controls_page>();
-      if (!pluginQuickControls_->page_info(plugin_, i, page.get())) {
+      if (!pluginQuickControls_->get(plugin_, i, page.get())) {
          std::ostringstream msg;
          msg << "clap_plugin_quick_controls.get_page(" << i << ") failed, while the page count is "
              << N;
@@ -978,7 +964,7 @@ void PluginHost::scanQuickControls() {
 
    quickControlsPagesChanged();
 
-   auto pageId = pluginQuickControls_->selected_page(plugin_);
+   auto pageId = pluginQuickControls_->get_selected(plugin_);
    quickControlsSetSelectedPage(pageId == CLAP_INVALID_ID ? firstPageId : pageId);
 }
 
@@ -1008,34 +994,29 @@ void PluginHost::setQuickControlsSelectedPageByHost(clap_id page_id) {
 
    quickControlsSelectedPage_ = page_id;
 
-   if (pluginQuickControls_ && pluginQuickControls_->select_page)
-      pluginQuickControls_->select_page(plugin_, page_id);
+   if (pluginQuickControls_ && pluginQuickControls_->select)
+      pluginQuickControls_->select(plugin_, page_id);
 }
 
-void PluginHost::clapQuickControlsPagesChanged(const clap_host *host) {
+void PluginHost::clapQuickControlsChanged(const clap_host *host,
+                                          clap_quick_controls_changed_flags flags) {
    checkForMainThread();
 
    auto h = fromHost(host);
    if (!h->pluginQuickControls_) {
       std::ostringstream msg;
-      msg << "Plugin called clap_host_quick_controls.pages_changed() but does not provide "
+      msg << "Plugin called clap_host_quick_controls.changed() but does not provide "
              "clap_plugin_quick_controls";
       throw std::logic_error(msg.str());
    }
-   h->scanQuickControls();
-}
 
-void PluginHost::clapQuickControlsSelectedPageChanged(const clap_host *host, clap_id page_id) {
-   checkForMainThread();
+   if (flags & CLAP_QUICK_CONTROLS_PAGES_CHANGED)
+      h->scanQuickControls();
 
-   auto h = fromHost(host);
-   if (!h->pluginQuickControls_) {
-      std::ostringstream msg;
-      msg << "Plugin called clap_host_quick_controls.selected_page_changed() but does not provide "
-             "clap_plugin_quick_controls";
-      throw std::logic_error(msg.str());
+   if (flags & CLAP_QUICK_CONTROLS_SELECTED_PAGE_CHANGED) {
+      auto selectedPageId = h->pluginQuickControls_->get_selected(h->plugin_);
+      h->quickControlsSetSelectedPage(selectedPageId);
    }
-   h->quickControlsSetSelectedPage(page_id);
 }
 
 bool PluginHost::loadNativePluginPreset(const std::string &path) {
@@ -1085,7 +1066,8 @@ void PluginHost::setPluginState(PluginState state) {
       break;
 
    case ActiveAndReadyToDeactivate:
-      Q_ASSERT(state_ == ActiveAndProcessing || state_ == ActiveAndSleeping || state_ == ActiveWithError);
+      Q_ASSERT(state_ == ActiveAndProcessing || state_ == ActiveAndSleeping ||
+               state_ == ActiveWithError);
       break;
 
    default:

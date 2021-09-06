@@ -108,7 +108,7 @@ typedef struct clap_host {
 
    // Query an extension.
    // [thread-safe]
-   const void *(*extension)(const struct clap_host *host, const char *extension_id);
+   const void *(*get_extension)(const struct clap_host *host, const char *extension_id);
 
    // Request the host to deactivate and then reactivate the plugin.
    // The operation may be delayed by the host.
@@ -199,9 +199,10 @@ typedef struct clap_plugin {
     * [audio-thread] */
    clap_process_status (*process)(const struct clap_plugin *plugin, const clap_process *process);
 
-   /* query an extension
+   /* Query an extension.
+    * The returned pointer is owned by the plugin.
     * [thread-safe] */
-   const void *(*extension)(const struct clap_plugin *plugin, const char *id);
+   const void *(*get_extension)(const struct clap_plugin *plugin, const char *id);
 } clap_plugin;
 
 /////////////////

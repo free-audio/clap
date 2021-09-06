@@ -22,6 +22,9 @@ namespace clap {
       assert(child_ == -1);
       assert(!channel_);
 
+      if (!plugin_.canUseTimerSupport() || !plugin_.canUseFdSupport())
+         return false;
+
       auto &pathProvider = plugin_.pathProvider();
 
 #ifdef __unix__
@@ -70,8 +73,8 @@ namespace clap {
       }
 
       timerId_ = CLAP_INVALID_ID;
-      plugin_.hostEventLoop_->register_timer(plugin_.host_, 1000 / 60, &timerId_);
-      plugin_.hostEventLoop_->register_fd(plugin_.host_, sockets[0], CLAP_FD_READ | CLAP_FD_ERROR);
+      plugin_.hostTimerSupport_->register_timer(plugin_.host_, 1000 / 60, &timerId_);
+      plugin_.hostFdSupport_->register_fd(plugin_.host_, sockets[0], CLAP_FD_READ | CLAP_FD_ERROR);
       channel_.reset(new RemoteChannel(
          [this](const RemoteChannel::Message &msg) { onMessage(msg); }, *this, sockets[0], true));
 
@@ -82,12 +85,12 @@ namespace clap {
    }
 
    void RemoteGui::modifyFd(clap_fd_flags flags) {
-      plugin_.hostEventLoop_->modify_fd(plugin_.host_, channel_->fd(), flags);
+      plugin_.hostFdSupport_->modify_fd(plugin_.host_, channel_->fd(), flags);
    }
 
    void RemoteGui::removeFd() {
-      plugin_.hostEventLoop_->unregister_fd(plugin_.host_, channel_->fd());
-      plugin_.hostEventLoop_->unregister_timer(plugin_.host_, timerId_);
+      plugin_.hostFdSupport_->unregister_fd(plugin_.host_, channel_->fd());
+      plugin_.hostTimerSupport_->unregister_timer(plugin_.host_, timerId_);
    }
 
    clap_fd RemoteGui::fd() const { return channel_ ? channel_->fd() : -1; }

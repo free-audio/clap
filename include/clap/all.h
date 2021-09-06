@@ -3,6 +3,7 @@
 #include "clap.h"
 
 #include "ext/audio-ports.h"
+#include "ext/audio-ports-config.h"
 #include "ext/gui.h"
 #include "ext/gui-x11.h"
 #include "ext/gui-win32.h"
@@ -14,7 +15,8 @@
 #include "ext/state.h"
 #include "ext/latency.h"
 #include "ext/thread-check.h"
-#include "ext/event-loop.h"
+#include "ext/timer-support.h"
+#include "ext/fd-support.h"
 #include "ext/note-name.h"
 #include "ext/event-filter.h"
 

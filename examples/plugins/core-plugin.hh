@@ -138,12 +138,17 @@ namespace clap {
          return hasTrackInfo_ ? trackInfo_.channel_map : CLAP_CHMAP_STEREO;
       }
 
+      //---------------------------//
+      // clap_plugin_timer_support //
+      //---------------------------//
+      bool implementsTimerSupport() const noexcept override { return true; }
+      void onTimer(clap_id timerId) noexcept override;
+
       //------------------------//
-      // clap_plugin_event_loop //
+      // clap_plugin_fd_support //
       //------------------------//
-      bool implementsEventLoop() const noexcept override { return true; }
-      void eventLoopOnFd(clap_fd fd, uint32_t flags) noexcept override;
-      void eventLoopOnTimer(clap_id timerId) noexcept override;
+      bool implementsFdSupport() const noexcept override { return true; }
+      void onFd(clap_fd fd, uint32_t flags) noexcept override;
 
    protected:
       friend class RemoteGui;

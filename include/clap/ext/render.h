@@ -24,7 +24,7 @@ typedef int32_t clap_plugin_render_mode;
 // implement this extension.
 typedef struct clap_plugin_render {
    // [main-thread]
-   void (*set_mode)(const clap_plugin *plugin, clap_plugin_render_mode mode);
+   void (*set)(const clap_plugin *plugin, clap_plugin_render_mode mode);
 } clap_plugin_render;
 
 #ifdef __cplusplus
