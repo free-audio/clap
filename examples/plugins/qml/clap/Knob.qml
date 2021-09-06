@@ -1,72 +1,115 @@
 import QtQuick 2.1
-import QtQuick.Controls 2.1
 
-Item {
+Canvas {
     property QtObject param
     property int size: 20
+    property string backgroundColor: "#222222";
+    property string valueColor: "#ffffff";
+    property string modulationColor: "#3344ff"
+
     id: knob
     width: size
     height: size
 
-    Rectangle {
-        width: knob.size
-        height: knob.size
-        radius: knob.size / 2
-        color: "#332277"
+    property real lastY: 0
 
-        MouseArea {
-            anchors.fill: parent
-            drag.axis: Drag.YAxis
-            property real lastY: 0
-            onPressed: (mouse) => {
-                if (mouse.button === Qt.LeftButton) {
-                    lastY = mouse.y;
-                    knob.param.isAdjusting = true
-                }
-            }
-            onReleased: (mouse) => {
-                if (mouse.button === Qt.LeftButton) {
-                    knob.param.isAdjusting = false
-                }
-            }
-            onPositionChanged: (mouse) => {
-                if (!(mouse.buttons & Qt.LeftButton))
-                    return;
-                knob.param.normalizedValue += ((mouse.modifiers & Qt.ShiftModifier) ? 0.001 : 0.01) * (mouse.y - lastY);
-                lastY = mouse.y;
-            }
+    Connections {
+        target: param
+        function onValueChanged() {
+            knob.requestPaint();
+        }
+
+        function onModulationChanged() {
+            knob.requestPaint();
         }
     }
 
-    Item {
-        Rectangle {
-            x: knob.size / 2 - knob.size / 40
-            y: knob.size / 20
-            height: knob.size / 10
-            width: knob.size / 20
-            radius: knob.size / 40
-            color: "#2282ff"
-        }
-
-        transform: Rotation {
-            angle: knob.param.normalizedModulation * 270 - 135
-            origin.x: knob.size / 2
-            origin.y: knob.size / 2
-        }
+    MouseArea {
+        anchors.fill: parent
+        drag.axis: Drag.YAxis
+        property real lastY: 0
+        onPressed: (mouse) => {
+                       if (mouse.button === Qt.LeftButton) {
+                           lastY = mouse.y;
+                           knob.param.isAdjusting = true;
+                       }
+                   }
+        onReleased: (mouse) => {
+                        if (mouse.button === Qt.LeftButton) {
+                            knob.param.isAdjusting = false;
+                        }
+                    }
+        onPositionChanged: (mouse) => {
+                               if (!(mouse.buttons & Qt.LeftButton))
+                               return;
+                               knob.param.normalizedValue += ((mouse.modifiers & Qt.ShiftModifier) ? 0.001 : 0.01) * (lastY - mouse.y);
+                               lastY = mouse.y;
+                               knob.requestPaint();
+                           }
+        onDoubleClicked: (mouse) => {
+                             if (!(mouse.buttons & Qt.LeftButton))
+                             return;
+                             knob.param.value = knob.param.defaultValue;
+                         }
     }
 
-    Rectangle {
-        x: knob.size / 2 - knob.size / 20
-        y: knob.size / 20
-        height: knob.size / 10
-        width: knob.size / 10
-        radius: knob.size / 40
-        color: "#dd82ff"
+    onPaint: {
+        var ctx = getContext("2d");
+
+        drawBackground(ctx);
+        drawModulation(ctx);
+        drawValue(ctx);
     }
 
-    transform: Rotation {
-        angle: knob.param.normalizedValue * 270 - 135
-        origin.x: knob.size / 2
-        origin.y: knob.size / 2
+    function drawBackground(ctx) {
+        ctx.save()
+
+        ctx.fillStyle = backgroundColor;
+        ctx.strokeStyle = "black";
+
+        ctx.beginPath();
+        ctx.arc(size / 2, size / 2, size / 2, 0, 2 * Math.PI, false);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.restore()
+    }
+
+    function drawModulation(ctx) {
+        var radius = size / 15;
+
+        ctx.save();
+
+        ctx.translate(size / 2, size / 2);
+
+        ctx.fillStyle = modulationColor;
+        ctx.strokeStyle = "black";
+
+        ctx.beginPath();
+        ctx.rotate((param.normalizedModulation - .5) * Math.PI * 4 / 3);
+        ctx.arc(0, -size / 2 + 2 * radius, radius, 0, 2 * Math.PI, false);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+    function drawValue(ctx) {
+        var radius = size / 15;
+
+        ctx.save();
+
+        ctx.translate(size / 2, size / 2);
+
+        ctx.fillStyle = valueColor;
+        ctx.strokeStyle = "black";
+
+        ctx.beginPath();
+        ctx.rotate((param.normalizedValue - .5) * Math.PI * 4 / 3);
+        ctx.arc(0, -size / 2 + 2 * radius, radius, 0, 2 * Math.PI, false);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.restore();
     }
 }

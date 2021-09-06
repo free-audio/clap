@@ -15,6 +15,9 @@ Application::Application(int &argc, char **argv)
    while (waitForDebbugger)
       ;
 
+   qmlRegisterType<ParameterProxy>("org.clap", 1, 0, "ParameterProxy");
+   qmlRegisterType<PluginProxy>("org.clap", 1, 0, "PluginProxy");
+
    QCommandLineParser parser;
 
    QCommandLineOption skinOpt("skin", tr("path to the skin directory"), tr("path"));
