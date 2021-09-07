@@ -445,7 +445,16 @@ namespace clap {
          return false;
       }
 
-      // TODO: extra checks
+      if (!display) {
+         self.hostMisbehaving("clap_plugin_params.value_to_text called with a null display pointer");
+         return false;
+      }
+
+      if (size <= 1) {
+         self.hostMisbehaving("clap_plugin_params.value_to_text called with a empty buffer (less than one character)");
+         return false;
+      }
+
       return self.paramsValueToText(param_id, value, display, size);
    }
 
@@ -463,7 +472,16 @@ namespace clap {
          return false;
       }
 
-      // TODO: extra checks
+      if (!display) {
+         self.hostMisbehaving("clap_plugin_params.text_to_value called with a null display pointer");
+         return false;
+      }
+
+      if (!value) {
+         self.hostMisbehaving("clap_plugin_params.text_to_value called with a null value pointer");
+         return false;
+      }
+
       return self.paramsTextToValue(param_id, display, value);
    }
 
