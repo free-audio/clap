@@ -15,6 +15,7 @@ Canvas {
 
    Connections {
       target: param
+
       function onValueChanged() {
          knob.requestPaint();
       }
