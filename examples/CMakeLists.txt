@@ -11,7 +11,6 @@ endif()
 if(ENABLE_CLAP_GUI OR ENABLE_CLAP_PLUGINS)
   add_subdirectory(io)
   add_subdirectory(gui)
-  #add_subdirectory(gui-proxy)
 endif()
 
 if(ENABLE_CLAP_PLUGINS)
