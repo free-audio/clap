@@ -30,14 +30,14 @@ private:
    void recreatePluginWindow();
    void scalePluginWindow();
 
-   Application &   application_;
-   SettingsDialog *settingsDialog_ = nullptr;
-   QWindow *       pluginViewWindow_ = nullptr;
-   QWidget *       pluginViewWidget_ = nullptr;
+   Application &   _application;
+   SettingsDialog *_settingsDialog = nullptr;
+   QWindow *       _pluginViewWindow = nullptr;
+   QWidget *       _pluginViewWidget = nullptr;
 
-   QMainWindow *           pluginParametersWindow_ = nullptr;
-   PluginParametersWidget *pluginParametersWidget_ = nullptr;
+   QMainWindow *           _pluginParametersWindow = nullptr;
+   PluginParametersWidget *_pluginParametersWidget = nullptr;
 
-   QMainWindow *              pluginQuickControlsWindow_ = nullptr;
-   PluginQuickControlsWidget *pluginQuickControlsWidget_ = nullptr;
+   QMainWindow *              _pluginQuickControlsWindow = nullptr;
+   PluginQuickControlsWidget *_pluginQuickControlsWidget = nullptr;
 };

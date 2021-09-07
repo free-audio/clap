@@ -13,17 +13,17 @@ namespace clap {
                                 EventControl &evControl,
                                 int socket,
                                 bool cookieHalf)
-      : cookieHalf_(cookieHalf), handler_(handler), evControl_(evControl), socket_(socket) {
+      : _cookieHalf(cookieHalf), _handler(handler), _evControl(evControl), _socket(socket) {
 #ifdef __unix__
-      int flags = ::fcntl(socket_, F_GETFL);
-      ::fcntl(socket_, F_SETFL, flags | O_NONBLOCK);
+      int flags = ::fcntl(_socket, F_GETFL);
+      ::fcntl(_socket, F_SETFL, flags | O_NONBLOCK);
 #endif
    }
 
    RemoteChannel::~RemoteChannel() { close(); }
 
    void RemoteChannel::onRead() {
-      ssize_t nbytes = ::read(socket_, inputBuffer_.writePtr(), inputBuffer_.writeAvail());
+      ssize_t nbytes = ::read(_socket, _inputBuffer.writePtr(), _inputBuffer.writeAvail());
       if (nbytes < 0) {
          if (errno == EWOULDBLOCK || errno == EAGAIN || errno == EINTR)
             return;
@@ -35,9 +35,9 @@ namespace clap {
       if (nbytes == 0)
          return;
 
-      inputBuffer_.wrote(nbytes);
+      _inputBuffer.wrote(nbytes);
       processInput();
-      inputBuffer_.rewind();
+      _inputBuffer.rewind();
    }
 
    void RemoteChannel::write(const void *_data, size_t size) {
@@ -51,25 +51,25 @@ namespace clap {
    }
 
    RemoteChannel::WriteBuffer &RemoteChannel::nextWriteBuffer() {
-      if (outputBuffers_.empty()) {
-         outputBuffers_.emplace();
-         return outputBuffers_.back();
+      if (_outputBuffers.empty()) {
+         _outputBuffers.emplace();
+         return _outputBuffers.back();
       }
 
-      auto &buffer = outputBuffers_.back();
+      auto &buffer = _outputBuffers.back();
       if (buffer.writeAvail() > 0)
          return buffer;
 
-      outputBuffers_.emplace();
-      return outputBuffers_.back();
+      _outputBuffers.emplace();
+      return _outputBuffers.back();
    }
 
    void RemoteChannel::onWrite() {
-      while (!outputBuffers_.empty()) {
-         auto &buffer = outputBuffers_.front();
+      while (!_outputBuffers.empty()) {
+         auto &buffer = _outputBuffers.front();
 
          for (auto avail = buffer.readAvail(); avail > 0; avail = buffer.readAvail()) {
-            auto nbytes = ::write(socket_, buffer.readPtr(), avail);
+            auto nbytes = ::write(_socket, buffer.readPtr(), avail);
             if (nbytes == -1) {
                if (errno == EWOULDBLOCK || errno == EAGAIN || errno == EINTR) {
                   modifyFd(CLAP_FD_READ | CLAP_FD_WRITE);
@@ -83,7 +83,7 @@ namespace clap {
             buffer.read(nbytes);
          }
 
-         outputBuffers_.pop();
+         _outputBuffers.pop();
       }
 
       modifyFd(CLAP_FD_READ);
@@ -92,29 +92,29 @@ namespace clap {
    void RemoteChannel::onError() { close(); }
 
    void RemoteChannel::close() {
-      if (socket_ == -1)
+      if (_socket == -1)
          return;
 
-      evControl_.removeFd();
+      _evControl.removeFd();
 
-      ::close(socket_);
-      socket_ = -1;
+      ::close(_socket);
+      _socket = -1;
    }
 
    uint32_t RemoteChannel::computeNextCookie() noexcept {
-      uint32_t cookie = nextCookie_;
-      if (cookieHalf_)
+      uint32_t cookie = _nextCookie;
+      if (_cookieHalf)
          cookie |= (1ULL << 31);
       else
          cookie &= ~(1ULL << 31);
 
-      ++nextCookie_; // overflow is fine
+      ++_nextCookie; // overflow is fine
       return cookie;
    }
 
    void RemoteChannel::processInput() {
-      while (inputBuffer_.readAvail() >= 12) {
-         const auto *data = inputBuffer_.readPtr();
+      while (_inputBuffer.readAvail() >= 12) {
+         const auto *data = _inputBuffer.readPtr();
          Message msg;
 
          std::memcpy(&msg.type, data, 4);
@@ -123,18 +123,18 @@ namespace clap {
          msg.data = data + 12;
 
          uint32_t totalSize = 12 + msg.size;
-         if (inputBuffer_.readAvail() < totalSize)
+         if (_inputBuffer.readAvail() < totalSize)
             return;
 
-         auto it = syncHandlers_.find(msg.cookie);
-         if (it != syncHandlers_.end()) {
+         auto it = _syncHandlers.find(msg.cookie);
+         if (it != _syncHandlers.end()) {
             it->second(msg);
-            syncHandlers_.erase(it);
+            _syncHandlers.erase(it);
          } else {
-            handler_(msg);
+            _handler(msg);
          }
 
-         inputBuffer_.read(totalSize);
+         _inputBuffer.read(totalSize);
       }
    }
 
@@ -150,21 +150,21 @@ namespace clap {
    bool RemoteChannel::sendMessageSync(const Message &msg, const MessageHandler &handler) {
       sendMessageAsync(msg);
 
-      syncHandlers_.emplace(msg.cookie, handler);
+      _syncHandlers.emplace(msg.cookie, handler);
 
-      while (syncHandlers_.count(msg.cookie) > 0)
+      while (_syncHandlers.count(msg.cookie) > 0)
          runOnce();
 
-      syncHandlers_.erase(msg.cookie);
+      _syncHandlers.erase(msg.cookie);
       return true;
    }
 
    void RemoteChannel::modifyFd(clap_fd_flags flags) {
-      if (flags == ioFlags_)
+      if (flags == _ioFlags)
          return;
 
-      ioFlags_ = flags;
-      evControl_.modifyFd(flags);
+      _ioFlags = flags;
+      _evControl.modifyFd(flags);
    }
 
    void RemoteChannel::runOnce() {
@@ -173,8 +173,8 @@ namespace clap {
 
 #ifdef __unix__
       pollfd pfd;
-      pfd.fd = socket_;
-      pfd.events = POLLIN | (ioFlags_ & CLAP_FD_WRITE ? POLLOUT : 0);
+      pfd.fd = _socket;
+      pfd.events = POLLIN | (_ioFlags & CLAP_FD_WRITE ? POLLOUT : 0);
       pfd.revents = 0;
 
       int ret = ::poll(&pfd, 1, -1);

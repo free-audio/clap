@@ -19,5 +19,5 @@ public:
    Q_INVOKABLE QString toString() const;
 
 private:
-   std::unordered_map<clap_id, ParameterProxy *> parameters_;
+   std::unordered_map<clap_id, ParameterProxy *> _parameters;
 };

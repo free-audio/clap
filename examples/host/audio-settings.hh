@@ -11,17 +11,17 @@ public:
    void load(QSettings &settings);
    void save(QSettings &settings) const;
 
-   int  sampleRate() const { return sampleRate_; }
-   void setSampleRate(int sampleRate) { sampleRate_ = sampleRate; }
+   int  sampleRate() const { return _sampleRate; }
+   void setSampleRate(int sampleRate) { _sampleRate = sampleRate; }
 
-   void                   setDeviceReference(DeviceReference dr) { deviceReference_ = dr; }
-   const DeviceReference &deviceReference() const { return deviceReference_; }
+   void                   setDeviceReference(DeviceReference dr) { _deviceReference = dr; }
+   const DeviceReference &deviceReference() const { return _deviceReference; }
 
-   int  bufferSize() const { return bufferSize_; }
-   void setBufferSize(int bufferSize) { bufferSize_ = bufferSize; }
+   int  bufferSize() const { return _bufferSize; }
+   void setBufferSize(int bufferSize) { _bufferSize = bufferSize; }
 
 private:
-   DeviceReference deviceReference_;
-   int             sampleRate_ = 44100;
-   int             bufferSize_ = 128;
+   DeviceReference _deviceReference;
+   int             _sampleRate = 44100;
+   int             _bufferSize = 128;
 };

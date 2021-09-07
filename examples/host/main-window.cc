@@ -19,30 +19,30 @@
 #include "settings.hh"
 
 MainWindow::MainWindow(Application &app)
-   : QMainWindow(nullptr), application_(app),
-     settingsDialog_(new SettingsDialog(application_.settings(), this)),
-     pluginViewWindow_(new QWindow()),
-     pluginViewWidget_(QWidget::createWindowContainer(pluginViewWindow_)) {
+   : QMainWindow(nullptr), _application(app),
+     _settingsDialog(new SettingsDialog(_application.settings(), this)),
+     _pluginViewWindow(new QWindow()),
+     _pluginViewWidget(QWidget::createWindowContainer(_pluginViewWindow)) {
 
    createMenu();
 
-   setCentralWidget(pluginViewWidget_);
-   pluginViewWidget_->show();
-   pluginViewWidget_->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+   setCentralWidget(_pluginViewWidget);
+   _pluginViewWidget->show();
+   _pluginViewWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
    setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 
-   connect(settingsDialog_, SIGNAL(accepted()), &application_, SLOT(restartEngine()));
+   connect(_settingsDialog, SIGNAL(accepted()), &_application, SLOT(restartEngine()));
 
    auto &pluginHost = app.engine()->pluginHost();
 
-   pluginParametersWindow_ = new QMainWindow(this);
-   pluginParametersWidget_ = new PluginParametersWidget(pluginParametersWindow_, pluginHost);
-   pluginParametersWindow_->setCentralWidget(pluginParametersWidget_);
+   _pluginParametersWindow = new QMainWindow(this);
+   _pluginParametersWidget = new PluginParametersWidget(_pluginParametersWindow, pluginHost);
+   _pluginParametersWindow->setCentralWidget(_pluginParametersWidget);
 
-   pluginQuickControlsWindow_ = new QMainWindow(this);
-   pluginQuickControlsWidget_ =
-      new PluginQuickControlsWidget(pluginQuickControlsWindow_, pluginHost);
-   pluginQuickControlsWindow_->setCentralWidget(pluginQuickControlsWidget_);
+   _pluginQuickControlsWindow = new QMainWindow(this);
+   _pluginQuickControlsWidget =
+      new PluginQuickControlsWidget(_pluginQuickControlsWindow, pluginHost);
+   _pluginQuickControlsWindow->setCentralWidget(_pluginQuickControlsWidget);
 }
 
 MainWindow::~MainWindow() {}
@@ -97,20 +97,20 @@ void MainWindow::createMenu() {
 }
 
 void MainWindow::showSettingsDialog() {
-   int result = settingsDialog_->exec();
+   int result = _settingsDialog->exec();
    if (result == QDialog::Accepted)
-      application_.restartEngine();
+      _application.restartEngine();
 }
 
-void MainWindow::showPluginParametersWindow() { pluginParametersWindow_->show(); }
-void MainWindow::showPluginQuickControlsWindow() { pluginQuickControlsWindow_->show(); }
+void MainWindow::showPluginParametersWindow() { _pluginParametersWindow->show(); }
+void MainWindow::showPluginQuickControlsWindow() { _pluginQuickControlsWindow->show(); }
 
-WId MainWindow::getEmbedWindowId() { return pluginViewWidget_->winId(); }
+WId MainWindow::getEmbedWindowId() { return _pluginViewWidget->winId(); }
 
 void MainWindow::resizePluginView(int width, int height) {
-   pluginViewWidget_->setMinimumSize(width, height);
-   pluginViewWidget_->setMaximumSize(width, height);
-   pluginViewWidget_->show();
+   _pluginViewWidget->setMinimumSize(width, height);
+   _pluginViewWidget->setMaximumSize(width, height);
+   _pluginViewWidget->show();
    adjustSize();
 }
 
@@ -120,19 +120,19 @@ void MainWindow::loadNativePluginPreset()
    if (file.isEmpty())
       return;
 
-   application_.engine()->pluginHost().loadNativePluginPreset(file.toStdString());
+   _application.engine()->pluginHost().loadNativePluginPreset(file.toStdString());
 }
 
 void MainWindow::togglePluginWindowVisibility()
 {
-   bool isVisible = !pluginViewWidget_->isVisible();
-   pluginViewWidget_->setVisible(isVisible);
-   application_.engine()->pluginHost().setPluginWindowVisibility(isVisible);
+   bool isVisible = !_pluginViewWidget->isVisible();
+   _pluginViewWidget->setVisible(isVisible);
+   _application.engine()->pluginHost().setPluginWindowVisibility(isVisible);
 }
 
 void MainWindow::recreatePluginWindow()
 {
-   application_.engine()->pluginHost().setParentWindow(getEmbedWindowId());
+   _application.engine()->pluginHost().setParentWindow(getEmbedWindowId());
 }
 
 void MainWindow::scalePluginWindow()

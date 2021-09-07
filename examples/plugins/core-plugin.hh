@@ -17,7 +17,7 @@ namespace clap {
                  const clap_plugin_descriptor *desc,
                  const clap_host *host);
 
-      const PathProvider &pathProvider() const noexcept { return *pathProvider_; }
+      const PathProvider &pathProvider() const noexcept { return *_pathProvider; }
 
    protected:
       //-------------//
@@ -50,15 +50,15 @@ namespace clap {
       //--------------------//
       bool implementsParams() const noexcept override { return true; }
 
-      uint32_t paramsCount() const noexcept override { return parameters_.count(); }
+      uint32_t paramsCount() const noexcept override { return _parameters.count(); }
 
       bool paramsInfo(int32_t paramIndex, clap_param_info *info) const noexcept override {
-         *info = parameters_.getByIndex(paramIndex)->info();
+         *info = _parameters.getByIndex(paramIndex)->info();
          return true;
       }
 
       virtual bool paramsValue(clap_id paramId, double *value) noexcept override {
-         *value = parameters_.getById(paramId)->value();
+         *value = _parameters.getById(paramId)->value();
          return true;
       }
 
@@ -126,16 +126,16 @@ namespace clap {
       //////////////////////
       // Cached Host Info //
       //////////////////////
-      bool hasTrackInfo() const noexcept { return hasTrackInfo_; }
+      bool hasTrackInfo() const noexcept { return _hasTrackInfo; }
       const clap_track_info &trackInfo() const noexcept {
-         assert(hasTrackInfo_);
-         return trackInfo_;
+         assert(_hasTrackInfo);
+         return _trackInfo;
       }
       uint32_t trackChannelCount() const noexcept {
-         return hasTrackInfo_ ? trackInfo_.channel_count : 2;
+         return _hasTrackInfo ? _trackInfo.channel_count : 2;
       }
       clap_chmap trackChannelMap() const noexcept {
-         return hasTrackInfo_ ? trackInfo_.channel_map : CLAP_CHMAP_STEREO;
+         return _hasTrackInfo ? _trackInfo.channel_map : CLAP_CHMAP_STEREO;
       }
 
       //---------------------------//
@@ -168,22 +168,22 @@ namespace clap {
          double mod;
       };
 
-      ParamQueue<GuiToPluginValue> guiToPluginQueue_;
-      ParamQueue<PluginToGuiValue> pluginToGuiQueue_;
+      ParamQueue<GuiToPluginValue> _guiToPluginQueue;
+      ParamQueue<PluginToGuiValue> _pluginToGuiQueue;
 
-      std::unique_ptr<PathProvider> pathProvider_;
+      std::unique_ptr<PathProvider> _pathProvider;
 
-      bool hasTrackInfo_ = false;
-      clap_track_info trackInfo_;
+      bool _hasTrackInfo = false;
+      clap_track_info _trackInfo;
 
-      std::vector<clap_audio_port_info> audioInputs_;
-      std::vector<clap_audio_port_info> audioOutputs_;
-      std::vector<clap_audio_ports_config> audioConfigs_;
+      std::vector<clap_audio_port_info> _audioInputs;
+      std::vector<clap_audio_port_info> _audioOutputs;
+      std::vector<clap_audio_ports_config> _audioConfigs;
 
-      std::unique_ptr<RemoteGui> remoteGui_;
+      std::unique_ptr<RemoteGui> _remoteGui;
 
-      Parameters parameters_;
+      Parameters _parameters;
 
-      static const constexpr uint32_t paramSmoothingDuration_ = 64;
+      static const constexpr uint32_t _paramSmoothingDuration = 64;
    };
 } // namespace clap

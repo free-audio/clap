@@ -14,14 +14,14 @@ class PluginParam : public QObject {
 public:
    PluginParam(PluginHost &pluginHost, const clap_param_info &info, double value);
 
-   double value() const { return value_; }
+   double value() const { return _value; }
    void setValue(double v);
 
-   double modulation() const { return modulation_; }
+   double modulation() const { return _modulation; }
    void setModulation(double v);
 
    double modulatedValue() const {
-      return std::min(info_.max_value, std::max(info_.min_value, value_ + modulation_));
+      return std::min(_info.max_value, std::max(_info.min_value, _value + _modulation));
    }
 
    bool isValueValid(const double v) const;
@@ -29,21 +29,21 @@ public:
    void printShortInfo(std::ostream &os) const;
    void printInfo(std::ostream &os) const;
 
-   void setInfo(const clap_param_info &info) noexcept { info_ = info; }
+   void setInfo(const clap_param_info &info) noexcept { _info = info; }
    bool isInfoEqualTo(const clap_param_info &info) const;
    bool isInfoCriticallyDifferentTo(const clap_param_info &info) const;
-   clap_param_info &info() noexcept { return info_; }
-   const clap_param_info &info() const noexcept { return info_; }
+   clap_param_info &info() noexcept { return _info; }
+   const clap_param_info &info() const noexcept { return _info; }
 
-   bool isBeingAdjusted() const noexcept { return is_being_adjusted_; }
+   bool isBeingAdjusted() const noexcept { return _isBeingAdjusted; }
    void beginAdjust() {
-      Q_ASSERT(!is_being_adjusted_);
-      is_being_adjusted_ = true;
+      Q_ASSERT(!_isBeingAdjusted);
+      _isBeingAdjusted = true;
       isBeingAdjustedChanged();
    }
    void endAdjust() {
-      Q_ASSERT(is_being_adjusted_);
-      is_being_adjusted_ = false;
+      Q_ASSERT(_isBeingAdjusted);
+      _isBeingAdjusted = false;
       isBeingAdjustedChanged();
    }
 
@@ -54,9 +54,9 @@ signals:
    void modulatedValueChanged();
 
 private:
-   bool is_being_adjusted_ = false;
-   clap_param_info info_;
-   double value_ = 0;
-   double modulation_ = 0;
-   std::unordered_map<int64_t, std::string> enum_entries_;
+   bool _isBeingAdjusted = false;
+   clap_param_info _info;
+   double _value = 0;
+   double _modulation = 0;
+   std::unordered_map<int64_t, std::string> _enumEntries;
 };

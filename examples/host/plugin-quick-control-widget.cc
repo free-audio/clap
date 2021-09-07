@@ -8,44 +8,44 @@
 
 PluginQuickControlWidget::PluginQuickControlWidget(QWidget *parent, PluginHost &pluginHost)
    : QWidget(parent), pluginHost_(pluginHost) {
-   dial_ = new QDial(this);
-   label_ = new QLabel(this);
+   _dial = new QDial(this);
+   _label = new QLabel(this);
 
    auto layout = new QVBoxLayout(this);
-   layout->addWidget(dial_);
-   layout->addWidget(label_);
+   layout->addWidget(_dial);
+   layout->addWidget(_label);
    setLayout(layout);
 
    setPluginParam(nullptr);
 }
 
 void PluginQuickControlWidget::setPluginParam(PluginParam *param) {
-   if (param_ == param)
+   if (_param == param)
       return;
 
-   if (param_)
+   if (_param)
       disconnectFromParam();
 
-   Q_ASSERT(!param_);
+   Q_ASSERT(!_param);
 
    connectToParam(param);
 }
 
 void PluginQuickControlWidget::connectToParam(PluginParam *param) {
-   Q_ASSERT(!param_);
+   Q_ASSERT(!_param);
 
-   param_ = param;
-   connect(param_, &PluginParam::infoChanged, this, &PluginQuickControlWidget::paramInfoChanged);
-   connect(param_, &PluginParam::valueChanged, this, &PluginQuickControlWidget::paramValueChanged);
+   _param = param;
+   connect(_param, &PluginParam::infoChanged, this, &PluginQuickControlWidget::paramInfoChanged);
+   connect(_param, &PluginParam::valueChanged, this, &PluginQuickControlWidget::paramValueChanged);
    updateAll();
 }
 
 void PluginQuickControlWidget::disconnectFromParam() {
-   Q_ASSERT(param_);
+   Q_ASSERT(_param);
 
-   disconnect(param_, &PluginParam::infoChanged, this, &PluginQuickControlWidget::paramInfoChanged);
+   disconnect(_param, &PluginParam::infoChanged, this, &PluginQuickControlWidget::paramInfoChanged);
    disconnect(
-      param_, &PluginParam::valueChanged, this, &PluginQuickControlWidget::paramValueChanged);
+      _param, &PluginParam::valueChanged, this, &PluginQuickControlWidget::paramValueChanged);
 
    updateAll();
 }
@@ -55,31 +55,31 @@ void PluginQuickControlWidget::paramInfoChanged() { updateParamInfo(); }
 void PluginQuickControlWidget::paramValueChanged() { updateParamValue(); }
 
 void PluginQuickControlWidget::dialValueChanged(int newValue) {
-   if (!param_)
+   if (!_param)
       return;
 
-   if (!dial_->isSliderDown())
+   if (!_dial->isSliderDown())
       return;
 
-   auto &info = param_->info();
+   auto &info = _param->info();
 
    double value = newValue * (info.max_value - info.min_value) / DIAL_RANGE + info.min_value;
-   pluginHost_.setParamValueByHost(*param_, value);
+   pluginHost_.setParamValueByHost(*_param, value);
 }
 void PluginQuickControlWidget::updateParamValue() {
-   if (!param_)
+   if (!_param)
       return;
 
-   if (dial_->isSliderDown())
+   if (_dial->isSliderDown())
       return;
 
-   auto info = param_->info();
-   auto v = param_->value();
-   dial_->setValue(DIAL_RANGE * (v - info.min_value) / (info.max_value - info.min_value));
+   auto info = _param->info();
+   auto v = _param->value();
+   _dial->setValue(DIAL_RANGE * (v - info.min_value) / (info.max_value - info.min_value));
 }
 
 void PluginQuickControlWidget::updateParamInfo() {
-   label_->setText(param_ ? param_->info().name : "-");
+   _label->setText(_param ? _param->info().name : "-");
 }
 
 void PluginQuickControlWidget::updateAll() {

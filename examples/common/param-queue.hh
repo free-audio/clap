@@ -16,16 +16,16 @@ public:
 
    void setCapacity(size_t capacity);
 
-   void set(clap_id id, const value_type& value);
+   void set(clap_id id, const value_type &value);
    void producerDone();
 
-   void consume(const std::function<void(clap_id id, const value_type& value)> consumer);
+   void consume(const std::function<void(clap_id id, const value_type &value)> consumer);
 
    void reset();
 
 private:
-   queue_type queues_[2];
-   std::atomic<queue_type *> free_ = nullptr;
-   std::atomic<queue_type *> producer_ = nullptr;
-   std::atomic<queue_type *> consumer_ = nullptr;
+   queue_type _queues[2];
+   std::atomic<queue_type *> _free = nullptr;
+   std::atomic<queue_type *> _producer = nullptr;
+   std::atomic<queue_type *> _consumer = nullptr;
 };

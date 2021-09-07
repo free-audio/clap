@@ -10,7 +10,7 @@
 
 namespace clap {
 
-   Plugin::Plugin(const clap_plugin_descriptor *desc, const clap_host *host) : host_(host) {
+   Plugin::Plugin(const clap_plugin_descriptor *desc, const clap_host *host) : _host(host) {
       plugin_.plugin_data = this;
       plugin_.desc = desc;
       plugin_.init = Plugin::clapInit;
@@ -57,13 +57,13 @@ namespace clap {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin.activate");
 
-      if (self.isActive_) {
+      if (self._isActive) {
          self.hostMisbehaving("Plugin was activated twice");
 
-         if (sample_rate != self.sampleRate_) {
+         if (sample_rate != self._sampleRate) {
             std::ostringstream msg;
             msg << "The plugin was activated twice and with different sample rates: "
-                << self.sampleRate_ << " and " << sample_rate
+                << self._sampleRate << " and " << sample_rate
                 << ". The host must deactivate the plugin first." << std::endl
                 << "Simulating deactivation.";
             self.hostMisbehaving(msg.str());
@@ -78,17 +78,17 @@ namespace clap {
          return false;
       }
 
-      assert(!self.isActive_);
-      assert(self.sampleRate_ == 0);
+      assert(!self._isActive);
+      assert(self._sampleRate == 0);
 
       if (!self.activate(sample_rate)) {
-         assert(!self.isActive_);
-         assert(self.sampleRate_ == 0);
+         assert(!self._isActive);
+         assert(self._sampleRate == 0);
          return false;
       }
 
-      self.isActive_ = true;
-      self.sampleRate_ = sample_rate;
+      self._isActive = true;
+      self._sampleRate = sample_rate;
       return true;
    }
 
@@ -96,50 +96,50 @@ namespace clap {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin.deactivate");
 
-      if (!self.isActive_) {
+      if (!self._isActive) {
          self.hostMisbehaving("The plugin was deactivated twice.");
          return;
       }
 
       self.deactivate();
-      self.isActive_ = false;
-      self.sampleRate_ = 0;
+      self._isActive = false;
+      self._sampleRate = 0;
    }
 
    bool Plugin::clapStartProcessing(const clap_plugin *plugin) noexcept {
       auto &self = from(plugin);
       self.ensureAudioThread("clap_plugin.start_processing");
 
-      if (!self.isActive_) {
+      if (!self._isActive) {
          self.hostMisbehaving("Host called clap_plugin.start_processing() on a deactivated plugin");
          return false;
       }
 
-      if (self.isProcessing_) {
+      if (self._isProcessing) {
          self.hostMisbehaving("Host called clap_plugin.start_processing() twice");
          return true;
       }
 
-      self.isProcessing_ = self.startProcessing();
-      return self.isProcessing_;
+      self._isProcessing = self.startProcessing();
+      return self._isProcessing;
    }
 
    void Plugin::clapStopProcessing(const clap_plugin *plugin) noexcept {
       auto &self = from(plugin);
       self.ensureAudioThread("clap_plugin.stop_processing");
 
-      if (!self.isActive_) {
+      if (!self._isActive) {
          self.hostMisbehaving("Host called clap_plugin.stop_processing() on a deactivated plugin");
          return;
       }
 
-      if (!self.isProcessing_) {
+      if (!self._isProcessing) {
          self.hostMisbehaving("Host called clap_plugin.stop_processing() twice");
          return;
       }
 
       self.stopProcessing();
-      self.isProcessing_ = false;
+      self._isProcessing = false;
    }
 
    clap_process_status Plugin::clapProcess(const clap_plugin *plugin,
@@ -147,12 +147,12 @@ namespace clap {
       auto &self = from(plugin);
       self.ensureAudioThread("clap_plugin.process");
 
-      if (!self.isActive_) {
+      if (!self._isActive) {
          self.hostMisbehaving("Host called clap_plugin.process() on a deactivated plugin");
          return CLAP_PROCESS_ERROR;
       }
 
-      if (!self.isProcessing_) {
+      if (!self._isProcessing) {
          self.hostMisbehaving(
             "Host called clap_plugin.process() without calling clap_plugin.start_processing()");
          return CLAP_PROCESS_ERROR;
@@ -166,39 +166,39 @@ namespace clap {
       self.ensureMainThread("clap_plugin.extension");
 
       if (!strcmp(id, CLAP_EXT_STATE) && self.implementsState())
-         return &pluginState_;
+         return &_pluginState;
       if (!strcmp(id, CLAP_EXT_PRESET_LOAD) && self.implementsPresetLoad())
-         return &pluginPresetLoad_;
+         return &_pluginPresetLoad;
       if (!strcmp(id, CLAP_EXT_RENDER) && self.implementsRender())
-         return &pluginRender_;
+         return &_pluginRender;
       if (!strcmp(id, CLAP_EXT_TRACK_INFO) && self.implementsTrackInfo())
-         return &pluginTrackInfo_;
+         return &_pluginTrackInfo;
       if (!strcmp(id, CLAP_EXT_LATENCY) && self.implementsLatency())
-         return &pluginLatency_;
+         return &_pluginLatency;
       if (!strcmp(id, CLAP_EXT_AUDIO_PORTS) && self.implementsAudioPorts())
-         return &pluginAudioPorts_;
+         return &_pluginAudioPorts;
       if (!strcmp(id, CLAP_EXT_PARAMS) && self.implementsParams())
-         return &pluginParams_;
+         return &_pluginParams;
       if (!strcmp(id, CLAP_EXT_QUICK_CONTROLS) && self.implementQuickControls())
-         return &pluginQuickControls_;
+         return &_pluginQuickControls;
       if (!strcmp(id, CLAP_EXT_NOTE_NAME) && self.implementsNoteName())
-         return &pluginNoteName_;
+         return &_pluginNoteName;
       if (!strcmp(id, CLAP_EXT_THREAD_POOL) && self.implementsThreadPool())
-         return &pluginThreadPool_;
+         return &_pluginThreadPool;
       if (!strcmp(id, CLAP_EXT_TIMER_SUPPORT) && self.implementsTimerSupport())
-         return &pluginTimerSupport_;
+         return &_pluginTimerSupport;
       if (!strcmp(id, CLAP_EXT_FD_SUPPORT) && self.implementsFdSupport())
-         return &pluginFdSupport_;
+         return &_pluginFdSupport;
       if (!strcmp(id, CLAP_EXT_GUI) && self.implementsGui())
-         return &pluginGui_;
+         return &_pluginGui;
       if (!strcmp(id, CLAP_EXT_GUI_X11) && self.implementsGuiX11())
-         return &pluginGuiX11_;
+         return &_pluginGuiX11;
       if (!strcmp(id, CLAP_EXT_GUI_WIN32) && self.implementsGuiWin32())
-         return &pluginGuiWin32_;
+         return &_pluginGuiWin32;
       if (!strcmp(id, CLAP_EXT_GUI_COCOA) && self.implementsGuiCocoa())
-         return &pluginGuiCocoa_;
+         return &_pluginGuiCocoa;
       if (!strcmp(id, CLAP_EXT_GUI_FREE_STANDING) && self.implementsGuiFreeStanding())
-         return &pluginGuiFreeStanding_;
+         return &_pluginGuiFreeStanding;
 
       return from(plugin).extension(id);
    }
@@ -208,25 +208,25 @@ namespace clap {
       assert(!ptr);
       assert(id);
 
-      if (host_->get_extension)
-         ptr = static_cast<const T *>(host_->get_extension(host_, id));
+      if (_host->get_extension)
+         ptr = static_cast<const T *>(_host->get_extension(_host, id));
    }
 
    void Plugin::initInterfaces() noexcept {
-      initInterface(hostLog_, CLAP_EXT_LOG);
-      initInterface(hostThreadCheck_, CLAP_EXT_THREAD_CHECK);
-      initInterface(hostThreadPool_, CLAP_EXT_THREAD_POOL);
-      initInterface(hostAudioPorts_, CLAP_EXT_AUDIO_PORTS);
-      initInterface(hostTimerSupport_, CLAP_EXT_TIMER_SUPPORT);
-      initInterface(hostFdSupport_, CLAP_EXT_FD_SUPPORT);
-      initInterface(hostEventFilter_, CLAP_EXT_EVENT_FILTER);
-      initInterface(hostFileReference_, CLAP_EXT_FILE_REFERENCE);
-      initInterface(hostLatency_, CLAP_EXT_LATENCY);
-      initInterface(hostGui_, CLAP_EXT_GUI);
-      initInterface(hostParams_, CLAP_EXT_PARAMS);
-      initInterface(hostTrackInfo_, CLAP_EXT_TRACK_INFO);
-      initInterface(hostState_, CLAP_EXT_STATE);
-      initInterface(hostNoteName_, CLAP_EXT_NOTE_NAME);
+      initInterface(_hostLog, CLAP_EXT_LOG);
+      initInterface(_hostThreadCheck, CLAP_EXT_THREAD_CHECK);
+      initInterface(_hostThreadPool, CLAP_EXT_THREAD_POOL);
+      initInterface(_hostAudioPorts, CLAP_EXT_AUDIO_PORTS);
+      initInterface(_hostTimerSupport, CLAP_EXT_TIMER_SUPPORT);
+      initInterface(_hostFdSupport, CLAP_EXT_FD_SUPPORT);
+      initInterface(_hostEventFilter, CLAP_EXT_EVENT_FILTER);
+      initInterface(_hostFileReference, CLAP_EXT_FILE_REFERENCE);
+      initInterface(_hostLatency, CLAP_EXT_LATENCY);
+      initInterface(_hostGui, CLAP_EXT_GUI);
+      initInterface(_hostParams, CLAP_EXT_PARAMS);
+      initInterface(_hostTrackInfo, CLAP_EXT_TRACK_INFO);
+      initInterface(_hostState, CLAP_EXT_STATE);
+      initInterface(_hostNoteName, CLAP_EXT_NOTE_NAME);
    }
 
    //-------------------//
@@ -602,7 +602,7 @@ namespace clap {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_gui.size");
 
-      if (!self.isGuiCreated_) {
+      if (!self._isGuiCreated) {
          self.hostMisbehaving("clap_plugin_gui.size() was called without a prior call to "
                               "clap_plugin_gui.create()");
          return false;
@@ -615,7 +615,7 @@ namespace clap {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_gui.can_resize");
 
-      if (!self.isGuiCreated_) {
+      if (!self._isGuiCreated) {
          self.hostMisbehaving("clap_plugin_gui.can_resize() was called without a prior call to "
                               "clap_plugin_gui.create()");
          return false;
@@ -629,7 +629,7 @@ namespace clap {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_gui.round_size");
 
-      if (!self.isGuiCreated_) {
+      if (!self._isGuiCreated) {
          self.hostMisbehaving("clap_plugin_gui.round_size() was called without a prior call to "
                               "clap_plugin_gui.create()");
          return;
@@ -643,7 +643,7 @@ namespace clap {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_gui.set_size");
 
-      if (!self.isGuiCreated_) {
+      if (!self._isGuiCreated) {
          self.hostMisbehaving("clap_plugin_gui.set_size() was called without a prior call to "
                               "clap_plugin_gui.create()");
          return false;
@@ -673,7 +673,7 @@ namespace clap {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_gui.set_scale");
 
-      if (!self.isGuiCreated_) {
+      if (!self._isGuiCreated) {
          self.hostMisbehaving("clap_plugin_gui.set_scale() was called without a prior call to "
                               "clap_plugin_gui.create()");
          return;
@@ -686,13 +686,13 @@ namespace clap {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_gui.show");
 
-      if (!self.isGuiCreated_) {
+      if (!self._isGuiCreated) {
          self.hostMisbehaving(
             "clap_plugin_gui.show() was called without a prior call to clap_plugin_gui.create()");
          return;
       }
 
-      if (!self.isGuiAttached_) {
+      if (!self._isGuiAttached) {
          self.hostMisbehaving("clap_plugin_gui.show() but the gui was not attached first");
          return;
       }
@@ -704,13 +704,13 @@ namespace clap {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_gui.hide");
 
-      if (!self.isGuiCreated_) {
+      if (!self._isGuiCreated) {
          self.hostMisbehaving(
             "clap_plugin_gui.hide() was called without a prior call to clap_plugin_gui.create()");
          return;
       }
 
-      if (!self.isGuiAttached_) {
+      if (!self._isGuiAttached) {
          self.hostMisbehaving("clap_plugin_gui.hide() but the gui was not attached first");
          return;
       }
@@ -722,7 +722,7 @@ namespace clap {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_gui.create");
 
-      if (self.isGuiCreated_) {
+      if (self._isGuiCreated) {
          self.hostMisbehaving(
             "clap_plugin_gui.create() was called while the plugin gui was already created");
          return true;
@@ -731,8 +731,8 @@ namespace clap {
       if (!self.guiCreate())
          return false;
 
-      self.isGuiCreated_ = true;
-      self.isGuiAttached_ = false;
+      self._isGuiCreated = true;
+      self._isGuiAttached = false;
       return true;
    }
 
@@ -740,15 +740,15 @@ namespace clap {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_gui.destroy");
 
-      if (!self.isGuiCreated_) {
+      if (!self._isGuiCreated) {
          self.hostMisbehaving(
             "clap_plugin_gui.destroy() was called while the plugin gui not created");
          return;
       }
 
       self.guiDestroy();
-      self.isGuiCreated_ = false;
-      self.isGuiAttached_ = false;
+      self._isGuiCreated = false;
+      self._isGuiAttached = false;
    }
 
    //---------------------//
@@ -760,13 +760,13 @@ namespace clap {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_gui_x11.attach");
 
-      if (!self.isGuiCreated_) {
+      if (!self._isGuiCreated) {
          self.hostMisbehaving(
             "clap_plugin_gui_x11.attach() was called without a prior call to clap_plugin_gui.create()");
          return false;
       }
 
-      if (self.isGuiAttached_) {
+      if (self._isGuiAttached) {
          self.hostMisbehaving("clap_plugin_gui_x11.attach() but the gui was already attached");
          return true;
       }
@@ -774,7 +774,7 @@ namespace clap {
       if (!self.guiX11Attach(display_name, window))
          return false;
 
-      self.isGuiAttached_ = true;
+      self._isGuiAttached = true;
       return true;
    }
 
@@ -785,13 +785,13 @@ namespace clap {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_gui_win32.attach");
 
-      if (!self.isGuiCreated_) {
+      if (!self._isGuiCreated) {
          self.hostMisbehaving(
             "clap_plugin_gui_win32.attach() was called without a prior call to clap_plugin_gui.create()");
          return false;
       }
 
-      if (self.isGuiAttached_) {
+      if (self._isGuiAttached) {
          self.hostMisbehaving("clap_plugin_gui_win32.attach() but the gui was already attached");
          return true;
       }
@@ -799,7 +799,7 @@ namespace clap {
       if (!self.guiWin32Attach(window))
          return false;
 
-      self.isGuiAttached_ = true;
+      self._isGuiAttached = true;
       return true;
    }
 
@@ -810,13 +810,13 @@ namespace clap {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_gui_cocoa.attach");
 
-      if (!self.isGuiCreated_) {
+      if (!self._isGuiCreated) {
          self.hostMisbehaving(
             "clap_plugin_gui_cocoa.attach() was called without a prior call to clap_plugin_gui.create()");
          return false;
       }
 
-      if (self.isGuiAttached_) {
+      if (self._isGuiAttached) {
          self.hostMisbehaving("clap_plugin_gui_cocoa.attach() but the gui was already attached");
          return true;
       }
@@ -824,7 +824,7 @@ namespace clap {
       if (!self.guiCocoaAttach(nsView))
          return false;
 
-      self.isGuiAttached_ = true;
+      self._isGuiAttached = true;
       return true;
    }
 
@@ -835,13 +835,13 @@ namespace clap {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin_gui_free_standing.open");
 
-      if (!self.isGuiCreated_) {
+      if (!self._isGuiCreated) {
          self.hostMisbehaving(
             "clap_plugin_gui_free_standing.open() was called without a prior call to clap_plugin_gui.create()");
          return false;
       }
 
-      if (self.isGuiAttached_) {
+      if (self._isGuiAttached) {
          self.hostMisbehaving("clap_plugin_gui_free_standing.open() but the gui was already attached");
          return true;
       }
@@ -849,7 +849,7 @@ namespace clap {
       if (!self.guiFreeStandingOpen())
          return false;
 
-      self.isGuiAttached_ = true;
+      self._isGuiAttached = true;
       return true;
    }
 
@@ -858,7 +858,7 @@ namespace clap {
    /////////////
    void Plugin::log(clap_log_severity severity, const char *msg) const noexcept {
       if (canUseHostLog())
-         hostLog_->log(host_, severity, msg);
+         _hostLog->log(_host, severity, msg);
       else
          std::clog << msg << std::endl;
    }
@@ -871,18 +871,18 @@ namespace clap {
    // Interface consistency check //
    /////////////////////////////////
 
-   bool Plugin::canUseHostLog() const noexcept { return hostLog_ && hostLog_->log; }
+   bool Plugin::canUseHostLog() const noexcept { return _hostLog && _hostLog->log; }
 
    bool Plugin::canUseThreadCheck() const noexcept {
-      return hostThreadCheck_ && hostThreadCheck_->is_audio_thread &&
-             hostThreadCheck_->is_main_thread;
+      return _hostThreadCheck && _hostThreadCheck->is_audio_thread &&
+             _hostThreadCheck->is_main_thread;
    }
 
    bool Plugin::canUseTimerSupport() const noexcept {
-      if (!hostTimerSupport_)
+      if (!_hostTimerSupport)
          return false;
 
-      auto &x = *hostTimerSupport_;
+      auto &x = *_hostTimerSupport;
       if (x.register_timer && x.unregister_timer)
          return true;
 
@@ -891,10 +891,10 @@ namespace clap {
    }
 
    bool Plugin::canUseFdSupport() const noexcept {
-      if (!hostFdSupport_)
+      if (!_hostFdSupport)
          return false;
 
-      auto &x = *hostFdSupport_;
+      auto &x = *_hostFdSupport;
       if (x.modify_fd && x.register_fd && x.unregister_fd)
          return true;
 
@@ -903,10 +903,10 @@ namespace clap {
    }
 
    bool Plugin::canUseParams() const noexcept {
-      if (!hostParams_)
+      if (!_hostParams)
          return false;
 
-      if (hostParams_->rescan && hostParams_->clear)
+      if (_hostParams->rescan && _hostParams->clear)
          return true;
 
       hostMisbehaving("clap_host_params is partially implemented");
@@ -914,10 +914,10 @@ namespace clap {
    }
 
    bool Plugin::canUseLatency() const noexcept {
-      if (!hostLatency_)
+      if (!_hostLatency)
          return false;
 
-      if (hostLatency_->changed)
+      if (_hostLatency->changed)
          return true;
 
       hostMisbehaving("clap_host_latency is partially implemented");
@@ -925,10 +925,10 @@ namespace clap {
    }
 
    bool Plugin::canUseState() const noexcept {
-      if (!hostState_)
+      if (!_hostState)
          return false;
 
-      if (hostState_->mark_dirty)
+      if (_hostState->mark_dirty)
          return true;
 
       hostMisbehaving("clap_host_state is partially implemented");
@@ -936,10 +936,10 @@ namespace clap {
    }
 
    bool Plugin::canUseTrackInfo() const noexcept {
-      if (!hostTrackInfo_)
+      if (!_hostTrackInfo)
          return false;
 
-      if (hostTrackInfo_->get)
+      if (_hostTrackInfo->get)
          return true;
 
       hostMisbehaving("clap_host_track_info is partially implemented");
@@ -951,16 +951,16 @@ namespace clap {
    /////////////////////
 
    void Plugin::checkMainThread() const noexcept {
-      if (!hostThreadCheck_ || !hostThreadCheck_->is_main_thread ||
-          hostThreadCheck_->is_main_thread(host_))
+      if (!_hostThreadCheck || !_hostThreadCheck->is_main_thread ||
+          _hostThreadCheck->is_main_thread(_host))
          return;
 
       std::terminate();
    }
 
    void Plugin::ensureMainThread(const char *method) const noexcept {
-      if (!hostThreadCheck_ || !hostThreadCheck_->is_main_thread ||
-          hostThreadCheck_->is_main_thread(host_))
+      if (!_hostThreadCheck || !_hostThreadCheck->is_main_thread ||
+          _hostThreadCheck->is_main_thread(_host))
          return;
 
       std::ostringstream msg;
@@ -971,8 +971,8 @@ namespace clap {
    }
 
    void Plugin::ensureAudioThread(const char *method) const noexcept {
-      if (!hostThreadCheck_ || !hostThreadCheck_->is_audio_thread ||
-          hostThreadCheck_->is_audio_thread(host_))
+      if (!_hostThreadCheck || !_hostThreadCheck->is_audio_thread ||
+          _hostThreadCheck->is_audio_thread(_host))
          return;
 
       std::ostringstream msg;

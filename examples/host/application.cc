@@ -12,15 +12,15 @@
 #include "main-window.hh"
 #include "settings.hh"
 
-Application *Application::instance_ = nullptr;
+Application *Application::_instance = nullptr;
 
 Q_DECLARE_METATYPE(int32_t)
 Q_DECLARE_METATYPE(uint32_t)
 
 Application::Application(int argc, char **argv)
-   : QApplication(argc, argv), settings_(new Settings) {
-   assert(!instance_);
-   instance_ = this;
+   : QApplication(argc, argv), _settings(new Settings) {
+   assert(!_instance);
+   _instance = this;
 
    setOrganizationDomain("github.com/free-audio/clap");
    setOrganizationName("clap");
@@ -31,12 +31,12 @@ Application::Application(int argc, char **argv)
 
    loadSettings();
 
-   engine_ = new Engine(*this);
+   _engine = new Engine(*this);
 
-   mainWindow_ = new MainWindow(*this);
-   mainWindow_->show();
+   _mainWindow = new MainWindow(*this);
+   _mainWindow->show();
 
-   engine_->setParentWindow(mainWindow_->getEmbedWindowId());
+   _engine->setParentWindow(_mainWindow->getEmbedWindowId());
 
    /*
     * This is here JUST because macOS and QT don't process command lines properly
@@ -44,25 +44,25 @@ Application::Application(int argc, char **argv)
     */
    if (getenv("CLAP_HOST_FORCE_PLUGIN")) {
       qWarning() << "Warning: Loading plugin from ENV, not command line";
-      pluginPath_ = getenv("CLAP_HOST_FORCE_PLUGIN");
-      pluginIndex_ = 0;
+      _pluginPath = getenv("CLAP_HOST_FORCE_PLUGIN");
+      _pluginIndex = 0;
    }
 
-   if (engine_->loadPlugin(pluginPath_, pluginIndex_))
-      engine_->start();
+   if (_engine->loadPlugin(_pluginPath, _pluginIndex))
+      _engine->start();
 }
 
 Application::~Application() {
    saveSettings();
 
-   delete engine_;
-   engine_ = nullptr;
+   delete _engine;
+   _engine = nullptr;
 
-   delete mainWindow_;
-   mainWindow_ = nullptr;
+   delete _mainWindow;
+   _mainWindow = nullptr;
 
-   delete settings_;
-   settings_ = nullptr;
+   delete _settings;
+   _settings = nullptr;
 }
 
 void Application::parseCommandLine() {
@@ -86,21 +86,21 @@ void Application::parseCommandLine() {
 
    parser.process(*this);
 
-   pluginPath_ = parser.value(pluginOpt);
-   pluginIndex_ = parser.value(pluginIndexOpt).toInt();
+   _pluginPath = parser.value(pluginOpt);
+   _pluginIndex = parser.value(pluginIndexOpt).toInt();
 }
 
 void Application::loadSettings() {
    QSettings s;
-   settings_->load(s);
+   _settings->load(s);
 }
 
 void Application::saveSettings() const {
    QSettings s;
-   settings_->save(s);
+   _settings->save(s);
 }
 
 void Application::restartEngine() {
-   engine_->stop();
-   engine_->start();
+   _engine->stop();
+   _engine->start();
 }

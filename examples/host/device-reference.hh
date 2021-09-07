@@ -3,6 +3,6 @@
 #include <QString>
 
 struct DeviceReference {
-   QString name_ = "(noname)";
-   int     index_ = 0;
+   QString _name = "(noname)";
+   int     _index = 0;
 };

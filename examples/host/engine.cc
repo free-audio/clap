@@ -26,12 +26,12 @@ enum MidiStatus {
 };
 
 Engine::Engine(Application &application)
-   : QObject(&application), application_(application), settings_(application.settings()),
-     idleTimer_(this) {
-   pluginHost_.reset(new PluginHost(*this));
+   : QObject(&application), _application(application), _settings(application.settings()),
+     _idleTimer(this) {
+   _pluginHost.reset(new PluginHost(*this));
 
-   connect(&idleTimer_, &QTimer::timeout, this, QOverload<>::of(&Engine::callPluginIdle));
-   idleTimer_.start(1000 / 30);
+   connect(&_idleTimer, &QTimer::timeout, this, QOverload<>::of(&Engine::callPluginIdle));
+   _idleTimer.start(1000 / 30);
 }
 
 Engine::~Engine() {
@@ -42,41 +42,41 @@ Engine::~Engine() {
 }
 
 void Engine::start() {
-   assert(!audio_);
-   assert(state_ == kStateStopped);
+   assert(!_audio);
+   assert(_state == kStateStopped);
 
-   auto &    as = settings_.audioSettings();
+   auto &    as = _settings.audioSettings();
    const int bufferSize = 4 * 2 * as.bufferSize();
 
-   inputs_[0] = (float *)calloc(1, bufferSize);
-   inputs_[1] = (float *)calloc(1, bufferSize);
-   outputs_[0] = (float *)calloc(1, bufferSize);
-   outputs_[1] = (float *)calloc(1, bufferSize);
+   _inputs[0] = (float *)calloc(1, bufferSize);
+   _inputs[1] = (float *)calloc(1, bufferSize);
+   _outputs[0] = (float *)calloc(1, bufferSize);
+   _outputs[1] = (float *)calloc(1, bufferSize);
 
-   pluginHost_->setPorts(2, inputs_, 2, outputs_);
+   _pluginHost->setPorts(2, _inputs, 2, _outputs);
 
    /* midi */
    PmError midi_err = Pm_OpenInput(
-      &midi_, settings_.midiSettings().deviceReference().index_, nullptr, 512, nullptr, nullptr);
+      &_midi, _settings.midiSettings().deviceReference()._index, nullptr, 512, nullptr, nullptr);
    if (midi_err != pmNoError) {
-      midi_ = nullptr;
+      _midi = nullptr;
    }
 
-   pluginHost_->activate(as.sampleRate());
+   _pluginHost->activate(as.sampleRate());
 
    /* audio */
-   auto deviceInfo = Pa_GetDeviceInfo(as.deviceReference().index_);
+   auto deviceInfo = Pa_GetDeviceInfo(as.deviceReference()._index);
 
    PaStreamParameters params;
    params.channelCount = 2;
-   params.device = as.deviceReference().index_;
+   params.device = as.deviceReference()._index;
    params.hostApiSpecificStreamInfo = nullptr;
    params.sampleFormat = paFloat32;
    params.suggestedLatency = 0;
 
-   state_ = kStateRunning;
-   nframes_ = as.bufferSize();
-   PaError err = Pa_OpenStream(&audio_,
+   _state = kStateRunning;
+   _nframes = as.bufferSize();
+   PaError err = Pa_OpenStream(&_audio,
                                deviceInfo->maxInputChannels >= 2 ? &params : nullptr,
                                &params,
                                as.sampleRate(),
@@ -90,27 +90,27 @@ void Engine::start() {
       return;
    }
 
-   err = Pa_StartStream(audio_);
+   err = Pa_StartStream(_audio);
 }
 
 void Engine::stop() {
-   pluginHost_->deactivate();
+   _pluginHost->deactivate();
 
-   if (state_ == kStateRunning)
-      state_ = kStateStopping;
+   if (_state == kStateRunning)
+      _state = kStateStopping;
 
-   if (audio_) {
-      Pa_StopStream(audio_);
-      Pa_CloseStream(audio_);
-      audio_ = nullptr;
+   if (_audio) {
+      Pa_StopStream(_audio);
+      Pa_CloseStream(_audio);
+      _audio = nullptr;
    }
 
-   if (midi_) {
-      Pm_Close(midi_);
-      midi_ = nullptr;
+   if (_midi) {
+      Pm_Close(_midi);
+      _midi = nullptr;
    }
 
-   state_ = kStateStopped;
+   _state = kStateStopped;
 }
 
 int Engine::audioCallback(const void *  input,
@@ -123,27 +123,27 @@ int Engine::audioCallback(const void *  input,
    const float *const in = (const float *)input;
    float *const       out = (float *)output;
 
-   assert(thiz->inputs_[0] != nullptr);
-   assert(thiz->inputs_[1] != nullptr);
-   assert(thiz->outputs_[0] != nullptr);
-   assert(thiz->outputs_[1] != nullptr);
-   assert(frameCount == thiz->nframes_);
+   assert(thiz->_inputs[0] != nullptr);
+   assert(thiz->_inputs[1] != nullptr);
+   assert(thiz->_outputs[0] != nullptr);
+   assert(thiz->_outputs[1] != nullptr);
+   assert(frameCount == thiz->_nframes);
 
    // copy input
    if (in) {
-      for (int i = 0; i < thiz->nframes_; ++i) {
-         thiz->inputs_[0][i] = in[2 * i];
-         thiz->inputs_[1][i] = in[2 * i + 1];
+      for (int i = 0; i < thiz->_nframes; ++i) {
+         thiz->_inputs[0][i] = in[2 * i];
+         thiz->_inputs[1][i] = in[2 * i + 1];
       }
    }
 
-   thiz->pluginHost_->processBegin(frameCount);
+   thiz->_pluginHost->processBegin(frameCount);
 
-   MidiSettings &ms = thiz->settings_.midiSettings();
+   MidiSettings &ms = thiz->_settings.midiSettings();
 
-   if (thiz->midi_) {
+   if (thiz->_midi) {
       PmEvent evBuffer[512];
-      int     numRead = Pm_Read(thiz->midi_, evBuffer, sizeof(evBuffer) / sizeof(evBuffer[0]));
+      int     numRead = Pm_Read(thiz->_midi, evBuffer, sizeof(evBuffer) / sizeof(evBuffer[0]));
 
       const PtTimestamp currentTime = Pt_Time();
 
@@ -155,32 +155,32 @@ int Engine::audioCallback(const void *  input,
          uint8_t data2 = Pm_MessageData2(ev->message);
 
          int32_t deltaMs = currentTime - ev->timestamp;
-         int32_t deltaSample = (deltaMs * thiz->sampleRate_) / 1000;
+         int32_t deltaSample = (deltaMs * thiz->_sampleRate) / 1000;
 
-         if (deltaSample >= thiz->nframes_)
-            deltaSample = thiz->nframes_ - 1;
+         if (deltaSample >= thiz->_nframes)
+            deltaSample = thiz->_nframes - 1;
 
-         int32_t sampleOffset = thiz->nframes_ - deltaSample;
+         int32_t sampleOffset = thiz->_nframes - deltaSample;
 
          switch (eventType) {
          case MIDI_STATUS_NOTE_ON:
-            thiz->pluginHost_->processNoteOn(sampleOffset, channel, data1, data2);
+            thiz->_pluginHost->processNoteOn(sampleOffset, channel, data1, data2);
             ++ev;
             break;
 
          case MIDI_STATUS_NOTE_OFF:
-            thiz->pluginHost_->processNoteOff(sampleOffset, channel, data1, data2);
+            thiz->_pluginHost->processNoteOff(sampleOffset, channel, data1, data2);
             ++ev;
             break;
 
          case MIDI_STATUS_CC:
-            thiz->pluginHost_->processCC(sampleOffset, channel, data1, data2);
+            thiz->_pluginHost->processCC(sampleOffset, channel, data1, data2);
             ++ev;
             break;
 
          case MIDI_STATUS_NOTE_AT:
             std::cerr << "Note AT key: " << (int)data1 << ", pres: " << (int)data2 << std::endl;
-            thiz->pluginHost_->processNoteAt(sampleOffset, channel, data1, data2);
+            thiz->_pluginHost->processNoteAt(sampleOffset, channel, data1, data2);
             ++ev;
             break;
 
@@ -190,7 +190,7 @@ int Engine::audioCallback(const void *  input,
             break;
 
          case MIDI_STATUS_PITCH_BEND:
-            thiz->pluginHost_->processPitchBend(sampleOffset, channel, (data2 << 7) | data1);
+            thiz->_pluginHost->processPitchBend(sampleOffset, channel, (data2 << 7) | data1);
             ++ev;
             break;
 
@@ -202,21 +202,21 @@ int Engine::audioCallback(const void *  input,
       }
    }
 
-   thiz->pluginHost_->process();
+   thiz->_pluginHost->process();
 
    // copy output
-   for (int i = 0; i < thiz->nframes_; ++i) {
-      out[2 * i] = thiz->outputs_[0][i];
-      out[2 * i + 1] = thiz->outputs_[1][i];
+   for (int i = 0; i < thiz->_nframes; ++i) {
+      out[2 * i] = thiz->_outputs[0][i];
+      out[2 * i + 1] = thiz->_outputs[1][i];
    }
 
-   thiz->steadyTime_ += frameCount;
+   thiz->_steadyTime += frameCount;
 
-   switch (thiz->state_) {
+   switch (thiz->_state) {
    case kStateRunning:
       return paContinue;
    case kStateStopping:
-      thiz->state_ = kStateStopped;
+      thiz->_state = kStateStopped;
       return paComplete;
    default:
       assert(false && "unreachable");
@@ -225,28 +225,28 @@ int Engine::audioCallback(const void *  input,
 }
 
 bool Engine::loadPlugin(const QString &path, int plugin_index) {
-   if (!pluginHost_->load(path, plugin_index))
+   if (!_pluginHost->load(path, plugin_index))
       return false;
 
-   pluginHost_->setParentWindow(parentWindow_);
+   _pluginHost->setParentWindow(_parentWindow);
    return true;
 }
 
 void Engine::unloadPlugin() {
-   pluginHost_->unload();
+   _pluginHost->unload();
 
-   free(inputs_[0]);
-   free(inputs_[1]);
-   free(outputs_[0]);
-   free(outputs_[1]);
+   free(_inputs[0]);
+   free(_inputs[1]);
+   free(_outputs[0]);
+   free(_outputs[1]);
 
-   inputs_[0] = nullptr;
-   inputs_[1] = nullptr;
-   outputs_[0] = nullptr;
-   outputs_[1] = nullptr;
+   _inputs[0] = nullptr;
+   _inputs[1] = nullptr;
+   _outputs[0] = nullptr;
+   _outputs[1] = nullptr;
 }
 
 void Engine::callPluginIdle() {
-   if (pluginHost_)
-      pluginHost_->idle();
+   if (_pluginHost)
+      _pluginHost->idle();
 }

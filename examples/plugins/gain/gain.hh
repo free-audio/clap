@@ -20,6 +20,6 @@ namespace clap {
       clap_process_status process(const clap_process *process) noexcept override;
 
    private:
-      int channelCount_ = 1;
+      int _channelCount = 1;
    };
 } // namespace clap

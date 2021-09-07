@@ -4,24 +4,24 @@
 
 namespace clap {
    void clap::Parameters::addParameter(const clap_param_info &info) {
-      assert(id2param_.find(info.id) == id2param_.end());
+      assert(_id2param.find(info.id) == _id2param.end());
 
       auto p = std::make_unique<Parameter>(info);
-      id2param_.emplace(info.id, p.get());
-      params_.emplace_back(std::move(p));
+      _id2param.emplace(info.id, p.get());
+      _params.emplace_back(std::move(p));
    }
 
-   size_t Parameters::count() const noexcept { return params_.size(); }
+   size_t Parameters::count() const noexcept { return _params.size(); }
 
    Parameter *Parameters::getByIndex(size_t index) const noexcept {
-      if (index > params_.size())
+      if (index > _params.size())
          return nullptr;
-      return params_[index].get();
+      return _params[index].get();
    }
 
    Parameter *Parameters::getById(clap_id id) const noexcept {
-      auto it = id2param_.find(id);
-      if (it == id2param_.end())
+      auto it = _id2param.find(id);
+      if (it == _id2param.end())
          return nullptr;
       return it->second;
    }

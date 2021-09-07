@@ -12,10 +12,10 @@ public:
    void load(QSettings &settings);
    void save(QSettings &settings) const;
 
-   AudioSettings &audioSettings() { return audioSettings_; }
-   MidiSettings & midiSettings() { return midiSettings_; }
+   AudioSettings &audioSettings() { return _audioSettings; }
+   MidiSettings & midiSettings() { return _midiSettings; }
 
 private:
-   AudioSettings audioSettings_;
-   MidiSettings  midiSettings_;
+   AudioSettings _audioSettings;
+   MidiSettings  _midiSettings;
 };

@@ -18,29 +18,29 @@ public:
    Application(int argc, char **argv);
    ~Application();
 
-   Settings &settings() { return *settings_; }
+   Settings &settings() { return *_settings; }
 
    void parseCommandLine();
 
    void loadSettings();
    void saveSettings() const;
 
-   MainWindow *mainWindow() const { return mainWindow_; }
+   MainWindow *mainWindow() const { return _mainWindow; }
 
-   static Application &instance() { return *instance_; }
+   static Application &instance() { return *_instance; }
 
-   Engine *engine() { return engine_; }
+   Engine *engine() { return _engine; }
 
 public slots:
    void restartEngine();
 
 private:
-   static Application *instance_;
+   static Application *_instance;
 
-   Settings *  settings_ = nullptr;
-   MainWindow *mainWindow_ = nullptr;
-   Engine *    engine_ = nullptr;
+   Settings *  _settings = nullptr;
+   MainWindow *_mainWindow = nullptr;
+   Engine *    _engine = nullptr;
 
-   QString pluginPath_;
-   int     pluginIndex_ = 0;
+   QString _pluginPath;
+   int     _pluginIndex = 0;
 };

@@ -18,7 +18,7 @@ public slots:
    void selectedBufferSizeChanged(int index);
 
 private:
-   AudioSettings &audioSettings_;
-   QComboBox *    sampleRateWidget_;
-   QComboBox *    bufferSizeWidget_;
+   AudioSettings &_audioSettings;
+   QComboBox *    _sampleRateWidget;
+   QComboBox *    _bufferSizeWidget;
 };

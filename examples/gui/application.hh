@@ -15,7 +15,7 @@ class Application : public QGuiApplication, public clap::RemoteChannel::EventCon
 public:
    Application(int& argc, char **argv);
 
-   clap::RemoteChannel& remoteChannel() const { return *remoteChannel_; }
+   clap::RemoteChannel& remoteChannel() const { return *_remoteChannel; }
    void modifyFd(clap_fd_flags flags) override;
    void removeFd() override;
 
@@ -24,13 +24,13 @@ public:
 private:
    void onMessage(const clap::RemoteChannel::Message& msg);
 
-   QQuickView *quickView_ = nullptr;
-   std::unique_ptr<QSocketNotifier> socketReadNotifier_;
-   std::unique_ptr<QSocketNotifier> socketWriteNotifier_;
-   std::unique_ptr<QSocketNotifier> socketErrorNotifier_;
+   QQuickView *_quickView = nullptr;
+   std::unique_ptr<QSocketNotifier> _socketReadNotifier;
+   std::unique_ptr<QSocketNotifier> _socketWriteNotifier;
+   std::unique_ptr<QSocketNotifier> _socketErrorNotifier;
 
-   std::unique_ptr<QWindow> hostWindow_ = nullptr;
+   std::unique_ptr<QWindow> _hostWindow = nullptr;
 
-   std::unique_ptr<clap::RemoteChannel> remoteChannel_;
-   PluginProxy *pluginProxy_ = nullptr;
+   std::unique_ptr<clap::RemoteChannel> _remoteChannel;
+   PluginProxy *_pluginProxy = nullptr;
 };

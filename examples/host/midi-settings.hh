@@ -11,9 +11,9 @@ public:
    void load(QSettings &settings);
    void save(QSettings &settings) const;
 
-   const DeviceReference &deviceReference() const { return deviceReference_; }
-   void                   setDeviceReference(const DeviceReference &ref) { deviceReference_ = ref; }
+   const DeviceReference &deviceReference() const { return _deviceReference; }
+   void setDeviceReference(const DeviceReference &ref) { _deviceReference = ref; }
 
 private:
-   DeviceReference deviceReference_;
+   DeviceReference _deviceReference;
 };

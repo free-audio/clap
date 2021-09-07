@@ -38,22 +38,22 @@ namespace clap {
       clap_fd fd() const;
       void onFd(clap_fd_flags flags);
 
-      clap_id timerId() const noexcept { return timerId_; }
+      clap_id timerId() const noexcept { return _timerId; }
       void onTimer();
 
    private:
       void onMessage(const RemoteChannel::Message& msg);
       void waitChild();
 
-      std::unique_ptr<RemoteChannel> channel_;
+      std::unique_ptr<RemoteChannel> _channel;
 
-      clap_id timerId_ = CLAP_INVALID_ID;
+      clap_id _timerId = CLAP_INVALID_ID;
 
 #ifdef __unix__
-      pid_t child_ = -1;
+      pid_t _child = -1;
 #else
-      STARTUPINFO si;
-      PROCESS_INFORMATION childInfo_;
+      STARTUPINFO _si;
+      PROCESS_INFORMATION _childInfo;
 #endif
    };
 } // namespace clap

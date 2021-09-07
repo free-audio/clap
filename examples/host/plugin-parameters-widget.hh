@@ -25,7 +25,7 @@ public:
    public:
       ParamTreeItem(ModuleTreeItem *parent, PluginParam &param);
       QVariant data(int column, int role) const override;
-      void     setData(int column, int role, const QVariant &value) override;
+      void setData(int column, int role, const QVariant &value) override;
 
       auto &param() { return param_; }
       auto &param() const { return param_; }
@@ -42,13 +42,13 @@ public:
       void clear();
 
       ModuleTreeItem &subModule(const QString &name);
-      void            addItem(ParamTreeItem *item);
+      void addItem(ParamTreeItem *item);
 
       QVariant data(int column, int role) const override;
-      void     setData(int column, int role, const QVariant &value) override;
+      void setData(int column, int role, const QVariant &value) override;
 
    private:
-      QString                          name_;
+      QString name_;
       QHash<QString, ModuleTreeItem *> modules_;
    };
 
@@ -74,26 +74,26 @@ private:
 
    static const constexpr int SLIDER_RANGE = 10000;
 
-   PluginHost &                                                pluginHost_;
-   QTreeWidget *                                               treeWidget_ = nullptr;
-   std::unordered_map<clap_id, std::unique_ptr<ParamTreeItem>> idToParamTreeItem_;
-   ModuleTreeItem *                                            rootModuleItem_;
-   PluginParam *                                               currentParam_ = nullptr;
+   PluginHost &_pluginHost;
+   QTreeWidget *_treeWidget = nullptr;
+   std::unordered_map<clap_id, std::unique_ptr<ParamTreeItem>> _idToParamTreeItem;
+   ModuleTreeItem *_rootModuleItem;
+   PluginParam *_currentParam = nullptr;
 
-   QLabel * idLabel_ = nullptr;
-   QLabel * nameLabel_ = nullptr;
-   QLabel * moduleLabel_ = nullptr;
-   QLabel * isPerNoteLabel_ = nullptr;
-   QLabel * isPerChannelLabel_ = nullptr;
-   QLabel * isPeriodicLabel_ = nullptr;
-   QLabel * isReadOnlyLabel_ = nullptr;
-   QLabel * isHiddenLabel_ = nullptr;
-   QLabel * isBypassLabel_ = nullptr;
-   QLabel * isSteppedLabel_ = nullptr;
-   QLabel * minValueLabel_ = nullptr;
-   QLabel * maxValueLabel_ = nullptr;
-   QLabel * defaultValueLabel_ = nullptr;
-   QLabel * isBeingAdjusted_ = nullptr;
-   QSlider *valueSlider_ = nullptr;
-   QSlider *modulationSlider_ = nullptr;
+   QLabel *_idLabel = nullptr;
+   QLabel *_nameLabel = nullptr;
+   QLabel *_moduleLabel = nullptr;
+   QLabel *_isPerNoteLabel = nullptr;
+   QLabel *_isPerChannelLabel = nullptr;
+   QLabel *_isPeriodicLabel = nullptr;
+   QLabel *_isReadOnlyLabel = nullptr;
+   QLabel *_isHiddenLabel = nullptr;
+   QLabel *_isBypassLabel = nullptr;
+   QLabel *_isSteppedLabel = nullptr;
+   QLabel *_minValueLabel = nullptr;
+   QLabel *_maxValueLabel = nullptr;
+   QLabel *_defaultValueLabel = nullptr;
+   QLabel *_isBeingAdjusted = nullptr;
+   QSlider *_valueSlider = nullptr;
+   QSlider *_modulationSlider = nullptr;
 };

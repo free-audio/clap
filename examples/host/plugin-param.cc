@@ -2,45 +2,45 @@
 #include "plugin-host.hh"
 
 PluginParam::PluginParam(PluginHost &pluginHost, const clap_param_info &info, double value)
-   : QObject(&pluginHost), info_(info), value_(value) {}
+   : QObject(&pluginHost), _info(info), _value(value) {}
 
 void PluginParam::setValue(double v) {
-   if (value_ == v)
+   if (_value == v)
       return;
 
-   value_ = v;
+   _value = v;
    valueChanged();
 }
 
 void PluginParam::setModulation(double v) {
-   if (modulation_ == v)
+   if (_modulation == v)
       return;
 
-   modulation_ = v;
+   _modulation = v;
    modulatedValueChanged();
 }
 
 bool PluginParam::isValueValid(const double v) const {
-   return info_.min_value <= v && v <= info_.max_value;
+   return _info.min_value <= v && v <= _info.max_value;
 }
 
 void PluginParam::printShortInfo(std::ostream &os) const {
-   os << "id: " << info_.id << ", name: '" << info_.name << "', module: '" << info_.module << "'";
+   os << "id: " << _info.id << ", name: '" << _info.name << "', module: '" << _info.module << "'";
 }
 
 void PluginParam::printInfo(std::ostream &os) const {
    printShortInfo(os);
-   os << ", min: " << info_.min_value << ", max: " << info_.max_value;
+   os << ", min: " << _info.min_value << ", max: " << _info.max_value;
 }
 
 bool PluginParam::isInfoEqualTo(const clap_param_info &info) const {
-   return !std::memcmp(&info, &info_, sizeof(clap_param_info));
+   return !std::memcmp(&info, &_info, sizeof(clap_param_info));
 }
 
 bool PluginParam::isInfoCriticallyDifferentTo(const clap_param_info &info) const {
-   assert(info_.id == info.id);
-   return (info_.flags & CLAP_PARAM_IS_PER_NOTE) == (info.flags & CLAP_PARAM_IS_PER_NOTE) ||
-          (info_.flags & CLAP_PARAM_IS_PER_CHANNEL) == (info.flags & CLAP_PARAM_IS_PER_CHANNEL) ||
-          (info_.flags & CLAP_PARAM_IS_READONLY) == (info.flags & CLAP_PARAM_IS_READONLY) ||
-          info_.min_value != info_.min_value || info_.max_value != info_.max_value;
+   assert(_info.id == info.id);
+   return (_info.flags & CLAP_PARAM_IS_PER_NOTE) == (info.flags & CLAP_PARAM_IS_PER_NOTE) ||
+          (_info.flags & CLAP_PARAM_IS_PER_CHANNEL) == (info.flags & CLAP_PARAM_IS_PER_CHANNEL) ||
+          (_info.flags & CLAP_PARAM_IS_READONLY) == (info.flags & CLAP_PARAM_IS_READONLY) ||
+          _info.min_value != _info.min_value || _info.max_value != _info.max_value;
 }

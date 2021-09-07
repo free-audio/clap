@@ -25,40 +25,40 @@ public:
 
    void redefine(const clap_param_info &info);
 
-   uint32_t getId() const { return id_; }
-   const QString &getModule() const { return module_; }
-   const QString &getName() const { return name_; }
+   uint32_t getId() const { return _id; }
+   const QString &getModule() const { return _module; }
+   const QString &getName() const { return _name; }
 
-   double getValue() const { return value_; }
+   double getValue() const { return _value; }
    void setValueFromUI(double value);
    void setValueFromPlugin(double value);
 
    double getNormalizedValue() const { return normalize(getValue()); }
    void setNormalizedValueFromUI(double value) { setValueFromUI(denormalize(value)); }
 
-   double getModulation() const { return modulation_; }
+   double getModulation() const { return _modulation; }
    void setModulationFromPlugin(double mod);
 
    double getNormalizedModulation() const { return normalize(getModulation()); }
 
-   bool isAdjusting() const { return isAdjusting_; }
+   bool isAdjusting() const { return _isAdjusting; }
    void setIsAdjusting(bool isAdjusting);
 
-   double getMinValue() const { return minValue_; }
+   double getMinValue() const { return _minValue; }
    void setMinValueFromPlugin(double minValue);
-   double getMaxValue() const { return maxValue_; }
+   double getMaxValue() const { return _maxValue; }
    void setMaxValueFromPlugin(double maxValue);
-   double getDefaultValue() const { return defaultValue_; }
+   double getDefaultValue() const { return _defaultValue; }
    void setDefaultValueFromPlugin(double defaultValue);
 
    double normalize(double value) const {
-      double delta = maxValue_ - minValue_;
-      return delta != 0 ? std::min(1., std::max(0., (value - minValue_) / delta)) : 0;
+      double delta = _maxValue - _minValue;
+      return delta != 0 ? std::min(1., std::max(0., (value - _minValue) / delta)) : 0;
    }
 
    double denormalize(double value) const {
-      double delta = maxValue_ - minValue_;
-      return minValue_ + std::min(1., std::max(0., value)) * delta;
+      double delta = _maxValue - _minValue;
+      return _minValue + std::min(1., std::max(0., value)) * delta;
    }
 
 signals:
@@ -71,13 +71,13 @@ signals:
    void defaultValueChanged();
 
 private:
-   const uint32_t id_;
-   QString name_;
-   QString module_;
-   double value_ = 0;
-   double modulation_ = 0;
-   double minValue_ = 0;
-   double maxValue_ = 0;
-   double defaultValue_ = 0;
-   bool isAdjusting_ = false;
+   const uint32_t _id;
+   QString _name;
+   QString _module;
+   double _value = 0;
+   double _modulation = 0;
+   double _minValue = 0;
+   double _maxValue = 0;
+   double _defaultValue = 0;
+   bool _isAdjusting = false;
 };

@@ -10,6 +10,6 @@ public:
    SettingsDialog(Settings &settings, QWidget *parent = nullptr);
 
 private:
-   Settings &      settings_;
-   SettingsWidget *settingsWidget_ = nullptr;
+   Settings &_settings;
+   SettingsWidget *_settingsWidget = nullptr;
 };

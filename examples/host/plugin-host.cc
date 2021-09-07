@@ -24,7 +24,7 @@ enum ThreadType {
 
 thread_local ThreadType g_thread_type = Unknown;
 
-PluginHost::PluginHost(Engine &engine) : QObject(&engine), engine_(engine) {
+PluginHost::PluginHost(Engine &engine) : QObject(&engine), _engine(engine) {
    g_thread_type = MainThread;
 
    host_.host_data = this;
@@ -47,22 +47,22 @@ PluginHost::~PluginHost() {
 void PluginHost::initThreadPool() {
    checkForMainThread();
 
-   threadPoolStop_ = false;
-   threadPoolTaskIndex_ = 0;
+   _threadPoolStop = false;
+   _threadPoolTaskIndex = 0;
    auto N = QThread::idealThreadCount();
-   threadPool_.resize(N);
+   _threadPool.resize(N);
    for (int i = 0; i < N; ++i) {
-      threadPool_[i].reset(QThread::create(&PluginHost::threadPoolEntry, this));
-      threadPool_[i]->start(QThread::HighestPriority);
+      _threadPool[i].reset(QThread::create(&PluginHost::threadPoolEntry, this));
+      _threadPool[i]->start(QThread::HighestPriority);
    }
 }
 
 void PluginHost::terminateThreadPool() {
    checkForMainThread();
 
-   threadPoolStop_ = true;
-   threadPoolSemaphoreProd_.release(threadPool_.size());
-   for (auto &thr : threadPool_)
+   _threadPoolStop = true;
+   _threadPoolSemaphoreProd.release(_threadPool.size());
+   for (auto &thr : _threadPool)
       if (thr)
          thr->wait();
 }
@@ -70,47 +70,47 @@ void PluginHost::terminateThreadPool() {
 void PluginHost::threadPoolEntry() {
    g_thread_type = AudioThreadPool;
    while (true) {
-      threadPoolSemaphoreProd_.acquire();
-      if (threadPoolStop_)
+      _threadPoolSemaphoreProd.acquire();
+      if (_threadPoolStop)
          return;
 
-      int taskIndex = threadPoolTaskIndex_++;
-      pluginThreadPool_->exec(plugin_, taskIndex);
-      threadPoolSemaphoreDone_.release();
+      int taskIndex = _threadPoolTaskIndex++;
+      _pluginThreadPool->exec(_plugin, taskIndex);
+      _threadPoolSemaphoreDone.release();
    }
 }
 
 bool PluginHost::load(const QString &path, int pluginIndex) {
    checkForMainThread();
 
-   if (library_.isLoaded())
+   if (_library.isLoaded())
       unload();
 
-   library_.setFileName(path);
-   library_.setLoadHints(QLibrary::ResolveAllSymbolsHint | QLibrary::DeepBindHint);
-   if (!library_.load()) {
-      QString err = library_.errorString();
+   _library.setFileName(path);
+   _library.setLoadHints(QLibrary::ResolveAllSymbolsHint | QLibrary::DeepBindHint);
+   if (!_library.load()) {
+      QString err = _library.errorString();
       qWarning() << "Failed to load plugin '" << path << "': " << err;
       return false;
    }
 
-   pluginEntry_ =
-      reinterpret_cast<const struct clap_plugin_entry *>(library_.resolve("clap_plugin_entry"));
-   if (!pluginEntry_) {
+   _pluginEntry =
+      reinterpret_cast<const struct clap_plugin_entry *>(_library.resolve("clap_plugin_entry"));
+   if (!_pluginEntry) {
       qWarning() << "Unable to resolve entry point 'clap_plugin_entry' in '" << path << "'";
-      library_.unload();
+      _library.unload();
       return false;
    }
 
-   pluginEntry_->init(path.toStdString().c_str());
+   _pluginEntry->init(path.toStdString().c_str());
 
-   auto count = pluginEntry_->get_plugin_count();
+   auto count = _pluginEntry->get_plugin_count();
    if (pluginIndex > count) {
       qWarning() << "plugin index greater than count :" << count;
       return false;
    }
 
-   auto desc = pluginEntry_->get_plugin_descriptor(pluginIndex);
+   auto desc = _pluginEntry->get_plugin_descriptor(pluginIndex);
    if (!desc) {
       qWarning() << "no plugin descriptor";
       return false;
@@ -122,12 +122,12 @@ bool PluginHost::load(const QString &path, int pluginIndex) {
       return false;
    }
 
-   plugin_ = pluginEntry_->create_plugin(&host_, desc->id);
-   if (!plugin_) {
+   _plugin = _pluginEntry->create_plugin(&host_, desc->id);
+   if (!_plugin) {
       qWarning() << "could not create the plugin with id: " << desc->id;
       return false;
    }
-   plugin_->init(plugin_);
+   _plugin->init(_plugin);
 
    initPluginExtensions();
    scanParams();
@@ -138,56 +138,56 @@ bool PluginHost::load(const QString &path, int pluginIndex) {
 void PluginHost::initPluginExtensions() {
    checkForMainThread();
 
-   if (pluginExtensionsAreInitialized_)
+   if (_pluginExtensionsAreInitialized)
       return;
 
-   initPluginExtension(pluginParams_, CLAP_EXT_PARAMS);
-   initPluginExtension(pluginQuickControls_, CLAP_EXT_QUICK_CONTROLS);
-   initPluginExtension(pluginAudioPorts_, CLAP_EXT_AUDIO_PORTS);
-   initPluginExtension(pluginGui_, CLAP_EXT_GUI);
-   initPluginExtension(pluginGuiX11_, CLAP_EXT_GUI_X11);
-   initPluginExtension(pluginGuiWin32_, CLAP_EXT_GUI_WIN32);
-   initPluginExtension(pluginGuiCocoa_, CLAP_EXT_GUI_COCOA);
-   initPluginExtension(pluginGuiFreeStanding_, CLAP_EXT_GUI_FREE_STANDING);
-   initPluginExtension(pluginTimerSupport_, CLAP_EXT_TIMER_SUPPORT);
-   initPluginExtension(pluginFdSupport_, CLAP_EXT_FD_SUPPORT);
-   initPluginExtension(pluginThreadPool_, CLAP_EXT_THREAD_POOL);
-   initPluginExtension(pluginPresetLoad_, CLAP_EXT_PRESET_LOAD);
-   initPluginExtension(pluginState_, CLAP_EXT_STATE);
+   initPluginExtension(_pluginParams, CLAP_EXT_PARAMS);
+   initPluginExtension(_pluginQuickControls, CLAP_EXT_QUICK_CONTROLS);
+   initPluginExtension(_pluginAudioPorts, CLAP_EXT_AUDIO_PORTS);
+   initPluginExtension(_pluginGui, CLAP_EXT_GUI);
+   initPluginExtension(_pluginGuiX11, CLAP_EXT_GUI_X11);
+   initPluginExtension(_pluginGuiWin32, CLAP_EXT_GUI_WIN32);
+   initPluginExtension(_pluginGuiCocoa, CLAP_EXT_GUI_COCOA);
+   initPluginExtension(_pluginGuiFreeStanding, CLAP_EXT_GUI_FREE_STANDING);
+   initPluginExtension(_pluginTimerSupport, CLAP_EXT_TIMER_SUPPORT);
+   initPluginExtension(_pluginFdSupport, CLAP_EXT_FD_SUPPORT);
+   initPluginExtension(_pluginThreadPool, CLAP_EXT_THREAD_POOL);
+   initPluginExtension(_pluginPresetLoad, CLAP_EXT_PRESET_LOAD);
+   initPluginExtension(_pluginState, CLAP_EXT_STATE);
 
-   pluginExtensionsAreInitialized_ = true;
+   _pluginExtensionsAreInitialized = true;
 }
 
 void PluginHost::unload() {
    checkForMainThread();
 
-   if (!library_.isLoaded())
+   if (!_library.isLoaded())
       return;
 
-   if (pluginGui_)
-      pluginGui_->destroy(plugin_);
+   if (_pluginGui)
+      _pluginGui->destroy(_plugin);
 
    deactivate();
 
-   plugin_->destroy(plugin_);
-   plugin_ = nullptr;
-   pluginGui_ = nullptr;
-   pluginAudioPorts_ = nullptr;
+   _plugin->destroy(_plugin);
+   _plugin = nullptr;
+   _pluginGui = nullptr;
+   _pluginAudioPorts = nullptr;
 
-   pluginEntry_->deinit();
-   pluginEntry_ = nullptr;
+   _pluginEntry->deinit();
+   _pluginEntry = nullptr;
 
-   library_.unload();
+   _library.unload();
 }
 
 bool PluginHost::canActivate() const {
    checkForMainThread();
 
-   if (!engine_.isRunning())
+   if (!_engine.isRunning())
       return false;
    if (isPluginActive())
       return false;
-   if (scheduleRestart_)
+   if (_scheduleRestart)
       return false;
    return true;
 }
@@ -195,7 +195,7 @@ bool PluginHost::canActivate() const {
 void PluginHost::activate(int32_t sample_rate) {
    checkForMainThread();
 
-   if (plugin_->activate(plugin_, sample_rate))
+   if (_plugin->activate(_plugin, sample_rate))
       setPluginState(ActiveAndSleeping);
    else
       setPluginState(InactiveWithError);
@@ -208,62 +208,62 @@ void PluginHost::deactivate() {
       return;
 
    while (isPluginProcessing() || isPluginSleeping()) {
-      scheduleDeactivate_ = true;
+      _scheduleDeactivate = true;
       QThread::msleep(10);
    }
-   scheduleDeactivate_ = false;
+   _scheduleDeactivate = false;
 
-   plugin_->deactivate(plugin_);
+   _plugin->deactivate(_plugin);
    setPluginState(Inactive);
 }
 
 void PluginHost::setPorts(int numInputs, float **inputs, int numOutputs, float **outputs) {
-   audioIn_.channel_count = numInputs;
-   audioIn_.data32 = inputs;
-   audioIn_.data64 = nullptr;
-   audioIn_.constant_mask = 0;
-   audioIn_.latency = 0;
+   _audioIn.channel_count = numInputs;
+   _audioIn.data32 = inputs;
+   _audioIn.data64 = nullptr;
+   _audioIn.constant_mask = 0;
+   _audioIn.latency = 0;
 
-   audioOut_.channel_count = numOutputs;
-   audioOut_.data32 = outputs;
-   audioOut_.data64 = nullptr;
-   audioOut_.constant_mask = 0;
-   audioOut_.latency = 0;
+   _audioOut.channel_count = numOutputs;
+   _audioOut.data32 = outputs;
+   _audioOut.data64 = nullptr;
+   _audioOut.constant_mask = 0;
+   _audioOut.latency = 0;
 }
 
 void PluginHost::setParentWindow(WId parentWindow) {
    checkForMainThread();
 
-   if (isGuiCreated_) {
-      pluginGui_->destroy(plugin_);
-      isGuiCreated_ = false;
-      isGuiVisible_ = false;
+   if (_isGuiCreated) {
+      _pluginGui->destroy(_plugin);
+      _isGuiCreated = false;
+      _isGuiVisible = false;
    }
 
-   if (!pluginGui_->create(plugin_))
+   if (!_pluginGui->create(_plugin))
       return;
 
-   isGuiCreated_ = true;
-   assert(isGuiVisible_ == false);
+   _isGuiCreated = true;
+   assert(_isGuiVisible == false);
 
    uint32_t width = 0;
    uint32_t height = 0;
 
-   if (pluginGui_)
-      pluginGui_->get_size(plugin_, &width, &height);
+   if (_pluginGui)
+      _pluginGui->get_size(_plugin, &width, &height);
 
 #if defined(Q_OS_LINUX)
-   if (pluginGuiX11_)
-      pluginGuiX11_->attach(plugin_, nullptr, parentWindow);
+   if (_pluginGuiX11)
+      _pluginGuiX11->attach(_plugin, nullptr, parentWindow);
 #elif defined(Q_OS_MACX)
-   if (pluginGuiCocoa_)
-      pluginGuiCocoa_->attach(plugin_, (void *)parentWindow);
+   if (_pluginGuiCocoa)
+      _pluginGuiCocoa->attach(_plugin, (void *)parentWindow);
 #elif defined(Q_OS_WIN32)
-   if (pluginEmbedWin32_)
-      pluginGuiWin32_->attach(plugin_, parentWindow);
+   if (_pluginEmbedWin32)
+      _pluginGuiWin32->attach(_plugin, parentWindow);
 #endif
-   // else (pluginGuiFreeStanding_)
-   //   pluginGuiFreeStanding_->open(plugin_);
+   // else (_pluginGuiFreeStanding)
+   //   _pluginGuiFreeStanding->open(_plugin);
 
    Application::instance().mainWindow()->resizePluginView(width, height);
 
@@ -273,15 +273,15 @@ void PluginHost::setParentWindow(WId parentWindow) {
 void PluginHost::setPluginWindowVisibility(bool isVisible) {
    checkForMainThread();
 
-   if (!isGuiCreated_)
+   if (!_isGuiCreated)
       return;
 
-   if (isVisible && !isGuiVisible_) {
-      pluginGui_->show(plugin_);
-      isGuiVisible_ = true;
-   } else if (!isVisible && isGuiVisible_) {
-      pluginGui_->hide(plugin_);
-      isGuiVisible_ = false;
+   if (isVisible && !_isGuiVisible) {
+      _pluginGui->show(_plugin);
+      _isGuiVisible = true;
+   } else if (!isVisible && _isGuiVisible) {
+      _pluginGui->hide(_plugin);
+      _isGuiVisible = false;
    }
 }
 
@@ -309,33 +309,33 @@ void PluginHost::initPluginExtension(const T *&ext, const char *id) {
    checkForMainThread();
 
    if (!ext)
-      ext = static_cast<const T *>(plugin_->get_extension(plugin_, id));
+      ext = static_cast<const T *>(_plugin->get_extension(_plugin, id));
 }
 
 const void *PluginHost::clapExtension(const clap_host *host, const char *extension) {
    checkForMainThread();
 
    PluginHost *h = static_cast<PluginHost *>(host->host_data);
-   if (!h->plugin_)
+   if (!h->_plugin)
       throw std::logic_error("The plugin can't query for extensions during the create method. Wait "
                              "for clap_plugin.init() call.");
 
    if (!strcmp(extension, CLAP_EXT_GUI))
-      return &h->hostGui_;
+      return &h->_hostGui;
    if (!strcmp(extension, CLAP_EXT_LOG))
-      return &h->hostLog_;
+      return &h->_hostLog;
    if (!strcmp(extension, CLAP_EXT_THREAD_CHECK))
-      return &h->hostThreadCheck_;
+      return &h->_hostThreadCheck;
    if (!strcmp(extension, CLAP_EXT_TIMER_SUPPORT))
-      return &h->hostTimerSupport_;
+      return &h->_hostTimerSupport;
    if (!strcmp(extension, CLAP_EXT_FD_SUPPORT))
-      return &h->hostFdSupport_;
+      return &h->_hostFdSupport;
    if (!strcmp(extension, CLAP_EXT_PARAMS))
-      return &h->hostParams_;
+      return &h->_hostParams;
    if (!strcmp(extension, CLAP_EXT_QUICK_CONTROLS))
-      return &h->hostQuickControls_;
+      return &h->_hostQuickControls;
    if (!strcmp(extension, CLAP_EXT_STATE))
-      return &h->hostState_;
+      return &h->_hostState;
    return nullptr;
 }
 
@@ -347,7 +347,7 @@ PluginHost *PluginHost::fromHost(const clap_host *host) {
    if (!h)
       throw std::invalid_argument("Passed an invalid host pointer because the host_data is null");
 
-   if (!h->plugin_)
+   if (!h->_plugin)
       throw std::logic_error(
          "Called into host interfaces befores the host knows the plugin pointer");
 
@@ -372,15 +372,15 @@ bool PluginHost::clapThreadPoolRequestExec(const clap_host *host, uint32_t num_t
    checkForAudioThread();
 
    auto h = fromHost(host);
-   if (!h->pluginThreadPool_ || !h->pluginThreadPool_->exec)
+   if (!h->_pluginThreadPool || !h->_pluginThreadPool->exec)
       throw std::logic_error("Called request_exec() without providing clap_plugin_thread_pool to "
                              "execute the job.");
 
-   Q_ASSERT(!h->threadPoolStop_);
-   Q_ASSERT(!h->threadPool_.empty());
-   h->threadPoolTaskIndex_ = 0;
-   h->threadPoolSemaphoreProd_.release(num_tasks);
-   h->threadPoolSemaphoreDone_.acquire(num_tasks);
+   Q_ASSERT(!h->_threadPoolStop);
+   Q_ASSERT(!h->_threadPool.empty());
+   h->_threadPoolTaskIndex = 0;
+   h->_threadPoolSemaphoreProd.release(num_tasks);
+   h->_threadPoolSemaphoreDone.acquire(num_tasks);
    return true;
 }
 
@@ -389,22 +389,22 @@ bool PluginHost::clapRegisterTimer(const clap_host *host, uint32_t period_ms, cl
 
    auto h = fromHost(host);
    h->initPluginExtensions();
-   if (!h->pluginTimerSupport_ || !h->pluginTimerSupport_->on_timer)
+   if (!h->_pluginTimerSupport || !h->_pluginTimerSupport->on_timer)
       throw std::logic_error(
          "Called register_timer() without providing clap_plugin_timer_support.on_timer() to "
          "receive the timer event.");
 
-   auto id = h->nextTimerId_++;
+   auto id = h->_nextTimerId++;
    *timer_id = id;
    auto timer = std::make_unique<QTimer>();
 
    QObject::connect(timer.get(), &QTimer::timeout, [h, id] {
       checkForMainThread();
-      h->pluginTimerSupport_->on_timer(h->plugin_, id);
+      h->_pluginTimerSupport->on_timer(h->_plugin, id);
    });
 
    auto t = timer.get();
-   h->timers_.emplace(*timer_id, std::move(timer));
+   h->_timers.emplace(*timer_id, std::move(timer));
    t->start(period_ms);
    return true;
 }
@@ -413,16 +413,16 @@ bool PluginHost::clapUnregisterTimer(const clap_host *host, clap_id timer_id) {
    checkForMainThread();
 
    auto h = fromHost(host);
-   if (!h->pluginTimerSupport_ || !h->pluginTimerSupport_->on_timer)
+   if (!h->_pluginTimerSupport || !h->_pluginTimerSupport->on_timer)
       throw std::logic_error(
          "Called unregister_timer() without providing clap_plugin_timer_support.on_timer() to "
          "receive the timer event.");
 
-   auto it = h->timers_.find(timer_id);
-   if (it == h->timers_.end())
+   auto it = h->_timers.find(timer_id);
+   if (it == h->_timers.end())
       throw std::logic_error("Called unregister_timer() for a timer_id that was not registered.");
 
-   h->timers_.erase(it);
+   h->_timers.erase(it);
    return true;
 }
 
@@ -431,16 +431,16 @@ bool PluginHost::clapRegisterFd(const clap_host *host, clap_fd fd, uint32_t flag
 
    auto h = fromHost(host);
    h->initPluginExtensions();
-   if (!h->pluginFdSupport_ || !h->pluginFdSupport_->on_fd)
+   if (!h->_pluginFdSupport || !h->_pluginFdSupport->on_fd)
       throw std::logic_error("Called register_fd() without providing clap_plugin_fd_support to "
                              "receive the fd event.");
 
-   auto it = h->fds_.find(fd);
-   if (it != h->fds_.end())
+   auto it = h->_fds.find(fd);
+   if (it != h->_fds.end())
       throw std::logic_error(
          "Called register_fd() for a fd that was already registered, use modify_fd() instead.");
 
-   h->fds_.emplace(fd, std::make_unique<Notifiers>());
+   h->_fds.emplace(fd, std::make_unique<Notifiers>());
    h->eventLoopSetFdNotifierFlags(fd, flags);
    return true;
 }
@@ -449,16 +449,16 @@ bool PluginHost::clapModifyFd(const clap_host *host, clap_fd fd, uint32_t flags)
    checkForMainThread();
 
    auto h = fromHost(host);
-   if (!h->pluginFdSupport_ || !h->pluginFdSupport_->on_fd)
+   if (!h->_pluginFdSupport || !h->_pluginFdSupport->on_fd)
       throw std::logic_error("Called modify_fd() without providing clap_plugin_fd_support to "
                              "receive the timer event.");
 
-   auto it = h->fds_.find(fd);
-   if (it == h->fds_.end())
+   auto it = h->_fds.find(fd);
+   if (it == h->_fds.end())
       throw std::logic_error(
          "Called modify_fd() for a fd that was not registered, use register_fd() instead.");
 
-   h->fds_.emplace(fd, std::make_unique<Notifiers>());
+   h->_fds.emplace(fd, std::make_unique<Notifiers>());
    h->eventLoopSetFdNotifierFlags(fd, flags);
    return true;
 }
@@ -467,30 +467,30 @@ bool PluginHost::clapUnregisterFd(const clap_host *host, clap_fd fd) {
    checkForMainThread();
 
    auto h = fromHost(host);
-   if (!h->pluginFdSupport_ || !h->pluginFdSupport_->on_fd)
+   if (!h->_pluginFdSupport || !h->_pluginFdSupport->on_fd)
       throw std::logic_error("Called unregister_fd() without providing clap_plugin_fd_support to "
                              "receive the fd event.");
 
-   auto it = h->fds_.find(fd);
-   if (it == h->fds_.end())
+   auto it = h->_fds.find(fd);
+   if (it == h->_fds.end())
       throw std::logic_error("Called unregister_fd() for a fd that was not registered.");
 
-   h->fds_.erase(it);
+   h->_fds.erase(it);
    return true;
 }
 
 void PluginHost::eventLoopSetFdNotifierFlags(clap_fd fd, uint32_t flags) {
    checkForMainThread();
 
-   auto it = fds_.find(fd);
-   Q_ASSERT(it != fds_.end());
+   auto it = _fds.find(fd);
+   Q_ASSERT(it != _fds.end());
 
    if (flags & CLAP_FD_READ) {
       if (!it->second->rd) {
          it->second->rd.reset(new QSocketNotifier(fd, QSocketNotifier::Read));
          QObject::connect(it->second->rd.get(), &QSocketNotifier::activated, [this, fd] {
             checkForMainThread();
-            this->pluginFdSupport_->on_fd(this->plugin_, fd, CLAP_FD_READ);
+            _pluginFdSupport->on_fd(this->_plugin, fd, CLAP_FD_READ);
          });
       }
       it->second->rd->setEnabled(true);
@@ -502,7 +502,7 @@ void PluginHost::eventLoopSetFdNotifierFlags(clap_fd fd, uint32_t flags) {
          it->second->wr.reset(new QSocketNotifier(fd, QSocketNotifier::Write));
          QObject::connect(it->second->wr.get(), &QSocketNotifier::activated, [this, fd] {
             checkForMainThread();
-            this->pluginFdSupport_->on_fd(this->plugin_, fd, CLAP_FD_WRITE);
+            _pluginFdSupport->on_fd(this->_plugin, fd, CLAP_FD_WRITE);
          });
       }
       it->second->wr->setEnabled(true);
@@ -514,7 +514,7 @@ void PluginHost::eventLoopSetFdNotifierFlags(clap_fd fd, uint32_t flags) {
          it->second->err.reset(new QSocketNotifier(fd, QSocketNotifier::Exception));
          QObject::connect(it->second->err.get(), &QSocketNotifier::activated, [this, fd] {
             checkForMainThread();
-            this->pluginFdSupport_->on_fd(this->plugin_, fd, CLAP_FD_ERROR);
+            _pluginFdSupport->on_fd(this->_plugin, fd, CLAP_FD_ERROR);
          });
       }
       it->second->err->setEnabled(true);
@@ -532,15 +532,15 @@ bool PluginHost::clapGuiResize(const clap_host *host, uint32_t width, uint32_t h
 void PluginHost::processBegin(int nframes) {
    g_thread_type = AudioThread;
 
-   process_.frames_count = nframes;
-   process_.steady_time = engine_.steadyTime_;
+   _process.frames_count = nframes;
+   _process.steady_time = _engine._steadyTime;
 }
 
 void PluginHost::processEnd(int nframes) {
    g_thread_type = Unknown;
 
-   process_.frames_count = nframes;
-   process_.steady_time = engine_.steadyTime_;
+   _process.frames_count = nframes;
+   _process.steady_time = _engine._steadyTime;
 }
 
 void PluginHost::processNoteOn(int sampleOffset, int channel, int key, int velocity) {
@@ -553,7 +553,7 @@ void PluginHost::processNoteOn(int sampleOffset, int channel, int key, int veloc
    ev.note.channel = channel;
    ev.note.velocity = velocity / 127.0;
 
-   evIn_.push_back(ev);
+   _evIn.push_back(ev);
 }
 
 void PluginHost::processNoteOff(int sampleOffset, int channel, int key, int velocity) {
@@ -566,7 +566,7 @@ void PluginHost::processNoteOff(int sampleOffset, int channel, int key, int velo
    ev.note.channel = channel;
    ev.note.velocity = velocity / 127.0;
 
-   evIn_.push_back(ev);
+   _evIn.push_back(ev);
 }
 
 void PluginHost::processNoteAt(int sampleOffset, int channel, int key, int pressure) {
@@ -592,7 +592,7 @@ void PluginHost::processCC(int sampleOffset, int channel, int cc, int value) {
    ev.midi.data[1] = cc;
    ev.midi.data[2] = value;
 
-   evIn_.push_back(ev);
+   _evIn.push_back(ev);
 }
 
 static uint32_t clap_host_event_list_size(const struct clap_event_list *list) {
@@ -627,24 +627,24 @@ void PluginHost::process() {
    if (!isPluginProcessing() && !isPluginSleeping())
       return;
 
-   process_.transport = nullptr;
+   _process.transport = nullptr;
 
    clap_event_list in_ev = {
-      &evIn_, clap_host_event_list_size, clap_host_event_list_get, clap_host_event_list_push_back};
+      &_evIn, clap_host_event_list_size, clap_host_event_list_get, clap_host_event_list_push_back};
 
    clap_event_list out_ev = {
-      &evOut_, clap_host_event_list_size, clap_host_event_list_get, clap_host_event_list_push_back};
+      &_evOut, clap_host_event_list_size, clap_host_event_list_get, clap_host_event_list_push_back};
 
-   process_.in_events = &in_ev;
-   process_.out_events = &out_ev;
+   _process.in_events = &in_ev;
+   _process.out_events = &out_ev;
 
-   process_.audio_inputs = &audioIn_;
-   process_.audio_inputs_count = 1;
-   process_.audio_outputs = &audioOut_;
-   process_.audio_outputs_count = 1;
+   _process.audio_inputs = &_audioIn;
+   _process.audio_inputs_count = 1;
+   _process.audio_outputs = &_audioOut;
+   _process.audio_outputs_count = 1;
 
-   evOut_.clear();
-   appToEngineValueQueue_.consume([this](clap_id param_id, const ParamQueueValue &value) {
+   _evOut.clear();
+   _appToEngineValueQueue.consume([this](clap_id param_id, const ParamQueueValue &value) {
       clap_event ev;
       ev.time = 0;
       ev.type = CLAP_EVENT_PARAM_VALUE;
@@ -654,10 +654,10 @@ void PluginHost::process() {
       ev.param_value.channel = -1;
       ev.param_value.value = value.value;
       ev.param_value.flags = 0;
-      evIn_.push_back(ev);
+      _evIn.push_back(ev);
    });
 
-   appToEngineModQueue_.consume([this](clap_id param_id, const ParamQueueValue &value) {
+   _appToEngineModQueue.consume([this](clap_id param_id, const ParamQueueValue &value) {
       clap_event ev;
       ev.time = 0;
       ev.type = CLAP_EVENT_PARAM_MOD;
@@ -666,38 +666,38 @@ void PluginHost::process() {
       ev.param_mod.key = -1;
       ev.param_mod.channel = -1;
       ev.param_mod.amount = value.value;
-      evIn_.push_back(ev);
+      _evIn.push_back(ev);
    });
 
    // TODO if the plugin was not processing and had audio or events that should
    // wake it, then we should set it as processing
    if (!isPluginProcessing()) {
-      plugin_->start_processing(plugin_);
+      _plugin->start_processing(_plugin);
       setPluginState(ActiveAndProcessing);
    }
 
    int32_t status;
-   if (plugin_ && plugin_->process)
-      status = plugin_->process(plugin_, &process_);
+   if (_plugin && _plugin->process)
+      status = _plugin->process(_plugin, &_process);
 
-   for (auto &ev : evOut_) {
+   for (auto &ev : _evOut) {
       switch (ev.type) {
       case CLAP_EVENT_PARAM_VALUE:
-         engineToAppValueQueue_.set(ev.param_value.param_id,
+         _engineToAppValueQueue.set(ev.param_value.param_id,
                                     {ev.param_value.cookie, ev.param_value.value});
          break;
       }
    }
-   evOut_.clear();
-   evIn_.clear();
+   _evOut.clear();
+   _evIn.clear();
 
-   if (scheduleDeactivate_) {
-      scheduleDeactivate_ = false;
-      plugin_->stop_processing(plugin_);
+   if (_scheduleDeactivate) {
+      _scheduleDeactivate = false;
+      _plugin->stop_processing(_plugin);
       setPluginState(ActiveAndReadyToDeactivate);
    }
 
-   engineToAppValueQueue_.producerDone();
+   _engineToAppValueQueue.producerDone();
    g_thread_type = Unknown;
 }
 
@@ -705,12 +705,12 @@ void PluginHost::idle() {
    checkForMainThread();
 
    // Try to send events to the audio engine
-   appToEngineValueQueue_.producerDone();
-   appToEngineModQueue_.producerDone();
+   _appToEngineValueQueue.producerDone();
+   _appToEngineModQueue.producerDone();
 
-   engineToAppValueQueue_.consume([this](clap_id param_id, const ParamQueueValue &value) {
-      auto it = params_.find(param_id);
-      if (it == params_.end()) {
+   _engineToAppValueQueue.consume([this](clap_id param_id, const ParamQueueValue &value) {
+      auto it = _params.find(param_id);
+      if (it == _params.end()) {
          std::ostringstream msg;
          msg << "Plugin produced a CLAP_EVENT_PARAM_SET with an unknown param_id: " << param_id;
          throw std::invalid_argument(msg.str());
@@ -731,8 +731,8 @@ PluginParam &PluginHost::checkValidParamId(const std::string_view &function,
       throw std::invalid_argument(msg.str());
    }
 
-   auto it = params_.find(param_id);
-   if (it == params_.end()) {
+   auto it = _params.find(param_id);
+   if (it == _params.end()) {
       std::ostringstream msg;
       msg << "Plugin called " << function << " with  an invalid " << param_name
           << " == " << param_id;
@@ -761,8 +761,8 @@ void PluginHost::setParamValueByHost(PluginParam &param, double value) {
 
    param.setValue(value);
 
-   appToEngineValueQueue_.set(param.info().id, {param.info().cookie, value});
-   appToEngineValueQueue_.producerDone();
+   _appToEngineValueQueue.set(param.info().id, {param.info().cookie, value});
+   _appToEngineValueQueue.producerDone();
 }
 
 void PluginHost::setParamModulationByHost(PluginParam &param, double value) {
@@ -770,8 +770,8 @@ void PluginHost::setParamModulationByHost(PluginParam &param, double value) {
 
    param.setModulation(value);
 
-   appToEngineModQueue_.set(param.info().id, {param.info().cookie, value});
-   appToEngineModQueue_.producerDone();
+   _appToEngineModQueue.set(param.info().id, {param.info().cookie, value});
+   _appToEngineModQueue.producerDone();
 }
 
 void PluginHost::scanParams() { clapParamsRescan(&host_, CLAP_PARAM_RESCAN_ALL); }
@@ -788,12 +788,12 @@ void PluginHost::clapParamsRescan(const clap_host *host, uint32_t flags) {
    }
 
    // 2. scan the params.
-   auto count = h->pluginParams_->count(h->plugin_);
+   auto count = h->_pluginParams->count(h->_plugin);
    std::unordered_set<clap_id> paramIds(count * 2);
 
    for (int32_t i = 0; i < count; ++i) {
       clap_param_info info;
-      if (!h->pluginParams_->get_info(h->plugin_, i, &info))
+      if (!h->_pluginParams->get_info(h->_plugin, i, &info))
          throw std::logic_error("clap_plugin_params.get_info did return false!");
 
       if (info.id == CLAP_INVALID_ID) {
@@ -804,11 +804,11 @@ void PluginHost::clapParamsRescan(const clap_host *host, uint32_t flags) {
          throw std::logic_error(msg.str());
       }
 
-      auto it = h->params_.find(info.id);
+      auto it = h->_params.find(info.id);
 
       // check that the parameter is not declared twice
       if (paramIds.count(info.id) > 0) {
-         Q_ASSERT(it != h->params_.end());
+         Q_ASSERT(it != h->_params.end());
 
          std::ostringstream msg;
          msg << "the parameter with id: " << info.id << " was declared twice." << std::endl
@@ -819,7 +819,7 @@ void PluginHost::clapParamsRescan(const clap_host *host, uint32_t flags) {
       }
       paramIds.insert(info.id);
 
-      if (it == h->params_.end()) {
+      if (it == h->_params.end()) {
          if (!(flags & CLAP_PARAM_RESCAN_ALL)) {
             std::ostringstream msg;
             msg << "a new parameter was declared, but the flag CLAP_PARAM_RESCAN_ALL was not "
@@ -831,7 +831,7 @@ void PluginHost::clapParamsRescan(const clap_host *host, uint32_t flags) {
          double value = h->getParamValue(info);
          auto param = std::make_unique<PluginParam>(*h, info, value);
          h->checkValidParamValue(*param, value);
-         h->params_.emplace(info.id, std::move(param));
+         h->_params.emplace(info.id, std::move(param));
       } else {
          // update param info
          if (!it->second->isInfoEqualTo(info)) {
@@ -877,7 +877,7 @@ void PluginHost::clapParamsRescan(const clap_host *host, uint32_t flags) {
    }
 
    // remove parameters which are gone
-   for (auto it = h->params_.begin(); it != h->params_.end();) {
+   for (auto it = h->_params.begin(); it != h->_params.end();) {
       if (paramIds.find(it->first) != paramIds.end())
          ++it;
       else {
@@ -889,7 +889,7 @@ void PluginHost::clapParamsRescan(const clap_host *host, uint32_t flags) {
                 << info.id << ", name: " << info.name << ", module: " << info.module << std::endl;
             throw std::logic_error(msg.str());
          }
-         it = h->params_.erase(it);
+         it = h->_params.erase(it);
       }
    }
 
@@ -900,7 +900,7 @@ void PluginHost::clapParamsRescan(const clap_host *host, uint32_t flags) {
 double PluginHost::getParamValue(const clap_param_info &info) {
    checkForMainThread();
    double value;
-   if (pluginParams_->get_value(plugin_, info.id, &value))
+   if (_pluginParams->get_value(_plugin, info.id, &value))
       return value;
 
    std::ostringstream msg;
@@ -912,28 +912,28 @@ double PluginHost::getParamValue(const clap_param_info &info) {
 void PluginHost::scanQuickControls() {
    checkForMainThread();
 
-   if (!pluginQuickControls_)
+   if (!_pluginQuickControls)
       return;
 
-   if (!pluginQuickControls_->get || !pluginQuickControls_->count) {
+   if (!_pluginQuickControls->get || !_pluginQuickControls->count) {
       std::ostringstream msg;
       msg << "clap_plugin_quick_controls is partially implemented.";
       throw std::logic_error(msg.str());
    }
 
    quickControlsSetSelectedPage(CLAP_INVALID_ID);
-   quickControlsPages_.clear();
+   _quickControlsPages.clear();
 
-   const auto N = pluginQuickControls_->count(plugin_);
+   const auto N = _pluginQuickControls->count(_plugin);
    if (N == 0)
       return;
 
-   quickControlsPages_.reserve(N);
+   _quickControlsPages.reserve(N);
 
    clap_id firstPageId = CLAP_INVALID_ID;
    for (int i = 0; i < N; ++i) {
       auto page = std::make_unique<clap_quick_controls_page>();
-      if (!pluginQuickControls_->get(plugin_, i, page.get())) {
+      if (!_pluginQuickControls->get(_plugin, i, page.get())) {
          std::ostringstream msg;
          msg << "clap_plugin_quick_controls.get_page(" << i << ") failed, while the page count is "
              << N;
@@ -949,8 +949,8 @@ void PluginHost::scanQuickControls() {
       if (i == 0)
          firstPageId = page->id;
 
-      auto it = quickControlsPages_.find(page->id);
-      if (it != quickControlsPages_.end()) {
+      auto it = _quickControlsPages.find(page->id);
+      if (it != _quickControlsPages.end()) {
          std::ostringstream msg;
          msg << "clap_plugin_quick_controls.get_page(" << i
              << ") gave twice the same page_id:" << page->id << std::endl
@@ -959,30 +959,30 @@ void PluginHost::scanQuickControls() {
          throw std::invalid_argument(msg.str());
       }
 
-      quickControlsPages_.emplace(page->id, std::move(page));
+      _quickControlsPages.emplace(page->id, std::move(page));
    }
 
    quickControlsPagesChanged();
 
-   auto pageId = pluginQuickControls_->get_selected(plugin_);
+   auto pageId = _pluginQuickControls->get_selected(_plugin);
    quickControlsSetSelectedPage(pageId == CLAP_INVALID_ID ? firstPageId : pageId);
 }
 
 void PluginHost::quickControlsSetSelectedPage(clap_id pageId) {
    checkForMainThread();
-   if (pageId == quickControlsSelectedPage_)
+   if (pageId == _quickControlsSelectedPage)
       return;
 
    if (pageId != CLAP_INVALID_ID) {
-      auto it = quickControlsPages_.find(pageId);
-      if (it == quickControlsPages_.end()) {
+      auto it = _quickControlsPages.find(pageId);
+      if (it == _quickControlsPages.end()) {
          std::ostringstream msg;
          msg << "quick control page_id " << pageId << " not found";
          throw std::invalid_argument(msg.str());
       }
    }
 
-   quickControlsSelectedPage_ = pageId;
+   _quickControlsSelectedPage = pageId;
    quickControlsSelectedPageChanged();
 }
 
@@ -992,10 +992,10 @@ void PluginHost::setQuickControlsSelectedPageByHost(clap_id page_id) {
 
    checkForMainThread();
 
-   quickControlsSelectedPage_ = page_id;
+   _quickControlsSelectedPage = page_id;
 
-   if (pluginQuickControls_ && pluginQuickControls_->select)
-      pluginQuickControls_->select(plugin_, page_id);
+   if (_pluginQuickControls && _pluginQuickControls->select)
+      _pluginQuickControls->select(_plugin, page_id);
 }
 
 void PluginHost::clapQuickControlsChanged(const clap_host *host,
@@ -1003,7 +1003,7 @@ void PluginHost::clapQuickControlsChanged(const clap_host *host,
    checkForMainThread();
 
    auto h = fromHost(host);
-   if (!h->pluginQuickControls_) {
+   if (!h->_pluginQuickControls) {
       std::ostringstream msg;
       msg << "Plugin called clap_host_quick_controls.changed() but does not provide "
              "clap_plugin_quick_controls";
@@ -1014,7 +1014,7 @@ void PluginHost::clapQuickControlsChanged(const clap_host *host,
       h->scanQuickControls();
 
    if (flags & CLAP_QUICK_CONTROLS_SELECTED_PAGE_CHANGED) {
-      auto selectedPageId = h->pluginQuickControls_->get_selected(h->plugin_);
+      auto selectedPageId = h->_pluginQuickControls->get_selected(h->_plugin);
       h->quickControlsSetSelectedPage(selectedPageId);
    }
 }
@@ -1022,13 +1022,13 @@ void PluginHost::clapQuickControlsChanged(const clap_host *host,
 bool PluginHost::loadNativePluginPreset(const std::string &path) {
    checkForMainThread();
 
-   if (!pluginPresetLoad_)
+   if (!_pluginPresetLoad)
       return false;
 
-   if (!pluginPresetLoad_->from_file)
+   if (!_pluginPresetLoad->from_file)
       throw std::logic_error("clap_plugin_preset_load does not implement load_from_file");
 
-   return pluginPresetLoad_->from_file(plugin_, path.c_str());
+   return _pluginPresetLoad->from_file(_plugin, path.c_str());
 }
 
 void PluginHost::clapStateMarkDirty(const clap_host *host) {
@@ -1036,49 +1036,49 @@ void PluginHost::clapStateMarkDirty(const clap_host *host) {
 
    auto h = fromHost(host);
 
-   if (!h->pluginState_ || !h->pluginState_->save || !h->pluginState_->load)
+   if (!h->_pluginState || !h->_pluginState->save || !h->_pluginState->load)
       throw std::logic_error("Plugin called clap_host_state.set_dirty() but the host does not "
                              "provide a complete clap_plugin_state interface.");
 
-   h->stateIsDirty_ = true;
+   h->_stateIsDirty = true;
 }
 
 void PluginHost::setPluginState(PluginState state) {
    switch (state) {
    case Inactive:
-      Q_ASSERT(state_ == ActiveAndReadyToDeactivate);
+      Q_ASSERT(_state == ActiveAndReadyToDeactivate);
       break;
 
    case InactiveWithError:
-      Q_ASSERT(state_ == Inactive);
+      Q_ASSERT(_state == Inactive);
       break;
 
    case ActiveAndSleeping:
-      Q_ASSERT(state_ == Inactive || state_ == ActiveAndProcessing);
+      Q_ASSERT(_state == Inactive || _state == ActiveAndProcessing);
       break;
 
    case ActiveAndProcessing:
-      Q_ASSERT(state_ == ActiveAndSleeping);
+      Q_ASSERT(_state == ActiveAndSleeping);
       break;
 
    case ActiveWithError:
-      Q_ASSERT(state_ == ActiveAndProcessing);
+      Q_ASSERT(_state == ActiveAndProcessing);
       break;
 
    case ActiveAndReadyToDeactivate:
-      Q_ASSERT(state_ == ActiveAndProcessing || state_ == ActiveAndSleeping ||
-               state_ == ActiveWithError);
+      Q_ASSERT(_state == ActiveAndProcessing || _state == ActiveAndSleeping ||
+               _state == ActiveWithError);
       break;
 
    default:
       std::terminate();
    }
 
-   state_ = state;
+   _state = state;
 }
 
 bool PluginHost::isPluginActive() const {
-   switch (state_) {
+   switch (_state) {
    case Inactive:
    case InactiveWithError:
       return false;
@@ -1087,6 +1087,6 @@ bool PluginHost::isPluginActive() const {
    }
 }
 
-bool PluginHost::isPluginProcessing() const { return state_ == ActiveAndProcessing; }
+bool PluginHost::isPluginProcessing() const { return _state == ActiveAndProcessing; }
 
-bool PluginHost::isPluginSleeping() const { return state_ == ActiveAndSleeping; }
+bool PluginHost::isPluginSleeping() const { return _state == ActiveAndSleeping; }

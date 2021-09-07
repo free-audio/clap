@@ -6,14 +6,14 @@
 #include "settings-widget.hh"
 #include "settings.hh"
 
-SettingsWidget::SettingsWidget(Settings &settings) : settings_(settings) {
+SettingsWidget::SettingsWidget(Settings &settings) : _settings(settings) {
    QVBoxLayout *layout = new QVBoxLayout();
 
-   audioSettingsWidget_ = new AudioSettingsWidget(settings.audioSettings());
-   layout->addWidget(audioSettingsWidget_);
+   _audioSettingsWidget = new AudioSettingsWidget(settings.audioSettings());
+   layout->addWidget(_audioSettingsWidget);
 
-   midiSettingsWidget_ = new MidiSettingsWidget(settings.midiSettings());
-   layout->addWidget(midiSettingsWidget_);
+   _midiSettingsWidget = new MidiSettingsWidget(settings.midiSettings());
+   layout->addWidget(_midiSettingsWidget);
 
    setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
    setLayout(layout);

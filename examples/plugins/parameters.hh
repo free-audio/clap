@@ -16,95 +16,89 @@
 namespace clap {
    class Parameter {
    public:
-      explicit Parameter(const clap_param_info &info) : info_(info) { info_.cookie = this; }
+      explicit Parameter(const clap_param_info &info) : _info(info) { _info.cookie = this; }
 
       Parameter(const Parameter &) = delete;
       Parameter(Parameter &&) = delete;
       Parameter &operator=(const Parameter &) = delete;
       Parameter &operator=(Parameter &&) = delete;
 
-      const double value() const noexcept { return value_; }
-      const double modulation() const noexcept { return modulation_; }
-      const double modulatedValue() const noexcept { return value_ + modulation_; }
-      const clap_param_info &info() const noexcept { return info_; }
+      const double value() const noexcept { return _value; }
+      const double modulation() const noexcept { return _modulation; }
+      const double modulatedValue() const noexcept { return _value + _modulation; }
+      const clap_param_info &info() const noexcept { return _info; }
 
       void setDefaultValue() {
-         value_ = info_.default_value;
-         modulation_ = 0;
+         _value = _info.default_value;
+         _modulation = 0;
       }
 
       void setValueImmediately(double val) {
-         value_ = val;
-         valueRamp_ = 0;
-         valueSteps_ = 0;
+         _value = val;
+         _valueRamp = 0;
+         _valueSteps = 0;
       }
       void setModulationImmediately(double mod) {
-         modulation_ = mod;
-         modulationRamp_ = 0;
-         modulationSteps_ = 0;
+         _modulation = mod;
+         _modulationRamp = 0;
+         _modulationSteps = 0;
       }
 
-      void setValueSmoothed(double val, uint16_t steps)
-      {
+      void setValueSmoothed(double val, uint16_t steps) {
          assert(steps > 0);
-         valueRamp_ = (val - value_) / steps;
-         valueSteps_ = steps;
+         _valueRamp = (val - _value) / steps;
+         _valueSteps = steps;
       }
 
-      void setModulationSmoothed(double mod, uint16_t steps)
-      {
+      void setModulationSmoothed(double mod, uint16_t steps) {
          assert(steps > 0);
-         modulationRamp_ = (mod - modulation_) / steps;
-         modulationSteps_ = steps;
+         _modulationRamp = (mod - _modulation) / steps;
+         _modulationSteps = steps;
       }
 
       // Advances the value by 1 samples and return the new value + modulation
       double step() {
-         if (valueSteps_ > 0) [[unlikely]]
-         {
-            value_ += valueRamp_;
-            --valueSteps_;
+         if (_valueSteps > 0) [[unlikely]] {
+            _value += _valueRamp;
+            --_valueSteps;
          }
 
-         if (modulationSteps_ > 0) [[unlikely]]
-         {
-            modulation_ += modulationRamp_;
-            --modulationSteps_;
+         if (_modulationSteps > 0) [[unlikely]] {
+            _modulation += _modulationRamp;
+            --_modulationSteps;
          }
 
-         return value_ + modulation_;
+         return _value + _modulation;
       }
 
       // Advances the value by n samples and return the new value + modulation
       double step(uint32_t n) {
-         if (valueSteps_ > 0) [[unlikely]]
-         {
-            auto k = std::min<uint32_t>(valueSteps_, n);
-            value_ += k * valueRamp_;
-            valueSteps_ -= k;
+         if (_valueSteps > 0) [[unlikely]] {
+            auto k = std::min<uint32_t>(_valueSteps, n);
+            _value += k * _valueRamp;
+            _valueSteps -= k;
          }
 
-         if (modulationSteps_ > 0) [[unlikely]]
-         {
-            auto k = std::min<uint32_t>(valueSteps_, n);
-            modulation_ += k * modulationRamp_;
-            modulationSteps_ -= k;
+         if (_modulationSteps > 0) [[unlikely]] {
+            auto k = std::min<uint32_t>(_valueSteps, n);
+            _modulation += k * _modulationRamp;
+            _modulationSteps -= k;
          }
 
-         return value_ + modulation_;
+         return _value + _modulation;
       }
 
    private:
-      clap_param_info info_;
+      clap_param_info _info;
 
-      double value_ = 0;
-      double modulation_ = 0;
+      double _value = 0;
+      double _modulation = 0;
 
-      double valueRamp_ = 0;
-      double modulationRamp_ = 0;
+      double _valueRamp = 0;
+      double _modulationRamp = 0;
 
-      uint16_t valueSteps_ = 0;
-      uint16_t modulationSteps_ = 0;
+      uint16_t _valueSteps = 0;
+      uint16_t _modulationSteps = 0;
    };
 
    class Parameters {
@@ -127,7 +121,7 @@ namespace clap {
       template <class Archive>
       void save(Archive &ar, const unsigned int version) const {
          std::vector<std::pair<clap_id, double>> values;
-         for (auto &p : params_)
+         for (auto &p : _params)
             values.emplace_back(p->info().id, p->value());
 
          ar << values;
@@ -138,7 +132,7 @@ namespace clap {
          std::vector<std::pair<clap_id, double>> values;
          ar >> values;
 
-         for (auto &p : params_)
+         for (auto &p : _params)
             p->setDefaultValue();
 
          for (auto &v : values) {
@@ -151,8 +145,8 @@ namespace clap {
 
       BOOST_SERIALIZATION_SPLIT_MEMBER()
 
-      std::vector<std::unique_ptr<Parameter>> params_;
-      std::unordered_map<clap_id, Parameter *> id2param_;
+      std::vector<std::unique_ptr<Parameter>> _params;
+      std::unordered_map<clap_id, Parameter *> _id2param;
    };
 
 } // namespace clap

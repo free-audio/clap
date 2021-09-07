@@ -7,13 +7,13 @@
 #include "settings-dialog.hh"
 
 SettingsDialog::SettingsDialog(Settings &settings, QWidget *parent)
-   : QDialog(parent), settings_(settings) {
+   : QDialog(parent), _settings(settings) {
    setModal(true);
    setWindowTitle(tr("Settings"));
 
    QVBoxLayout *vbox = new QVBoxLayout();
-   settingsWidget_ = new SettingsWidget(settings);
-   vbox->addWidget(settingsWidget_);
+   _settingsWidget = new SettingsWidget(settings);
+   vbox->addWidget(_settingsWidget);
 
    auto buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
    buttons->show();

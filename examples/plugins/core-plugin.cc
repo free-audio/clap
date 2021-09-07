@@ -11,7 +11,7 @@ namespace clap {
    CorePlugin::CorePlugin(std::unique_ptr<PathProvider> &&pathProvider,
                           const clap_plugin_descriptor *desc,
                           const clap_host *host)
-      : Plugin(desc, host), pathProvider_(std::move(pathProvider)) {}
+      : Plugin(desc, host), _pathProvider(std::move(pathProvider)) {}
 
    bool CorePlugin::init() noexcept {
       initTrackInfo();
@@ -21,42 +21,42 @@ namespace clap {
    void CorePlugin::initTrackInfo() noexcept {
       checkMainThread();
 
-      assert(!hasTrackInfo_);
+      assert(!_hasTrackInfo);
       if (!canUseTrackInfo())
          return;
 
-      hasTrackInfo_ = hostTrackInfo_->get(host_, &trackInfo_);
+      _hasTrackInfo = _hostTrackInfo->get(_host, &_trackInfo);
    }
 
    void CorePlugin::trackInfoChanged() noexcept {
-      if (!hostTrackInfo_->get(host_, &trackInfo_)) {
-         hasTrackInfo_ = false;
+      if (!_hostTrackInfo->get(_host, &_trackInfo)) {
+         _hasTrackInfo = false;
          hostMisbehaving(
             "clap_host_track_info.get() failed after calling clap_plugin_track_info.changed()");
          return;
       }
 
-      hasTrackInfo_ = true;
+      _hasTrackInfo = true;
    }
 
    bool CorePlugin::implementsAudioPorts() const noexcept { return true; }
 
    uint32_t CorePlugin::audioPortsCount(bool is_input) const noexcept {
-      return is_input ? audioInputs_.size() : audioOutputs_.size();
+      return is_input ? _audioInputs.size() : _audioOutputs.size();
    }
 
    bool CorePlugin::audioPortsInfo(uint32_t index,
                                    bool is_input,
                                    clap_audio_port_info *info) const noexcept {
-      *info = is_input ? audioInputs_[index] : audioOutputs_[index];
+      *info = is_input ? _audioInputs[index] : _audioOutputs[index];
       return true;
    }
 
-   uint32_t CorePlugin::audioPortsConfigCount() const noexcept { return audioConfigs_.size(); }
+   uint32_t CorePlugin::audioPortsConfigCount() const noexcept { return _audioConfigs.size(); }
 
    bool CorePlugin::audioPortsGetConfig(uint32_t index,
                                         clap_audio_ports_config *config) const noexcept {
-      *config = audioConfigs_[index];
+      *config = _audioConfigs[index];
       return true;
    }
 
@@ -66,7 +66,7 @@ namespace clap {
       try {
          OStream os(stream);
          boost::archive::text_oarchive ar(os);
-         ar << parameters_;
+         ar << _parameters;
       } catch (...) {
          return false;
       }
@@ -77,7 +77,7 @@ namespace clap {
       try {
          IStream is(stream);
          boost::archive::text_iarchive ar(is);
-         ar >> parameters_;
+         ar >> _parameters;
       } catch (...) {
          return false;
       }
@@ -85,14 +85,14 @@ namespace clap {
    }
 
    bool CorePlugin::guiCreate() noexcept {
-      remoteGui_.reset(new RemoteGui(*this));
+      _remoteGui.reset(new RemoteGui(*this));
 
-      if (!remoteGui_->spawn()) {
-         remoteGui_.reset();
+      if (!_remoteGui->spawn()) {
+         _remoteGui.reset();
          return false;
       }
 
-      if (!remoteGui_)
+      if (!_remoteGui)
          return false;
 
       guiDefineParameters();
@@ -103,64 +103,64 @@ namespace clap {
       for (int i = 0; i < paramsCount(); ++i) {
          clap_param_info info;
          paramsInfo(i, &info);
-         remoteGui_->defineParameter(info);
+         _remoteGui->defineParameter(info);
       }
    }
 
    void CorePlugin::guiDestroy() noexcept {
-      if (remoteGui_)
-         remoteGui_.reset();
+      if (_remoteGui)
+         _remoteGui.reset();
    }
 
    bool CorePlugin::guiSize(uint32_t *width, uint32_t *height) noexcept {
-      if (!remoteGui_)
+      if (!_remoteGui)
          return false;
 
-      return remoteGui_->size(width, height);
+      return _remoteGui->size(width, height);
    }
 
    void CorePlugin::guiSetScale(double scale) noexcept {
-      if (remoteGui_)
-         remoteGui_->setScale(scale);
+      if (_remoteGui)
+         _remoteGui->setScale(scale);
    }
 
    void CorePlugin::guiShow() noexcept {
-      if (remoteGui_)
-         remoteGui_->show();
+      if (_remoteGui)
+         _remoteGui->show();
    }
 
    void CorePlugin::guiHide() noexcept {
-      if (remoteGui_)
-         remoteGui_->hide();
+      if (_remoteGui)
+         _remoteGui->hide();
    }
 
    void CorePlugin::onFd(clap_fd fd, uint32_t flags) noexcept {
-      if (remoteGui_ && fd == remoteGui_->fd())
-         remoteGui_->onFd(flags);
+      if (_remoteGui && fd == _remoteGui->fd())
+         _remoteGui->onFd(flags);
    }
 
    void CorePlugin::onTimer(clap_id timerId) noexcept {
-      if (remoteGui_ && timerId == remoteGui_->timerId())
-         remoteGui_->onTimer();
+      if (_remoteGui && timerId == _remoteGui->timerId())
+         _remoteGui->onTimer();
    }
 
    bool CorePlugin::guiX11Attach(const char *displayName, unsigned long window) noexcept {
-      if (remoteGui_)
-         return remoteGui_->attachX11(displayName, window);
+      if (_remoteGui)
+         return _remoteGui->attachX11(displayName, window);
 
       return false;
    }
 
    bool CorePlugin::guiWin32Attach(clap_hwnd window) noexcept {
-      if (remoteGui_)
-         return remoteGui_->attachWin32(window);
+      if (_remoteGui)
+         return _remoteGui->attachWin32(window);
 
       return false;
    }
 
    bool CorePlugin::guiCocoaAttach(void *nsView) noexcept {
-      if (remoteGui_)
-         return remoteGui_->attachCocoa(nsView);
+      if (_remoteGui)
+         return _remoteGui->attachCocoa(nsView);
 
       return false;
    }
@@ -171,13 +171,13 @@ namespace clap {
    }
 
    void CorePlugin::guiAdjust(clap_id paramId, double value, clap_event_param_flags flags) {
-      guiToPluginQueue_.set(paramId, {value, flags});
-      guiToPluginQueue_.producerDone();
+      _guiToPluginQueue.set(paramId, {value, flags});
+      _guiToPluginQueue.producerDone();
    }
 
    void CorePlugin::processGuiEvents(const clap_process *process) {
-      guiToPluginQueue_.consume([this, process](clap_id paramId, const GuiToPluginValue &value) {
-         auto p = parameters_.getById(paramId);
+      _guiToPluginQueue.consume([this, process](clap_id paramId, const GuiToPluginValue &value) {
+         auto p = _parameters.getById(paramId);
          if (!p)
             return;
          p->setValueSmoothed(value.value, 128);
@@ -224,9 +224,9 @@ namespace clap {
                   std::terminate();
                }
 
-               p->setValueSmoothed(ev->param_value.value, paramSmoothingDuration_);
+               p->setValueSmoothed(ev->param_value.value, _paramSmoothingDuration);
                //p->setValueImmediately(ev->param_value.value);
-               pluginToGuiQueue_.set(p->info().id, {ev->param_value.value, p->modulation()});
+               _pluginToGuiQueue.set(p->info().id, {ev->param_value.value, p->modulation()});
             }
             break;
          }
@@ -241,8 +241,8 @@ namespace clap {
                   std::terminate();
                }
 
-               p->setModulationSmoothed(ev->param_mod.amount, paramSmoothingDuration_);
-               pluginToGuiQueue_.set(p->info().id, {p->value(), ev->param_mod.amount});
+               p->setModulationSmoothed(ev->param_mod.amount, _paramSmoothingDuration);
+               _pluginToGuiQueue.set(p->info().id, {p->value(), ev->param_mod.amount});
             }
             break;
          }

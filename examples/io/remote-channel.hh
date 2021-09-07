@@ -103,8 +103,8 @@ namespace clap {
 
       void runOnce();
 
-      clap_fd fd() const { return socket_; }
-      bool isOpen() const noexcept { return socket_ != -1; }
+      clap_fd fd() const { return _socket; }
+      bool isOpen() const noexcept { return _socket != -1; }
 
    private:
       using ReadBuffer = Buffer<uint8_t, 128 * 1024>;
@@ -120,16 +120,16 @@ namespace clap {
       bool sendMessageAsync(const Message &msg);
       bool sendMessageSync(const Message &msg, const MessageHandler &handler);
 
-      const bool cookieHalf_;
-      uint32_t nextCookie_ = 0;
+      const bool _cookieHalf;
+      uint32_t _nextCookie = 0;
 
-      MessageHandler handler_;
-      std::unordered_map<uint32_t /* cookie */, const MessageHandler &> syncHandlers_;
-      EventControl &evControl_;
-      clap_fd socket_;
-      clap_fd_flags ioFlags_ = 0;
+      MessageHandler _handler;
+      std::unordered_map<uint32_t /* cookie */, const MessageHandler &> _syncHandlers;
+      EventControl &_evControl;
+      clap_fd _socket;
+      clap_fd_flags _ioFlags = 0;
 
-      ReadBuffer inputBuffer_;
-      std::queue<WriteBuffer> outputBuffers_;
+      ReadBuffer _inputBuffer;
+      std::queue<WriteBuffer> _outputBuffers;
    };
 } // namespace clap

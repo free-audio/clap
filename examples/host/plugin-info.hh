@@ -4,10 +4,10 @@
 
 class PluginInfo {
 public:
-   PluginInfo();
+   PluginInfo() = default;
 
 private:
-   QString name_;
-   QString file_;
-   QString index_; // in case of shell plugin
+   QString _name;
+   QString _file;
+   QString _index; // in case of shell plugin
 };

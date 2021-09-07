@@ -18,7 +18,7 @@ namespace clap {
       clap_process_status process(const clap_process *process) noexcept override;
 
    private:
-      int channelCount_ = 2;
-      Parameter *offsetParam_ = nullptr;
+      int _channelCount = 2;
+      Parameter *_offsetParam = nullptr;
    };
 } // namespace clap

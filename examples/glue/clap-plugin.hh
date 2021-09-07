@@ -68,7 +68,7 @@ namespace clap {
       virtual bool stateLoad(clap_istream *stream) noexcept { return false; }
       void stateMarkDirty() const noexcept {
          if (canUseState())
-            hostState_->mark_dirty(host_);
+            _hostState->mark_dirty(_host);
       }
 
       //-------------------------//
@@ -231,30 +231,30 @@ namespace clap {
       //////////////////////
       // Processing State //
       //////////////////////
-      bool isActive() const noexcept { return isActive_; }
-      bool isProcessing() const noexcept { return isProcessing_; }
+      bool isActive() const noexcept { return _isActive; }
+      bool isProcessing() const noexcept { return _isProcessing; }
       int sampleRate() const noexcept {
-         assert(isActive_ && "sample rate is only known if the plugin is active");
-         assert(sampleRate_ > 0);
-         return sampleRate_;
+         assert(_isActive && "sample rate is only known if the plugin is active");
+         assert(_sampleRate > 0);
+         return _sampleRate;
       }
 
    protected:
-      const clap_host *const host_ = nullptr;
-      const clap_host_log *hostLog_ = nullptr;
-      const clap_host_thread_check *hostThreadCheck_ = nullptr;
-      const clap_host_thread_pool *hostThreadPool_ = nullptr;
-      const clap_host_audio_ports *hostAudioPorts_ = nullptr;
-      const clap_host_event_filter *hostEventFilter_ = nullptr;
-      const clap_host_file_reference *hostFileReference_ = nullptr;
-      const clap_host_latency *hostLatency_ = nullptr;
-      const clap_host_gui *hostGui_ = nullptr;
-      const clap_host_timer_support *hostTimerSupport_ = nullptr;
-      const clap_host_fd_support *hostFdSupport_ = nullptr;
-      const clap_host_params *hostParams_ = nullptr;
-      const clap_host_track_info *hostTrackInfo_ = nullptr;
-      const clap_host_state *hostState_ = nullptr;
-      const clap_host_note_name *hostNoteName_ = nullptr;
+      const clap_host *const _host = nullptr;
+      const clap_host_log *_hostLog = nullptr;
+      const clap_host_thread_check *_hostThreadCheck = nullptr;
+      const clap_host_thread_pool *_hostThreadPool = nullptr;
+      const clap_host_audio_ports *_hostAudioPorts = nullptr;
+      const clap_host_event_filter *_hostEventFilter = nullptr;
+      const clap_host_file_reference *_hostFileReference = nullptr;
+      const clap_host_latency *_hostLatency = nullptr;
+      const clap_host_gui *_hostGui = nullptr;
+      const clap_host_timer_support *_hostTimerSupport = nullptr;
+      const clap_host_fd_support *_hostFdSupport = nullptr;
+      const clap_host_params *_hostParams = nullptr;
+      const clap_host_track_info *_hostTrackInfo = nullptr;
+      const clap_host_state *_hostState = nullptr;
+      const clap_host_note_name *_hostNoteName = nullptr;
 
    private:
       /////////////////////
@@ -371,39 +371,39 @@ namespace clap {
       static bool clapGuiFreeStandingOpen(const clap_plugin *plugin) noexcept;
 
       // interfaces
-      static const constexpr clap_plugin_render pluginRender_ = {
+      static const constexpr clap_plugin_render _pluginRender = {
          clapRenderSetMode,
       };
 
-      static const constexpr clap_plugin_thread_pool pluginThreadPool_ = {
+      static const constexpr clap_plugin_thread_pool _pluginThreadPool = {
          clapThreadPoolExec,
       };
 
-      static const constexpr clap_plugin_state pluginState_ = {
+      static const constexpr clap_plugin_state _pluginState = {
          clapStateSave,
          clapStateLoad,
       };
 
-      static const constexpr clap_plugin_preset_load pluginPresetLoad_ = {
+      static const constexpr clap_plugin_preset_load _pluginPresetLoad = {
          clapPresetLoadFromFile,
       };
 
-      static const constexpr clap_plugin_track_info pluginTrackInfo_ = {
+      static const constexpr clap_plugin_track_info _pluginTrackInfo = {
          clapTrackInfoChanged,
       };
 
-      static const constexpr clap_plugin_audio_ports pluginAudioPorts_ = {
+      static const constexpr clap_plugin_audio_ports _pluginAudioPorts = {
          clapAudioPortsCount,
          clapAudioPortsInfo
       };
 
-      static const constexpr clap_plugin_audio_ports_config pluginAudioPortsConfig_ = {
+      static const constexpr clap_plugin_audio_ports_config _pluginAudioPortsConfig = {
          clapAudioPortsConfigCount,
          clapAudioPortsGetConfig,
          clapAudioPortsSetConfig,
       };
 
-      static const constexpr clap_plugin_params pluginParams_ = {
+      static const constexpr clap_plugin_params _pluginParams = {
          clapParamsCount,
          clapParamsInfo,
          clapParamsValue,
@@ -411,31 +411,31 @@ namespace clap {
          clapParamsTextToValue,
       };
 
-      static const constexpr clap_plugin_quick_controls pluginQuickControls_ = {
+      static const constexpr clap_plugin_quick_controls _pluginQuickControls = {
          clapQuickControlsPageCount,
          clapQuickControlsPageInfo,
          clapQuickControlsSelectPage,
          clapQuickControlsSelectedPage,
       };
 
-      static const constexpr clap_plugin_latency pluginLatency_ = {
+      static const constexpr clap_plugin_latency _pluginLatency = {
          clapLatencyGet,
       };
 
-      static const constexpr clap_plugin_note_name pluginNoteName_ = {
+      static const constexpr clap_plugin_note_name _pluginNoteName = {
          clapNoteNameCount,
          clapNoteNameGet,
       };
 
-      static const constexpr clap_plugin_timer_support pluginTimerSupport_ = {
+      static const constexpr clap_plugin_timer_support _pluginTimerSupport = {
          clapOnTimer
       };
 
-      static const constexpr clap_plugin_fd_support pluginFdSupport_ = {
+      static const constexpr clap_plugin_fd_support _pluginFdSupport = {
          clapOnFd,
       };
 
-      static const constexpr clap_plugin_gui pluginGui_ = {
+      static const constexpr clap_plugin_gui _pluginGui = {
          clapGuiCreate,
          clapGuiDestroy,
          clapGuiSetScale,
@@ -447,28 +447,28 @@ namespace clap {
          clapGuiHide,
       };
 
-      static const constexpr clap_plugin_gui_x11 pluginGuiX11_ = {
+      static const constexpr clap_plugin_gui_x11 _pluginGuiX11 = {
          clapGuiX11Attach,
       };
 
-      static const constexpr clap_plugin_gui_win32 pluginGuiWin32_ = {
+      static const constexpr clap_plugin_gui_win32 _pluginGuiWin32 = {
          clapGuiWin32Attach,
       };
 
-      static const constexpr clap_plugin_gui_cocoa pluginGuiCocoa_ = {
+      static const constexpr clap_plugin_gui_cocoa _pluginGuiCocoa = {
          clapGuiCocoaAttach,
       };
 
-      static const constexpr clap_plugin_gui_free_standing pluginGuiFreeStanding_ = {
+      static const constexpr clap_plugin_gui_free_standing _pluginGuiFreeStanding = {
          clapGuiFreeStandingOpen,
       };
 
       // state
-      bool isActive_ = false;
-      bool isProcessing_ = false;
-      double sampleRate_ = 0;
+      bool _isActive = false;
+      bool _isProcessing = false;
+      double _sampleRate = 0;
 
-      bool isGuiCreated_ = false;
-      bool isGuiAttached_ = false;
+      bool _isGuiCreated = false;
+      bool _isGuiAttached = false;
    };
 } // namespace clap

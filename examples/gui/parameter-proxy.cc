@@ -3,23 +3,23 @@
 #include "application.hh"
 
 ParameterProxy::ParameterProxy(const clap_param_info &info, QObject *parent)
-   : QObject(parent), id_(info.id), name_(info.name), module_(info.module),
-     value_(info.default_value), minValue_(info.min_value), maxValue_(info.max_value),
-     defaultValue_(info.default_value) {}
+   : QObject(parent), _id(info.id), _name(info.name), _module(info.module),
+     _value(info.default_value), _minValue(info.min_value), _maxValue(info.max_value),
+     _defaultValue(info.default_value) {}
 
 ParameterProxy::ParameterProxy(clap_id param_id, QObject *parent)
-   : QObject(parent), id_(param_id) {}
+   : QObject(parent), _id(param_id) {}
 
 void ParameterProxy::redefine(const clap_param_info &info) {
-   Q_ASSERT(id_ == info.id);
+   Q_ASSERT(_id == info.id);
 
-   if (name_ != info.name) {
-      name_ = info.name;
+   if (_name != info.name) {
+      _name = info.name;
       nameChanged();
    }
 
-   if (module_ != info.module) {
-      module_ = info.module;
+   if (_module != info.module) {
+      _module = info.module;
       moduleChanged();
    }
 
@@ -27,65 +27,65 @@ void ParameterProxy::redefine(const clap_param_info &info) {
    setMaxValueFromPlugin(info.max_value);
    setDefaultValueFromPlugin(info.default_value);
 
-   setValueFromPlugin(std::min(maxValue_, std::max(minValue_, value_)));
+   setValueFromPlugin(std::min(_maxValue, std::max(_minValue, _value)));
 }
 
 void ParameterProxy::setIsAdjusting(bool isAdjusting) {
-   if (isAdjusting == isAdjusting_)
+   if (isAdjusting == _isAdjusting)
       return;
 
-   clap::messages::AdjustRequest rq{id_, value_, isAdjusting ? CLAP_EVENT_PARAM_BEGIN_ADJUST : CLAP_EVENT_PARAM_END_ADJUST};
+   clap::messages::AdjustRequest rq{_id, _value, isAdjusting ? CLAP_EVENT_PARAM_BEGIN_ADJUST : CLAP_EVENT_PARAM_END_ADJUST};
    Application::instance().remoteChannel().sendRequestAsync(rq);
 }
 
 void ParameterProxy::setValueFromUI(double value) {
-   value = std::max(minValue_, std::min(maxValue_, value));
-   if (value == value_)
+   value = std::max(_minValue, std::min(_maxValue, value));
+   if (value == _value)
       return;
 
-   value_ = value;
+   _value = value;
 
-   clap::messages::AdjustRequest rq{id_, value_, 0};
+   clap::messages::AdjustRequest rq{_id, _value, 0};
    Application::instance().remoteChannel().sendRequestAsync(rq);
    valueChanged();
 }
 
 void ParameterProxy::setValueFromPlugin(double value) {
-   if (value == value_)
+   if (value == _value)
       return;
 
-   value_ = value;
+   _value = value;
    valueChanged();
 }
 
 void ParameterProxy::setModulationFromPlugin(double mod) {
-   if (mod == modulation_)
+   if (mod == _modulation)
       return;
 
-   modulation_ = mod;
+   _modulation = mod;
    modulationChanged();
 }
 
 void ParameterProxy::setMinValueFromPlugin(double minValue) {
-   if (minValue == minValue_)
+   if (minValue == _minValue)
       return;
 
-   minValue_ = minValue;
+   _minValue = minValue;
    minValueChanged();
 }
 
 void ParameterProxy::setMaxValueFromPlugin(double maxValue) {
-   if (maxValue == maxValue_)
+   if (maxValue == _maxValue)
       return;
 
-   maxValue_ = maxValue;
+   _maxValue = maxValue;
    maxValueChanged();
 }
 
 void ParameterProxy::setDefaultValueFromPlugin(double defaultValue) {
-   if (defaultValue == defaultValue_)
+   if (defaultValue == _defaultValue)
       return;
 
-   defaultValue_ = defaultValue;
+   _defaultValue = defaultValue;
    defaultValueChanged();
 }

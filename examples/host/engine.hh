@@ -29,7 +29,7 @@ public:
       kStateStopping,
    };
 
-   void setParentWindow(WId parentWindow) { parentWindow_ = parentWindow; }
+   void setParentWindow(WId parentWindow) { _parentWindow = parentWindow; }
    void start();
    void stop();
 
@@ -40,10 +40,10 @@ public:
    void setProgram(int8_t program, int8_t bank_msb, int8_t bank_lsb);
    void loadMidiFile(const QString &path);
 
-   bool isRunning() const noexcept { return state_ == kStateRunning; }
-   int  sampleRate() const noexcept { return sampleRate_; }
+   bool isRunning() const noexcept { return _state == kStateRunning; }
+   int  sampleRate() const noexcept { return _sampleRate; }
 
-   PluginHost &pluginHost() const { return *pluginHost_; }
+   PluginHost &pluginHost() const { return *_pluginHost; }
 
 public:
    void callPluginIdle();
@@ -60,26 +60,26 @@ private:
                             PaStreamCallbackFlags           statusFlags,
                             void *                          userData);
 
-   Application &application_;
-   Settings &   settings_;
-   WId          parentWindow_;
+   Application &_application;
+   Settings &   _settings;
+   WId          _parentWindow;
 
-   State state_ = kStateStopped;
+   State _state = kStateStopped;
 
    /* audio & midi streams */
-   PaStream *audio_ = nullptr;
-   PmStream *midi_ = nullptr;
+   PaStream *_audio = nullptr;
+   PmStream *_midi = nullptr;
 
    /* engine context */
-   int64_t steadyTime_ = 0;
-   int32_t sampleRate_ = 44100;
-   int32_t nframes_ = 0;
+   int64_t _steadyTime = 0;
+   int32_t _sampleRate = 44100;
+   int32_t _nframes = 0;
 
    /* audio buffers */
-   float *inputs_[2] = {nullptr, nullptr};
-   float *outputs_[2] = {nullptr, nullptr};
+   float *_inputs[2] = {nullptr, nullptr};
+   float *_outputs[2] = {nullptr, nullptr};
 
-   std::unique_ptr<PluginHost> pluginHost_;
+   std::unique_ptr<PluginHost> _pluginHost;
 
-   QTimer idleTimer_;
+   QTimer _idleTimer;
 };

@@ -23,7 +23,7 @@ static const std::vector<int> SAMPLE_RATES = {
 static const std::vector<int> BUFFER_SIZES = {32, 48, 64, 96, 128, 192, 256, 384, 512};
 
 AudioSettingsWidget::AudioSettingsWidget(AudioSettings &audioSettings)
-   : audioSettings_(audioSettings) {
+   : _audioSettings(audioSettings) {
    /* devices */
    auto deviceComboBox = new QComboBox(this);
    auto deviceCount = Pa_GetDeviceCount();
@@ -33,8 +33,8 @@ AudioSettingsWidget::AudioSettingsWidget(AudioSettings &audioSettings)
       auto deviceInfo = Pa_GetDeviceInfo(i);
       deviceComboBox->addItem(deviceInfo->name);
 
-      if (!deviceFound && audioSettings_.deviceReference().index_ == i &&
-          audioSettings_.deviceReference().name_ == deviceInfo->name) {
+      if (!deviceFound && _audioSettings.deviceReference()._index == i &&
+          _audioSettings.deviceReference()._name == deviceInfo->name) {
          deviceComboBox->setCurrentIndex(i);
          deviceFound = true;
          selectedDeviceChanged(i);
@@ -44,7 +44,7 @@ AudioSettingsWidget::AudioSettingsWidget(AudioSettings &audioSettings)
    // try to find the device just by its name.
    for (int i = 0; !deviceFound && i < deviceCount; ++i) {
       auto deviceInfo = Pa_GetDeviceInfo(i);
-      if (audioSettings_.deviceReference().name_ == deviceInfo->name) {
+      if (_audioSettings.deviceReference()._name == deviceInfo->name) {
          deviceComboBox->setCurrentIndex(i);
          deviceFound = true;
          selectedDeviceChanged(i);
@@ -55,31 +55,31 @@ AudioSettingsWidget::AudioSettingsWidget(AudioSettings &audioSettings)
       deviceComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(selectedDeviceChanged(int)));
 
    /* sample rate */
-   sampleRateWidget_ = new QComboBox(this);
+   _sampleRateWidget = new QComboBox(this);
    for (size_t i = 0; i < SAMPLE_RATES.size(); ++i) {
       int sr = SAMPLE_RATES[i];
-      sampleRateWidget_->addItem(QString::number(sr));
-      if (sr == audioSettings_.sampleRate()) {
-         sampleRateWidget_->setCurrentIndex(i);
+      _sampleRateWidget->addItem(QString::number(sr));
+      if (sr == _audioSettings.sampleRate()) {
+         _sampleRateWidget->setCurrentIndex(i);
          selectedSampleRateChanged(i);
       }
    }
-   connect(sampleRateWidget_,
+   connect(_sampleRateWidget,
            SIGNAL(currentIndexChanged(int)),
            this,
            SLOT(selectedSampleRateChanged(int)));
 
    /* buffer size */
-   bufferSizeWidget_ = new QComboBox(this);
+   _bufferSizeWidget = new QComboBox(this);
    for (size_t i = 0; i < BUFFER_SIZES.size(); ++i) {
       int bs = BUFFER_SIZES[i];
-      bufferSizeWidget_->addItem(QString::number(bs));
-      if (bs == audioSettings_.bufferSize()) {
-         bufferSizeWidget_->setCurrentIndex(i);
+      _bufferSizeWidget->addItem(QString::number(bs));
+      if (bs == _audioSettings.bufferSize()) {
+         _bufferSizeWidget->setCurrentIndex(i);
          selectedBufferSizeChanged(i);
       }
    }
-   connect(bufferSizeWidget_,
+   connect(_bufferSizeWidget,
            SIGNAL(currentIndexChanged(int)),
            this,
            SLOT(selectedBufferSizeChanged(int)));
@@ -90,8 +90,8 @@ AudioSettingsWidget::AudioSettingsWidget(AudioSettings &audioSettings)
    layout->addWidget(new QLabel(tr("Buffer size")), 2, 0);
 
    layout->addWidget(deviceComboBox, 0, 1);
-   layout->addWidget(sampleRateWidget_, 1, 1);
-   layout->addWidget(bufferSizeWidget_, 2, 1);
+   layout->addWidget(_sampleRateWidget, 1, 1);
+   layout->addWidget(_bufferSizeWidget, 2, 1);
 
    QGroupBox *groupBox = new QGroupBox(this);
    groupBox->setLayout(layout);
@@ -106,15 +106,15 @@ void AudioSettingsWidget::selectedDeviceChanged(int index) {
    auto deviceInfo = Pa_GetDeviceInfo(index);
 
    DeviceReference ref;
-   ref.index_ = index;
-   ref.name_ = deviceInfo->name;
-   audioSettings_.setDeviceReference(ref);
+   ref._index = index;
+   ref._name = deviceInfo->name;
+   _audioSettings.setDeviceReference(ref);
 }
 
 void AudioSettingsWidget::selectedSampleRateChanged(int index) {
-   audioSettings_.setSampleRate(sampleRateWidget_->itemText(index).toInt());
+   _audioSettings.setSampleRate(_sampleRateWidget->itemText(index).toInt());
 }
 
 void AudioSettingsWidget::selectedBufferSizeChanged(int index) {
-   audioSettings_.setBufferSize(bufferSizeWidget_->itemText(index).toInt());
+   _audioSettings.setBufferSize(_bufferSizeWidget->itemText(index).toInt());
 }

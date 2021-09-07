@@ -19,8 +19,8 @@ public:
 private:
    void selectPageFromChooser(int index);
 
-   PluginHost &pluginHost_;
+   PluginHost &_pluginHost;
 
-   QComboBox *chooser_ = nullptr;
-   std::array<PluginQuickControlWidget *, CLAP_QUICK_CONTROLS_COUNT> controls_;
+   QComboBox *_chooser = nullptr;
+   std::array<PluginQuickControlWidget *, CLAP_QUICK_CONTROLS_COUNT> _controls;
 };

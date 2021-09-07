@@ -12,13 +12,9 @@ class SettingsWidget : public QWidget {
 public:
    explicit SettingsWidget(Settings &settings);
 
-signals:
-
-public slots:
-
 private:
-   QTabWidget *         tabWidget_ = nullptr;
-   AudioSettingsWidget *audioSettingsWidget_ = nullptr;
-   MidiSettingsWidget * midiSettingsWidget_ = nullptr;
-   Settings &           settings_;
+   QTabWidget *_tabWidget = nullptr;
+   AudioSettingsWidget *_audioSettingsWidget = nullptr;
+   MidiSettingsWidget *_midiSettingsWidget = nullptr;
+   Settings &_settings;
 };

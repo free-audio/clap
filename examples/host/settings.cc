@@ -3,11 +3,11 @@
 Settings::Settings() {}
 
 void Settings::load(QSettings &settings) {
-   audioSettings_.load(settings);
-   midiSettings_.load(settings);
+   _audioSettings.load(settings);
+   _midiSettings.load(settings);
 }
 
 void Settings::save(QSettings &settings) const {
-   audioSettings_.save(settings);
-   midiSettings_.save(settings);
+   _audioSettings.save(settings);
+   _midiSettings.save(settings);
 }

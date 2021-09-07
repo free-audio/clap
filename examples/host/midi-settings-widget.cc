@@ -9,7 +9,7 @@
 #include "midi-settings-widget.hh"
 #include "midi-settings.hh"
 
-MidiSettingsWidget::MidiSettingsWidget(MidiSettings &midiSettings) : midiSettings_(midiSettings) {
+MidiSettingsWidget::MidiSettingsWidget(MidiSettings &midiSettings) : _midiSettings(midiSettings) {
    auto layout = new QVBoxLayout(this);
 
    auto deviceComboBox = new QComboBox;
@@ -28,8 +28,8 @@ MidiSettingsWidget::MidiSettingsWidget(MidiSettings &midiSettings) : midiSetting
 
       deviceComboBox->addItem(deviceInfo->name);
 
-      if (!deviceFound && midiSettings_.deviceReference().index_ == i &&
-          midiSettings_.deviceReference().name_ == deviceInfo->name) {
+      if (!deviceFound && _midiSettings.deviceReference()._index == i &&
+          _midiSettings.deviceReference()._name == deviceInfo->name) {
          deviceComboBox->setCurrentIndex(inputIndex);
          deviceFound = true;
          selectedDeviceChanged(inputIndex);
@@ -45,7 +45,7 @@ MidiSettingsWidget::MidiSettingsWidget(MidiSettings &midiSettings) : midiSetting
       if (!deviceInfo->input)
          continue;
 
-      if (midiSettings_.deviceReference().name_ == deviceInfo->name) {
+      if (_midiSettings.deviceReference()._name == deviceInfo->name) {
          deviceComboBox->setCurrentIndex(inputIndex);
          deviceFound = true;
          selectedDeviceChanged(inputIndex);
@@ -82,9 +82,9 @@ void MidiSettingsWidget::selectedDeviceChanged(int index) {
       }
 
       DeviceReference ref;
-      ref.index_ = i;
-      ref.name_ = deviceInfo->name;
-      midiSettings_.setDeviceReference(ref);
+      ref._index = i;
+      ref._name = deviceInfo->name;
+      _midiSettings.setDeviceReference(ref);
       break;
    }
 }

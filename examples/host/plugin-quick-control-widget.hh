@@ -32,7 +32,7 @@ private:
 
    PluginHost &pluginHost_;
 
-   QDial *      dial_ = nullptr;
-   QLabel *     label_ = nullptr;
-   PluginParam *param_ = nullptr;
+   QDial *_dial = nullptr;
+   QLabel *_label = nullptr;
+   PluginParam *_param = nullptr;
 };

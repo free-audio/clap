@@ -8,26 +8,26 @@
 namespace clap {
    class Source : public boost::iostreams::source {
    public:
-      explicit Source(clap_istream *is) : is_(is) {}
+      explicit Source(clap_istream *is) : _is(is) {}
 
-      std::streamsize read(char *s, std::streamsize n) noexcept { return is_->read(is_, s, n); }
+      std::streamsize read(char *s, std::streamsize n) noexcept { return _is->read(_is, s, n); }
 
    private:
-      clap_istream *is_;
+      clap_istream *_is;
    };
 
    using IStream = boost::iostreams::stream<Source>;
 
    class Sink : public boost::iostreams::sink {
    public:
-      explicit Sink(clap_ostream *os) : os_(os) {}
+      explicit Sink(clap_ostream *os) : _os(os) {}
 
       std::streamsize write(const char *s, std::streamsize n) noexcept {
-         return os_->write(os_, s, n);
+         return _os->write(_os, s, n);
       }
 
    private:
-      clap_ostream *os_;
+      clap_ostream *_os;
    };
 
    using OStream = boost::iostreams::stream<Sink>;

@@ -9,51 +9,51 @@ ParamQueue<T>::ParamQueue() { reset(); }
 
 template<typename T>
 void ParamQueue<T>::reset() {
-   for (auto &q : queues_)
+   for (auto &q : _queues)
       q.clear();
 
-   free_ = &queues_[0];
-   producer_ = &queues_[1];
-   consumer_ = nullptr;
+   _free = &_queues[0];
+   _producer = &_queues[1];
+   _consumer = nullptr;
 }
 
 template<typename T>
 void ParamQueue<T>::setCapacity(size_t capacity) {
-   for (auto &q : queues_)
+   for (auto &q : _queues)
       q.reserve(2 * capacity);
 }
 
 template<typename T>
 void ParamQueue<T>::set(clap_id id, const value_type& value) {
-   producer_.load()->emplace(id, value);
+   _producer.load()->emplace(id, value);
 }
 
 template<typename T>
 void ParamQueue<T>::producerDone() {
-   if (consumer_)
+   if (_consumer)
       return;
 
-   consumer_.store(producer_.load());
-   producer_.store(free_.load());
-   free_.store(nullptr);
+   _consumer.store(_producer.load());
+   _producer.store(_free.load());
+   _free.store(nullptr);
 
-   assert(producer_);
+   assert(_producer);
 }
 
 template<typename T>
 void ParamQueue<T>::consume(const std::function<void(clap_id, const value_type& value)> consumer) {
    assert(consumer);
 
-   if (!consumer_)
+   if (!_consumer)
       return;
 
-   for (auto &x : *consumer_)
+   for (auto &x : *_consumer)
       consumer(x.first, x.second);
 
-   consumer_.load()->clear();
-   if (free_)
+   _consumer.load()->clear();
+   if (_free)
       return;
 
-   free_ = consumer_.load();
-   consumer_ = nullptr;
+   _free = _consumer.load();
+   _consumer = nullptr;
 }

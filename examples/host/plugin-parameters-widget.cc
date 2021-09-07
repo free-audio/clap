@@ -71,22 +71,22 @@ void PluginParametersWidget::ModuleTreeItem::setData(int column, int role, const
 ////////////////////////////
 
 PluginParametersWidget::PluginParametersWidget(QWidget *parent, PluginHost &pluginHost)
-   : QWidget(parent), pluginHost_(pluginHost) {
+   : QWidget(parent), _pluginHost(pluginHost) {
 
-   treeWidget_ = new QTreeWidget(this);
+   _treeWidget = new QTreeWidget(this);
 
    // Tree
-   rootModuleItem_ = new ModuleTreeItem(treeWidget_);
-   treeWidget_->addTopLevelItem(rootModuleItem_);
-   treeWidget_->setHeaderHidden(true);
-   treeWidget_->setAnimated(true);
-   treeWidget_->setRootIsDecorated(true);
-   treeWidget_->setSelectionMode(QAbstractItemView::SingleSelection);
-   treeWidget_->setSelectionBehavior(QAbstractItemView::SelectItems);
-   treeWidget_->setVerticalScrollMode(QAbstractItemView::ScrollPerItem);
+   _rootModuleItem = new ModuleTreeItem(_treeWidget);
+   _treeWidget->addTopLevelItem(_rootModuleItem);
+   _treeWidget->setHeaderHidden(true);
+   _treeWidget->setAnimated(true);
+   _treeWidget->setRootIsDecorated(true);
+   _treeWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+   _treeWidget->setSelectionBehavior(QAbstractItemView::SelectItems);
+   _treeWidget->setVerticalScrollMode(QAbstractItemView::ScrollPerItem);
    connect(
-      &pluginHost_, &PluginHost::paramsChanged, this, &PluginParametersWidget::computeDataModel);
-   connect(treeWidget_,
+      &_pluginHost, &PluginHost::paramsChanged, this, &PluginParametersWidget::computeDataModel);
+   connect(_treeWidget,
            &QTreeWidget::currentItemChanged,
            this,
            &PluginParametersWidget::selectionChanged);
@@ -98,56 +98,56 @@ PluginParametersWidget::PluginParametersWidget(QWidget *parent, PluginHost &plug
    infoWidget->setFrameShape(QFrame::StyledPanel);
    infoWidget->setFrameShadow(QFrame::Sunken);
 
-   idLabel_ = new QLabel;
-   nameLabel_ = new QLabel;
-   moduleLabel_ = new QLabel;
-   isPerNoteLabel_ = new QLabel;
-   isPerChannelLabel_ = new QLabel;
-   isPeriodicLabel_ = new QLabel;
-   isReadOnlyLabel_ = new QLabel;
-   isHiddenLabel_ = new QLabel;
-   isBypassLabel_ = new QLabel;
-   isSteppedLabel_ = new QLabel;
-   minValueLabel_ = new QLabel;
-   maxValueLabel_ = new QLabel;
-   defaultValueLabel_ = new QLabel;
-   isBeingAdjusted_ = new QLabel;
+   _idLabel = new QLabel;
+   _nameLabel = new QLabel;
+   _moduleLabel = new QLabel;
+   _isPerNoteLabel = new QLabel;
+   _isPerChannelLabel = new QLabel;
+   _isPeriodicLabel = new QLabel;
+   _isReadOnlyLabel = new QLabel;
+   _isHiddenLabel = new QLabel;
+   _isBypassLabel = new QLabel;
+   _isSteppedLabel = new QLabel;
+   _minValueLabel = new QLabel;
+   _maxValueLabel = new QLabel;
+   _defaultValueLabel = new QLabel;
+   _isBeingAdjusted = new QLabel;
 
-   valueSlider_ = new QSlider;
-   valueSlider_->setMinimum(0);
-   valueSlider_->setMaximum(SLIDER_RANGE);
-   valueSlider_->setOrientation(Qt::Horizontal);
-   connect(valueSlider_, &QSlider::valueChanged, this, &PluginParametersWidget::sliderValueChanged);
+   _valueSlider = new QSlider;
+   _valueSlider->setMinimum(0);
+   _valueSlider->setMaximum(SLIDER_RANGE);
+   _valueSlider->setOrientation(Qt::Horizontal);
+   connect(_valueSlider, &QSlider::valueChanged, this, &PluginParametersWidget::sliderValueChanged);
 
-   modulationSlider_ = new QSlider;
-   modulationSlider_->setMinimum(-SLIDER_RANGE);
-   modulationSlider_->setMaximum(SLIDER_RANGE);
-   modulationSlider_->setOrientation(Qt::Horizontal);
-   connect(modulationSlider_, &QSlider::valueChanged, this, &PluginParametersWidget::sliderModulationChanged);
+   _modulationSlider = new QSlider;
+   _modulationSlider->setMinimum(-SLIDER_RANGE);
+   _modulationSlider->setMaximum(SLIDER_RANGE);
+   _modulationSlider->setOrientation(Qt::Horizontal);
+   connect(_modulationSlider, &QSlider::valueChanged, this, &PluginParametersWidget::sliderModulationChanged);
 
    auto formLayout = new QFormLayout(infoWidget);
-   formLayout->addRow(tr("id"), idLabel_);
-   formLayout->addRow(tr("name"), nameLabel_);
-   formLayout->addRow(tr("module"), moduleLabel_);
-   formLayout->addRow(tr("is_per_note"), isPerNoteLabel_);
-   formLayout->addRow(tr("is_per_channel"), isPerChannelLabel_);
-   formLayout->addRow(tr("is_periodic"), isPeriodicLabel_);
-   formLayout->addRow(tr("is_read_only"), isReadOnlyLabel_);
-   formLayout->addRow(tr("is_hidden"), isHiddenLabel_);
-   formLayout->addRow(tr("is_bypass"), isBypassLabel_);
-   formLayout->addRow(tr("is_stepped"), isSteppedLabel_);
-   formLayout->addRow(tr("min_value"), minValueLabel_);
-   formLayout->addRow(tr("max_value"), maxValueLabel_);
-   formLayout->addRow(tr("default_value"), defaultValueLabel_);
-   formLayout->addRow(tr("is_being_adjusted"), isBeingAdjusted_);
-   formLayout->addRow(tr("value"), valueSlider_);
-   formLayout->addRow(tr("modulation"), modulationSlider_);
+   formLayout->addRow(tr("id"), _idLabel);
+   formLayout->addRow(tr("name"), _nameLabel);
+   formLayout->addRow(tr("module"), _moduleLabel);
+   formLayout->addRow(tr("is_per_note"), _isPerNoteLabel);
+   formLayout->addRow(tr("is_per_channel"), _isPerChannelLabel);
+   formLayout->addRow(tr("is_periodic"), _isPeriodicLabel);
+   formLayout->addRow(tr("is_read_only"), _isReadOnlyLabel);
+   formLayout->addRow(tr("is_hidden"), _isHiddenLabel);
+   formLayout->addRow(tr("is_bypass"), _isBypassLabel);
+   formLayout->addRow(tr("is_stepped"), _isSteppedLabel);
+   formLayout->addRow(tr("min_value"), _minValueLabel);
+   formLayout->addRow(tr("max_value"), _maxValueLabel);
+   formLayout->addRow(tr("default_value"), _defaultValueLabel);
+   formLayout->addRow(tr("is_being_adjusted"), _isBeingAdjusted);
+   formLayout->addRow(tr("value"), _valueSlider);
+   formLayout->addRow(tr("modulation"), _modulationSlider);
 
    infoWidget->setLayout(formLayout);
 
    // Splitter
    auto splitter = new QSplitter();
-   splitter->addWidget(treeWidget_);
+   splitter->addWidget(_treeWidget);
    splitter->addWidget(infoWidget);
 
    auto layout = new QHBoxLayout(this);
@@ -159,22 +159,22 @@ PluginParametersWidget::PluginParametersWidget(QWidget *parent, PluginHost &plug
 }
 
 void PluginParametersWidget::computeDataModel() {
-   rootModuleItem_->clear();
-   idToParamTreeItem_.clear();
+   _rootModuleItem->clear();
+   _idToParamTreeItem.clear();
 
-   for (auto &it : pluginHost_.params()) {
+   for (auto &it : _pluginHost.params()) {
       auto &param = *it.second;
 
       QString path(param.info().module);
       auto modules = path.split("/", Qt::SkipEmptyParts);
-      auto module = rootModuleItem_;
+      auto module = _rootModuleItem;
       for (auto &m : modules)
          module = &module->subModule(m);
 
       auto item = std::make_unique<ParamTreeItem>(module, param);
-      idToParamTreeItem_.emplace(param.info().id, std::move(item));
+      _idToParamTreeItem.emplace(param.info().id, std::move(item));
    }
-   treeWidget_->sortItems(0, Qt::AscendingOrder);
+   _treeWidget->sortItems(0, Qt::AscendingOrder);
 }
 
 void PluginParametersWidget::selectionChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous) {
@@ -197,10 +197,10 @@ void PluginParametersWidget::selectionChanged(QTreeWidgetItem *current, QTreeWid
 }
 
 void PluginParametersWidget::connectToParam(PluginParam *param) {
-   if (currentParam_)
+   if (_currentParam)
       disconnectFromParam();
 
-   currentParam_ = param;
+   _currentParam = param;
    connect(param, &PluginParam::infoChanged, this, &PluginParametersWidget::paramInfoChanged);
    connect(param, &PluginParam::valueChanged, this, &PluginParametersWidget::paramValueChanged);
    connect(param,
@@ -212,14 +212,14 @@ void PluginParametersWidget::connectToParam(PluginParam *param) {
 }
 
 void PluginParametersWidget::disconnectFromParam() {
-   if (!currentParam_)
+   if (!_currentParam)
       return;
 
    disconnect(
-      currentParam_, &PluginParam::infoChanged, this, &PluginParametersWidget::paramInfoChanged);
+      _currentParam, &PluginParam::infoChanged, this, &PluginParametersWidget::paramInfoChanged);
    disconnect(
-      currentParam_, &PluginParam::valueChanged, this, &PluginParametersWidget::paramValueChanged);
-   disconnect(currentParam_,
+      _currentParam, &PluginParam::valueChanged, this, &PluginParametersWidget::paramValueChanged);
+   disconnect(_currentParam,
               &PluginParam::isBeingAdjustedChanged,
               this,
               &PluginParametersWidget::updateParamIsBeingAjustedChanged);
@@ -235,73 +235,73 @@ void PluginParametersWidget::updateAll() {
 }
 
 void PluginParametersWidget::updateParamInfo() {
-   if (!currentParam_) {
-      idLabel_->setText("-");
-      nameLabel_->setText("-");
-      moduleLabel_->setText("-");
-      isPerNoteLabel_->setText("-");
-      isPerChannelLabel_->setText("-");
-      isPeriodicLabel_->setText("-");
-      isReadOnlyLabel_->setText("-");
-      isHiddenLabel_->setText("-");
-      isBypassLabel_->setText("-");
-      isSteppedLabel_->setText("-");
-      minValueLabel_->setText("-");
-      maxValueLabel_->setText("-");
-      defaultValueLabel_->setText("-");
-      isBeingAdjusted_->setText("-");
+   if (!_currentParam) {
+      _idLabel->setText("-");
+      _nameLabel->setText("-");
+      _moduleLabel->setText("-");
+      _isPerNoteLabel->setText("-");
+      _isPerChannelLabel->setText("-");
+      _isPeriodicLabel->setText("-");
+      _isReadOnlyLabel->setText("-");
+      _isHiddenLabel->setText("-");
+      _isBypassLabel->setText("-");
+      _isSteppedLabel->setText("-");
+      _minValueLabel->setText("-");
+      _maxValueLabel->setText("-");
+      _defaultValueLabel->setText("-");
+      _isBeingAdjusted->setText("-");
    } else {
-      auto &p = *currentParam_;
+      auto &p = *_currentParam;
       auto &i = p.info();
-      idLabel_->setText(QString::number(i.id));
-      nameLabel_->setText(i.name);
-      moduleLabel_->setText(i.module);
-      isPerNoteLabel_->setText(i.flags & CLAP_PARAM_IS_PER_NOTE ? "true" : "false");
-      isPerChannelLabel_->setText(i.flags & CLAP_PARAM_IS_PER_CHANNEL ? "true" : "false");
-      isPeriodicLabel_->setText(i.flags & CLAP_PARAM_IS_PERIODIC ? "true" : "false");
-      isReadOnlyLabel_->setText(i.flags & CLAP_PARAM_IS_READONLY ? "true" : "false");
-      isHiddenLabel_->setText(i.flags & CLAP_PARAM_IS_HIDDEN ? "true" : "false");
-      isBypassLabel_->setText(i.flags & CLAP_PARAM_IS_BYPASS ? "true" : "false");
-      isBeingAdjusted_->setText(p.isBeingAdjusted() ? "true" : "false");
+      _idLabel->setText(QString::number(i.id));
+      _nameLabel->setText(i.name);
+      _moduleLabel->setText(i.module);
+      _isPerNoteLabel->setText(i.flags & CLAP_PARAM_IS_PER_NOTE ? "true" : "false");
+      _isPerChannelLabel->setText(i.flags & CLAP_PARAM_IS_PER_CHANNEL ? "true" : "false");
+      _isPeriodicLabel->setText(i.flags & CLAP_PARAM_IS_PERIODIC ? "true" : "false");
+      _isReadOnlyLabel->setText(i.flags & CLAP_PARAM_IS_READONLY ? "true" : "false");
+      _isHiddenLabel->setText(i.flags & CLAP_PARAM_IS_HIDDEN ? "true" : "false");
+      _isBypassLabel->setText(i.flags & CLAP_PARAM_IS_BYPASS ? "true" : "false");
+      _isBeingAdjusted->setText(p.isBeingAdjusted() ? "true" : "false");
 
-      isSteppedLabel_->setText("float");
-      minValueLabel_->setText(QString::number(i.min_value));
-      maxValueLabel_->setText(QString::number(i.max_value));
-      defaultValueLabel_->setText(QString::number(i.default_value));
+      _isSteppedLabel->setText("float");
+      _minValueLabel->setText(QString::number(i.min_value));
+      _maxValueLabel->setText(QString::number(i.max_value));
+      _defaultValueLabel->setText(QString::number(i.default_value));
    }
 }
 
 void PluginParametersWidget::updateParamIsBeingAjustedChanged() {
-   if (!currentParam_) {
-      isBeingAdjusted_->setText("-");
+   if (!_currentParam) {
+      _isBeingAdjusted->setText("-");
    } else {
-      auto &p = *currentParam_;
-      isBeingAdjusted_->setText(p.isBeingAdjusted() ? "true" : "false");
+      auto &p = *_currentParam;
+      _isBeingAdjusted->setText(p.isBeingAdjusted() ? "true" : "false");
    }
 }
 
 void PluginParametersWidget::updateParamValue() {
-   if (valueSlider_->isSliderDown())
+   if (_valueSlider->isSliderDown())
       return;
 
-   if (!currentParam_)
+   if (!_currentParam)
       return;
 
-   auto info = currentParam_->info();
-   auto v = currentParam_->value();
-   valueSlider_->setValue(SLIDER_RANGE * (v - info.min_value) / (info.max_value - info.min_value));
+   auto info = _currentParam->info();
+   auto v = _currentParam->value();
+   _valueSlider->setValue(SLIDER_RANGE * (v - info.min_value) / (info.max_value - info.min_value));
 }
 
 void PluginParametersWidget::updateParamModulation() {
-   if (valueSlider_->isSliderDown())
+   if (_valueSlider->isSliderDown())
       return;
 
-   if (!currentParam_)
+   if (!_currentParam)
       return;
 
-   auto info = currentParam_->info();
-   auto v = currentParam_->value();
-   valueSlider_->setValue(SLIDER_RANGE * (v - info.min_value) / (info.max_value - info.min_value));
+   auto info = _currentParam->info();
+   auto v = _currentParam->value();
+   _valueSlider->setValue(SLIDER_RANGE * (v - info.min_value) / (info.max_value - info.min_value));
 }
 
 void PluginParametersWidget::paramInfoChanged() { updateParamInfo(); }
@@ -309,28 +309,28 @@ void PluginParametersWidget::paramInfoChanged() { updateParamInfo(); }
 void PluginParametersWidget::paramValueChanged() { updateParamValue(); }
 
 void PluginParametersWidget::sliderValueChanged(int newValue) {
-   if (!currentParam_)
+   if (!_currentParam)
       return;
 
-   if (!valueSlider_->isSliderDown())
+   if (!_valueSlider->isSliderDown())
       return;
 
-   auto &info = currentParam_->info();
+   auto &info = _currentParam->info();
 
    double value = newValue * (info.max_value - info.min_value) / SLIDER_RANGE + info.min_value;
-   pluginHost_.setParamValueByHost(*currentParam_, value);
+   _pluginHost.setParamValueByHost(*_currentParam, value);
 }
 
 void PluginParametersWidget::sliderModulationChanged(int newValue) {
-   if (!currentParam_)
+   if (!_currentParam)
       return;
 
-   if (!modulationSlider_->isSliderDown())
+   if (!_modulationSlider->isSliderDown())
       return;
 
-   auto &info = currentParam_->info();
+   auto &info = _currentParam->info();
 
    double dist = info.max_value - info.min_value;
    double value = newValue * dist / SLIDER_RANGE;
-   pluginHost_.setParamModulationByHost(*currentParam_, value);
+   _pluginHost.setParamModulationByHost(*_currentParam, value);
 }

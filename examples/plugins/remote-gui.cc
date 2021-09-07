@@ -12,20 +12,20 @@
 
 namespace clap {
    RemoteGui::~RemoteGui() {
-      if (channel_)
+      if (_channel)
          destroy();
 
-      assert(!channel_);
+      assert(!_channel);
    }
 
    bool RemoteGui::spawn() {
-      assert(child_ == -1);
-      assert(!channel_);
+      assert(_child == -1);
+      assert(!_channel);
 
-      if (!plugin_.canUseTimerSupport() || !plugin_.canUseFdSupport())
+      if (!_plugin.canUseTimerSupport() || !_plugin.canUseFdSupport())
          return false;
 
-      auto &pathProvider = plugin_.pathProvider();
+      auto &pathProvider = _plugin.pathProvider();
 
 #ifdef __unix__
       /* create a socket pair */
@@ -44,14 +44,14 @@ namespace clap {
              skin.c_str(),
              qmlLib.c_str());
 
-      child_ = ::fork();
-      if (child_ == -1) {
+      _child = ::fork();
+      if (_child == -1) {
          ::close(sockets[0]);
          ::close(sockets[1]);
          return false;
       }
 
-      if (child_ == 0) {
+      if (_child == 0) {
          // Child
          ::close(sockets[0]);
          char socketStr[16];
@@ -72,10 +72,10 @@ namespace clap {
          ::close(sockets[1]);
       }
 
-      timerId_ = CLAP_INVALID_ID;
-      plugin_.hostTimerSupport_->register_timer(plugin_.host_, 1000 / 60, &timerId_);
-      plugin_.hostFdSupport_->register_fd(plugin_.host_, sockets[0], CLAP_FD_READ | CLAP_FD_ERROR);
-      channel_.reset(new RemoteChannel(
+      _timerId = CLAP_INVALID_ID;
+      _plugin._hostTimerSupport->register_timer(_plugin._host, 1000 / 60, &_timerId);
+      _plugin._hostFdSupport->register_fd(_plugin._host, sockets[0], CLAP_FD_READ | CLAP_FD_ERROR);
+      _channel.reset(new RemoteChannel(
          [this](const RemoteChannel::Message &msg) { onMessage(msg); }, *this, sockets[0], true));
 
       return true;
@@ -85,23 +85,23 @@ namespace clap {
    }
 
    void RemoteGui::modifyFd(clap_fd_flags flags) {
-      plugin_.hostFdSupport_->modify_fd(plugin_.host_, channel_->fd(), flags);
+      _plugin._hostFdSupport->modify_fd(_plugin._host, _channel->fd(), flags);
    }
 
    void RemoteGui::removeFd() {
-      plugin_.hostFdSupport_->unregister_fd(plugin_.host_, channel_->fd());
-      plugin_.hostTimerSupport_->unregister_timer(plugin_.host_, timerId_);
+      _plugin._hostFdSupport->unregister_fd(_plugin._host, _channel->fd());
+      _plugin._hostTimerSupport->unregister_timer(_plugin._host, _timerId);
    }
 
-   clap_fd RemoteGui::fd() const { return channel_ ? channel_->fd() : -1; }
+   clap_fd RemoteGui::fd() const { return _channel ? _channel->fd() : -1; }
 
    void RemoteGui::onFd(clap_fd_flags flags) {
       if (flags & CLAP_FD_READ)
-         channel_->onRead();
+         _channel->onRead();
       if (flags & CLAP_FD_WRITE)
-         channel_->onWrite();
+         _channel->onWrite();
       if (flags & CLAP_FD_ERROR)
-         channel_->onError();
+         _channel->onError();
    }
 
    void RemoteGui::onMessage(const RemoteChannel::Message &msg) {
@@ -109,21 +109,21 @@ namespace clap {
       case messages::kAdjustRequest: {
          messages::AdjustRequest rq;
          msg.get(rq);
-         plugin_.guiAdjust(rq.paramId, rq.value, rq.flags);
+         _plugin.guiAdjust(rq.paramId, rq.value, rq.flags);
          break;
       }
       }
    }
 
    void RemoteGui::defineParameter(const clap_param_info &info) noexcept {
-      channel_->sendRequestAsync(messages::DefineParameterRequest{info});
+      _channel->sendRequestAsync(messages::DefineParameterRequest{info});
    }
 
    bool RemoteGui::size(uint32_t *width, uint32_t *height) noexcept {
       messages::SizeRequest request;
       messages::SizeResponse response;
 
-      if (!channel_->sendRequestSync(request, response))
+      if (!_channel->sendRequestSync(request, response))
          return false;
 
       *width = response.width;
@@ -132,49 +132,49 @@ namespace clap {
    }
 
    void RemoteGui::setScale(double scale) noexcept {
-      channel_->sendRequestAsync(messages::SetScaleRequest{scale});
+      _channel->sendRequestAsync(messages::SetScaleRequest{scale});
    }
 
    bool RemoteGui::show() noexcept {
       messages::ShowRequest request;
       messages::ShowResponse response;
 
-      return channel_->sendRequestSync(request, response);
+      return _channel->sendRequestSync(request, response);
    }
 
    bool RemoteGui::hide() noexcept {
       messages::HideRequest request;
       messages::HideResponse response;
 
-      return channel_->sendRequestSync(request, response);
+      return _channel->sendRequestSync(request, response);
    }
 
    void RemoteGui::destroy() noexcept {
-      if (!channel_)
+      if (!_channel)
          return;
 
       messages::DestroyRequest request;
       messages::DestroyResponse response;
 
-      channel_->sendRequestSync(request, response);
-      channel_->close();
-      channel_.reset();
+      _channel->sendRequestSync(request, response);
+      _channel->close();
+      _channel.reset();
 
       waitChild();
    }
 
    void RemoteGui::waitChild() {
 #ifdef __unix__
-      if (child_ == -1)
+      if (_child == -1)
          return;
       int stat = 0;
       int ret;
 
       do {
-         ret = ::waitpid(child_, &stat, 0);
+         ret = ::waitpid(_child, &stat, 0);
       } while (ret == -1 && errno == EINTR);
 
-      child_ = -1;
+      _child = -1;
 #endif
    }
 
@@ -182,14 +182,14 @@ namespace clap {
       messages::AttachCocoaRequest request{nsView};
       messages::AttachResponse response;
 
-      return channel_->sendRequestSync(request, response);
+      return _channel->sendRequestSync(request, response);
    }
 
    bool RemoteGui::attachWin32(clap_hwnd window) noexcept {
       messages::AttachWin32Request request{window};
       messages::AttachResponse response;
 
-      return channel_->sendRequestSync(request, response);
+      return _channel->sendRequestSync(request, response);
    }
 
    bool RemoteGui::attachX11(const char *display_name, unsigned long window) noexcept {
@@ -199,14 +199,14 @@ namespace clap {
       request.window = window;
       std::snprintf(request.display, sizeof(request.display), "%s", display_name ?: "");
 
-      return channel_->sendRequestSync(request, response);
+      return _channel->sendRequestSync(request, response);
    }
 
    void RemoteGui::onTimer() {
-      plugin_.pluginToGuiQueue_.consume(
+      _plugin._pluginToGuiQueue.consume(
          [this](clap_id paramId, const CorePlugin::PluginToGuiValue &value) {
             messages::ParameterValueRequest rq{paramId, value.value, value.mod};
-            channel_->sendRequestAsync(rq);
+            _channel->sendRequestAsync(rq);
          });
    }
 

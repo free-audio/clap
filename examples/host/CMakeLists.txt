@@ -36,7 +36,6 @@ add_executable(clap-host
   plugin-quick-controls-widget.hh
 
   CMakeLists.txt
-  device-reference.cc
   device-reference.hh
   engine.cc
   engine.hh
@@ -47,7 +46,6 @@ add_executable(clap-host
   midi-settings.hh
   midi-settings-widget.cc
   midi-settings-widget.hh
-  plugin-info.cc
   plugin-info.hh
   plugin-parameters-widget.cc
   plugin-parameters-widget.hh

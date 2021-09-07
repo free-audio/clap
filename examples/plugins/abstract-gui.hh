@@ -7,7 +7,7 @@ namespace clap {
    class CorePlugin;
    class AbstractGui {
    public:
-      AbstractGui(CorePlugin &plugin) : plugin_(plugin) {}
+      AbstractGui(CorePlugin &plugin) : _plugin(plugin) {}
       virtual ~AbstractGui() = default;
 
       virtual void defineParameter(const clap_param_info&) noexcept = 0;
@@ -25,7 +25,7 @@ namespace clap {
       virtual void destroy() noexcept = 0;
 
    protected:
-      CorePlugin &plugin_;
+      CorePlugin &_plugin;
    };
 
 } // namespace clap

@@ -59,9 +59,9 @@ public:
    void setParamValueByHost(PluginParam &param, double value);
    void setParamModulationByHost(PluginParam &param, double value);
 
-   auto &params() const { return params_; }
-   auto &quickControlsPages() const { return quickControlsPages_; }
-   auto quickControlsSelectedPage() const { return quickControlsSelectedPage_; }
+   auto &params() const { return _params; }
+   auto &quickControlsPages() const { return _quickControlsPages; }
+   auto quickControlsSelectedPage() const { return _quickControlsSelectedPage; }
    void setQuickControlsSelectedPageByHost(clap_id page_id);
 
    bool loadNativePluginPreset(const std::string &path);
@@ -125,66 +125,66 @@ private:
    static void clapStateMarkDirty(const clap_host *host);
 
 private:
-   Engine &engine_;
+   Engine &_engine;
 
-   QLibrary library_;
+   QLibrary _library;
 
    clap_host host_;
-   static const constexpr clap_host_log hostLog_ = {
+   static const constexpr clap_host_log _hostLog = {
       PluginHost::clapLog,
    };
-   static const constexpr clap_host_gui hostGui_ = {
+   static const constexpr clap_host_gui _hostGui = {
       PluginHost::clapGuiResize,
    };
    //static const constexpr clap_host_audio_ports hostAudioPorts_;
    //static const constexpr clap_host_audio_ports_config hostAudioPortsConfig_;
-   static const constexpr clap_host_params hostParams_ = {
+   static const constexpr clap_host_params _hostParams = {
 PluginHost::clapParamsRescan,
    };
-   static const constexpr clap_host_quick_controls hostQuickControls_ = {
+   static const constexpr clap_host_quick_controls _hostQuickControls = {
       PluginHost::clapQuickControlsChanged,
    };
-   static const constexpr clap_host_timer_support hostTimerSupport_ = {
+   static const constexpr clap_host_timer_support _hostTimerSupport = {
       PluginHost::clapRegisterTimer,
       PluginHost::clapUnregisterTimer,
    };
-   static const constexpr clap_host_fd_support hostFdSupport_ = {
+   static const constexpr clap_host_fd_support _hostFdSupport = {
       PluginHost::clapRegisterFd,
       PluginHost::clapModifyFd,
       PluginHost::clapUnregisterFd,
    };
-   static const constexpr clap_host_thread_check hostThreadCheck_ = {
+   static const constexpr clap_host_thread_check _hostThreadCheck = {
       PluginHost::clapIsMainThread,
       PluginHost::clapIsAudioThread,
    };
-   static const constexpr clap_host_thread_pool hostThreadPool_ = {
+   static const constexpr clap_host_thread_pool _hostThreadPool = {
       PluginHost::clapThreadPoolRequestExec,
    };
-   static const constexpr clap_host_state hostState_ = {
+   static const constexpr clap_host_state _hostState = {
       PluginHost::clapStateMarkDirty,
    };
 
-   const struct clap_plugin_entry *pluginEntry_ = nullptr;
-   const clap_plugin *plugin_ = nullptr;
-   const clap_plugin_params *pluginParams_ = nullptr;
-   const clap_plugin_quick_controls *pluginQuickControls_ = nullptr;
-   const clap_plugin_audio_ports *pluginAudioPorts_ = nullptr;
-   const clap_plugin_gui *pluginGui_ = nullptr;
-   const clap_plugin_gui_x11 *pluginGuiX11_ = nullptr;
-   const clap_plugin_gui_win32 *pluginGuiWin32_ = nullptr;
-   const clap_plugin_gui_cocoa *pluginGuiCocoa_ = nullptr;
-   const clap_plugin_gui_free_standing *pluginGuiFreeStanding_ = nullptr;
-   const clap_plugin_timer_support *pluginTimerSupport_ = nullptr;
-   const clap_plugin_fd_support *pluginFdSupport_ = nullptr;
-   const clap_plugin_thread_pool *pluginThreadPool_ = nullptr;
-   const clap_plugin_preset_load *pluginPresetLoad_ = nullptr;
-   const clap_plugin_state *pluginState_ = nullptr;
+   const struct clap_plugin_entry *_pluginEntry = nullptr;
+   const clap_plugin *_plugin = nullptr;
+   const clap_plugin_params *_pluginParams = nullptr;
+   const clap_plugin_quick_controls *_pluginQuickControls = nullptr;
+   const clap_plugin_audio_ports *_pluginAudioPorts = nullptr;
+   const clap_plugin_gui *_pluginGui = nullptr;
+   const clap_plugin_gui_x11 *_pluginGuiX11 = nullptr;
+   const clap_plugin_gui_win32 *_pluginGuiWin32 = nullptr;
+   const clap_plugin_gui_cocoa *_pluginGuiCocoa = nullptr;
+   const clap_plugin_gui_free_standing *_pluginGuiFreeStanding = nullptr;
+   const clap_plugin_timer_support *_pluginTimerSupport = nullptr;
+   const clap_plugin_fd_support *_pluginFdSupport = nullptr;
+   const clap_plugin_thread_pool *_pluginThreadPool = nullptr;
+   const clap_plugin_preset_load *_pluginPresetLoad = nullptr;
+   const clap_plugin_state *_pluginState = nullptr;
 
-   bool pluginExtensionsAreInitialized_ = false;
+   bool _pluginExtensionsAreInitialized = false;
 
    /* timers */
-   clap_id nextTimerId_ = 0;
-   std::unordered_map<clap_id, std::unique_ptr<QTimer>> timers_;
+   clap_id _nextTimerId = 0;
+   std::unordered_map<clap_id, std::unique_ptr<QTimer>> _timers;
 
    /* fd events */
    struct Notifiers {
@@ -192,36 +192,36 @@ PluginHost::clapParamsRescan,
       std::unique_ptr<QSocketNotifier> wr;
       std::unique_ptr<QSocketNotifier> err;
    };
-   std::unordered_map<clap_fd, std::unique_ptr<Notifiers>> fds_;
+   std::unordered_map<clap_fd, std::unique_ptr<Notifiers>> _fds;
 
    /* thread pool */
-   std::vector<std::unique_ptr<QThread>> threadPool_;
-   std::atomic<bool> threadPoolStop_ = {false};
-   std::atomic<int> threadPoolTaskIndex_ = {0};
-   QSemaphore threadPoolSemaphoreProd_;
-   QSemaphore threadPoolSemaphoreDone_;
+   std::vector<std::unique_ptr<QThread>> _threadPool;
+   std::atomic<bool> _threadPoolStop = {false};
+   std::atomic<int> _threadPoolTaskIndex = {0};
+   QSemaphore _threadPoolSemaphoreProd;
+   QSemaphore _threadPoolSemaphoreDone;
 
    /* process stuff */
-   clap_audio_buffer audioIn_ = {};
-   clap_audio_buffer audioOut_ = {};
-   std::vector<clap_event> evIn_;
-   std::vector<clap_event> evOut_;
-   clap_process process_;
+   clap_audio_buffer _audioIn = {};
+   clap_audio_buffer _audioOut = {};
+   std::vector<clap_event> _evIn;
+   std::vector<clap_event> _evOut;
+   clap_process _process;
 
    /* param update queues */
-   std::unordered_map<clap_id, std::unique_ptr<PluginParam>> params_;
+   std::unordered_map<clap_id, std::unique_ptr<PluginParam>> _params;
 
    struct ParamQueueValue {
       void *cookie;
       double value;
    };
 
-   ParamQueue<ParamQueueValue> appToEngineValueQueue_;
-   ParamQueue<ParamQueueValue> appToEngineModQueue_;
-   ParamQueue<ParamQueueValue> engineToAppValueQueue_;
+   ParamQueue<ParamQueueValue> _appToEngineValueQueue;
+   ParamQueue<ParamQueueValue> _appToEngineModQueue;
+   ParamQueue<ParamQueueValue> _engineToAppValueQueue;
 
-   std::unordered_map<clap_id, std::unique_ptr<clap_quick_controls_page>> quickControlsPages_;
-   clap_id quickControlsSelectedPage_ = CLAP_INVALID_ID;
+   std::unordered_map<clap_id, std::unique_ptr<clap_quick_controls_page>> _quickControlsPages;
+   clap_id _quickControlsSelectedPage = CLAP_INVALID_ID;
 
    /* delayed actions */
    enum PluginState {
@@ -250,12 +250,12 @@ PluginHost::clapParamsRescan,
    bool isPluginSleeping() const;
    void setPluginState(PluginState state);
 
-   PluginState state_ = Inactive;
-   bool stateIsDirty_ = false;
+   PluginState _state = Inactive;
+   bool _stateIsDirty = false;
 
-   bool scheduleRestart_ = false;
-   bool scheduleDeactivate_ = false;
+   bool _scheduleRestart = false;
+   bool _scheduleDeactivate = false;
 
-   bool isGuiCreated_ = false;
-   bool isGuiVisible_ = false;
+   bool _isGuiCreated = false;
+   bool _isGuiVisible = false;
 };

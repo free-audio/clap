@@ -28,7 +28,7 @@ namespace clap {
 
    Gain::Gain(const std::string &pluginPath, const clap_host *host)
       : CorePlugin(PathProvider::create(pluginPath, "gain"), descriptor(), host) {
-      parameters_.addParameter(clap_param_info{
+      _parameters.addParameter(clap_param_info{
          kParamIdGain,
          0,
          nullptr,
@@ -51,7 +51,7 @@ namespace clap {
    void Gain::defineAudioPorts() noexcept {
       assert(!isActive());
 
-      channelCount_ = trackChannelCount();
+      _channelCount = trackChannelCount();
 
       clap_audio_port_info info;
       info.id = 0;
@@ -60,16 +60,16 @@ namespace clap {
       info.is_cv = false;
       info.sample_size = 32;
       info.in_place = true;
-      info.channel_count = channelCount_;
+      info.channel_count = _channelCount;
       info.channel_map = CLAP_CHMAP_UNSPECIFIED;
 
-      audioInputs_.clear();
-      audioInputs_.push_back(info);
-      audioOutputs_.clear();
-      audioOutputs_.push_back(info);
+      _audioInputs.clear();
+      _audioInputs.push_back(info);
+      _audioOutputs.clear();
+      _audioOutputs.push_back(info);
    }
 
-   void Gain::deactivate() noexcept { channelCount_ = 0; }
+   void Gain::deactivate() noexcept { _channelCount = 0; }
 
    clap_process_status Gain::process(const clap_process *process) noexcept {
       float **in = process->audio_inputs[0].data32;
@@ -77,7 +77,7 @@ namespace clap {
 
       float k = 1;
       for (int i = 0; i < process->frames_count; ++i) {
-         for (int c = 0; c < channelCount_; ++c)
+         for (int c = 0; c < _channelCount; ++c)
             out[c][i] = k * in[c][i];
       }
 

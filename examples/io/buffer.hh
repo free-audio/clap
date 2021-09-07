@@ -16,21 +16,21 @@ namespace clap {
       Buffer<T, CAPACITY> &operator=(const Buffer<T, CAPACITY> &) = delete;
       Buffer<T, CAPACITY> &operator=(Buffer<T, CAPACITY> &&) = delete;
 
-      const T *readPtr() const noexcept { return &data_[roff_]; }
-      size_t readAvail() const noexcept { return woff_ - roff_; }
+      const T *readPtr() const noexcept { return &_data[_roff]; }
+      size_t readAvail() const noexcept { return _woff - _roff; }
 
-      T *writePtr() noexcept { return &data_[woff_]; }
-      size_t writeAvail() const noexcept { return CAPACITY - woff_; }
+      T *writePtr() noexcept { return &_data[_woff]; }
+      size_t writeAvail() const noexcept { return CAPACITY - _woff; }
 
       /* Consume nbytes from the buffer */
       void read(size_t nbytes) noexcept {
-         roff_ += nbytes;
+         _roff += nbytes;
          assert(checkInvariants());
       }
 
       /* Produce nbytes into the buffer */
       void wrote(size_t nbytes) noexcept {
-         woff_ += nbytes;
+         _woff += nbytes;
          assert(checkInvariants());
       }
 
@@ -45,17 +45,17 @@ namespace clap {
       }
 
       void rewind() noexcept {
-         if (woff_ == 0)
+         if (_woff == 0)
             return;
 
          // this is inefficient but simple
          // TODO: use scatter/gather IO
          auto rptr = readPtr();
          auto avail = readAvail();
-         std::copy(rptr, rptr + avail, &data_[0]);
+         std::copy(rptr, rptr + avail, &_data[0]);
 
-         woff_ -= roff_;
-         roff_ = 0;
+         _woff -= _roff;
+         _roff = 0;
 
          assert(checkInvariants());
       }
@@ -63,14 +63,14 @@ namespace clap {
    private:
 #ifndef NDEBUG
       bool checkInvariants() const noexcept {
-         assert(woff_ <= data_.size());
-         assert(roff_ <= woff_);
+         assert(_woff <= _data.size());
+         assert(_roff <= _woff);
          return true;
       }
 #endif
 
-      std::array<T, CAPACITY> data_;
-      size_t roff_ = 0;
-      size_t woff_ = 0;
+      std::array<T, CAPACITY> _data;
+      size_t _roff = 0;
+      size_t _woff = 0;
    };
 } // namespace clap

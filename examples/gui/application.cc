@@ -9,7 +9,7 @@
 #include "application.hh"
 
 Application::Application(int &argc, char **argv)
-   : QGuiApplication(argc, argv), quickView_(new QQuickView()) {
+   : QGuiApplication(argc, argv), _quickView(new QQuickView()) {
 
    bool waitForDebbugger = false;
    while (waitForDebbugger)
@@ -31,64 +31,64 @@ Application::Application(int &argc, char **argv)
 
    parser.process(*this);
 
-   pluginProxy_ = new PluginProxy(this);
+   _pluginProxy = new PluginProxy(this);
 
-   auto qmlContext = quickView_->engine()->rootContext();
+   auto qmlContext = _quickView->engine()->rootContext();
    for (const auto &str : parser.values(qmlLibOpt))
-      quickView_->engine()->addImportPath(str);
-   qmlContext->setContextProperty("plugin", pluginProxy_);
+      _quickView->engine()->addImportPath(str);
+   qmlContext->setContextProperty("plugin", _pluginProxy);
 
-   quickView_->setSource(parser.value(skinOpt) + "/main.qml");
+   _quickView->setSource(parser.value(skinOpt) + "/main.qml");
 
    auto socket = parser.value(socketOpt).toULongLong();
 
-   socketReadNotifier_.reset(new QSocketNotifier(socket, QSocketNotifier::Read, this));
-   connect(socketReadNotifier_.get(),
+   _socketReadNotifier.reset(new QSocketNotifier(socket, QSocketNotifier::Read, this));
+   connect(_socketReadNotifier.get(),
            &QSocketNotifier::activated,
            [this](QSocketDescriptor socket, QSocketNotifier::Type type) {
-              remoteChannel_->onRead();
-              if (!remoteChannel_->isOpen())
+              _remoteChannel->onRead();
+              if (!_remoteChannel->isOpen())
                  quit();
            });
 
-   socketWriteNotifier_.reset(new QSocketNotifier(socket, QSocketNotifier::Write, this));
-   connect(socketWriteNotifier_.get(),
+   _socketWriteNotifier.reset(new QSocketNotifier(socket, QSocketNotifier::Write, this));
+   connect(_socketWriteNotifier.get(),
            &QSocketNotifier::activated,
            [this](QSocketDescriptor socket, QSocketNotifier::Type type) {
-              remoteChannel_->onWrite();
-              if (!remoteChannel_->isOpen()) {
+              _remoteChannel->onWrite();
+              if (!_remoteChannel->isOpen()) {
                  quit();
               }
            });
 
-   socketErrorNotifier_.reset(new QSocketNotifier(socket, QSocketNotifier::Exception, this));
-   connect(socketErrorNotifier_.get(),
+   _socketErrorNotifier.reset(new QSocketNotifier(socket, QSocketNotifier::Exception, this));
+   connect(_socketErrorNotifier.get(),
            &QSocketNotifier::activated,
            [this](QSocketDescriptor socket, QSocketNotifier::Type type) {
-              remoteChannel_->onError();
+              _remoteChannel->onError();
               quit();
            });
 
-   remoteChannel_.reset(new clap::RemoteChannel(
+   _remoteChannel.reset(new clap::RemoteChannel(
       [this](const clap::RemoteChannel::Message &msg) { onMessage(msg); }, *this, socket, false));
 
-   socketReadNotifier_->setEnabled(true);
-   socketWriteNotifier_->setEnabled(false);
-   socketErrorNotifier_->setEnabled(false);
+   _socketReadNotifier->setEnabled(true);
+   _socketWriteNotifier->setEnabled(false);
+   _socketErrorNotifier->setEnabled(false);
 
    QCoreApplication::arguments();
 }
 
 void Application::modifyFd(clap_fd_flags flags) {
-   socketReadNotifier_->setEnabled(flags & CLAP_FD_READ);
-   socketWriteNotifier_->setEnabled(flags & CLAP_FD_WRITE);
-   socketErrorNotifier_->setEnabled(flags & CLAP_FD_ERROR);
+   _socketReadNotifier->setEnabled(flags & CLAP_FD_READ);
+   _socketWriteNotifier->setEnabled(flags & CLAP_FD_WRITE);
+   _socketErrorNotifier->setEnabled(flags & CLAP_FD_ERROR);
 }
 
 void Application::removeFd() {
-   socketReadNotifier_.reset();
-   socketWriteNotifier_.reset();
-   socketErrorNotifier_.reset();
+   _socketReadNotifier.reset();
+   _socketWriteNotifier.reset();
+   _socketErrorNotifier.reset();
    quit();
 }
 
@@ -96,21 +96,21 @@ void Application::onMessage(const clap::RemoteChannel::Message &msg) {
    switch (msg.type) {
    case clap::messages::kDestroyRequest:
       clap::messages::DestroyResponse rp;
-      remoteChannel_->sendResponseAsync(rp, msg.cookie);
+      _remoteChannel->sendResponseAsync(rp, msg.cookie);
       quit();
       break;
 
    case clap::messages::kDefineParameterRequest: {
       clap::messages::DefineParameterRequest rq;
       msg.get(rq);
-      pluginProxy_->defineParameter(rq.info);
+      _pluginProxy->defineParameter(rq.info);
       break;
    }
 
    case clap::messages::kParameterValueRequest: {
       clap::messages::ParameterValueRequest rq;
       msg.get(rq);
-      auto p = pluginProxy_->param(rq.paramId);
+      auto p = _pluginProxy->param(rq.paramId);
       p->setValueFromPlugin(rq.value);
       p->setModulationFromPlugin(rq.modulation);
       break;
@@ -118,10 +118,10 @@ void Application::onMessage(const clap::RemoteChannel::Message &msg) {
 
    case clap::messages::kSizeRequest: {
       clap::messages::SizeResponse rp;
-      auto rootItem = quickView_->rootObject();
+      auto rootItem = _quickView->rootObject();
       rp.width = rootItem ? rootItem->width() : 500;
       rp.height = rootItem ? rootItem->height() : 300;
-      remoteChannel_->sendResponseAsync(rp, msg.cookie);
+      _remoteChannel->sendResponseAsync(rp, msg.cookie);
       break;
    }
 
@@ -131,13 +131,13 @@ void Application::onMessage(const clap::RemoteChannel::Message &msg) {
       msg.get(rq);
 
 #ifdef Q_OS_LINUX
-      hostWindow_.reset(QWindow::fromWinId(rq.window));
-      quickView_->setParent(hostWindow_.get());
+      _hostWindow.reset(QWindow::fromWinId(rq.window));
+      _quickView->setParent(_hostWindow.get());
       sync();
       rp.succeed = true;
 #endif
 
-      remoteChannel_->sendResponseAsync(rp, msg.cookie);
+      _remoteChannel->sendResponseAsync(rp, msg.cookie);
       break;
    }
 
@@ -152,7 +152,7 @@ void Application::onMessage(const clap::RemoteChannel::Message &msg) {
       rp.succeed = true;
 #endif
 
-      remoteChannel_->sendResponseAsync(rp, msg.cookie);
+      _remoteChannel->sendResponseAsync(rp, msg.cookie);
       break;
    }
 
@@ -168,21 +168,21 @@ void Application::onMessage(const clap::RemoteChannel::Message &msg) {
       rp.succeed = true;
 #endif
 
-      remoteChannel_->sendResponseAsync(rp, msg.cookie);
+      _remoteChannel->sendResponseAsync(rp, msg.cookie);
       break;
    }
 
    case clap::messages::kShowRequest: {
-      quickView_->show();
+      _quickView->show();
       clap::messages::ShowResponse rp;
-      remoteChannel_->sendResponseAsync(rp, msg.cookie);
+      _remoteChannel->sendResponseAsync(rp, msg.cookie);
       break;
    }
 
    case clap::messages::kHideRequest: {
-      quickView_->hide();
+      _quickView->hide();
       clap::messages::HideResponse rp;
-      remoteChannel_->sendResponseAsync(rp, msg.cookie);
+      _remoteChannel->sendResponseAsync(rp, msg.cookie);
       break;
    }
    }

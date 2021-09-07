@@ -17,5 +17,5 @@ public slots:
    void selectedDeviceChanged(int index);
 
 private:
-   MidiSettings &midiSettings_;
+   MidiSettings &_midiSettings;
 };
