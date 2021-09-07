@@ -71,6 +71,8 @@ public:
    static void checkForMainThread();
    static void checkForAudioThread();
 
+   QString paramValueToText(clap_id paramId, double value);
+
 signals:
    void paramsChanged();
    void quickControlsPagesChanged();

@@ -112,6 +112,7 @@ PluginParametersWidget::PluginParametersWidget(QWidget *parent, PluginHost &plug
    _maxValueLabel = new QLabel;
    _defaultValueLabel = new QLabel;
    _isBeingAdjusted = new QLabel;
+   _valueLabel = new QLabel;
 
    _valueSlider = new QSlider;
    _valueSlider->setMinimum(0);
@@ -140,6 +141,7 @@ PluginParametersWidget::PluginParametersWidget(QWidget *parent, PluginHost &plug
    formLayout->addRow(tr("max_value"), _maxValueLabel);
    formLayout->addRow(tr("default_value"), _defaultValueLabel);
    formLayout->addRow(tr("is_being_adjusted"), _isBeingAdjusted);
+   formLayout->addRow(tr("value"), _valueLabel);
    formLayout->addRow(tr("value"), _valueSlider);
    formLayout->addRow(tr("modulation"), _modulationSlider);
 
@@ -224,6 +226,8 @@ void PluginParametersWidget::disconnectFromParam() {
               this,
               &PluginParametersWidget::updateParamIsBeingAjustedChanged);
 
+   _currentParam = nullptr;
+
    updateAll();
 }
 
@@ -250,6 +254,7 @@ void PluginParametersWidget::updateParamInfo() {
       _maxValueLabel->setText("-");
       _defaultValueLabel->setText("-");
       _isBeingAdjusted->setText("-");
+      _valueLabel->setText("-");
    } else {
       auto &p = *_currentParam;
       auto &i = p.info();
@@ -290,6 +295,12 @@ void PluginParametersWidget::updateParamValue() {
    auto info = _currentParam->info();
    auto v = _currentParam->value();
    _valueSlider->setValue(SLIDER_RANGE * (v - info.min_value) / (info.max_value - info.min_value));
+   updateParamValueText();
+}
+
+void PluginParametersWidget::updateParamValueText()
+{
+   _valueLabel->setText(_pluginHost.paramValueToText(_currentParam->info().id, _currentParam->value()));
 }
 
 void PluginParametersWidget::updateParamModulation() {
@@ -319,6 +330,7 @@ void PluginParametersWidget::sliderValueChanged(int newValue) {
 
    double value = newValue * (info.max_value - info.min_value) / SLIDER_RANGE + info.min_value;
    _pluginHost.setParamValueByHost(*_currentParam, value);
+   updateParamValueText();
 }
 
 void PluginParametersWidget::sliderModulationChanged(int newValue) {

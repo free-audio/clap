@@ -69,6 +69,7 @@ private:
    void updateAll();
    void updateParamInfo();
    void updateParamValue();
+   void updateParamValueText();
    void updateParamModulation();
    void updateParamIsBeingAjustedChanged();
 
@@ -94,6 +95,7 @@ private:
    QLabel *_maxValueLabel = nullptr;
    QLabel *_defaultValueLabel = nullptr;
    QLabel *_isBeingAdjusted = nullptr;
+   QLabel *_valueLabel = nullptr;
    QSlider *_valueSlider = nullptr;
    QSlider *_modulationSlider = nullptr;
 };

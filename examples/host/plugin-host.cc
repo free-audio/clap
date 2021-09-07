@@ -1090,3 +1090,12 @@ bool PluginHost::isPluginActive() const {
 bool PluginHost::isPluginProcessing() const { return _state == ActiveAndProcessing; }
 
 bool PluginHost::isPluginSleeping() const { return _state == ActiveAndSleeping; }
+
+QString PluginHost::paramValueToText(clap_id paramId, double value) {
+   std::array<char, 256> buffer;
+
+   if (_pluginParams->value_to_text(_plugin, paramId, value, buffer.data(), buffer.size()))
+      return buffer.data();
+
+   return QString::number(value);
+}
