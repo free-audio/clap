@@ -150,6 +150,7 @@ void Application::onMessage(const clap::RemoteChannel::Message &msg) {
 #ifdef Q_OS_WIN
       hostWindow_.reset(QWindow::fromWinId(rq.hwnd));
       quickView_->setParent(hostWindow_.get());
+      _quickView->show();
       sync();
       rp.succeed = true;
 #endif
@@ -167,6 +168,7 @@ void Application::onMessage(const clap::RemoteChannel::Message &msg) {
 #ifdef Q_OS_MACOS
       hostWindow_.reset(QWindow::fromWinId(rq.nsView));
       quickView_->setParent(hostWindow_.get());
+      _quickView->show();
       sync();
       rp.succeed = true;
 #endif
