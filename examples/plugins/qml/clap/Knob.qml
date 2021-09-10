@@ -108,7 +108,6 @@ Canvas {
       var finalValueAngle = (param.normalizedFinalValue - param.normalizedValue) * ringAngle;
       ctx.arc(0, 0, size / 2, 0, finalValueAngle, finalValueAngle < 0);
       ctx.arc(0, 0, size / 2 - size * modulationMargin, finalValueAngle, 0, finalValueAngle > 0);
-      //ctx.arc(0, 0, size / 2, finalValueAngle, 0, true);
       ctx.fill();
 
       ctx.restore();
