@@ -2,10 +2,13 @@ import QtQuick 2.1
 
 Canvas {
    property QtObject param
-   property int size: 20
-   property string backgroundColor: "#222222";
+   property int size: 20;
+   property string backgroundColor: "#0c002b";
+   property string ringColor: "#adabb3";
+   property string knobColor: "#706d6b";
    property string valueColor: "#ffffff";
-   property string modulationColor: "#3344ff"
+   property string modulationColor: "#10b1ca"
+   property double modulationMargin: .05;
 
    id: knob
    width: size
@@ -68,11 +71,17 @@ Canvas {
    function drawBackground(ctx) {
       ctx.save()
 
-      ctx.fillStyle = backgroundColor;
+      ctx.fillStyle = ringColor;
       ctx.strokeStyle = "black";
 
       ctx.beginPath();
       ctx.arc(size / 2, size / 2, size / 2, 0, 2 * Math.PI, false);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(size / 2, size / 2, size / 2 - size * modulationMargin, 0, 2 * Math.PI, false);
+      ctx.fillStyle = backgroundColor;
       ctx.fill();
       ctx.stroke();
 
@@ -90,16 +99,19 @@ Canvas {
       ctx.strokeStyle = "black";
 
       ctx.beginPath();
-      ctx.rotate((param.normalizedFinalValue - .5) * Math.PI * 4 / 3);
-      ctx.arc(0, -size / 2 + 2 * radius, radius, 0, 2 * Math.PI, false);
+      ctx.rotate((param.normalizedValue - .5) * Math.PI * 4 / 3 - Math.PI / 2);
+
+      var finalValueAngle = (param.normalizedFinalValue - param.normalizedValue) * Math.PI * 4 / 3;
+      ctx.arc(0, 0, size / 2, 0, finalValueAngle, finalValueAngle < 0);
+      ctx.arc(0, 0, size / 2 - size * modulationMargin, finalValueAngle, 0, finalValueAngle > 0);
+      //ctx.arc(0, 0, size / 2, finalValueAngle, 0, true);
       ctx.fill();
-      ctx.stroke();
 
       ctx.restore();
    }
 
    function drawValue(ctx) {
-      var radius = size / 15;
+      var radius = size / 40;
 
       ctx.save();
 
@@ -108,9 +120,11 @@ Canvas {
       ctx.fillStyle = valueColor;
       ctx.strokeStyle = "black";
 
-      ctx.beginPath();
       ctx.rotate((param.normalizedValue - .5) * Math.PI * 4 / 3);
-      ctx.arc(0, -size / 2 + 2 * radius, radius, 0, 2 * Math.PI, false);
+      ctx.beginPath();
+      var y0 = -size / 2 + size * modulationMargin;
+      var y1 = y0 + size / 3;
+      ctx.rect(-radius, 0, 2 * radius, -size / 2);
       ctx.fill();
       ctx.stroke();
 
