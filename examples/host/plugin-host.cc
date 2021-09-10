@@ -118,8 +118,8 @@ bool PluginHost::load(const QString &path, int pluginIndex) {
 
    if (!clap_version_is_compatible(desc->clap_version)) {
       qWarning() << "Incompatible clap version: Plugin is: " << desc->clap_version.major << "."
-                 << desc->clap_version.minor << "." << desc->clap_version.revision
-                 << " Host is " << CLAP_VERSION.major << "." << CLAP_VERSION.minor << "." << CLAP_VERSION.revision;
+                 << desc->clap_version.minor << "." << desc->clap_version.revision << " Host is "
+                 << CLAP_VERSION.major << "." << CLAP_VERSION.minor << "." << CLAP_VERSION.revision;
       return false;
    }
 
@@ -165,15 +165,29 @@ void PluginHost::unload() {
    if (!_library.isLoaded())
       return;
 
-   if (_pluginGui)
+   if (_isGuiCreated) {
       _pluginGui->destroy(_plugin);
+      _isGuiCreated = false;
+      _isGuiVisible = false;
+   }
 
    deactivate();
 
    _plugin->destroy(_plugin);
    _plugin = nullptr;
    _pluginGui = nullptr;
+   _pluginGuiX11 = nullptr;
+   _pluginGuiCocoa = nullptr;
+   _pluginGuiWin32 = nullptr;
+   _pluginGuiFreeStanding = nullptr;
+   _pluginTimerSupport = nullptr;
+   _pluginFdSupport = nullptr;
+   _pluginThreadPool = nullptr;
+   _pluginPresetLoad = nullptr;
+   _pluginState = nullptr;
    _pluginAudioPorts = nullptr;
+   _pluginParams = nullptr;
+   _pluginQuickControls = nullptr;
 
    _pluginEntry->deinit();
    _pluginEntry = nullptr;
@@ -235,17 +249,19 @@ void PluginHost::setPorts(int numInputs, float **inputs, int numOutputs, float *
 void PluginHost::setParentWindow(WId parentWindow) {
    checkForMainThread();
 
+   if (!canUsePluginGui())
+      return;
+
    if (_isGuiCreated) {
       _pluginGui->destroy(_plugin);
       _isGuiCreated = false;
       _isGuiVisible = false;
    }
 
-   if (!_pluginGui)
+   if (!_pluginGui->create(_plugin)) {
+      qWarning() << "could not create the plugin gui";
       return;
-
-   if (!_pluginGui->create(_plugin))
-      return;
+   }
 
    _isGuiCreated = true;
    assert(_isGuiVisible == false);
@@ -253,21 +269,34 @@ void PluginHost::setParentWindow(WId parentWindow) {
    uint32_t width = 0;
    uint32_t height = 0;
 
-   if (_pluginGui)
-      _pluginGui->get_size(_plugin, &width, &height);
+   if (!_pluginGui->get_size(_plugin, &width, &height)) {
+      qWarning() << "could not get the size of the plugin gui";
+      _isGuiCreated = false;
+      _pluginGui->destroy(_plugin);
+      return;
+   }
+
+   bool didAttach = false;
 
 #if defined(Q_OS_LINUX)
    if (_pluginGuiX11)
-      _pluginGuiX11->attach(_plugin, nullptr, parentWindow);
+      didAttach = _pluginGuiX11->attach(_plugin, nullptr, parentWindow);
 #elif defined(Q_OS_MACX)
    if (_pluginGuiCocoa)
-      _pluginGuiCocoa->attach(_plugin, (void *)parentWindow);
+      didAttach = _pluginGuiCocoa->attach(_plugin, (void *)parentWindow);
 #elif defined(Q_OS_WIN32)
    if (_pluginEmbedWin32)
-      _pluginGuiWin32->attach(_plugin, parentWindow);
+      didAttach = _pluginGuiWin32->attach(_plugin, parentWindow);
 #endif
    // else (_pluginGuiFreeStanding)
-   //   _pluginGuiFreeStanding->open(_plugin);
+   //   didAttach = _pluginGuiFreeStanding->open(_plugin);
+
+   if (!didAttach) {
+      qWarning() << "the plugin failed to attach its gui";
+      _isGuiCreated = false;
+      _pluginGui->destroy(_plugin);
+      return;
+   }
 
    Application::instance().mainWindow()->resizePluginView(width, height);
 
@@ -1102,4 +1131,10 @@ QString PluginHost::paramValueToText(clap_id paramId, double value) {
       return buffer.data();
 
    return QString::number(value);
+}
+
+bool PluginHost::canUsePluginGui() const noexcept {
+   return _pluginGui && _pluginGui->create && _pluginGui->destroy && _pluginGui->can_resize &&
+          _pluginGui->get_size && _pluginGui->round_size && _pluginGui->round_size &&
+          _pluginGui->set_size && _pluginGui->set_scale && _pluginGui->hide && _pluginGui->show;
 }

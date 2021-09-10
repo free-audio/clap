@@ -126,6 +126,8 @@ private:
 
    static void clapStateMarkDirty(const clap_host *host);
 
+   bool canUsePluginGui() const noexcept;
+
 private:
    Engine &_engine;
 
