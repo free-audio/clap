@@ -3,9 +3,8 @@ import QtQuick 2.1
 Canvas {
    property QtObject param
    property int size: 20;
-   property string backgroundColor: "#0c002b";
-   property string ringColor: "#adabb3";
-   property string knobColor: "#706d6b";
+   property string ringColor: "#544d63";
+   property string knobColor: "#0c002b";
    property string valueColor: "#ffffff";
    property string modulationColor: "#10b1ca"
    property double modulationMargin: .05;
@@ -78,16 +77,14 @@ Canvas {
 
       ctx.beginPath();
       ctx.arc(0, 0, size / 2, 0, 2 * Math.PI, false);
-      ctx.fillStyle = backgroundColor;
+      ctx.fillStyle = knobColor;
       ctx.fill();
-      ctx.stroke();
 
       ctx.beginPath();
       ctx.arc(0, 0, size / 2 - size * modulationMargin, 0, ringAngle, false);
       ctx.arc(0, 0, size / 2, ringAngle, 0, true);
       ctx.fillStyle = ringColor;
       ctx.fill();
-      ctx.stroke();
 
       ctx.restore()
    }
@@ -129,7 +126,6 @@ Canvas {
       var y1 = y0 + size / 3;
       ctx.rect(-radius, 0, 2 * radius, -size / 2);
       ctx.fill();
-      ctx.stroke();
 
       ctx.restore();
    }
