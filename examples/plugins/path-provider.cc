@@ -57,7 +57,7 @@ namespace clap {
          return m[1];
       }
 
-      std::string getGuiExecutable() const override { return buildRoot_ / "examples/gui/clap-gui"; }
+      std::string getGuiExecutable() const override { return buildRoot_ / "examples/plugins/gui/clap-gui"; }
 
       std::string getSkinDirectory() const override { return srcRoot_ / "examples/plugins/qml" / pluginName_; }
 

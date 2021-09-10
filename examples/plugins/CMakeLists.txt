@@ -1,5 +1,8 @@
 find_package(Boost REQUIRED COMPONENTS serialization iostreams)
 
+add_subdirectory(io)
+add_subdirectory(gui)
+
 add_library(
   clap-plugins SHARED
   clap-entry.cc
