@@ -9,6 +9,7 @@ Canvas {
    property string valueColor: "#ffffff";
    property string modulationColor: "#10b1ca"
    property double modulationMargin: .05;
+   property double ringAngle: Math.PI * 5 / 3;
 
    id: knob
    width: size
@@ -56,7 +57,7 @@ Canvas {
 
       onDoubleClicked: (mouse) => {
          if (mouse.button === Qt.LeftButton)
-            knob.param.value = knob.param.defaultValue;
+            knob.param.setToDefault();
       }
    }
 
@@ -70,18 +71,21 @@ Canvas {
 
    function drawBackground(ctx) {
       ctx.save()
-
-      ctx.fillStyle = ringColor;
       ctx.strokeStyle = "black";
 
+      ctx.translate(size / 2, size / 2, size / 2);
+      ctx.rotate(ringAngle + Math.PI);
+
       ctx.beginPath();
-      ctx.arc(size / 2, size / 2, size / 2, 0, 2 * Math.PI, false);
+      ctx.arc(0, 0, size / 2, 0, 2 * Math.PI, false);
+      ctx.fillStyle = backgroundColor;
       ctx.fill();
       ctx.stroke();
 
       ctx.beginPath();
-      ctx.arc(size / 2, size / 2, size / 2 - size * modulationMargin, 0, 2 * Math.PI, false);
-      ctx.fillStyle = backgroundColor;
+      ctx.arc(0, 0, size / 2 - size * modulationMargin, 0, ringAngle, false);
+      ctx.arc(0, 0, size / 2, ringAngle, 0, true);
+      ctx.fillStyle = ringColor;
       ctx.fill();
       ctx.stroke();
 
@@ -99,9 +103,9 @@ Canvas {
       ctx.strokeStyle = "black";
 
       ctx.beginPath();
-      ctx.rotate((param.normalizedValue - .5) * Math.PI * 4 / 3 - Math.PI / 2);
+      ctx.rotate((param.normalizedValue - .5) * ringAngle - Math.PI / 2);
 
-      var finalValueAngle = (param.normalizedFinalValue - param.normalizedValue) * Math.PI * 4 / 3;
+      var finalValueAngle = (param.normalizedFinalValue - param.normalizedValue) * ringAngle;
       ctx.arc(0, 0, size / 2, 0, finalValueAngle, finalValueAngle < 0);
       ctx.arc(0, 0, size / 2 - size * modulationMargin, finalValueAngle, 0, finalValueAngle > 0);
       //ctx.arc(0, 0, size / 2, finalValueAngle, 0, true);
@@ -120,7 +124,7 @@ Canvas {
       ctx.fillStyle = valueColor;
       ctx.strokeStyle = "black";
 
-      ctx.rotate((param.normalizedValue - .5) * Math.PI * 4 / 3);
+      ctx.rotate((param.normalizedValue - .5) * ringAngle);
       ctx.beginPath();
       var y0 = -size / 2 + size * modulationMargin;
       var y1 = y0 + size / 3;

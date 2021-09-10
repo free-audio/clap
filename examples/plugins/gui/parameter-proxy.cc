@@ -93,3 +93,14 @@ void ParameterProxy::setDefaultValueFromPlugin(double defaultValue) {
    _defaultValue = defaultValue;
    defaultValueChanged();
 }
+
+void ParameterProxy::setToDefault()
+{
+   bool wasAdjusting = _isAdjusting;
+
+   if (!wasAdjusting)
+      setIsAdjusting(true);
+   setValueFromUI(_defaultValue);
+   if (!wasAdjusting)
+      setIsAdjusting(false);
+}

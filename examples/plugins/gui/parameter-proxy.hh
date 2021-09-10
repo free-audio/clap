@@ -69,6 +69,8 @@ public:
       return _minValue + value * delta;
    }
 
+   Q_INVOKABLE void setToDefault();
+
 signals:
    void nameChanged();
    void moduleChanged();
