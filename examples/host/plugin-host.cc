@@ -117,8 +117,9 @@ bool PluginHost::load(const QString &path, int pluginIndex) {
    }
 
    if (!clap_version_is_compatible(desc->clap_version)) {
-      qWarning() << "incompatible clap version: " << desc->clap_version.major << "."
-                 << desc->clap_version.minor << "." << desc->clap_version.revision;
+      qWarning() << "Incompatible clap version: Plugin is: " << desc->clap_version.major << "."
+                 << desc->clap_version.minor << "." << desc->clap_version.revision
+                 << " Host is " << CLAP_VERSION.major << "." << CLAP_VERSION.minor << "." << CLAP_VERSION.revision;
       return false;
    }
 
@@ -239,6 +240,9 @@ void PluginHost::setParentWindow(WId parentWindow) {
       _isGuiCreated = false;
       _isGuiVisible = false;
    }
+
+   if (!_pluginGui)
+      return;
 
    if (!_pluginGui->create(_plugin))
       return;
