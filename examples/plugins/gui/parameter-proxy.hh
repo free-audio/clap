@@ -14,6 +14,8 @@ class ParameterProxy : public QObject {
                  valueChanged)
    Q_PROPERTY(double modulation READ getModulation NOTIFY modulationChanged)
    Q_PROPERTY(double normalizedModulation READ getNormalizedModulation NOTIFY modulationChanged)
+   Q_PROPERTY(double finalValue READ getFinalValue NOTIFY finalValueChanged)
+   Q_PROPERTY(double normalizedFinalValue READ getNormalizedFinalValue NOTIFY finalValueChanged)
    Q_PROPERTY(double minValue READ getMinValue NOTIFY minValueChanged)
    Q_PROPERTY(double maxValue READ getMaxValue NOTIFY maxValueChanged)
    Q_PROPERTY(double defaultValue READ getDefaultValue NOTIFY defaultValueChanged)
@@ -41,6 +43,9 @@ public:
 
    double getNormalizedModulation() const { return normalize(getModulation()); }
 
+   double getFinalValue() const { return clip(_value + _modulation); }
+   double getNormalizedFinalValue() const { return normalize(getFinalValue()); }
+
    bool isAdjusting() const { return _isAdjusting; }
    void setIsAdjusting(bool isAdjusting);
 
@@ -51,14 +56,17 @@ public:
    double getDefaultValue() const { return _defaultValue; }
    void setDefaultValueFromPlugin(double defaultValue);
 
+   double clip(double v) const { return std::min(_maxValue, std::max(_minValue, v)); }
+   static double clipNormalized(double v) { return std::min(1., std::max(0., v)); }
+
    double normalize(double value) const {
       double delta = _maxValue - _minValue;
-      return delta != 0 ? std::min(1., std::max(0., (value - _minValue) / delta)) : 0;
+      return delta != 0 ? ((value - _minValue) / delta) : 0;
    }
 
    double denormalize(double value) const {
       double delta = _maxValue - _minValue;
-      return _minValue + std::min(1., std::max(0., value)) * delta;
+      return _minValue + value * delta;
    }
 
 signals:
@@ -66,6 +74,7 @@ signals:
    void moduleChanged();
    void valueChanged();
    void modulationChanged();
+   void finalValueChanged();
    void minValueChanged();
    void maxValueChanged();
    void defaultValueChanged();

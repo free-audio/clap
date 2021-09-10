@@ -90,7 +90,7 @@ Canvas {
       ctx.strokeStyle = "black";
 
       ctx.beginPath();
-      ctx.rotate((param.normalizedModulation - .5) * Math.PI * 4 / 3);
+      ctx.rotate((param.normalizedFinalValue - .5) * Math.PI * 4 / 3);
       ctx.arc(0, -size / 2 + 2 * radius, radius, 0, 2 * Math.PI, false);
       ctx.fill();
       ctx.stroke();

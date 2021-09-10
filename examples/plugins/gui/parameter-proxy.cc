@@ -39,7 +39,7 @@ void ParameterProxy::setIsAdjusting(bool isAdjusting) {
 }
 
 void ParameterProxy::setValueFromUI(double value) {
-   value = std::max(_minValue, std::min(_maxValue, value));
+   value = clip(value);
    if (value == _value)
       return;
 
@@ -48,14 +48,17 @@ void ParameterProxy::setValueFromUI(double value) {
    clap::messages::AdjustRequest rq{_id, _value, 0};
    Application::instance().remoteChannel().sendRequestAsync(rq);
    valueChanged();
+   finalValueChanged();
 }
 
 void ParameterProxy::setValueFromPlugin(double value) {
+   value = clip(value);
    if (value == _value)
       return;
 
    _value = value;
    valueChanged();
+   finalValueChanged();
 }
 
 void ParameterProxy::setModulationFromPlugin(double mod) {
@@ -64,6 +67,7 @@ void ParameterProxy::setModulationFromPlugin(double mod) {
 
    _modulation = mod;
    modulationChanged();
+   finalValueChanged();
 }
 
 void ParameterProxy::setMinValueFromPlugin(double minValue) {
