@@ -31,7 +31,7 @@ namespace clap {
       : CorePlugin(PathProvider::create(pluginPath, "dc-offset"), descriptor(), host) {
       _parameters.addParameter(clap_param_info{
          kParamIdOffset,
-         0,
+         CLAP_PARAM_IS_MODULATABLE | CLAP_PARAM_REQUIRES_PROCESS,
          nullptr,
          "offset",
          "/",
