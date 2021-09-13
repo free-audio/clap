@@ -124,7 +124,7 @@ Canvas {
       ctx.beginPath();
       var y0 = -size / 2 + size * modulationMargin;
       var y1 = y0 + size / 3;
-      ctx.rect(-radius, 0, 2 * radius, -size / 2);
+      ctx.rect(-radius, 0, 2 * radius, -size / 2 + size * (modulationMargin + 0.01));
       ctx.fill();
 
       ctx.restore();
