@@ -34,7 +34,9 @@ void ParameterProxy::setIsAdjusting(bool isAdjusting) {
    if (isAdjusting == _isAdjusting)
       return;
 
-   clap::messages::AdjustRequest rq{_id, _value, isAdjusting ? CLAP_EVENT_PARAM_BEGIN_ADJUST : CLAP_EVENT_PARAM_END_ADJUST};
+   uint32_t flags = CLAP_EVENT_PARAM_SHOULD_RECORD;
+   flags |= isAdjusting ? CLAP_EVENT_PARAM_BEGIN_ADJUST : CLAP_EVENT_PARAM_END_ADJUST;
+   clap::messages::AdjustRequest rq{_id, _value, flags};
    Application::instance().remoteChannel().sendRequestAsync(rq);
 }
 

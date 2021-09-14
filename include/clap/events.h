@@ -75,13 +75,13 @@ typedef struct clap_event_note_expression {
 
 enum {
    // live user adjustment begun
-   CLAP_EVENT_PARAM_BEGIN_ADJUST,
+   CLAP_EVENT_PARAM_BEGIN_ADJUST = 1 << 0,
 
    // live user adjustment ended
-   CLAP_EVENT_PARAM_END_ADJUST,
+   CLAP_EVENT_PARAM_END_ADJUST = 1 << 1,
 
    // should record this parameter change and create an automation point?
-   CLAP_EVENT_PARAM_SHOULD_RECORD,
+   CLAP_EVENT_PARAM_SHOULD_RECORD = 1 << 2,
 };
 typedef int32_t clap_event_param_flags;
 
