@@ -32,8 +32,10 @@ namespace clap {
          return;
       }
 
-      if (nbytes == 0)
+      if (nbytes == 0) {
+         close();
          return;
+      }
 
       _inputBuffer.wrote(nbytes);
       processInput();
