@@ -8,7 +8,7 @@
 #include "path-provider.hh"
 #include "remote-gui.hh"
 
-#include "../common/param-queue.hxx"
+#include "../common/reducing-param-queue.hxx"
 
 namespace clap {
    class CorePlugin : public Plugin {
@@ -168,8 +168,8 @@ namespace clap {
          double mod;
       };
 
-      ParamQueue<GuiToPluginValue> _guiToPluginQueue;
-      ParamQueue<PluginToGuiValue> _pluginToGuiQueue;
+      ReducingParamQueue<GuiToPluginValue> _guiToPluginQueue;
+      ReducingParamQueue<PluginToGuiValue> _pluginToGuiQueue;
 
       std::unique_ptr<PathProvider> _pathProvider;
 

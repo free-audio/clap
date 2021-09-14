@@ -7,12 +7,12 @@
 #include <clap/all.h>
 
 template <typename T>
-class ParamQueue {
+class ReducingParamQueue {
 public:
    using value_type = T;
    using queue_type = std::unordered_map<clap_id, value_type>;
 
-   ParamQueue();
+   ReducingParamQueue();
 
    void setCapacity(size_t capacity);
 

@@ -2,13 +2,13 @@
 
 #include <cassert>
 
-#include "param-queue.hh"
+#include "reducing-param-queue.hh"
 
 template<typename T>
-ParamQueue<T>::ParamQueue() { reset(); }
+ReducingParamQueue<T>::ReducingParamQueue() { reset(); }
 
 template<typename T>
-void ParamQueue<T>::reset() {
+void ReducingParamQueue<T>::reset() {
    for (auto &q : _queues)
       q.clear();
 
@@ -18,18 +18,18 @@ void ParamQueue<T>::reset() {
 }
 
 template<typename T>
-void ParamQueue<T>::setCapacity(size_t capacity) {
+void ReducingParamQueue<T>::setCapacity(size_t capacity) {
    for (auto &q : _queues)
       q.reserve(2 * capacity);
 }
 
 template<typename T>
-void ParamQueue<T>::set(clap_id id, const value_type& value) {
+void ReducingParamQueue<T>::set(clap_id id, const value_type& value) {
    _producer.load()->emplace(id, value);
 }
 
 template<typename T>
-void ParamQueue<T>::producerDone() {
+void ReducingParamQueue<T>::producerDone() {
    if (_consumer)
       return;
 
@@ -41,7 +41,7 @@ void ParamQueue<T>::producerDone() {
 }
 
 template<typename T>
-void ParamQueue<T>::consume(const std::function<void(clap_id, const value_type& value)> consumer) {
+void ReducingParamQueue<T>::consume(const std::function<void(clap_id, const value_type& value)> consumer) {
    assert(consumer);
 
    if (!_consumer)
