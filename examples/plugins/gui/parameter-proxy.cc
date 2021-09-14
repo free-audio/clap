@@ -34,7 +34,6 @@ void ParameterProxy::setIsAdjusting(bool isAdjusting) {
    if (isAdjusting == _isAdjusting)
       return;
 
-   qDebug() << "C++ isAdjusting: " << isAdjusting << ", " << "_isAdjusting: " << _isAdjusting;
    _isAdjusting = isAdjusting;
    clap_event_param_flags flags = CLAP_EVENT_PARAM_SHOULD_RECORD;
    flags |= isAdjusting ? CLAP_EVENT_PARAM_BEGIN_ADJUST : CLAP_EVENT_PARAM_END_ADJUST;

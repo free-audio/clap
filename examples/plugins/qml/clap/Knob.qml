@@ -38,36 +38,26 @@ Canvas {
       hoverEnabled: true
       acceptedButtons: Qt.LeftButton | Qt.RightButton
 
-      function myDump(name, mouse) {
-         console.log(name + ": " + mouse.button + "; " + mouse.buttons)
-      }
-
       onPressed: (mouse) => {
-         myDump("onPressed", mouse)
          if (mouse.button === Qt.LeftButton) {
             lastY = mouse.y;
             knob.param.isAdjusting = true;
-            console.log("begin adjust")
             knob.requestPaint();
             mouse.accepted = true;
          }
       }
 
       onReleased: (mouse) => {
-         myDump("onReleased", mouse)
          if (mouse.button === Qt.LeftButton) {
             knob.param.isAdjusting = false;
-            console.log("end adjust")
             knob.requestPaint();
          }
       }
 
       onPositionChanged: (mouse) => {
-         // myDump("onPositionChanged", mouse)
-         if (!(mouse.buttons & Qt.LeftButton)) {
-            //knob.param.isAdjusting = false;
+         if (!(mouse.buttons & Qt.LeftButton))
             return;
-         }
+
          knob.param.normalizedValue += ((mouse.modifiers & Qt.ShiftModifier) ? 0.001 : 0.01) * (lastY - mouse.y);
          lastY = mouse.y;
          mouse.accepted = true;
@@ -83,7 +73,6 @@ Canvas {
       }
 
       onCanceled: (mouse) => {
-         myDump("onCanceled", mouse)
          knob.param.isAdjusting = false;
          knob.requestPaint();
       }
