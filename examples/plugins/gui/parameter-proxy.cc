@@ -15,12 +15,12 @@ void ParameterProxy::redefine(const clap_param_info &info) {
 
    if (_name != info.name) {
       _name = info.name;
-      nameChanged();
+      emit nameChanged();
    }
 
    if (_module != info.module) {
       _module = info.module;
-      moduleChanged();
+      emit moduleChanged();
    }
 
    setMinValueFromPlugin(info.min_value);
@@ -39,6 +39,7 @@ void ParameterProxy::setIsAdjusting(bool isAdjusting) {
    flags |= isAdjusting ? CLAP_EVENT_PARAM_BEGIN_ADJUST : CLAP_EVENT_PARAM_END_ADJUST;
    clap::messages::AdjustRequest rq{_id, _value, flags};
    Application::instance().remoteChannel().sendRequestAsync(rq);
+   emit isAdjustingChanged();
 }
 
 void ParameterProxy::setValueFromUI(double value) {
@@ -50,8 +51,8 @@ void ParameterProxy::setValueFromUI(double value) {
 
    clap::messages::AdjustRequest rq{_id, _value, CLAP_EVENT_PARAM_SHOULD_RECORD};
    Application::instance().remoteChannel().sendRequestAsync(rq);
-   valueChanged();
-   finalValueChanged();
+   emit valueChanged();
+   emit finalValueChanged();
 }
 
 void ParameterProxy::setValueFromPlugin(double value) {
@@ -63,8 +64,8 @@ void ParameterProxy::setValueFromPlugin(double value) {
       return;
 
    _value = value;
-   valueChanged();
-   finalValueChanged();
+   emit valueChanged();
+   emit finalValueChanged();
 }
 
 void ParameterProxy::setModulationFromPlugin(double mod) {
@@ -72,8 +73,8 @@ void ParameterProxy::setModulationFromPlugin(double mod) {
       return;
 
    _modulation = mod;
-   modulationChanged();
-   finalValueChanged();
+   emit modulationChanged();
+   emit finalValueChanged();
 }
 
 void ParameterProxy::setMinValueFromPlugin(double minValue) {
@@ -81,7 +82,7 @@ void ParameterProxy::setMinValueFromPlugin(double minValue) {
       return;
 
    _minValue = minValue;
-   minValueChanged();
+   emit minValueChanged();
 }
 
 void ParameterProxy::setMaxValueFromPlugin(double maxValue) {
@@ -89,7 +90,7 @@ void ParameterProxy::setMaxValueFromPlugin(double maxValue) {
       return;
 
    _maxValue = maxValue;
-   maxValueChanged();
+   emit maxValueChanged();
 }
 
 void ParameterProxy::setDefaultValueFromPlugin(double defaultValue) {
@@ -97,11 +98,10 @@ void ParameterProxy::setDefaultValueFromPlugin(double defaultValue) {
       return;
 
    _defaultValue = defaultValue;
-   defaultValueChanged();
+   emit defaultValueChanged();
 }
 
-void ParameterProxy::setToDefault()
-{
+void ParameterProxy::setToDefault() {
    bool wasAdjusting = _isAdjusting;
 
    if (!wasAdjusting)
@@ -109,4 +109,11 @@ void ParameterProxy::setToDefault()
    setValueFromUI(_defaultValue);
    if (!wasAdjusting)
       setIsAdjusting(false);
+}
+
+void ParameterProxy::setIsHovered(bool value) {
+   if (_isHovered == value)
+      return;
+   _isHovered = value;
+   emit isHoveredChanged();
 }
