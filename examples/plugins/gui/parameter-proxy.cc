@@ -55,6 +55,9 @@ void ParameterProxy::setValueFromUI(double value) {
 }
 
 void ParameterProxy::setValueFromPlugin(double value) {
+   if (_isAdjusting)
+      return;
+
    value = clip(value);
    if (value == _value)
       return;
