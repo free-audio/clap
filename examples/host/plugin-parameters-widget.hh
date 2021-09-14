@@ -71,7 +71,7 @@ private:
    void updateParamValue();
    void updateParamValueText();
    void updateParamModulation();
-   void updateParamIsBeingAjustedChanged();
+   void updateParamIsBeingAjusted();
 
    static const constexpr int SLIDER_RANGE = 10000;
 

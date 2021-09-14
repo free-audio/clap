@@ -43,11 +43,12 @@ Canvas {
             lastY = mouse.y;
             knob.param.isAdjusting = true;
             knob.requestPaint();
+            mouse.accepted = true;
          }
       }
 
       onReleased: (mouse) => {
-         if (mouse.button === Qt.LeftButton) {
+         if (mouse.button === Qt.LeftButton || !(mouse.buttons & Qt.LeftButton)) {
             knob.param.isAdjusting = false;
             knob.requestPaint();
          }
@@ -58,6 +59,7 @@ Canvas {
             return;
          knob.param.normalizedValue += ((mouse.modifiers & Qt.ShiftModifier) ? 0.001 : 0.01) * (lastY - mouse.y);
          lastY = mouse.y;
+         mouse.accepted = true;
          knob.requestPaint();
       }
 
@@ -65,6 +67,7 @@ Canvas {
          if (mouse.button === Qt.LeftButton) {
             knob.param.setToDefault();
             knob.requestPaint();
+            mouse.accepted = true;
          }
       }
 

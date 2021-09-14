@@ -677,20 +677,21 @@ void PluginHost::process() {
    _process.audio_outputs_count = 1;
 
    _evOut.clear();
-   _appToEngineValueQueue.consume([this](clap_id param_id, const ParamQueueValue &value) {
-      clap_event ev;
-      ev.time = 0;
-      ev.type = CLAP_EVENT_PARAM_VALUE;
-      ev.param_value.param_id = param_id;
-      ev.param_value.cookie = value.cookie;
-      ev.param_value.key = -1;
-      ev.param_value.channel = -1;
-      ev.param_value.value = value.value;
-      ev.param_value.flags = 0;
-      _evIn.push_back(ev);
-   });
+   _appToEngineValueQueue.consume(
+      [this](clap_id param_id, const AppToEngineParamQueueValue &value) {
+         clap_event ev;
+         ev.time = 0;
+         ev.type = CLAP_EVENT_PARAM_VALUE;
+         ev.param_value.param_id = param_id;
+         ev.param_value.cookie = value.cookie;
+         ev.param_value.key = -1;
+         ev.param_value.channel = -1;
+         ev.param_value.value = value.value;
+         ev.param_value.flags = 0;
+         _evIn.push_back(ev);
+      });
 
-   _appToEngineModQueue.consume([this](clap_id param_id, const ParamQueueValue &value) {
+   _appToEngineModQueue.consume([this](clap_id param_id, const AppToEngineParamQueueValue &value) {
       clap_event ev;
       ev.time = 0;
       ev.type = CLAP_EVENT_PARAM_MOD;
@@ -715,10 +716,23 @@ void PluginHost::process() {
 
    for (auto &ev : _evOut) {
       switch (ev.type) {
-      case CLAP_EVENT_PARAM_VALUE:
+      case CLAP_EVENT_PARAM_VALUE: {
+         if (ev.param_value.flags & CLAP_EVENT_PARAM_BEGIN_ADJUST) {
+            if (_isAdjusting[ev.param_value.param_id])
+               throw std::logic_error("The plugin sent BEGIN_ADJUST twice");
+            _isAdjusting[ev.param_value.param_id] = true;
+         }
+
+         if (ev.param_value.flags & CLAP_EVENT_PARAM_END_ADJUST) {
+            if (!_isAdjusting[ev.param_value.param_id])
+               throw std::logic_error("The plugin sent END_ADJUST without a preceding BEGIN_ADJUST");
+            _isAdjusting[ev.param_value.param_id] = false;
+         }
+
          _engineToAppValueQueue.set(ev.param_value.param_id,
-                                    {ev.param_value.cookie, ev.param_value.value});
+                                    {ev.param_value.value, _isAdjusting[ev.param_value.param_id]});
          break;
+      }
       }
    }
    _evOut.clear();
@@ -741,16 +755,18 @@ void PluginHost::idle() {
    _appToEngineValueQueue.producerDone();
    _appToEngineModQueue.producerDone();
 
-   _engineToAppValueQueue.consume([this](clap_id param_id, const ParamQueueValue &value) {
-      auto it = _params.find(param_id);
-      if (it == _params.end()) {
-         std::ostringstream msg;
-         msg << "Plugin produced a CLAP_EVENT_PARAM_SET with an unknown param_id: " << param_id;
-         throw std::invalid_argument(msg.str());
-      }
+   _engineToAppValueQueue.consume(
+      [this](clap_id param_id, const EngineToAppParamQueueValue &value) {
+         auto it = _params.find(param_id);
+         if (it == _params.end()) {
+            std::ostringstream msg;
+            msg << "Plugin produced a CLAP_EVENT_PARAM_SET with an unknown param_id: " << param_id;
+            throw std::invalid_argument(msg.str());
+         }
 
-      it->second->setValue(value.value);
-   });
+         it->second->setValue(value.value);
+         it->second->setIsAdjusting(value.isAdjusting);
+      });
 }
 
 PluginParam &PluginHost::checkValidParamId(const std::string_view &function,

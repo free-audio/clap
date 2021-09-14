@@ -36,15 +36,21 @@ public:
    const clap_param_info &info() const noexcept { return _info; }
 
    bool isBeingAdjusted() const noexcept { return _isBeingAdjusted; }
+   void setIsAdjusting(bool isAdjusting) {
+      if (isAdjusting && !_isBeingAdjusted)
+         beginAdjust();
+      else if (!isAdjusting && _isBeingAdjusted)
+         endAdjust();
+   }
    void beginAdjust() {
       Q_ASSERT(!_isBeingAdjusted);
       _isBeingAdjusted = true;
-      isBeingAdjustedChanged();
+      emit isBeingAdjustedChanged();
    }
    void endAdjust() {
       Q_ASSERT(_isBeingAdjusted);
       _isBeingAdjusted = false;
-      isBeingAdjustedChanged();
+      emit isBeingAdjustedChanged();
    }
 
 signals:

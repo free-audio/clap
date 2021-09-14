@@ -208,7 +208,7 @@ void PluginParametersWidget::connectToParam(PluginParam *param) {
    connect(param,
            &PluginParam::isBeingAdjustedChanged,
            this,
-           &PluginParametersWidget::updateParamIsBeingAjustedChanged);
+           &PluginParametersWidget::updateParamIsBeingAjusted);
 
    updateAll();
 }
@@ -224,7 +224,7 @@ void PluginParametersWidget::disconnectFromParam() {
    disconnect(_currentParam,
               &PluginParam::isBeingAdjustedChanged,
               this,
-              &PluginParametersWidget::updateParamIsBeingAjustedChanged);
+              &PluginParametersWidget::updateParamIsBeingAjusted);
 
    _currentParam = nullptr;
 
@@ -235,7 +235,7 @@ void PluginParametersWidget::updateAll() {
    updateParamInfo();
    updateParamValue();
    updateParamModulation();
-   updateParamIsBeingAjustedChanged();
+   updateParamIsBeingAjusted();
 }
 
 void PluginParametersWidget::updateParamInfo() {
@@ -276,7 +276,7 @@ void PluginParametersWidget::updateParamInfo() {
    }
 }
 
-void PluginParametersWidget::updateParamIsBeingAjustedChanged() {
+void PluginParametersWidget::updateParamIsBeingAjusted() {
    if (!_currentParam) {
       _isBeingAdjusted->setText("-");
    } else {

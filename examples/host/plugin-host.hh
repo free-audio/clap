@@ -215,14 +215,21 @@ PluginHost::clapParamsRescan,
    /* param update queues */
    std::unordered_map<clap_id, std::unique_ptr<PluginParam>> _params;
 
-   struct ParamQueueValue {
+   struct AppToEngineParamQueueValue {
       void *cookie;
       double value;
    };
 
-   ParamQueue<ParamQueueValue> _appToEngineValueQueue;
-   ParamQueue<ParamQueueValue> _appToEngineModQueue;
-   ParamQueue<ParamQueueValue> _engineToAppValueQueue;
+   struct EngineToAppParamQueueValue {
+      double value;
+      bool isAdjusting;
+   };
+
+   ParamQueue<AppToEngineParamQueueValue> _appToEngineValueQueue;
+   ParamQueue<AppToEngineParamQueueValue> _appToEngineModQueue;
+   ParamQueue<EngineToAppParamQueueValue> _engineToAppValueQueue;
+
+   std::unordered_map<clap_id, bool> _isAdjusting;
 
    std::unordered_map<clap_id, std::unique_ptr<clap_quick_controls_page>> _quickControlsPages;
    clap_id _quickControlsSelectedPage = CLAP_INVALID_ID;
