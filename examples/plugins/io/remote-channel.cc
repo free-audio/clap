@@ -152,7 +152,10 @@ namespace clap {
    bool RemoteChannel::sendMessageSync(const Message &msg, const MessageHandler &handler) {
       sendMessageAsync(msg);
 
-      _syncHandlers.emplace(msg.cookie, handler);
+      auto it = _syncHandlers.emplace(msg.cookie, handler);
+      assert(it.second);
+      if (!it.second)
+         return false;
 
       while (_syncHandlers.count(msg.cookie) > 0)
          runOnce();

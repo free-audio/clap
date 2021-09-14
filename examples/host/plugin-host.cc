@@ -1,4 +1,4 @@
-﻿#include <exception>
+#include <exception>
 #include <iostream>
 #include <memory>
 #include <sstream>
@@ -437,7 +437,7 @@ bool PluginHost::clapRegisterTimer(const clap_host *host, uint32_t period_ms, cl
    });
 
    auto t = timer.get();
-   h->_timers.emplace(*timer_id, std::move(timer));
+   h->_timers.insert_or_assign(*timer_id, std::move(timer));
    t->start(period_ms);
    return true;
 }
@@ -473,7 +473,7 @@ bool PluginHost::clapRegisterFd(const clap_host *host, clap_fd fd, uint32_t flag
       throw std::logic_error(
          "Called register_fd() for a fd that was already registered, use modify_fd() instead.");
 
-   h->_fds.emplace(fd, std::make_unique<Notifiers>());
+   h->_fds.insert_or_assign(fd, std::make_unique<Notifiers>());
    h->eventLoopSetFdNotifierFlags(fd, flags);
    return true;
 }
@@ -491,7 +491,7 @@ bool PluginHost::clapModifyFd(const clap_host *host, clap_fd fd, uint32_t flags)
       throw std::logic_error(
          "Called modify_fd() for a fd that was not registered, use register_fd() instead.");
 
-   h->_fds.emplace(fd, std::make_unique<Notifiers>());
+   h->_fds.insert_or_assign(fd, std::make_unique<Notifiers>());
    h->eventLoopSetFdNotifierFlags(fd, flags);
    return true;
 }
@@ -880,7 +880,7 @@ void PluginHost::clapParamsRescan(const clap_host *host, uint32_t flags) {
          double value = h->getParamValue(info);
          auto param = std::make_unique<PluginParam>(*h, info, value);
          h->checkValidParamValue(*param, value);
-         h->_params.emplace(info.id, std::move(param));
+         h->_params.insert_or_assign(info.id, std::move(param));
       } else {
          // update param info
          if (!it->second->isInfoEqualTo(info)) {
@@ -1008,7 +1008,7 @@ void PluginHost::scanQuickControls() {
          throw std::invalid_argument(msg.str());
       }
 
-      _quickControlsPages.emplace(page->id, std::move(page));
+      _quickControlsPages.insert_or_assign(page->id, std::move(page));
    }
 
    quickControlsPagesChanged();

@@ -174,7 +174,7 @@ void PluginParametersWidget::computeDataModel() {
          module = &module->subModule(m);
 
       auto item = std::make_unique<ParamTreeItem>(module, param);
-      _idToParamTreeItem.emplace(param.info().id, std::move(item));
+      _idToParamTreeItem.insert_or_assign(param.info().id, std::move(item));
    }
    _treeWidget->sortItems(0, Qt::AscendingOrder);
 }

@@ -7,7 +7,7 @@ namespace clap {
       assert(_id2param.find(info.id) == _id2param.end());
 
       auto p = std::make_unique<Parameter>(info);
-      _id2param.emplace(info.id, p.get());
+      _id2param.insert_or_assign(info.id, p.get());
       _params.emplace_back(std::move(p));
    }
 
