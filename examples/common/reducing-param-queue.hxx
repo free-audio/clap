@@ -25,7 +25,7 @@ void ReducingParamQueue<T>::setCapacity(size_t capacity) {
 
 template<typename T>
 void ReducingParamQueue<T>::set(clap_id id, const value_type& value) {
-   _producer.load()->emplace(id, value);
+   _producer.load()->insert_or_assign(id, value);
 }
 
 template<typename T>
@@ -33,9 +33,10 @@ void ReducingParamQueue<T>::producerDone() {
    if (_consumer)
       return;
 
-   _consumer.store(_producer.load());
-   _producer.store(_free.load());
-   _free.store(nullptr);
+   auto tmp = _producer.load();
+   _producer = _free.load();
+   _free = nullptr;
+   _consumer = tmp;
 
    assert(_producer);
 }
