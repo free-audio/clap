@@ -17,6 +17,6 @@ QString PluginProxy::toString() const { return "Plugin"; }
 void PluginProxy::defineParameter(const clap_param_info &info)
 {
    auto it = _parameters.emplace(info.id, new ParameterProxy(info, this));
-   if (it.second)
+   if (!it.second)
       it.first->second->redefine(info);
 }
