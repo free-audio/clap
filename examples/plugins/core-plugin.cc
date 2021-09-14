@@ -171,13 +171,13 @@ namespace clap {
    }
 
    void CorePlugin::guiAdjust(clap_id paramId, double value, clap_event_param_flags flags) {
-      _guiToPluginQueue.set(paramId, {value, flags});
-      _guiToPluginQueue.producerDone();
+      _guiToPluginQueue.push({paramId, value, flags});
    }
 
    void CorePlugin::processGuiEvents(const clap_process *process) {
-      _guiToPluginQueue.consume([this, process](clap_id paramId, const GuiToPluginValue &value) {
-         auto p = _parameters.getById(paramId);
+      GuiToPluginValue value;
+      while (_guiToPluginQueue.tryPop(value)) {
+         auto p = _parameters.getById(value.paramId);
          if (!p)
             return;
          p->setValueSmoothed(value.value, std::max<int>(process->frames_count, 128));
@@ -185,7 +185,7 @@ namespace clap {
          clap_event ev;
          ev.time = 0;
          ev.type = CLAP_EVENT_PARAM_VALUE;
-         ev.param_value.param_id = paramId;
+         ev.param_value.param_id = value.paramId;
          ev.param_value.value = value.value;
          ev.param_value.channel = -1;
          ev.param_value.key = -1;
@@ -193,7 +193,7 @@ namespace clap {
          ev.param_value.cookie = p;
 
          process->out_events->push_back(process->out_events, &ev);
-      });
+      }
    }
 
    uint32_t CorePlugin::processEvents(const clap_process *process,
@@ -225,7 +225,7 @@ namespace clap {
                }
 
                p->setValueSmoothed(ev->param_value.value, _paramSmoothingDuration);
-               //p->setValueImmediately(ev->param_value.value);
+               // p->setValueImmediately(ev->param_value.value);
                _pluginToGuiQueue.set(p->info().id, {ev->param_value.value, p->modulation()});
             }
             break;

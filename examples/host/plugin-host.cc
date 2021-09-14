@@ -1,4 +1,4 @@
-#include <exception>
+﻿#include <exception>
 #include <iostream>
 #include <memory>
 #include <sstream>
@@ -717,20 +717,22 @@ void PluginHost::process() {
    for (auto &ev : _evOut) {
       switch (ev.type) {
       case CLAP_EVENT_PARAM_VALUE: {
+         bool &isAdj = _isAdjusting[ev.param_value.param_id];
+
          if (ev.param_value.flags & CLAP_EVENT_PARAM_BEGIN_ADJUST) {
-            if (_isAdjusting[ev.param_value.param_id])
+            if (isAdj)
                throw std::logic_error("The plugin sent BEGIN_ADJUST twice");
-            _isAdjusting[ev.param_value.param_id] = true;
+            isAdj = true;
          }
 
          if (ev.param_value.flags & CLAP_EVENT_PARAM_END_ADJUST) {
-            if (!_isAdjusting[ev.param_value.param_id])
-               throw std::logic_error("The plugin sent END_ADJUST without a preceding BEGIN_ADJUST");
-            _isAdjusting[ev.param_value.param_id] = false;
+            if (!isAdj)
+               throw std::logic_error(
+                  "The plugin sent END_ADJUST without a preceding BEGIN_ADJUST");
+            isAdj = false;
          }
 
-         _engineToAppValueQueue.set(ev.param_value.param_id,
-                                    {ev.param_value.value, _isAdjusting[ev.param_value.param_id]});
+         _engineToAppValueQueue.set(ev.param_value.param_id, {ev.param_value.value, isAdj});
          break;
       }
       }

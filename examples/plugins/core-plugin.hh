@@ -8,6 +8,7 @@
 #include "path-provider.hh"
 #include "remote-gui.hh"
 
+#include "../common/param-queue.hh"
 #include "../common/reducing-param-queue.hxx"
 
 namespace clap {
@@ -156,9 +157,10 @@ namespace clap {
       void guiAdjust(clap_id paramId, double value, clap_event_param_flags flags);
       void processGuiEvents(const clap_process *process);
       uint32_t
-      processEvents(const clap_process *process, uint32_t& index, uint32_t count, uint32_t time);
+      processEvents(const clap_process *process, uint32_t &index, uint32_t count, uint32_t time);
 
       struct GuiToPluginValue {
+         clap_id paramId;
          double value;
          clap_event_param_flags flags;
       };
@@ -168,7 +170,7 @@ namespace clap {
          double mod;
       };
 
-      ReducingParamQueue<GuiToPluginValue> _guiToPluginQueue;
+      ParamQueue<GuiToPluginValue, 32> _guiToPluginQueue;
       ReducingParamQueue<PluginToGuiValue> _pluginToGuiQueue;
 
       std::unique_ptr<PathProvider> _pathProvider;
