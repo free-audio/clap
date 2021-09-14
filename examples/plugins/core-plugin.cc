@@ -180,7 +180,7 @@ namespace clap {
          auto p = _parameters.getById(paramId);
          if (!p)
             return;
-         p->setValueSmoothed(value.value, 128);
+         p->setValueSmoothed(value.value, std::max<int>(process->frames_count, 128));
 
          clap_event ev;
          ev.time = 0;

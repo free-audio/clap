@@ -5,6 +5,8 @@ Canvas {
    property int size: 20;
    property string ringColor: "#544d63";
    property string knobColor: "#0c002b";
+   property string knobColorAdjusting: "#25008b";
+   property string knobColorHovered: "#1b0064";
    property string valueColor: "#ffffff";
    property string modulationColor: "#10b1ca"
    property double modulationMargin: .05;
@@ -29,20 +31,25 @@ Canvas {
    }
 
    MouseArea {
+      id: mouseArea
       anchors.fill: parent
       drag.axis: Drag.YAxis
       property real lastY: 0
+      hoverEnabled: true
+      acceptedButtons: Qt.LeftButton | Qt.RightButton
 
       onPressed: (mouse) => {
          if (mouse.button === Qt.LeftButton) {
             lastY = mouse.y;
             knob.param.isAdjusting = true;
+            knob.requestPaint();
          }
       }
 
       onReleased: (mouse) => {
          if (mouse.button === Qt.LeftButton) {
             knob.param.isAdjusting = false;
+            knob.requestPaint();
          }
       }
 
@@ -55,8 +62,25 @@ Canvas {
       }
 
       onDoubleClicked: (mouse) => {
-         if (mouse.button === Qt.LeftButton)
+         if (mouse.button === Qt.LeftButton) {
             knob.param.setToDefault();
+            knob.requestPaint();
+         }
+      }
+
+      onCanceled: (mouse) => {
+         knob.param.isAdjusting = false;
+         knob.requestPaint();
+      }
+
+      onEntered: (mouse) => {
+         knob.param.isHovered = true;
+         knob.requestPaint();
+      }
+
+      onExited: (mouse) => {
+         knob.param.isHovered = false;
+         knob.requestPaint();
       }
    }
 
@@ -75,9 +99,10 @@ Canvas {
       ctx.translate(size / 2, size / 2, size / 2);
       ctx.rotate(ringAngle + Math.PI);
 
+      var effectiveKnobColor = param.isAdjusting ? knobColorAdjusting : (param.isHovered ? knobColorHovered : knobColor);
       ctx.beginPath();
-      ctx.arc(0, 0, size / 2, 0, 2 * Math.PI, false);
-      ctx.fillStyle = knobColor;
+      ctx.arc(0, 0, size / 2 - 2 * modulationMargin * size, 0, 2 * Math.PI, false);
+      ctx.fillStyle = effectiveKnobColor;
       ctx.fill();
 
       ctx.beginPath();
@@ -124,7 +149,10 @@ Canvas {
       ctx.beginPath();
       var y0 = -size / 2 + size * modulationMargin;
       var y1 = y0 + size / 3;
-      ctx.rect(-radius, 0, 2 * radius, -size / 2 + size * (modulationMargin + 0.01));
+      ctx.rect(-radius, -size * modulationMargin, 2 * radius, -size / 2 + size * (3 * modulationMargin + 0.01));
+      ctx.fill();
+
+      ctx.arc(0, 0, size * (modulationMargin + 0.03), 0, 2 * Math.PI, false)
       ctx.fill();
 
       ctx.restore();

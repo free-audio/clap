@@ -20,6 +20,7 @@ class ParameterProxy : public QObject {
    Q_PROPERTY(double maxValue READ getMaxValue NOTIFY maxValueChanged)
    Q_PROPERTY(double defaultValue READ getDefaultValue NOTIFY defaultValueChanged)
    Q_PROPERTY(bool isAdjusting READ isAdjusting WRITE setIsAdjusting)
+   Q_PROPERTY(bool isHovered READ isHovered WRITE setIsHovered)
 
 public:
    explicit ParameterProxy(const clap_param_info &info, QObject *parent = nullptr);
@@ -71,6 +72,9 @@ public:
 
    Q_INVOKABLE void setToDefault();
 
+   bool isHovered() const { return _isHovered; }
+   void setIsHovered(bool value) { _isHovered = value; }
+
 signals:
    void nameChanged();
    void moduleChanged();
@@ -91,4 +95,5 @@ private:
    double _maxValue = 0;
    double _defaultValue = 0;
    bool _isAdjusting = false;
+   bool _isHovered = false;
 };
