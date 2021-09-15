@@ -22,7 +22,7 @@ typedef struct clap_version {
 }
 #endif
 
-static CLAP_CONSTEXPR const clap_version CLAP_VERSION = {0, 12, 0};
+static CLAP_CONSTEXPR const clap_version CLAP_VERSION = {0, 13, 0};
 
 static CLAP_CONSTEXPR inline bool clap_version_is_compatible(const clap_version &v) {
    // For version 0, we require the same minor version because

@@ -11,10 +11,10 @@ extern "C" {
 #endif
 
 enum {
-   CLAP_EVENT_NOTE_ON,         // press a key; note attribute
-   CLAP_EVENT_NOTE_OFF,        // release a key; note attribute
-   CLAP_EVENT_NOTE_END,        // playback of a note is terminated (sent by the plugin); note attribute
-   CLAP_EVENT_NOTE_CHOKE,      // chokes a set of notes; note attribute
+   CLAP_EVENT_NOTE_ON,    // press a key; note attribute
+   CLAP_EVENT_NOTE_OFF,   // release a key; note attribute
+   CLAP_EVENT_NOTE_END,   // playback of a note is terminated (sent by the plugin); note attribute
+   CLAP_EVENT_NOTE_CHOKE, // chokes a set of notes; note attribute
    CLAP_EVENT_NOTE_EXPRESSION, // plays standard note expression; note_expression attribute
    CLAP_EVENT_NOTE_MASK,       // current chord/scale; note_mask attribute
    CLAP_EVENT_PARAM_VALUE,     // sets a parameter value; param_value attribute
@@ -112,13 +112,14 @@ typedef struct clap_event_param_mod {
 } clap_event_param_mod;
 
 enum {
-   CLAP_TRANSPORT_HAS_BEATS_TIMELINE = 1 << 0,
-   CLAP_TRANSPORT_HAS_SECONDS_TIMELINE = 1 << 1,
-   CLAP_TRANSPORT_HAS_TIME_SIGNATURE = 1 << 2,
-   CLAP_TRANSPORT_IS_PLAYING = 1 << 3,
-   CLAP_TRANSPORT_IS_RECORDING = 1 << 4,
-   CLAP_TRANSPORT_IS_LOOP_ACTIVE = 1 << 5,
-   CLAP_TRANSPORT_IS_WITHIN_PRE_ROLL = 1 << 6,
+   CLAP_TRANSPORT_HAS_TEMPO = 1 << 0,
+   CLAP_TRANSPORT_HAS_BEATS_TIMELINE = 1 << 1,
+   CLAP_TRANSPORT_HAS_SECONDS_TIMELINE = 1 << 2,
+   CLAP_TRANSPORT_HAS_TIME_SIGNATURE = 1 << 3,
+   CLAP_TRANSPORT_IS_PLAYING = 1 << 4,
+   CLAP_TRANSPORT_IS_RECORDING = 1 << 5,
+   CLAP_TRANSPORT_IS_LOOP_ACTIVE = 1 << 6,
+   CLAP_TRANSPORT_IS_WITHIN_PRE_ROLL = 1 << 7,
 };
 typedef uint32_t clap_transport_flags;
 
