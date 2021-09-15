@@ -5,7 +5,7 @@
 TransportProxy::TransportProxy(QObject *parent) : QObject(parent) {}
 
 void TransportProxy::update(bool hasTransport, const clap_event_transport &t) {
-   update(_hasTransport, hasTransport, &TransportProxy::hasTransportChanged);
+   update<bool>(_hasTransport, hasTransport, &TransportProxy::hasTransportChanged);
 
    update<bool>(_hasTempo, t.flags & CLAP_TRANSPORT_HAS_TEMPO, &TransportProxy::hasTempoChanged);
    update<bool>(_hasBeatsTimeline,
