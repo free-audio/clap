@@ -4,7 +4,7 @@ import clap 1.0
 
 Rectangle {
     width: 450
-    height: 470
+    height: 490
     color: "#f8f8f8"
 
     Text {
@@ -22,7 +22,11 @@ Rectangle {
         text += "Tempo: " + (transport.hasTempo ? (transport.tempo.toFixed(3) + " (bpm)") : "(none)") + "\n";
 
         if (transport.hasBeatsTimeline)
+        {
             text += "song position (beats): " + transport.songPositionBeats.toFixed(3) + "\n";
+            text += "bar start: " + transport.barStart.toFixed(3) + "\n";
+            text += "bar number: " + transport.barNumber + "\n";
+        }
         else
             text += "No timeline in beats\n";
 
