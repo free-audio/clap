@@ -15,10 +15,6 @@ Application::Application(int &argc, char **argv)
    while (waitForDebbugger)
       ;
 
-   qmlRegisterType<ParameterProxy>("org.clap", 1, 0, "ParameterProxy");
-   qmlRegisterType<TransportProxy>("org.clap", 1, 0, "TransportProxy");
-   qmlRegisterType<PluginProxy>("org.clap", 1, 0, "PluginProxy");
-
    QCommandLineParser parser;
 
    QCommandLineOption skinOpt("skin", tr("path to the skin directory"), tr("path"));
@@ -32,18 +28,21 @@ Application::Application(int &argc, char **argv)
 
    parser.process(*this);
 
+   qmlRegisterType<ParameterProxy>("org.clap", 1, 0, "ParameterProxy");
+   qmlRegisterType<TransportProxy>("org.clap", 1, 0, "TransportProxy");
+   qmlRegisterType<PluginProxy>("org.clap", 1, 0, "PluginProxy");
+
    _pluginProxy = new PluginProxy(this);
    _transportProxy = new TransportProxy(this);
 
-   auto qmlContext = _quickView->engine()->rootContext();
-   for (const auto &str : parser.values(qmlLibOpt))
-      _quickView->engine()->addImportPath(str);
-   qmlContext->setContextProperty("plugin", _pluginProxy);
-   qmlContext->setContextProperty("transport", _transportProxy);
-
-   _quickView->setSource(parser.value(skinOpt) + "/main.qml");
+   ////////////////////////
+   // I/O initialization //
+   ////////////////////////
 
    auto socket = parser.value(socketOpt).toULongLong();
+
+   _remoteChannel.reset(new clap::RemoteChannel(
+      [this](const clap::RemoteChannel::Message &msg) { onMessage(msg); }, *this, socket, false));
 
    _socketReadNotifier.reset(new QSocketNotifier(socket, QSocketNotifier::Read, this));
    connect(_socketReadNotifier.get(),
@@ -72,14 +71,21 @@ Application::Application(int &argc, char **argv)
               quit();
            });
 
-   _remoteChannel.reset(new clap::RemoteChannel(
-      [this](const clap::RemoteChannel::Message &msg) { onMessage(msg); }, *this, socket, false));
-
    _socketReadNotifier->setEnabled(true);
    _socketWriteNotifier->setEnabled(false);
    _socketErrorNotifier->setEnabled(false);
 
-   QCoreApplication::arguments();
+   ////////////////////////
+   // QML initialization //
+   ////////////////////////
+
+   auto qmlContext = _quickView->engine()->rootContext();
+   for (const auto &str : parser.values(qmlLibOpt))
+      _quickView->engine()->addImportPath(str);
+   qmlContext->setContextProperty("plugin", _pluginProxy);
+   qmlContext->setContextProperty("transport", _transportProxy);
+
+   _quickView->setSource(parser.value(skinOpt) + "/main.qml");
 }
 
 void Application::modifyFd(clap_fd_flags flags) {
