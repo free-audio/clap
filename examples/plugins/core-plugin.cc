@@ -198,7 +198,7 @@ namespace clap {
       if (!_hasTransportCopy) {
          if (process->transport) {
             _hasTransport = true;
-            memcpy(&_transportCopy, &process->transport, sizeof(_transportCopy));
+            _transportCopy = *process->transport;
          } else
             _hasTransport = false;
 

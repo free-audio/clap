@@ -26,30 +26,31 @@ void TransportProxy::update(bool hasTransport, const clap_event_transport &t) {
                 t.flags & CLAP_TRANSPORT_IS_WITHIN_PRE_ROLL,
                 &TransportProxy::isWithinPreRollChanged);
 
-   update(_songPositionBeats,
-          t.song_pos_beats / double(CLAP_BEATTIME_FACTOR),
-          &TransportProxy::songPositionBeatsChanged);
-   update(_songPositionSeconds,
-          t.song_pos_seconds / double(CLAP_SECTIME_FACTOR),
-          &TransportProxy::songPositionSecondsChanged);
+   update<double>(_songPositionBeats,
+                  t.song_pos_beats / double(CLAP_BEATTIME_FACTOR),
+                  &TransportProxy::songPositionBeatsChanged);
+   update<double>(_songPositionSeconds,
+                  t.song_pos_seconds / double(CLAP_SECTIME_FACTOR),
+                  &TransportProxy::songPositionSecondsChanged);
 
-   update(_tempo, t.tempo, &TransportProxy::tempoChanged);
+   update<double>(_tempo, t.tempo, &TransportProxy::tempoChanged);
 
-   update(_barStart, t.bar_start / double(CLAP_BEATTIME_FACTOR), &TransportProxy::barStartChanged);
-   update(_barNumber, t.bar_number, &TransportProxy::barNumberChanged);
+   update<double>(
+      _barStart, t.bar_start / double(CLAP_BEATTIME_FACTOR), &TransportProxy::barStartChanged);
+   update<int>(_barNumber, t.bar_number, &TransportProxy::barNumberChanged);
 
-   update(_loopStartBeats,
-          t.loop_start_beats / double(CLAP_BEATTIME_FACTOR),
-          &TransportProxy::loopStartBeatsChanged);
-   update(_loopEndBeats,
-          t.loop_end_beats / double(CLAP_BEATTIME_FACTOR),
-          &TransportProxy::loopEndBeatsChanged);
-   update(_loopStartSeconds,
-          t.loop_start_seconds / double(CLAP_SECTIME_FACTOR),
-          &TransportProxy::loopStartSecondsChanged);
-   update(_loopEndSeconds,
-          t.loop_end_seconds / double(CLAP_SECTIME_FACTOR),
-          &TransportProxy::loopEndSecondsChanged);
+   update<double>(_loopStartBeats,
+                  t.loop_start_beats / double(CLAP_BEATTIME_FACTOR),
+                  &TransportProxy::loopStartBeatsChanged);
+   update<double>(_loopEndBeats,
+                  t.loop_end_beats / double(CLAP_BEATTIME_FACTOR),
+                  &TransportProxy::loopEndBeatsChanged);
+   update<double>(_loopStartSeconds,
+                  t.loop_start_seconds / double(CLAP_SECTIME_FACTOR),
+                  &TransportProxy::loopStartSecondsChanged);
+   update<double>(_loopEndSeconds,
+                  t.loop_end_seconds / double(CLAP_SECTIME_FACTOR),
+                  &TransportProxy::loopEndSecondsChanged);
 
    update<int>(_timeSignatureNumerator, t.tsig_num, &TransportProxy::timeSignatureNumeratorChanged);
    update<int>(

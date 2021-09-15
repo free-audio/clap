@@ -217,7 +217,7 @@ namespace clap {
          });
 
       if (_isTransportSubscribed && _plugin._hasTransportCopy) {
-         messages::UpdateTransportRequest rq{_plugin._hasTransport, _plugin._hasTransportCopy};
+         messages::UpdateTransportRequest rq{_plugin._hasTransport, _plugin._transportCopy};
          _channel->sendRequestAsync(rq);
          _plugin._hasTransportCopy = false;
       }
