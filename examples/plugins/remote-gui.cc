@@ -208,6 +208,12 @@ namespace clap {
             messages::ParameterValueRequest rq{paramId, value.value, value.mod};
             _channel->sendRequestAsync(rq);
          });
+
+      if (_isTransportSubscribed && _plugin._hasTransportCopy) {
+         messages::UpdateTransportRequest rq{_plugin._hasTransport, _plugin._hasTransportCopy};
+         _channel->sendRequestAsync(rq);
+         _plugin._hasTransportCopy = false;
+      }
    }
 
 } // namespace clap

@@ -187,5 +187,9 @@ namespace clap {
       Parameters _parameters;
 
       static const constexpr uint32_t _paramSmoothingDuration = 64;
+
+      bool _hasTransportCopy = false;
+      bool _hasTransport = false;
+      clap_event_transport _transportCopy;
    };
 } // namespace clap

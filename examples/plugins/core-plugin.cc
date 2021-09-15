@@ -194,6 +194,16 @@ namespace clap {
 
          process->out_events->push_back(process->out_events, &ev);
       }
+
+      if (!_hasTransportCopy) {
+         if (process->transport) {
+            _hasTransport = true;
+            memcpy(&_transportCopy, &process->transport, sizeof(_transportCopy));
+         } else
+            _hasTransport = false;
+
+         _hasTransportCopy = true;
+      }
    }
 
    uint32_t CorePlugin::processEvents(const clap_process *process,

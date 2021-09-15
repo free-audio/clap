@@ -26,6 +26,8 @@ namespace clap {
 
    protected:
       CorePlugin &_plugin;
+
+      bool _isTransportSubscribed = false;
    };
 
 } // namespace clap
