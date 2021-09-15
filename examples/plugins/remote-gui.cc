@@ -111,6 +111,13 @@ namespace clap {
          msg.get(rq);
          _plugin.guiAdjust(rq.paramId, rq.value, rq.flags);
          break;
+
+      case messages::kSubscribeToTransportRequest: {
+         messages::SubscribeToTransportRequest rq;
+         msg.get(rq);
+         _isTransportSubscribed = rq.isSubscribed;
+         break;
+      }
       }
       }
    }
