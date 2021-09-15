@@ -16,6 +16,7 @@ Application::Application(int &argc, char **argv)
       ;
 
    qmlRegisterType<ParameterProxy>("org.clap", 1, 0, "ParameterProxy");
+   qmlRegisterType<TransportProxy>("org.clap", 1, 0, "TransportProxy");
    qmlRegisterType<PluginProxy>("org.clap", 1, 0, "PluginProxy");
 
    QCommandLineParser parser;
@@ -32,11 +33,13 @@ Application::Application(int &argc, char **argv)
    parser.process(*this);
 
    _pluginProxy = new PluginProxy(this);
+   _transportProxy = new TransportProxy(this);
 
    auto qmlContext = _quickView->engine()->rootContext();
    for (const auto &str : parser.values(qmlLibOpt))
       _quickView->engine()->addImportPath(str);
    qmlContext->setContextProperty("plugin", _pluginProxy);
+   qmlContext->setContextProperty("transport", _transportProxy);
 
    _quickView->setSource(parser.value(skinOpt) + "/main.qml");
 
@@ -99,6 +102,13 @@ void Application::onMessage(const clap::RemoteChannel::Message &msg) {
       _remoteChannel->sendResponseAsync(rp, msg.cookie);
       quit();
       break;
+
+   case clap::messages::kUpdateTransportRequest: {
+      clap::messages::UpdateTransportRequest rq;
+      msg.get(rq);
+      _transportProxy->update(rq.hasTransport, rq.transport);
+      break;
+   }
 
    case clap::messages::kDefineParameterRequest: {
       clap::messages::DefineParameterRequest rq;

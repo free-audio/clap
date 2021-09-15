@@ -13,6 +13,8 @@ add_executable(clap-gui
     parameter-proxy.cc
     plugin-proxy.hh
     plugin-proxy.cc
+    transport-proxy.hh
+    transport-proxy.cc
 )
 target_link_libraries(clap-gui clap-io Qt6::Quick)
 

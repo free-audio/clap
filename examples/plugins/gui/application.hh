@@ -6,6 +6,7 @@
 
 #include "../io/remote-channel.hh"
 #include "plugin-proxy.hh"
+#include "transport-proxy.hh"
 
 class QQuickView;
 
@@ -33,4 +34,5 @@ private:
 
    std::unique_ptr<clap::RemoteChannel> _remoteChannel;
    PluginProxy *_pluginProxy = nullptr;
+   TransportProxy *_transportProxy = nullptr;
 };

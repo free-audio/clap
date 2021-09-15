@@ -8,6 +8,7 @@ namespace clap::messages {
       // DSP->GUI
       kDefineParameterRequest,
       kParameterValueRequest,
+      kUpdateTransportRequest,
 
       // GUI->DSP
       kAdjustRequest,
@@ -47,6 +48,12 @@ namespace clap::messages {
    struct DefineParameterRequest final {
       static const constexpr Type type = kDefineParameterRequest;
       clap_param_info info;
+   };
+
+   struct UpdateTransportRequest final {
+      static const constexpr Type type = kUpdateTransportRequest;
+      bool hasTransport;
+      clap_event_transport transport;
    };
 
    struct ParameterValueRequest final {
