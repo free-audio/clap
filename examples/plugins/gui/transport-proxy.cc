@@ -1,4 +1,6 @@
 #include "transport-proxy.hh"
+#include "../io/messages.hh"
+#include "application.hh"
 
 TransportProxy::TransportProxy(QObject *parent) : QObject(parent) {}
 
@@ -58,4 +60,14 @@ void TransportProxy::update(bool hasTransport, const clap_event_transport &trans
    update<int>(_timeSignatureDenominator,
                transport.tsig_denom,
                &TransportProxy::timeSignatureDenominatorChanged);
+}
+
+void TransportProxy::setIsSubscribed(bool value) {
+   if (value == _isSubscribed)
+      return;
+
+   _isSubscribed = value;
+   isSubscribedChanged();
+   clap::messages::SubscribeToTransportRequest rq{value};
+   Application::instance().remoteChannel().sendRequestAsync(rq);
 }

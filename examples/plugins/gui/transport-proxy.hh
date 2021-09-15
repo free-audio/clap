@@ -7,6 +7,7 @@
 class TransportProxy : public QObject {
    Q_OBJECT
    Q_PROPERTY(bool hasTransport READ hasTransport NOTIFY hasTransportChanged)
+   Q_PROPERTY(bool isSubscribed READ isSubscribed WRITE setIsSubscribed NOTIFY isSubscribedChanged)
 
    Q_PROPERTY(bool hasBeatsTimeline READ hasBeatsTimeline NOTIFY hasBeatsTimelineChanged)
    Q_PROPERTY(bool hasSecondsTimeline READ hasSecondsTimeline NOTIFY hasSecondsTimelineChanged)
@@ -39,6 +40,9 @@ public:
    explicit TransportProxy(QObject *parent = nullptr);
 
    void update(bool hasTransport, const clap_event_transport &transport);
+
+   [[nodiscard]] bool isSubscribed() const noexcept { return _isSubscribed; }
+   void setIsSubscribed(bool value);
 
    [[nodiscard]] bool hasTransport() const noexcept { return _hasTransport; }
 
@@ -83,6 +87,8 @@ public:
 signals:
    void updated();
 
+   void isSubscribedChanged();
+
    void hasTransportChanged();
 
    void hasBeatsTimelineChanged();
@@ -110,18 +116,17 @@ signals:
    void timeSignatureDenominatorChanged();
 
 private:
+   using NotifyType = void (TransportProxy::*)();
 
-    using NotifyType = void (TransportProxy::*)();
+   template <typename T>
+   void update(T &attr, T value, NotifyType notify) {
+      if (value == attr)
+         return;
+      attr = value;
+      (this->*notify)();
+   }
 
-    template <typename T>
-    void update(T& attr, T value, NotifyType notify)
-    {
-        if (value == attr)
-            return;
-        attr = value;
-        (this->*notify)();
-    }
-
+   bool _isSubscribed = false;
    bool _hasTransport = false;
 
    bool _hasBeatsTimeline = false;

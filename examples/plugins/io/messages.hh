@@ -12,6 +12,7 @@ namespace clap::messages {
 
       // GUI->DSP
       kAdjustRequest,
+      kSubscribeToTransportRequest,
 
       // Gui, Host->Plugin
       kSetScaleRequest,
@@ -54,6 +55,11 @@ namespace clap::messages {
       static const constexpr Type type = kUpdateTransportRequest;
       bool hasTransport;
       clap_event_transport transport;
+   };
+
+   struct SubscribeToTransportRequest final {
+      static const constexpr Type type = kSubscribeToTransportRequest;
+      bool isSubscribed;
    };
 
    struct ParameterValueRequest final {
