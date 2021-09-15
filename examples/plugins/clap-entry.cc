@@ -6,8 +6,9 @@
 #include <sstream>
 #include <vector>
 
-#include "dc-offset/dc-offset.hh"
-#include "gain/gain.hh"
+#include "plugs/dc-offset/dc-offset.hh"
+#include "plugs/gain/gain.hh"
+#include "plugs/transport/transport-info.hh"
 #include "path-provider.hh"
 
 struct PluginEntry {
@@ -36,6 +37,7 @@ static bool clap_init(const char *plugin_path) {
 
    addPlugin<clap::Gain>();
    addPlugin<clap::DcOffset>();
+   addPlugin<clap::TransportInfo>();
    return true;
 }
 

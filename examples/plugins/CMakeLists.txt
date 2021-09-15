@@ -20,10 +20,13 @@ add_library(
   remote-gui.hh
   remote-gui.cc
 
-  dc-offset/dc-offset.hh
-  dc-offset/dc-offset.cc
-  gain/gain.hh
-  gain/gain.cc)
+  plugs/dc-offset/dc-offset.hh
+  plugs/dc-offset/dc-offset.cc
+  plugs/gain/gain.hh
+  plugs/gain/gain.cc
+  plugs/transport/transport-info.hh
+  plugs/transport/transport-info.cc)
+
 target_link_libraries(clap-plugins clap-plugin-glue clap-io Boost::serialization Boost::iostreams)
 target_link_libraries(clap-plugins -Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/linux-clap-plugins.version)
 target_link_libraries(clap-plugins -Wl,-z,defs)

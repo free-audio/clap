@@ -1,6 +1,6 @@
 #include <cstring>
 
-#include "../parameter-interpolator.hh"
+#include "../../parameter-interpolator.hh"
 #include "dc-offset.hh"
 
 namespace clap {
@@ -9,13 +9,13 @@ namespace clap {
 
          CLAP_VERSION,
          "com.github.free-audio.clap.dc-offset",
-         "dc offset",
+         "DC Offset",
          "clap",
          "https://github.com/free-audio/clap",
          nullptr,
          nullptr,
          "0.1",
-         "example DC offset plugin",
+         "Example DC Offset plugin",
          "utility",
          CLAP_PLUGIN_AUDIO_EFFECT
 
