@@ -9,6 +9,7 @@ class TransportProxy : public QObject {
    Q_PROPERTY(bool hasTransport READ hasTransport NOTIFY hasTransportChanged)
    Q_PROPERTY(bool isSubscribed READ isSubscribed WRITE setIsSubscribed NOTIFY isSubscribedChanged)
 
+   Q_PROPERTY(bool hasTempo READ hasTempo NOTIFY hasTempoChanged)
    Q_PROPERTY(bool hasBeatsTimeline READ hasBeatsTimeline NOTIFY hasBeatsTimelineChanged)
    Q_PROPERTY(bool hasSecondsTimeline READ hasSecondsTimeline NOTIFY hasSecondsTimelineChanged)
    Q_PROPERTY(bool hasTimeSignature READ hasTimeSignature NOTIFY hasTimeSignatureChanged)
@@ -45,6 +46,8 @@ public:
    void setIsSubscribed(bool value);
 
    [[nodiscard]] bool hasTransport() const noexcept { return _hasTransport; }
+
+   [[nodiscard]] bool hasTempo() const noexcept { return _hasTempo; }
 
    [[nodiscard]] bool hasBeatsTimeline() const noexcept { return _hasBeatsTimeline; }
 
@@ -91,6 +94,7 @@ signals:
 
    void hasTransportChanged();
 
+   void hasTempoChanged();
    void hasBeatsTimelineChanged();
    void hasSecondsTimelineChanged();
    void hasTimeSignatureChanged();
@@ -129,6 +133,7 @@ private:
    bool _isSubscribed = false;
    bool _hasTransport = false;
 
+   bool _hasTempo = false;
    bool _hasBeatsTimeline = false;
    bool _hasSecondsTimeline = false;
    bool _hasTimeSignature = false;

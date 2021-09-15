@@ -7,6 +7,8 @@ TransportProxy::TransportProxy(QObject *parent) : QObject(parent) {}
 void TransportProxy::update(bool hasTransport, const clap_event_transport &transport) {
    update(_hasTransport, hasTransport, &TransportProxy::hasTransportChanged);
 
+   update<bool>(
+      _hasTempo, transport.flags & CLAP_TRANSPORT_HAS_TEMPO, &TransportProxy::hasTempoChanged);
    update<bool>(_hasBeatsTimeline,
                 transport.flags & CLAP_TRANSPORT_HAS_BEATS_TIMELINE,
                 &TransportProxy::hasBeatsTimelineChanged);
@@ -60,6 +62,8 @@ void TransportProxy::update(bool hasTransport, const clap_event_transport &trans
    update<int>(_timeSignatureDenominator,
                transport.tsig_denom,
                &TransportProxy::timeSignatureDenominatorChanged);
+
+   emit updated();
 }
 
 void TransportProxy::setIsSubscribed(bool value) {
