@@ -811,8 +811,8 @@ void PluginHost::idle() {
    }
 
    if (_scheduleRestart) {
-      _scheduleRestart = false;
       deactivate();
+      _scheduleRestart = false;
       activate(_engine._sampleRate);
    }
 }
