@@ -11,16 +11,16 @@
 namespace clap {
 
    Plugin::Plugin(const clap_plugin_descriptor *desc, const clap_host *host) : _host(host) {
-      plugin_.plugin_data = this;
-      plugin_.desc = desc;
-      plugin_.init = Plugin::clapInit;
-      plugin_.destroy = Plugin::clapDestroy;
-      plugin_.get_extension = nullptr;
-      plugin_.process = nullptr;
-      plugin_.activate = nullptr;
-      plugin_.deactivate = nullptr;
-      plugin_.start_processing = nullptr;
-      plugin_.stop_processing = nullptr;
+      _plugin.plugin_data = this;
+      _plugin.desc = desc;
+      _plugin.init = Plugin::clapInit;
+      _plugin.destroy = Plugin::clapDestroy;
+      _plugin.get_extension = nullptr;
+      _plugin.process = nullptr;
+      _plugin.activate = nullptr;
+      _plugin.deactivate = nullptr;
+      _plugin.start_processing = nullptr;
+      _plugin.stop_processing = nullptr;
    }
 
    Plugin::~Plugin() = default;
@@ -35,12 +35,13 @@ namespace clap {
    bool Plugin::clapInit(const clap_plugin *plugin) noexcept {
       auto &self = from(plugin);
 
-      self.plugin_.get_extension = Plugin::clapExtension;
-      self.plugin_.process = Plugin::clapProcess;
-      self.plugin_.activate = Plugin::clapActivate;
-      self.plugin_.deactivate = Plugin::clapDeactivate;
-      self.plugin_.start_processing = Plugin::clapStartProcessing;
-      self.plugin_.stop_processing = Plugin::clapStopProcessing;
+      self._plugin.get_extension = Plugin::clapExtension;
+      self._plugin.process = Plugin::clapProcess;
+      self._plugin.activate = Plugin::clapActivate;
+      self._plugin.deactivate = Plugin::clapDeactivate;
+      self._plugin.start_processing = Plugin::clapStartProcessing;
+      self._plugin.stop_processing = Plugin::clapStopProcessing;
+      self._plugin.on_main_thread = Plugin::clapOnMainThread;
 
       self.initInterfaces();
       self.ensureMainThread("clap_plugin.init");
@@ -51,6 +52,12 @@ namespace clap {
       auto &self = from(plugin);
       self.ensureMainThread("clap_plugin.destroy");
       delete &from(plugin);
+   }
+
+   void Plugin::clapOnMainThread(const clap_plugin *plugin) noexcept {
+      auto &self = from(plugin);
+      self.ensureMainThread("clap_plugin.on_main_thread");
+      self.onMainThread();
    }
 
    bool Plugin::clapActivate(const clap_plugin *plugin, double sample_rate) noexcept {

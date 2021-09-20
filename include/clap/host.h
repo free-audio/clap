@@ -30,6 +30,10 @@ typedef struct clap_host {
    // This is useful if you have external IO and need to wake up the plugin from "sleep".
    // [thread-safe]
    void (*request_process)(const struct clap_host *host);
+
+   // Request the host to schedule a call to plugin->on_main_thread(plugin) on the main thread.
+   // [thread-safe]
+   void (*request_callback)(const struct clap_host *host);
 } clap_host;
 
 #ifdef __cplusplus

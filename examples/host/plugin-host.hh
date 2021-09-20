@@ -86,6 +86,10 @@ private:
    /* clap host callbacks */
    static void clapLog(const clap_host *host, clap_log_severity severity, const char *msg);
 
+   static void clapRequestCallback(const clap_host *host);
+   static void clapRequestRestart(const clap_host *host);
+   static void clapRequestProcess(const clap_host *host);
+
    static bool clapIsMainThread(const clap_host *host);
    static bool clapIsAudioThread(const clap_host *host);
 
@@ -107,10 +111,10 @@ private:
 
    void scanQuickControls();
    void quickControlsSetSelectedPage(clap_id pageId);
-   static void clapQuickControlsChanged(const clap_host *host, clap_quick_controls_changed_flags flags);
+   static void clapQuickControlsChanged(const clap_host *host,
+                                        clap_quick_controls_changed_flags flags);
 
-   static bool
-   clapRegisterTimer(const clap_host *host, uint32_t period_ms, clap_id *timer_id);
+   static bool clapRegisterTimer(const clap_host *host, uint32_t period_ms, clap_id *timer_id);
    static bool clapUnregisterTimer(const clap_host *host, clap_id timer_id);
    static bool clapRegisterFd(const clap_host *host, clap_fd fd, uint32_t flags);
    static bool clapModifyFd(const clap_host *host, clap_fd fd, uint32_t flags);
@@ -140,10 +144,10 @@ private:
    static const constexpr clap_host_gui _hostGui = {
       PluginHost::clapGuiResize,
    };
-   //static const constexpr clap_host_audio_ports hostAudioPorts_;
-   //static const constexpr clap_host_audio_ports_config hostAudioPortsConfig_;
+   // static const constexpr clap_host_audio_ports hostAudioPorts_;
+   // static const constexpr clap_host_audio_ports_config hostAudioPortsConfig_;
    static const constexpr clap_host_params _hostParams = {
-PluginHost::clapParamsRescan,
+      PluginHost::clapParamsRescan,
    };
    static const constexpr clap_host_quick_controls _hostQuickControls = {
       PluginHost::clapQuickControlsChanged,
@@ -269,4 +273,6 @@ PluginHost::clapParamsRescan,
 
    bool _isGuiCreated = false;
    bool _isGuiVisible = false;
+
+   bool _scheduleMainThreadCallback = false;
 };

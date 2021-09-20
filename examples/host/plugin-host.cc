@@ -29,11 +29,14 @@ PluginHost::PluginHost(Engine &engine) : QObject(&engine), _engine(engine) {
 
    host_.host_data = this;
    host_.clap_version = CLAP_VERSION;
-   host_.get_extension = PluginHost::clapExtension;
    host_.name = "Clap Test Host";
    host_.version = "0.1.0";
    host_.vendor = "clap";
    host_.url = "https://github.com/free-audio/clap";
+   host_.get_extension = PluginHost::clapExtension;
+   host_.request_callback = PluginHost::clapRequestCallback;
+   host_.request_process = PluginHost::clapRequestProcess;
+   host_.request_restart = PluginHost::clapRequestRestart;
 
    initThreadPool();
 }
@@ -318,6 +321,19 @@ void PluginHost::setPluginWindowVisibility(bool isVisible) {
    }
 }
 
+void PluginHost::clapRequestCallback(const clap_host *host) {
+   h->_scheduleMainThreadCallback = true;
+}
+
+void PluginHost::clapRequestProcess(const clap_host *host) {
+   // nothing to do we always process for now
+}
+
+void PluginHost::clapRequestRestart(const clap_host *host) {
+   auto h = fromHost(host);
+   h->_scheduleRestart = true;
+}
+
 void PluginHost::clapLog(const clap_host *host, clap_log_severity severity, const char *msg) {
    switch (severity) {
    case CLAP_LOG_DEBUG:
@@ -348,10 +364,7 @@ void PluginHost::initPluginExtension(const T *&ext, const char *id) {
 const void *PluginHost::clapExtension(const clap_host *host, const char *extension) {
    checkForMainThread();
 
-   PluginHost *h = static_cast<PluginHost *>(host->host_data);
-   if (!h->_plugin)
-      throw std::logic_error("The plugin can't query for extensions during the create method. Wait "
-                             "for clap_plugin.init() call.");
+   auto h = fromHost(host);
 
    if (!strcmp(extension, CLAP_EXT_GUI))
       return &h->_hostGui;
@@ -381,8 +394,8 @@ PluginHost *PluginHost::fromHost(const clap_host *host) {
       throw std::invalid_argument("Passed an invalid host pointer because the host_data is null");
 
    if (!h->_plugin)
-      throw std::logic_error(
-         "Called into host interfaces befores the host knows the plugin pointer");
+      throw std::logic_error("The plugin can't query for extensions during the create method. Wait "
+                             "for clap_plugin.init() call.");
 
    return h;
 }
@@ -769,6 +782,11 @@ void PluginHost::idle() {
          it->second->setValue(value.value);
          it->second->setIsAdjusting(value.isAdjusting);
       });
+
+   if (_scheduleMainThreadCallback) {
+      _scheduleMainThreadCallback = false;
+      _plugin->on_main_thread(_plugin);
+   }
 }
 
 PluginParam &PluginHost::checkValidParamId(const std::string_view &function,

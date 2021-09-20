@@ -13,7 +13,7 @@ namespace clap {
    /// @note for an higher level implementation, see @ref PluginHelper
    class Plugin {
    public:
-      const clap_plugin *clapPlugin() noexcept { return &plugin_; }
+      const clap_plugin *clapPlugin() noexcept { return &_plugin; }
 
    protected:
       Plugin(const clap_plugin_descriptor *desc, const clap_host *host);
@@ -40,6 +40,7 @@ namespace clap {
       virtual clap_process_status process(const clap_process *process) noexcept {
          return CLAP_PROCESS_SLEEP;
       }
+      virtual void onMainThread() noexcept {}
       virtual const void *extension(const char *id) noexcept { return nullptr; }
 
       //---------------------//
@@ -261,7 +262,7 @@ namespace clap {
       // CLAP Interfaces //
       /////////////////////
 
-      clap_plugin plugin_;
+      clap_plugin _plugin;
       // clap_plugin
       static bool clapInit(const clap_plugin *plugin) noexcept;
       static void clapDestroy(const clap_plugin *plugin) noexcept;
@@ -271,6 +272,7 @@ namespace clap {
       static void clapStopProcessing(const clap_plugin *plugin) noexcept;
       static clap_process_status clapProcess(const clap_plugin *plugin,
                                              const clap_process *process) noexcept;
+      static void clapOnMainThread(const clap_plugin *plugin) noexcept;
       static const void *clapExtension(const clap_plugin *plugin, const char *id) noexcept;
 
       // latency
@@ -392,10 +394,8 @@ namespace clap {
          clapTrackInfoChanged,
       };
 
-      static const constexpr clap_plugin_audio_ports _pluginAudioPorts = {
-         clapAudioPortsCount,
-         clapAudioPortsInfo
-      };
+      static const constexpr clap_plugin_audio_ports _pluginAudioPorts = {clapAudioPortsCount,
+                                                                          clapAudioPortsInfo};
 
       static const constexpr clap_plugin_audio_ports_config _pluginAudioPortsConfig = {
          clapAudioPortsConfigCount,
@@ -427,9 +427,7 @@ namespace clap {
          clapNoteNameGet,
       };
 
-      static const constexpr clap_plugin_timer_support _pluginTimerSupport = {
-         clapOnTimer
-      };
+      static const constexpr clap_plugin_timer_support _pluginTimerSupport = {clapOnTimer};
 
       static const constexpr clap_plugin_fd_support _pluginFdSupport = {
          clapOnFd,

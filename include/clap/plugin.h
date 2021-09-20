@@ -86,6 +86,11 @@ typedef struct clap_plugin {
     * The returned pointer is owned by the plugin.
     * [thread-safe] */
    const void *(*get_extension)(const struct clap_plugin *plugin, const char *id);
+
+   // Called by the host on the main thread in response to a previous call to:
+   //   host->request_callback(host);
+   // [main-thread]
+   void (*on_main_thread)(const struct clap_plugin *plugin);
 } clap_plugin;
 
 /////////////////
