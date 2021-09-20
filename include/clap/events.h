@@ -1,10 +1,10 @@
 #pragma once
 
 #include <stdbool.h>
-#include <stdint.h>
 #include <stddef.h>
 
 #include "fixedpoint.h"
+#include "id.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -24,10 +24,6 @@ enum {
    CLAP_EVENT_MIDI_SYSEX,      // raw midi sysex event; midi_sysex attribute
 };
 typedef int32_t clap_event_type;
-
-typedef uint32_t clap_id;
-
-static const clap_id CLAP_INVALID_ID = UINT32_MAX;
 
 /**
  * Note on, off, end and choke events.
