@@ -2,6 +2,7 @@
 
 #include "../clap.h"
 #include "../chmap.h"
+#include "../string-sizes.h"
 
 /// @page Audio Ports
 ///

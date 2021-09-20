@@ -25,11 +25,5 @@
 
 #pragma once
 
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
-
-#include "macros.h"
-#include "version.h"
-#include "string-sizes.h"
 #include "plugin.h"
+#include "host.h"
