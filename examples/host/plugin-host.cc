@@ -322,6 +322,7 @@ void PluginHost::setPluginWindowVisibility(bool isVisible) {
 }
 
 void PluginHost::clapRequestCallback(const clap_host *host) {
+   auto h = fromHost(host);
    h->_scheduleMainThreadCallback = true;
 }
 
