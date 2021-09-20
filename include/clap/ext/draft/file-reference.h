@@ -2,6 +2,7 @@
 
 #include "../../clap.h"
 #include "../../hash.h"
+#include "../../string-sizes.h"
 
 static CLAP_CONSTEXPR const char CLAP_EXT_FILE_REFERENCE[] = "clap.file-reference.draft/0";
 

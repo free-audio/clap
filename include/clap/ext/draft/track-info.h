@@ -3,6 +3,7 @@
 #include "../../clap.h"
 #include "../../chmap.h"
 #include "../../color.h"
+#include "../../string-sizes.h"
 
 static CLAP_CONSTEXPR const char CLAP_EXT_TRACK_INFO[] = "clap.track-info.draft/0";
 

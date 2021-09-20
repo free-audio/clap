@@ -2,6 +2,7 @@
 
 
 #include "../clap.h"
+#include "../string-sizes.h"
 
 #ifdef __cplusplus
 extern "C" {

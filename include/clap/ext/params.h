@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "../clap.h"
+#include "../string-sizes.h"
 
 /// @page Parameters
 /// @brief parameters management

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../clap.h"
+#include "../../string-sizes.h"
 
 static CLAP_CONSTEXPR const char CLAP_EXT_QUICK_CONTROLS[] = "clap.quick-controls.draft/0";
 
