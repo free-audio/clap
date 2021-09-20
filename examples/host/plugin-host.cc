@@ -213,10 +213,14 @@ bool PluginHost::canActivate() const {
 void PluginHost::activate(int32_t sample_rate) {
    checkForMainThread();
 
-   if (_plugin->activate(_plugin, sample_rate))
-      setPluginState(ActiveAndSleeping);
-   else
+   assert(!isPluginActive());
+   if (!_plugin->activate(_plugin, sample_rate)) {
       setPluginState(InactiveWithError);
+      return;
+   }
+
+   _scheduleProcess = true;
+   setPluginState(ActiveAndSleeping);
 }
 
 void PluginHost::deactivate() {
@@ -327,7 +331,8 @@ void PluginHost::clapRequestCallback(const clap_host *host) {
 }
 
 void PluginHost::clapRequestProcess(const clap_host *host) {
-   // nothing to do we always process for now
+   auto h = fromHost(host);
+   h->_scheduleProcess = true;
 }
 
 void PluginHost::clapRequestRestart(const clap_host *host) {
@@ -671,7 +676,20 @@ void clap_host_event_list_push_back(const struct clap_event_list *list,
 void PluginHost::process() {
    checkForAudioThread();
 
-   if (!isPluginProcessing() && !isPluginSleeping())
+   // Can't process a plugin that is not active
+   if (!isPluginActive())
+      return;
+
+   // Do we want to deactivate the plugin?
+   if (_scheduleDeactivate) {
+      _scheduleDeactivate = false;
+      _plugin->stop_processing(_plugin);
+      setPluginState(ActiveAndReadyToDeactivate);
+      return;
+   }
+
+   // We can't process a plugin which failed to start processing
+   if (_state == ActiveWithError)
       return;
 
    _process.transport = nullptr;
@@ -717,15 +735,24 @@ void PluginHost::process() {
       _evIn.push_back(ev);
    });
 
-   // TODO if the plugin was not processing and had audio or events that should
-   // wake it, then we should set it as processing
-   if (!isPluginProcessing()) {
-      _plugin->start_processing(_plugin);
+   if (isPluginSleeping()) {
+      if (!_scheduleProcess && _evIn.empty())
+         // The plugin is sleeping, there is no request to wake it up and there are no events to
+         // process
+         return;
+
+      _scheduleProcess = false;
+      if (!_plugin->start_processing(_plugin)) {
+         // the plugin failed to start processing
+         setPluginState(ActiveWithError);
+         return;
+      }
+
       setPluginState(ActiveAndProcessing);
    }
 
-   int32_t status;
-   if (_plugin && _plugin->process)
+   int32_t status = CLAP_PROCESS_SLEEP;
+   if (_plugin && _plugin->process && isPluginProcessing())
       status = _plugin->process(_plugin, &_process);
 
    for (auto &ev : _evOut) {
@@ -754,12 +781,6 @@ void PluginHost::process() {
    _evOut.clear();
    _evIn.clear();
 
-   if (_scheduleDeactivate) {
-      _scheduleDeactivate = false;
-      _plugin->stop_processing(_plugin);
-      setPluginState(ActiveAndReadyToDeactivate);
-   }
-
    _engineToAppValueQueue.producerDone();
    g_thread_type = Unknown;
 }
@@ -787,6 +808,12 @@ void PluginHost::idle() {
    if (_scheduleMainThreadCallback) {
       _scheduleMainThreadCallback = false;
       _plugin->on_main_thread(_plugin);
+   }
+
+   if (_scheduleRestart) {
+      _scheduleRestart = false;
+      deactivate();
+      activate(_engine._sampleRate);
    }
 }
 

@@ -271,6 +271,8 @@ private:
    bool _scheduleRestart = false;
    bool _scheduleDeactivate = false;
 
+   bool _scheduleProcess = true;
+
    bool _isGuiCreated = false;
    bool _isGuiVisible = false;
 
