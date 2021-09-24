@@ -31,6 +31,12 @@
 ///    ...
 /// }
 /// @endcode
+///
+/// Be aware that using a thread pool may break hard real-time rules due to the thread
+/// synchronization involved.
+///
+/// If the host knows that it is running under hard real-time pressure it may decide to not
+/// provide this interface.
 
 static CLAP_CONSTEXPR const char CLAP_EXT_THREAD_POOL[] = "clap.thread-pool.draft/0";
 
