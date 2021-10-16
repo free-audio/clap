@@ -140,8 +140,8 @@ struct clap_plugin_entry {
     * [thread-safe] */
    const clap_plugin *(*create_plugin)(const clap_host *host, const char *plugin_id);
 
-   // Get the number of invalidation sources.
-   uint32_t (*get_invalidation_sources_count)(void);
+   // Get the number of invalidation source.
+   uint32_t (*get_invalidation_source_count)(void);
 
    // Get the invalidation source by its index.
    // [thread-safe]
