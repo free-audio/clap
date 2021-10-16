@@ -145,7 +145,7 @@ struct clap_plugin_entry {
 
    // Get the invalidation source by its index.
    // [thread-safe]
-   const clap_plugin_invalidation_source *(*get_invalidation_sources)(uint32_t index);
+   const clap_plugin_invalidation_source *(*get_invalidation_source)(uint32_t index);
 
    // In case the host detected a invalidation event, it can call refresh() to let the
    // plugin_entry scan the set of plugins available.
