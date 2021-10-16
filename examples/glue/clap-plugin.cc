@@ -965,6 +965,21 @@ namespace clap {
       std::terminate();
    }
 
+   void Plugin::checkAudioThread() const noexcept {
+      if (!_hostThreadCheck || !_hostThreadCheck->is_audio_thread ||
+          _hostThreadCheck->is_audio_thread(_host))
+         return;
+
+      std::terminate();
+   }
+
+   void Plugin::checkParamThread() const noexcept {
+      if (isActive())
+         checkAudioThread();
+      else
+         checkMainThread();
+   }
+
    void Plugin::ensureMainThread(const char *method) const noexcept {
       if (!_hostThreadCheck || !_hostThreadCheck->is_main_thread ||
           _hostThreadCheck->is_main_thread(_host))

@@ -214,6 +214,8 @@ namespace clap {
       // Thread Checking //
       /////////////////////
       void checkMainThread() const noexcept;
+      void checkAudioThread() const noexcept;
+      void checkParamThread() const noexcept;
       void ensureMainThread(const char *method) const noexcept;
       void ensureAudioThread(const char *method) const noexcept;
 
