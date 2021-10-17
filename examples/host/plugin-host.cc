@@ -994,6 +994,16 @@ void PluginHost::clapParamsRescan(const clap_host *host, uint32_t flags) {
       h->paramsChanged();
 }
 
+void PluginHost::clapParamsClear(const clap_host *host, clap_id param_id, clap_param_clear_flags flags)
+{
+   checkForMainThread();
+}
+
+void PluginHost::clapParamsRequestFlush(const clap_host *host)
+{
+   // Nothing to do we always flush and always process
+}
+
 double PluginHost::getParamValue(const clap_param_info &info) {
    checkForMainThread();
    double value;

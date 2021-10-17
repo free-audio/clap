@@ -234,6 +234,7 @@ namespace clap {
       initInterface(_hostTrackInfo, CLAP_EXT_TRACK_INFO);
       initInterface(_hostState, CLAP_EXT_STATE);
       initInterface(_hostNoteName, CLAP_EXT_NOTE_NAME);
+      initInterface(_hostQuickControls, CLAP_EXT_QUICK_CONTROLS);
    }
 
    //-------------------//
@@ -928,6 +929,17 @@ namespace clap {
          return true;
 
       hostMisbehaving("clap_host_latency is partially implemented");
+      return false;
+   }
+
+   bool Plugin::canUseQuickControls() const noexcept {
+      if (!_hostQuickControls)
+         return false;
+
+      if (_hostQuickControls->changed)
+         return true;
+
+      hostMisbehaving("clap_host_quick_controls is partially implemented");
       return false;
    }
 

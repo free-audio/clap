@@ -209,6 +209,7 @@ namespace clap {
       bool canUseFdSupport() const noexcept;
       bool canUseParams() const noexcept;
       bool canUseLatency() const noexcept;
+      bool canUseQuickControls() const noexcept;
 
       /////////////////////
       // Thread Checking //
@@ -258,6 +259,7 @@ namespace clap {
       const clap_host_track_info *_hostTrackInfo = nullptr;
       const clap_host_state *_hostState = nullptr;
       const clap_host_note_name *_hostNoteName = nullptr;
+      const clap_host_quick_controls *_hostQuickControls = nullptr;
 
    private:
       /////////////////////

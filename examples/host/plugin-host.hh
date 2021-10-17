@@ -93,8 +93,9 @@ private:
    static bool clapIsMainThread(const clap_host *host);
    static bool clapIsAudioThread(const clap_host *host);
 
-   static void clapParamsRescan(const clap_host *host, uint32_t flags);
-   static void clapParamsClear(const clap_host *host, uint32_t flags);
+   static void clapParamsRescan(const clap_host *host, clap_param_rescan_flags flags);
+   static void clapParamsClear(const clap_host *host, clap_id param_id, clap_param_clear_flags flags);
+   static void clapParamsRequestFlush(const clap_host *host);
    void scanParams();
    void scanParam(int32_t index);
    PluginParam &checkValidParamId(const std::string_view &function,
@@ -148,6 +149,8 @@ private:
    // static const constexpr clap_host_audio_ports_config hostAudioPortsConfig_;
    static const constexpr clap_host_params _hostParams = {
       PluginHost::clapParamsRescan,
+      PluginHost::clapParamsClear,
+      PluginHost::clapParamsRequestFlush,
    };
    static const constexpr clap_host_quick_controls _hostQuickControls = {
       PluginHost::clapQuickControlsChanged,
