@@ -101,4 +101,5 @@ brew install qt6
 brew install boost
 brew install portaudio
 brew install portmidi
+brew install pkgconfig
 ```
