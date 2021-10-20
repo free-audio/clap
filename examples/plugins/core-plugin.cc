@@ -1,8 +1,8 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
-#include <sstream>
 #include <chrono>
+#include <sstream>
 #include <thread>
 
 #include "core-plugin.hh"
@@ -174,11 +174,9 @@ namespace clap {
 
    void CorePlugin::guiAdjust(clap_id paramId, double value, clap_event_param_flags flags) {
       GuiToPluginValue item{paramId, value, flags};
-      while (true) {
-         // very highly likely to succeed
-         if (_guiToPluginQueue.tryPush(item))
-            return;
 
+      // very highly likely to succeed
+      while (!_guiToPluginQueue.tryPush(item)) {
          if (canUseParams())
             _hostParams->request_flush(_host);
 
