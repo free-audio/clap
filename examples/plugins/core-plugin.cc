@@ -2,6 +2,8 @@
 #include <boost/archive/text_oarchive.hpp>
 
 #include <sstream>
+#include <chrono>
+#include <thread>
 
 #include "core-plugin.hh"
 #include "stream-helper.hh"
@@ -171,7 +173,17 @@ namespace clap {
    }
 
    void CorePlugin::guiAdjust(clap_id paramId, double value, clap_event_param_flags flags) {
-      _guiToPluginQueue.push({paramId, value, flags});
+      GuiToPluginValue item{paramId, value, flags};
+      while (true) {
+         // very highly likely to succeed
+         if (_guiToPluginQueue.tryPush(item))
+            return;
+
+         if (canUseParams())
+            _hostParams->request_flush(_host);
+
+         std::this_thread::sleep_for(std::chrono::milliseconds(1));
+      }
    }
 
    void CorePlugin::processGuiEvents(const clap_process *process) {

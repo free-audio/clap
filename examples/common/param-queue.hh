@@ -14,19 +14,22 @@ public:
    ParamQueue() = default;
 
    void push(const T &value) {
-      int w;  // write element
-      int wn; // next write element
+      while (!tryPush(value))
+         ;
+   }
 
-      do {
-         w = _writeOffset.load();
-         wn = (w + 1) % CAPACITY;
-      } while (wn == _readOffset); // wait until there is space
+   bool tryPush(const T &value) {
+      int w = _writeOffset.load(); // write element
+      int wn = (w + 1) % CAPACITY; // next write element
+
+      if (wn == _readOffset)
+         return false;
 
       _data[w] = value;
       _writeOffset = wn;
    }
 
-   bool tryPop(T& value) {
+   bool tryPop(T &value) {
       int r = _readOffset;
 
       if (r == _writeOffset)
@@ -38,8 +41,7 @@ public:
       return true;
    }
 
-   void reset()
-   {
+   void reset() {
       _writeOffset = 0;
       _readOffset = 0;
    }
