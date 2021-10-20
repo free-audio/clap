@@ -914,7 +914,7 @@ namespace clap {
       if (!_hostParams)
          return false;
 
-      if (_hostParams->rescan && _hostParams->clear)
+      if (_hostParams->rescan && _hostParams->clear && _hostParams->request_flush)
          return true;
 
       hostMisbehaving("clap_host_params is partially implemented");
