@@ -116,6 +116,8 @@ namespace clap {
       virtual bool paramsTextToValue(clap_id paramId, const char *display, double *value) noexcept {
          return false;
       }
+      virtual void paramsFlush(const clap_event_list *input_parameter_changes,
+                               const clap_event_list *output_parameter_changes) noexcept {}
       virtual bool isValidParamId(clap_id paramId) const noexcept;
 
       //----------------------------//
@@ -219,6 +221,7 @@ namespace clap {
       void checkParamThread() const noexcept;
       void ensureMainThread(const char *method) const noexcept;
       void ensureAudioThread(const char *method) const noexcept;
+      void ensureParamThread(const char *method) const noexcept;
 
       ///////////////
       // Utilities //
@@ -327,6 +330,9 @@ namespace clap {
                                         clap_id param_id,
                                         const char *display,
                                         double *value) noexcept;
+      static void clapParamsFlush(const clap_plugin *plugin,
+                                  const clap_event_list *input_parameter_changes,
+                                  const clap_event_list *output_parameter_changes) noexcept;
 
       // clap_plugin_quick_controls
       static uint32_t clapQuickControlsPageCount(const clap_plugin *plugin) noexcept;
@@ -413,6 +419,7 @@ namespace clap {
          clapParamsValue,
          clapParamsValueToText,
          clapParamsTextToValue,
+         clapParamsFlush,
       };
 
       static const constexpr clap_plugin_quick_controls _pluginQuickControls = {

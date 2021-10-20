@@ -438,6 +438,50 @@ namespace clap {
       return self.paramsValue(param_id, value);
    }
 
+   void Plugin::clapParamsFlush(const clap_plugin *plugin,
+                                const clap_event_list *input_parameter_changes,
+                                const clap_event_list *output_parameter_changes) noexcept {
+      auto &self = from(plugin);
+      self.ensureParamThread("clap_plugin_params.flush");
+
+      if (!input_parameter_changes)
+         self.hostMisbehaving("clap_plugin_params.flush called with an null input parameter change list");
+      else {
+         uint32_t N = input_parameter_changes->size(input_parameter_changes);
+         for (uint32_t i = 0; i < N; ++i)
+         {
+            auto ev = input_parameter_changes->get(input_parameter_changes, i);
+            if (!ev) {
+               std::ostringstream msg;
+               msg << "clap_plugin_params.flush called null event inside the input list at index: " << i;
+               self.hostMisbehaving(msg.str());
+               continue;
+            }
+
+            if (ev->type != CLAP_EVENT_PARAM_VALUE) {
+               self.hostMisbehaving("clap_plugin_params.flush must only contain CLAP_EVENT_PARAM_VALUE event type");
+               continue;
+            }
+
+            if (!self.isValidParamId(ev->param_value.param_id)) {
+               std::ostringstream msg;
+               msg << "clap_plugin_params.flush called unknown paramId: " << ev->param_value.param_id;
+               self.hostMisbehaving(msg.str());
+               continue;
+            }
+
+            // TODO: check range?
+         }
+      }
+
+      if (!output_parameter_changes)
+         self.hostMisbehaving("clap_plugin_params.flush called with an null output parameter change list");
+      else if (output_parameter_changes->size(output_parameter_changes) > 0)
+         self.hostMisbehaving("clap_plugin_params.flush called with an non-empty output parameter change list");
+
+      self.paramsFlush(input_parameter_changes, output_parameter_changes);
+   }
+
    bool Plugin::clapParamsValueToText(const clap_plugin *plugin,
                                       clap_id param_id,
                                       double value,
@@ -454,12 +498,14 @@ namespace clap {
       }
 
       if (!display) {
-         self.hostMisbehaving("clap_plugin_params.value_to_text called with a null display pointer");
+         self.hostMisbehaving(
+            "clap_plugin_params.value_to_text called with a null display pointer");
          return false;
       }
 
       if (size <= 1) {
-         self.hostMisbehaving("clap_plugin_params.value_to_text called with a empty buffer (less than one character)");
+         self.hostMisbehaving("clap_plugin_params.value_to_text called with a empty buffer (less "
+                              "than one character)");
          return false;
       }
 
@@ -481,7 +527,8 @@ namespace clap {
       }
 
       if (!display) {
-         self.hostMisbehaving("clap_plugin_params.text_to_value called with a null display pointer");
+         self.hostMisbehaving(
+            "clap_plugin_params.text_to_value called with a null display pointer");
          return false;
       }
 
@@ -769,8 +816,8 @@ namespace clap {
       self.ensureMainThread("clap_plugin_gui_x11.attach");
 
       if (!self._isGuiCreated) {
-         self.hostMisbehaving(
-            "clap_plugin_gui_x11.attach() was called without a prior call to clap_plugin_gui.create()");
+         self.hostMisbehaving("clap_plugin_gui_x11.attach() was called without a prior call to "
+                              "clap_plugin_gui.create()");
          return false;
       }
 
@@ -794,8 +841,8 @@ namespace clap {
       self.ensureMainThread("clap_plugin_gui_win32.attach");
 
       if (!self._isGuiCreated) {
-         self.hostMisbehaving(
-            "clap_plugin_gui_win32.attach() was called without a prior call to clap_plugin_gui.create()");
+         self.hostMisbehaving("clap_plugin_gui_win32.attach() was called without a prior call to "
+                              "clap_plugin_gui.create()");
          return false;
       }
 
@@ -819,8 +866,8 @@ namespace clap {
       self.ensureMainThread("clap_plugin_gui_cocoa.attach");
 
       if (!self._isGuiCreated) {
-         self.hostMisbehaving(
-            "clap_plugin_gui_cocoa.attach() was called without a prior call to clap_plugin_gui.create()");
+         self.hostMisbehaving("clap_plugin_gui_cocoa.attach() was called without a prior call to "
+                              "clap_plugin_gui.create()");
          return false;
       }
 
@@ -844,13 +891,14 @@ namespace clap {
       self.ensureMainThread("clap_plugin_gui_free_standing.open");
 
       if (!self._isGuiCreated) {
-         self.hostMisbehaving(
-            "clap_plugin_gui_free_standing.open() was called without a prior call to clap_plugin_gui.create()");
+         self.hostMisbehaving("clap_plugin_gui_free_standing.open() was called without a prior "
+                              "call to clap_plugin_gui.create()");
          return false;
       }
 
       if (self._isGuiAttached) {
-         self.hostMisbehaving("clap_plugin_gui_free_standing.open() but the gui was already attached");
+         self.hostMisbehaving(
+            "clap_plugin_gui_free_standing.open() but the gui was already attached");
          return true;
       }
 
@@ -990,6 +1038,13 @@ namespace clap {
          checkAudioThread();
       else
          checkMainThread();
+   }
+
+   void Plugin::ensureParamThread(const char *method) const noexcept {
+      if (isActive())
+         ensureAudioThread(method);
+      else
+         ensureMainThread(method);
    }
 
    void Plugin::ensureMainThread(const char *method) const noexcept {
