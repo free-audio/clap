@@ -27,6 +27,7 @@ public:
 
       _data[w] = value;
       _writeOffset = wn;
+      return true;
    }
 
    bool tryPop(T &value) {
