@@ -86,20 +86,5 @@ and use to get a basic plugin experience:
 
 ## Examples
 
-Visit the [examples](examples) folder.
-
-## Building on various platforms
-
-### macOS
-
-To build the example host on macOS you need a few extra libraries, qt6, boost, portmidi and portaudio.
-These are all available by homebrew and the CMake setup will find them assuming a standard
-(/usr/local) homebrew setup. Before your first build do
-
-```shell
-brew install qt6
-brew install boost
-brew install portaudio
-brew install portmidi
-brew install pkgconfig
-```
+- [clap-host](https://github.com/free-audio/clap-host)
+- [clap-plugins](https://github.com/free-audio/clap-plugins)
