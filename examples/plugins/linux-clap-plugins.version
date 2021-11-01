@@ -1,6 +1,0 @@
-CLAP_PLUGIN_ABI_1.0 {
-  global:
-    clap_plugin_entry;
-  local:
-    *;
-};
