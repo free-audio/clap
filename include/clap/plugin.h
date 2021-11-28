@@ -68,9 +68,17 @@ typedef struct clap_plugin {
     * It is not required to deactivate the plugin prior to this call. */
    void (*destroy)(const struct clap_plugin *plugin);
 
-   /* activation/deactivation
-    * [main-thread] */
-   bool (*activate)(const struct clap_plugin *plugin, double sample_rate);
+   // Activate and deactivate the plugin.
+   // In this call the plugin may allocate memory and prepare everything needed for the process
+   // call. The process's sample rate will be constant and process's frame count will included in
+   // the [min, max] range, which is bounded by [1, INT32_MAX].
+   // Once activated the latency and port configuration must remain constant, until deactivation.
+   //
+   // [main-thread]
+   bool (*activate)(const struct clap_plugin *plugin,
+                    double                    sample_rate,
+                    uint32_t                  min_frames_count,
+                    uint32_t                  max_frames_count);
    void (*deactivate)(const struct clap_plugin *plugin);
 
    // Set to true before processing, and to false before sending the plugin to sleep.
