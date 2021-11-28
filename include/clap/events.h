@@ -65,8 +65,6 @@ typedef struct clap_event_note_expression {
    int32_t channel;
 
    double   value; // see expression for the range
-   uint32_t period;
-   uint32_t count;
 } clap_event_note_expression;
 
 enum {
