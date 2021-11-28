@@ -12,8 +12,9 @@ static CLAP_CONSTEXPR const char CLAP_EXT_NOTE_NAME[] = "clap.note-name";
 
 typedef struct clap_note_name {
    char   name[CLAP_NAME_SIZE];
-   int8_t key;
-   int8_t channel; // -1 for every channels
+   int32_t port;
+   int32_t key;
+   int32_t channel; // -1 for every channels
 } clap_note_name;
 
 typedef struct clap_plugin_note_name {

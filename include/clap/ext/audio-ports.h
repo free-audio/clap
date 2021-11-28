@@ -6,30 +6,11 @@
 
 /// @page Audio Ports
 ///
-/// This extension provides a way for the plugin to describe:
-/// - its current ports
-/// - possible ports configurations, for example mono, stereo, surround, ...
-/// and a way for the host to select a configuration.
+/// This extension provides a way for the plugin to describe its current audio ports.
 ///
-/// If the plugin does not implement this extension, it will have a stereo input and output.
+/// If the plugin does not implement this extension, it will have a default stereo input and output.
 ///
 /// The plugin is only allowed to change its ports configuration while it is deactivated.
-///
-/// During @ref clap_plugin.init, the plugin may query @ref clap_host_track_info and select a
-/// configuration adapted to the track.
-///
-/// After the plugin initialization, the host may scan the list of configurations and eventually
-/// select one that fits the plugin context. The host can only select a configuration if the plugin
-/// is deactivated.
-///
-/// A configuration is a very simple description of the audio ports:
-/// - it describes the main input and output ports
-/// - it has a name that can be displayed to the user
-///
-/// The idea behind the configurations, is to let the user choose one via a menu.
-///
-/// Plugin with very complex configuration possibilities should let the user configure the ports
-/// from the plugin GUI, and call @ref clap_host_audio_ports.rescan(CLAP_AUDIO_PORTS_RESCAN_ALL).
 
 static CLAP_CONSTEXPR const char CLAP_EXT_AUDIO_PORTS[] = "clap.audio-ports";
 
@@ -39,7 +20,7 @@ extern "C" {
 
 typedef struct clap_audio_port_info {
    clap_id id;                   // stable identifier
-   char    name[CLAP_NAME_SIZE]; // displayable name, i18n?
+   char    name[CLAP_NAME_SIZE]; // displayable name
 
    uint32_t   channel_count;
    clap_chmap channel_map;
@@ -60,7 +41,7 @@ typedef struct clap_plugin_audio_ports {
 
    // get info about about an audio port.
    // [main-thread]
-   bool (*get)(const clap_plugin *   plugin,
+   bool (*get)(const clap_plugin    *plugin,
                uint32_t              index,
                bool                  is_input,
                clap_audio_port_info *info);

@@ -91,31 +91,34 @@ enum {
    // Does this param supports per channel automations?
    CLAP_PARAM_IS_PER_CHANNEL = 1 << 2,
 
-   // Useful for phase ;-)
-   CLAP_PARAM_IS_PERIODIC = 1 << 3,
+   // Does this param supports per port automations?
+   CLAP_PARAM_IS_PER_PORT = 1 << 3,
+
+   // Useful for for periodic parameters like a phase
+   CLAP_PARAM_IS_PERIODIC = 1 << 4,
 
    // The parameter should not be shown to the user, because it is currently not used.
    // It is not necessary to process automation for this parameter.
-   CLAP_PARAM_IS_HIDDEN = 1 << 4,
+   CLAP_PARAM_IS_HIDDEN = 1 << 5,
 
    // This parameter is used to merge the plugin and host bypass button.
    // It implies that the parameter is stepped.
    // min: 0 -> bypass off
    // max: 1 -> bypass on
-   CLAP_PARAM_IS_BYPASS = (1 << 5) | CLAP_PARAM_IS_STEPPED,
+   CLAP_PARAM_IS_BYPASS = (1 << 6) | CLAP_PARAM_IS_STEPPED,
 
    // The parameter can't be changed by the host.
-   CLAP_PARAM_IS_READONLY = 1 << 6,
+   CLAP_PARAM_IS_READONLY = 1 << 7,
 
    // Does the parameter support the modulation signal?
-   CLAP_PARAM_IS_MODULATABLE = 1 << 7,
+   CLAP_PARAM_IS_MODULATABLE = 1 << 8,
 
    // Any change to this parameter will affect the plugin output and requires to be done via
    // process() if the plugin is active.
    //
    // A simple example would be a DC Offset, changing it will change the output signal and must be
    // processed.
-   CLAP_PARAM_REQUIRES_PROCESS = 1 << 8,
+   CLAP_PARAM_REQUIRES_PROCESS = 1 << 9,
 };
 typedef uint32_t clap_param_info_flags;
 

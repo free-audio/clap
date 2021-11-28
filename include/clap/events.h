@@ -32,6 +32,7 @@ typedef int32_t clap_event_type;
  * - key and channel are used to match active notes, a value of -1 matches all.
  */
 typedef struct clap_event_note {
+   int32_t port_index;
    int32_t key;      // 0..127
    int32_t channel;  // 0..15
    double  velocity; // 0..1
@@ -60,11 +61,13 @@ typedef int32_t clap_note_expression;
 
 typedef struct clap_event_note_expression {
    clap_note_expression expression_id;
-   // target a specific key and channel, -1 for global
+
+   // target a specific port, key and channel, -1 for global
+   int32_t port_index;
    int32_t key;
    int32_t channel;
 
-   double   value; // see expression for the range
+   double value; // see expression for the range
 } clap_event_note_expression;
 
 enum {
@@ -81,10 +84,11 @@ typedef int32_t clap_event_param_flags;
 
 typedef struct clap_event_param_value {
    // target parameter
-   void *  cookie;   // @ref clap_param_info.cookie
+   void   *cookie;   // @ref clap_param_info.cookie
    clap_id param_id; // @ref clap_param_info.id
 
-   // target a specific key and channel, -1 for global
+   // target a specific port, key and channel, -1 for global
+   int32_t port_index;
    int32_t key;
    int32_t channel;
 
@@ -95,10 +99,11 @@ typedef struct clap_event_param_value {
 
 typedef struct clap_event_param_mod {
    // target parameter
-   void *  cookie;   // @ref clap_param_info.cookie
+   void   *cookie;   // @ref clap_param_info.cookie
    clap_id param_id; // @ref clap_param_info.id
 
-   // target a specific key and channel, -1 for global
+   // target a specific port, key and channel, -1 for global
+   int32_t port_index;
    int32_t key;
    int32_t channel;
 
@@ -140,6 +145,8 @@ typedef struct clap_event_transport {
 } clap_event_transport;
 
 typedef struct clap_event_note_mask {
+   int32_t port_index;
+
    // bitset of active keys:
    // - 11 bits
    // - root note is not part of the bitset
@@ -152,10 +159,12 @@ typedef struct clap_event_note_mask {
 } clap_event_note_mask;
 
 typedef struct clap_event_midi {
+   int32_t port_index;
    uint8_t data[3];
 } clap_event_midi;
 
 typedef struct clap_event_midi_sysex {
+   int32_t        port_index;
    const uint8_t *buffer; // midi buffer
    uint32_t       size;
 } clap_event_midi_sysex;
