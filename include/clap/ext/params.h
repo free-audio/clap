@@ -166,6 +166,8 @@ typedef struct clap_plugin_params {
    bool (*get_value)(const clap_plugin *plugin, clap_id param_id, double *value);
 
    // Formats the display text for the given parameter value.
+   // The host should always format the parameter value to text using this function
+   // before displaying it to the user.
    // [main-thread]
    bool (*value_to_text)(
       const clap_plugin *plugin, clap_id param_id, double value, char *display, uint32_t size);
