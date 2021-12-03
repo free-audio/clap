@@ -2,4 +2,6 @@
 
 // The purpose of this file is to check that all headers compile
 
-int main(int argc, char **argv) { return 0; }
+clap_version m = CLAP_VERSION;
+
+int main(int argc, char **argv) { return !clap_version_is_compatible(m); }

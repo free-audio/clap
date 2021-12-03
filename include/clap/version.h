@@ -26,7 +26,7 @@ typedef struct clap_version {
 #define CLAP_VERSION_MINOR 15
 #define CLAP_VERSION_REVISION 0
 
-#define CLAP_VERSION (clap_version{CLAP_VERSION_MAJOR, CLAP_VERSION_MINOR, CLAP_VERSION_REVISION})
+#define CLAP_VERSION ((clap_version){CLAP_VERSION_MAJOR, CLAP_VERSION_MINOR, CLAP_VERSION_REVISION})
 
 // For version 0, we require the same minor version because
 // we may still break the ABI at this point
