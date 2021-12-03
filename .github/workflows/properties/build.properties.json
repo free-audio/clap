@@ -1,0 +1,6 @@
+{
+  "name": "clap",
+  "description": "Build C/C++ code with CMake and Ninja.",
+  "iconName": "cmake",
+  "categories": ["CMake", "cpp", "cplusplus", "Ninja"]
+}
