@@ -31,4 +31,4 @@ typedef struct clap_version {
 // For version 0, we require the same minor version because
 // we may still break the ABI at this point
 #define clap_version_is_compatible(Version)                                                        \
-   ((Version).major == CLAP_VERSION_MAJOR == 0 && (Version).minor == CLAP_VERSION_MINOR)
+   ((Version).major == CLAP_VERSION_MAJOR && (Version).minor == CLAP_VERSION_MINOR)
