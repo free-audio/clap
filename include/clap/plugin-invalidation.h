@@ -28,15 +28,16 @@ typedef struct clap_plugin_invalidation_source {
 // This interfaces solves this issue and gives a way to the host to monitor additional files.
 struct clap_plugin_invalidation_factory {
    // Get the number of invalidation source.
-   uint32_t (*count)(void);
+   uint32_t (*count)(const struct clap_plugin_invalidation_factory *factory);
 
    // Get the invalidation source by its index.
    // [thread-safe]
-   const clap_plugin_invalidation_source *(*get)(uint32_t index);
+   const clap_plugin_invalidation_source *(*get)(const struct clap_plugin_invalidation_factory *factory, uint32_t index);
 
    // In case the host detected a invalidation event, it can call refresh() to let the
    // plugin_entry scan the set of plugins available.
-   void (*refresh)(void);
+   // If the function returned false, then the plugin needs to be reloaded.
+   bool (*refresh)(const struct clap_plugin_invalidation_factory *factory);
 };
 
 #ifdef __cplusplus
