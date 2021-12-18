@@ -3,29 +3,22 @@
 #include "../../clap.h"
 #include "../../stream.h"
 
-static CLAP_CONSTEXPR const char CLAP_EXT_VST2_CONVERT[] = "clap.vst2-convert.draft/0";
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef struct clap_plugin_vst2_convert {
-   // Copies the name and VST2 plugin id that we can convert from.
-   // Returns the lenght of the name.
-   // [thread-safe]
-   int32_t (*get_vst2_plugin_id)(const clap_plugin *plugin,
-                                 uint32_t *         vst2_plugin_id,
-                                 char *             name,
-                                 uint32_t           name_size);
+typedef struct clap_vst2_converter {
+   uint32_t vst2_plugin_id;
+   const char *vst2_plugin_name;
+   const char *clap_plugin_id;
 
-   // Loads the plugin state from stream using the VST2 chunk.
    // [main-thread]
-   bool (*restore_vst2_state)(const clap_plugin *plugin, clap_istream *stream);
+   bool (*convert_state)(const struct *clap_vst2_converter *converter, const clap_istream *vst2, const clap_ostream *clap);
 
    // converts the vst2 param id and normalized value to clap param id and
    // plain value.
    // [thread-safe]
-   bool (*convert_normalized_value)(const clap_plugin *plugin,
+   bool (*convert_normalized_value)(const struct *clap_vst2_converter *converter,
                                     uint32_t           vst2_param_id,
                                     double             vst2_normalized_value,
                                     clap_id *          clap_param_id,
@@ -34,12 +27,20 @@ typedef struct clap_plugin_vst2_convert {
    // converts the vst2 param id and plain value to clap param id and
    // plain value.
    // [thread-safe]
-   bool (*convert_plain_value)(const clap_plugin *plugin,
+   bool (*convert_plain_value)(const struct *clap_vst2_converter *converter,
                                uint32_t           vst2_param_id,
                                double             vst2_plain_value,
                                clap_id *          clap_param_id,
                                double *           clap_plain_value);
-} clap_plugin_vst2_convert;
+} clap_vst2_converter;
+
+static CLAP_CONSTEXPR const char CLAP_VST2_CONVERTER_FACTORY_ID[] = "clap.vst2-converter";
+
+typedef struct clap_vst2_converter_factory
+{
+   uint32_t (*count)(const struct clap_vst2_converter_factory *factory);
+   const clap_vst2_converter *(*get)(const struct clap_vst2_converter_factory *factory, uint32_t index);
+} clap_vst2_converter_factory;
 
 #ifdef __cplusplus
 }

@@ -101,68 +101,6 @@ typedef struct clap_plugin {
    void (*on_main_thread)(const struct clap_plugin *plugin);
 } clap_plugin;
 
-/////////////////
-// ENTRY POINT //
-/////////////////
-
-typedef struct clap_plugin_invalidation_source {
-   // Directory containing the file(s) to scan
-   const char *directory;
-
-   // globing pattern, in the form *.dll
-   const char *filename_glob;
-
-   // should the directory be scanned recursively?
-   bool recursive_scan;
-} clap_plugin_invalidation_source;
-
-// This interface is the entry point of the dynamic library.
-//
-// There is an invalidation mechanism for the set of plugins which is based on files.
-// The host can watch the plugin DSO's mtime and a set of files's mtime provided by
-// get_clap_invalidation_source().
-//
-// The set of plugins must not change, except during a call to refresh() by the host.
-//
-// Every methods must be thread-safe.
-struct clap_plugin_entry {
-   clap_version clap_version; // initialized to CLAP_VERSION
-
-   bool (*init)(const char *plugin_path);
-   void (*deinit)(void);
-
-   /* Get the number of plugins available.
-    * [thread-safe] */
-   uint32_t (*get_plugin_count)(void);
-
-   /* Retrieves a plugin descriptor by its index.
-    * Returns null in case of error.
-    * The descriptor does not need to be freed.
-    * [thread-safe] */
-   const clap_plugin_descriptor *(*get_plugin_descriptor)(uint32_t index);
-
-   /* Create a clap_plugin by its plugin_id.
-    * The returned pointer must be freed by calling plugin->destroy(plugin);
-    * The plugin is not allowed to use the host callbacks in the create method.
-    * Returns null in case of error.
-    * [thread-safe] */
-   const clap_plugin *(*create_plugin)(const clap_host *host, const char *plugin_id);
-
-   // Get the number of invalidation source.
-   uint32_t (*get_invalidation_source_count)(void);
-
-   // Get the invalidation source by its index.
-   // [thread-safe]
-   const clap_plugin_invalidation_source *(*get_invalidation_source)(uint32_t index);
-
-   // In case the host detected a invalidation event, it can call refresh() to let the
-   // plugin_entry scan the set of plugins available.
-   void (*refresh)(void);
-};
-
-/* Entry point */
-CLAP_EXPORT extern const struct clap_plugin_entry clap_plugin_entry;
-
 #ifdef __cplusplus
 }
 #endif

@@ -23,7 +23,7 @@ typedef struct clap_version {
 #endif
 
 #define CLAP_VERSION_MAJOR 0
-#define CLAP_VERSION_MINOR 15
+#define CLAP_VERSION_MINOR 16
 #define CLAP_VERSION_REVISION 0
 
 #define CLAP_VERSION ((clap_version){CLAP_VERSION_MAJOR, CLAP_VERSION_MINOR, CLAP_VERSION_REVISION})

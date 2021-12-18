@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../clap.h"
+#include "../clap.h"
 
 /// @page
 ///
@@ -38,7 +38,7 @@
 /// If the host knows that it is running under hard real-time pressure it may decide to not
 /// provide this interface.
 
-static CLAP_CONSTEXPR const char CLAP_EXT_THREAD_POOL[] = "clap.thread-pool.draft/0";
+static CLAP_CONSTEXPR const char CLAP_EXT_THREAD_POOL[] = "clap.thread-pool";
 
 #ifdef __cplusplus
 extern "C" {
