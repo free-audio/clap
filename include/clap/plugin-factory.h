@@ -2,20 +2,12 @@
 
 #include "plugin.h"
 
+static const CLAP_CONSTEXPR char CLAP_PLUGIN_FACTORY_ID[] = "clap.plugin-factory";
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define CLAP_PLUGIN_FACTORY_ID "clap.plugin-factory"
-
-// This interface is the entry point of the dynamic library.
-//
-// There is an invalidation mechanism for the set of plugins which is based on files.
-// The host can watch the plugin DSO's mtime and a set of files's mtime provided by
-// get_clap_invalidation_source().
-//
-// The set of plugins must not change, except during a call to refresh() by the host.
-//
 // Every methods must be thread-safe.
 struct clap_plugin_factory {
    /* Get the number of plugins available.

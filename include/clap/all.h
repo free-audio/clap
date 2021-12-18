@@ -2,6 +2,10 @@
 
 #include "clap.h"
 
+#include "entry.h"
+#include "plugin-factory.h"
+#include "plugin-invalidation.h"
+
 #include "ext/audio-ports.h"
 #include "ext/audio-ports-config.h"
 #include "ext/gui.h"

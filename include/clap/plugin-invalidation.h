@@ -1,10 +1,15 @@
 #pragma once
 
+#include <stdbool.h>
+#include <stdint.h>
+
+#include "macros.h"
+
+static const CLAP_CONSTEXPR char CLAP_PLUGIN_INVALIDATION_ID[] = "clap.plugin-invalidation";
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#define CLAP_PLUGIN_INVALIDATION_ID "clap.plugin-invalidation"
 
 typedef struct clap_plugin_invalidation_source {
    // Directory containing the file(s) to scan
@@ -19,8 +24,9 @@ typedef struct clap_plugin_invalidation_source {
 
 // Used to figure out when a plugin needs to be scanned again.
 // Imagine a situation with a single entry point: my-plugin.clap which then scans itself
-// a set of "sub-plugins",
-struct clap_plugin_invalidation {
+// a set of "sub-plugins". New plugin may be available even if my-plugin.clap file doesn't change.
+// This interfaces solves this issue and gives a way to the host to monitor additional files.
+struct clap_plugin_invalidation_factory {
    // Get the number of invalidation source.
    uint32_t (*count)(void);
 
