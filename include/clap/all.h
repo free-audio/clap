@@ -27,8 +27,6 @@
 #include "ext/draft/track-info.h"
 #include "ext/draft/tuning.h"
 #include "ext/draft/file-reference.h"
-#include "ext/draft/vst2-convert.h"
-#include "ext/draft/vst3-convert.h"
 #include "ext/draft/midi-mappings.h"
 
 #include "converters/vst2-converter.h"
