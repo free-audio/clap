@@ -30,7 +30,7 @@ enum {
 typedef int32_t clap_plugin_type;
 
 typedef struct clap_plugin_descriptor {
-   clap_version clap_version; // initialized to CLAP_VERSION
+   clap_version_t clap_version; // initialized to CLAP_VERSION
 
    const char *id;          // eg: "com.u-he.diva"
    const char *name;        // eg: "Diva"

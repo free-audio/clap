@@ -11,7 +11,7 @@ extern "C" {
 //
 // Every methods must be thread-safe.
 typedef struct clap_plugin_entry {
-   clap_version clap_version; // initialized to CLAP_VERSION
+   clap_version_t clap_version; // initialized to CLAP_VERSION
 
    // Must be called fist
    bool (*init)(const char *plugin_path);

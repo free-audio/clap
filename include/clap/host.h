@@ -7,7 +7,7 @@ extern "C" {
 #endif
 
 typedef struct clap_host {
-   clap_version clap_version; // initialized to CLAP_VERSION
+   clap_version_t clap_version; // initialized to CLAP_VERSION
 
    void *host_data; // reserved pointer for the host
 

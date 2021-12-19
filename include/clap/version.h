@@ -16,17 +16,23 @@ typedef struct clap_version {
    uint32_t major;
    uint32_t minor;
    uint32_t revision;
-} clap_version;
+} clap_version_t;
 
 #ifdef __cplusplus
 }
 #endif
 
-#define CLAP_VERSION_MAJOR 0
-#define CLAP_VERSION_MINOR 16
-#define CLAP_VERSION_REVISION 0
+#define CLAP_VERSION_MAJOR ((uint32_t)0)
+#define CLAP_VERSION_MINOR ((uint32_t)16)
+#define CLAP_VERSION_REVISION ((uint32_t)0)
 
-#define CLAP_VERSION ((clap_version){CLAP_VERSION_MAJOR, CLAP_VERSION_MINOR, CLAP_VERSION_REVISION})
+#ifdef __cplusplus
+#   define CLAP_VERSION                                                                            \
+      (clap_version_t{CLAP_VERSION_MAJOR, CLAP_VERSION_MINOR, CLAP_VERSION_REVISION})
+#else
+#   define CLAP_VERSION                                                                            \
+      ((clap_version_t){CLAP_VERSION_MAJOR, CLAP_VERSION_MINOR, CLAP_VERSION_REVISION})
+#endif
 
 // For version 0, we require the same minor version because
 // we may still break the ABI at this point
