@@ -13,7 +13,8 @@ extern "C" {
 typedef struct clap_plugin_entry {
    clap_version_t clap_version; // initialized to CLAP_VERSION
 
-   // Must be called fist, this function should be lightweight.
+   // Must be called fist, this function should be lightweight, in order to perform very quick scan
+   // of the plugin descriptors
    bool (*init)(const char *plugin_path);
 
    // No more calls into the DSO must be made after calling deinit().
