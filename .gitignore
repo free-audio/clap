@@ -53,7 +53,7 @@ compile_commands.json
 .idea
 
 # CMake common patterns
-build/
+build*/
 cmake-build*/
 
 # A place to store stuff and get it git ignored
