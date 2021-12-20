@@ -23,10 +23,10 @@ typedef struct clap_plugin_entry {
    // Get the pointer to a factory.
    // See plugin-factory.h, vst2-converter.h ...
    const void *(*get_factory)(const char *factory_id);
-} clap_plugin_entry;
+} clap_plugin_entry_t;
 
 /* Entry point */
-CLAP_EXPORT extern const clap_plugin_entry clap_entry;
+CLAP_EXPORT extern const clap_plugin_entry_t clap_entry;
 
 #ifdef __cplusplus
 }

@@ -13,7 +13,7 @@ typedef struct clap_audio_buffer {
    uint32_t channel_count;
    uint32_t latency;       // latency from/to the audio interface
    uint64_t constant_mask; // mask & (1 << N) to test if channel N is constant
-} clap_audio_buffer;
+} clap_audio_buffer_t;
 
 #ifdef __cplusplus
 }

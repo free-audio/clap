@@ -11,8 +11,8 @@ extern "C" {
 typedef struct clap_plugin_preset_load {
    // Loads a preset in the plugin native preset file format from a path.
    // [main-thread]
-   bool (*from_file)(const clap_plugin *plugin, const char *path);
-} clap_plugin_preset_load;
+   bool (*from_file)(const clap_plugin_t *plugin, const char *path);
+} clap_plugin_preset_load_t;
 
 #ifdef __cplusplus
 }

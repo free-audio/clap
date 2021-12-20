@@ -18,14 +18,17 @@ struct clap_plugin_factory {
     * Returns null in case of error.
     * The descriptor does not need to be freed.
     * [thread-safe] */
-   const clap_plugin_descriptor *(*get_plugin_descriptor)(const struct clap_plugin_factory *factory, uint32_t index);
+   const clap_plugin_descriptor_t *(*get_plugin_descriptor)(
+      const struct clap_plugin_factory *factory, uint32_t index);
 
    /* Create a clap_plugin by its plugin_id.
     * The returned pointer must be freed by calling plugin->destroy(plugin);
     * The plugin is not allowed to use the host callbacks in the create method.
     * Returns null in case of error.
     * [thread-safe] */
-   const clap_plugin *(*create_plugin)(const struct clap_plugin_factory *factory, const clap_host *host, const char *plugin_id);
+   const clap_plugin_t *(*create_plugin)(const struct clap_plugin_factory *factory,
+                                         const clap_host_t                *host,
+                                         const char                       *plugin_id);
 };
 
 #ifdef __cplusplus

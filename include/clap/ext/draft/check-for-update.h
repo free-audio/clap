@@ -14,17 +14,17 @@ typedef struct clap_check_for_update_info {
    const char *url;
 
    bool is_stable;
-} clap_check_for_update_info;
+} clap_check_for_update_info_t;
 
 typedef struct clap_plugin_check_for_update {
    // [main-thread]
-   void (*check)(const clap_host *host, bool include_beta);
+   void (*check)(const clap_host_t *host, bool include_beta);
 } clap_plugin_check_for_update;
 
 typedef struct clap_host_check_for_update {
    // [main-thread]
-   void (*on_new_version)(const clap_host *host, const clap_check_for_update_info *update_info);
-} clap_host_check_for_update;
+   void (*on_new_version)(const clap_host_t *host, const clap_check_for_update_info_t *update_info);
+} clap_host_check_for_update_t;
 
 #ifdef __cplusplus
 }

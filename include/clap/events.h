@@ -36,7 +36,7 @@ typedef struct clap_event_note {
    int32_t key;      // 0..127
    int32_t channel;  // 0..15
    double  velocity; // 0..1
-} clap_event_note;
+} clap_event_note_t;
 
 enum {
    // x >= 0, use 20 * log(4 * x)
@@ -68,7 +68,7 @@ typedef struct clap_event_note_expression {
    int32_t channel;
 
    double value; // see expression for the range
-} clap_event_note_expression;
+} clap_event_note_expression_t;
 
 enum {
    // live user adjustment begun
@@ -95,7 +95,7 @@ typedef struct clap_event_param_value {
    clap_event_param_flags flags;
 
    double value;
-} clap_event_param_value;
+} clap_event_param_value_t;
 
 typedef struct clap_event_param_mod {
    // target parameter
@@ -108,7 +108,7 @@ typedef struct clap_event_param_mod {
    int32_t channel;
 
    double amount; // modulation amount
-} clap_event_param_mod;
+} clap_event_param_mod_t;
 
 enum {
    CLAP_TRANSPORT_HAS_TEMPO = 1 << 0,
@@ -142,7 +142,7 @@ typedef struct clap_event_transport {
 
    int16_t tsig_num;   // time signature numerator
    int16_t tsig_denom; // time signature denominator
-} clap_event_transport;
+} clap_event_transport_t;
 
 typedef struct clap_event_note_mask {
    int32_t port_index;
@@ -156,34 +156,34 @@ typedef struct clap_event_note_mask {
    // 010 1011 0101 -> locrian scale
    uint16_t note_mask;
    uint8_t  root_note; // 0..11, 0 for C
-} clap_event_note_mask;
+} clap_event_note_mask_t;
 
 typedef struct clap_event_midi {
    int32_t port_index;
    uint8_t data[3];
-} clap_event_midi;
+} clap_event_midi_t;
 
 typedef struct clap_event_midi_sysex {
    int32_t        port_index;
    const uint8_t *buffer; // midi buffer
    uint32_t       size;
-} clap_event_midi_sysex;
+} clap_event_midi_sysex_t;
 
 typedef struct clap_event {
    clap_event_type type;
    uint32_t        time; // offset from the first sample in the process block
 
    union {
-      clap_event_note            note;
-      clap_event_note_expression note_expression;
-      clap_event_param_value     param_value;
-      clap_event_param_mod       param_mod;
-      clap_event_transport       time_info;
-      clap_event_note_mask       note_mask;
-      clap_event_midi            midi;
-      clap_event_midi_sysex      midi_sysex;
+      clap_event_note_t            note;
+      clap_event_note_expression_t note_expression;
+      clap_event_param_value_t     param_value;
+      clap_event_param_mod_t       param_mod;
+      clap_event_transport_t       time_info;
+      clap_event_note_mask_t       note_mask;
+      clap_event_midi_t            midi;
+      clap_event_midi_sysex_t      midi_sysex;
    };
-} clap_event;
+} clap_event_t;
 
 typedef struct clap_event_list {
    void *ctx; // reserved pointer for the list
@@ -191,11 +191,11 @@ typedef struct clap_event_list {
    uint32_t (*size)(const struct clap_event_list *list);
 
    // Don't free the return event, it belongs to the list
-   const clap_event *(*get)(const struct clap_event_list *list, uint32_t index);
+   const clap_event_t *(*get)(const struct clap_event_list *list, uint32_t index);
 
    // Makes a copy of the event
-   void (*push_back)(const struct clap_event_list *list, const clap_event *event);
-} clap_event_list;
+   void (*push_back)(const struct clap_event_list *list, const clap_event_t *event);
+} clap_event_list_t;
 
 #ifdef __cplusplus
 }

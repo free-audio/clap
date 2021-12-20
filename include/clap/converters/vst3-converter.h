@@ -14,8 +14,8 @@ typedef struct clap_vst3_converter {
 
    // [main-thread]
    bool (*convert_state)(const struct clap_vst3_converter *converter,
-                         const clap_istream               *vst3,
-                         const clap_ostream               *clap);
+                         const clap_istream_t             *vst3,
+                         const clap_ostream_t             *clap);
 
    // converts the vst3 param id and normalized value to clap param id and
    // plain value.
@@ -34,7 +34,7 @@ typedef struct clap_vst3_converter {
                                double                            vst3_plain_value,
                                clap_id                          *clap_param_id,
                                double                           *clap_plain_value);
-} clap_vst3_converter;
+} clap_vst3_converter_t;
 
 // Factory identifier
 static CLAP_CONSTEXPR const char CLAP_VST3_CONVERTER_FACTORY_ID[] = "clap.vst3-converter";
@@ -45,9 +45,9 @@ typedef struct clap_vst3_converter_factory {
    uint32_t (*count)(const struct clap_vst3_converter_factory *factory);
 
    // Get the converter at the given index
-   const clap_vst3_converter *(*get)(const struct clap_vst3_converter_factory *factory,
-                                     uint32_t                                  index);
-} clap_vst3_converter_factory;
+   const clap_vst3_converter_t *(*get)(const struct clap_vst3_converter_factory *factory,
+                                       uint32_t                                  index);
+} clap_vst3_converter_factory_t;
 
 #ifdef __cplusplus
 }

@@ -13,8 +13,8 @@ typedef void *clap_hwnd;
 
 typedef struct clap_plugin_gui_win32 {
    // [main-thread]
-   bool (*attach)(const clap_plugin *plugin, clap_hwnd window);
-} clap_plugin_gui_win32;
+   bool (*attach)(const clap_plugin_t *plugin, clap_hwnd window);
+} clap_plugin_gui_win32_t;
 
 #ifdef __cplusplus
 }

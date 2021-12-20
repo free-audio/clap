@@ -20,25 +20,26 @@ typedef struct clap_plugin_invalidation_source {
 
    // should the directory be scanned recursively?
    bool recursive_scan;
-} clap_plugin_invalidation_source;
+} clap_plugin_invalidation_source_t;
 
 // Used to figure out when a plugin needs to be scanned again.
 // Imagine a situation with a single entry point: my-plugin.clap which then scans itself
 // a set of "sub-plugins". New plugin may be available even if my-plugin.clap file doesn't change.
 // This interfaces solves this issue and gives a way to the host to monitor additional files.
-struct clap_plugin_invalidation_factory {
+typedef struct clap_plugin_invalidation_factory {
    // Get the number of invalidation source.
    uint32_t (*count)(const struct clap_plugin_invalidation_factory *factory);
 
    // Get the invalidation source by its index.
    // [thread-safe]
-   const clap_plugin_invalidation_source *(*get)(const struct clap_plugin_invalidation_factory *factory, uint32_t index);
+   const clap_plugin_invalidation_source_t *(*get)(
+      const struct clap_plugin_invalidation_factory *factory, uint32_t index);
 
    // In case the host detected a invalidation event, it can call refresh() to let the
    // plugin_entry scan the set of plugins available.
    // If the function returned false, then the plugin needs to be reloaded.
    bool (*refresh)(const struct clap_plugin_invalidation_factory *factory);
-};
+} clap_plugin_invalidation_factory_t;
 
 #ifdef __cplusplus
 }

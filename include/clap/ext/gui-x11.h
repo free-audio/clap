@@ -10,11 +10,10 @@ extern "C" {
 
 typedef struct clap_plugin_gui_x11 {
    // Use the protocol XEmbed
+   // https://specifications.freedesktop.org/xembed-spec/xembed-spec-latest.html
    // [main-thread]
-   bool (*attach)(const clap_plugin * plugin,
-                  const char *  display_name,
-                  unsigned long window);
-} clap_plugin_gui_x11;
+   bool (*attach)(const clap_plugin_t *plugin, const char *display_name, unsigned long window);
+} clap_plugin_gui_x11_t;
 
 #ifdef __cplusplus
 }

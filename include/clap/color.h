@@ -11,7 +11,7 @@ typedef struct clap_color {
    uint8_t green;
    uint8_t blue;
    uint8_t alpha;
-} clap_color;
+} clap_color_t;
 
 #ifdef __cplusplus
 }

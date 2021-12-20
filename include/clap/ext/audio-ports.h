@@ -31,21 +31,21 @@ typedef struct clap_audio_port_info {
    bool in_place; // if true the daw can use the same buffer for input
                   // and output, only for main input to main output
 
-} clap_audio_port_info;
+} clap_audio_port_info_t;
 
 // The audio ports scan has to be done while the plugin is deactivated.
 typedef struct clap_plugin_audio_ports {
    // number of ports, for either input or output
    // [main-thread]
-   uint32_t (*count)(const clap_plugin *plugin, bool is_input);
+   uint32_t (*count)(const clap_plugin_t *plugin, bool is_input);
 
    // get info about about an audio port.
    // [main-thread]
-   bool (*get)(const clap_plugin    *plugin,
-               uint32_t              index,
-               bool                  is_input,
-               clap_audio_port_info *info);
-} clap_plugin_audio_ports;
+   bool (*get)(const clap_plugin_t    *plugin,
+               uint32_t                index,
+               bool                    is_input,
+               clap_audio_port_info_t *info);
+} clap_plugin_audio_ports_t;
 
 enum {
    // The ports have changed, the host shall perform a full scan of the ports.
@@ -60,12 +60,12 @@ enum {
 
 typedef struct clap_host_audio_ports {
    // [main-thread]
-   uint32_t (*get_preferred_sample_size)(const clap_host *host);
+   uint32_t (*get_preferred_sample_size)(const clap_host_t *host);
 
    // Rescan the full list of audio ports according to the flags.
    // [main-thread]
-   void (*rescan)(const clap_host *host, uint32_t flags);
-} clap_host_audio_ports;
+   void (*rescan)(const clap_host_t *host, uint32_t flags);
+} clap_host_audio_ports_t;
 
 #ifdef __cplusplus
 }

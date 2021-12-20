@@ -14,12 +14,12 @@ extern "C" {
 typedef struct clap_host_thread_check {
    // Returns true if "this" thread is the main thread.
    // [thread-safe]
-   bool (*is_main_thread)(const clap_host *host);
+   bool (*is_main_thread)(const clap_host_t *host);
 
    // Returns true if "this" thread is one of the audio threads.
    // [thread-safe]
-   bool (*is_audio_thread)(const clap_host *host);
-} clap_host_thread_check;
+   bool (*is_audio_thread)(const clap_host_t *host);
+} clap_host_thread_check_t;
 
 #ifdef __cplusplus
 }

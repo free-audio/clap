@@ -150,31 +150,31 @@ typedef struct clap_param_info {
    double min_value;     // minimum plain value
    double max_value;     // maximum plain value
    double default_value; // default plain value
-} clap_param_info;
+} clap_param_info_t;
 
 typedef struct clap_plugin_params {
    // Returns the number of parameters.
    // [main-thread]
-   uint32_t (*count)(const clap_plugin *plugin);
+   uint32_t (*count)(const clap_plugin_t *plugin);
 
    // Copies the parameter's info to param_info and returns true on success.
    // [main-thread]
-   bool (*get_info)(const clap_plugin *plugin, int32_t param_index, clap_param_info *param_info);
+   bool (*get_info)(const clap_plugin_t *plugin, int32_t param_index, clap_param_info_t *param_info);
 
    // Gets the parameter plain value.
    // [main-thread]
-   bool (*get_value)(const clap_plugin *plugin, clap_id param_id, double *value);
+   bool (*get_value)(const clap_plugin_t *plugin, clap_id param_id, double *value);
 
    // Formats the display text for the given parameter value.
    // The host should always format the parameter value to text using this function
    // before displaying it to the user.
    // [main-thread]
    bool (*value_to_text)(
-      const clap_plugin *plugin, clap_id param_id, double value, char *display, uint32_t size);
+      const clap_plugin_t *plugin, clap_id param_id, double value, char *display, uint32_t size);
 
    // Converts the display text to a parameter value.
    // [main-thread]
-   bool (*text_to_value)(const clap_plugin *plugin,
+   bool (*text_to_value)(const clap_plugin_t *plugin,
                          clap_id            param_id,
                          const char *       display,
                          double *           value);
@@ -185,10 +185,10 @@ typedef struct clap_plugin_params {
    //
    // [active && !processing : audio-thread]
    // [!active : main-thread]
-   void (*flush)(const clap_plugin *    plugin,
-                 const clap_event_list *input_parameter_changes,
-                 const clap_event_list *output_parameter_changes);
-} clap_plugin_params;
+   void (*flush)(const clap_plugin_t *    plugin,
+                 const clap_event_list_t *input_parameter_changes,
+                 const clap_event_list_t *output_parameter_changes);
+} clap_plugin_params_t;
 
 enum {
    // The parameter values did change, eg. after loading a preset.
@@ -244,11 +244,11 @@ typedef uint32_t clap_param_clear_flags;
 typedef struct clap_host_params {
    // Rescan the full list of parameters according to the flags.
    // [main-thread]
-   void (*rescan)(const clap_host *host, clap_param_rescan_flags flags);
+   void (*rescan)(const clap_host_t *host, clap_param_rescan_flags flags);
 
    // Clears references to a parameter
    // [main-thread]
-   void (*clear)(const clap_host *host, clap_id param_id, clap_param_clear_flags flags);
+   void (*clear)(const clap_host_t *host, clap_id param_id, clap_param_clear_flags flags);
 
    // Request the host to call clap_plugin_params->fush().
    // This is useful if the plugin has parameters value changes to report to the host but the plugin
@@ -260,8 +260,8 @@ typedef struct clap_host_params {
    // This must not be called on the [audio-thread].
    //
    // [thread-safe]
-   void (*request_flush)(const clap_host *host);
-} clap_host_params;
+   void (*request_flush)(const clap_host_t *host);
+} clap_host_params_t;
 
 #ifdef __cplusplus
 }

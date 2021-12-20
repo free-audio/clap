@@ -25,7 +25,7 @@ typedef struct clap_clap_converter {
                                double                            src_plain_value,
                                clap_id                          *dst_param_id,
                                double                           *dst_plain_value);
-} clap_clap_converter;
+} clap_clap_converter_t;
 
 // Factory identifier
 static CLAP_CONSTEXPR const char CLAP_CLAP_CONVERTER_FACTORY_ID[] = "clap.clap-converter";
@@ -36,9 +36,9 @@ typedef struct clap_clap_converter_factory {
    uint32_t (*count)(const struct clap_clap_converter_factory *factory);
 
    // Get the converter at the given index
-   const clap_clap_converter *(*get)(const struct clap_clap_converter_factory *factory,
-                                     uint32_t                                  index);
-} clap_clap_converter_factory;
+   const clap_clap_converter_t *(*get)(const struct clap_clap_converter_factory *factory,
+                                       uint32_t                                  index);
+} clap_clap_converter_factory_t;
 
 #ifdef __cplusplus
 }

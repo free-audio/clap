@@ -31,19 +31,19 @@ typedef struct clap_plugin_fd_support {
    // done writting.
    //
    // [main-thread]
-   void (*on_fd)(const clap_plugin *plugin, clap_fd fd, clap_fd_flags flags);
-} clap_plugin_fd_support;
+   void (*on_fd)(const clap_plugin_t *plugin, clap_fd fd, clap_fd_flags flags);
+} clap_plugin_fd_support_t;
 
 typedef struct clap_host_fd_support {
    // [main-thread]
-   bool (*register_fd)(const clap_host *host, clap_fd fd, clap_fd_flags flags);
+   bool (*register_fd)(const clap_host_t *host, clap_fd fd, clap_fd_flags flags);
 
    // [main-thread]
-   bool (*modify_fd)(const clap_host *host, clap_fd fd, clap_fd_flags flags);
+   bool (*modify_fd)(const clap_host_t *host, clap_fd fd, clap_fd_flags flags);
 
    // [main-thread]
-   bool (*unregister_fd)(const clap_host *host, clap_fd fd);
-} clap_host_fd_support;
+   bool (*unregister_fd)(const clap_host_t *host, clap_fd fd);
+} clap_host_fd_support_t;
 
 #ifdef __cplusplus
 }

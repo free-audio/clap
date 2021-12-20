@@ -34,7 +34,7 @@ typedef struct clap_host {
    // Request the host to schedule a call to plugin->on_main_thread(plugin) on the main thread.
    // [thread-safe]
    void (*request_callback)(const struct clap_host *host);
-} clap_host;
+} clap_host_t;
 
 #ifdef __cplusplus
 }

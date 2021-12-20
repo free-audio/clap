@@ -53,10 +53,10 @@ typedef struct clap_plugin_descriptor {
    const char *keywords;
 
    uint64_t plugin_type; // bitfield of clap_plugin_type
-} clap_plugin_descriptor;
+} clap_plugin_descriptor_t;
 
 typedef struct clap_plugin {
-   const clap_plugin_descriptor *desc;
+   const clap_plugin_descriptor_t *desc;
 
    void *plugin_data; // reserved pointer for the plugin
 
@@ -88,7 +88,7 @@ typedef struct clap_plugin {
 
    /* process audio, events, ...
     * [audio-thread] */
-   clap_process_status (*process)(const struct clap_plugin *plugin, const clap_process *process);
+   clap_process_status (*process)(const struct clap_plugin *plugin, const clap_process_t *process);
 
    /* Query an extension.
     * The returned pointer is owned by the plugin.
@@ -99,7 +99,7 @@ typedef struct clap_plugin {
    //   host->request_callback(host);
    // [main-thread]
    void (*on_main_thread)(const struct clap_plugin *plugin);
-} clap_plugin;
+} clap_plugin_t;
 
 #ifdef __cplusplus
 }

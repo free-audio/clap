@@ -15,16 +15,16 @@ extern "C" {
 typedef struct clap_plugin_event_filter {
    // Returns true if the plugin is interested in the given event type.
    // [main-thread]
-   bool (*accepts)(const clap_plugin *plugin, clap_event_type event_type);
-} clap_plugin_event_filter;
+   bool (*accepts)(const clap_plugin_t *plugin, clap_event_type event_type);
+} clap_plugin_event_filter_t;
 
 
 typedef struct clap_host_event_filter {
    // Informs the host that the set of accepted event type changed.
    // This requires the plugin to be deactivated.
    // [main-thread]
-   void (*changed)(const clap_host *host);
-} clap_host_event_filter;
+   void (*changed)(const clap_host_t *host);
+} clap_host_event_filter_t;
 
 #ifdef __cplusplus
 }
