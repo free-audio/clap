@@ -9,6 +9,7 @@ extern "C" {
 #endif
 
 // Every methods must be thread-safe.
+// It is very important to be able to scan the plugin as quickly as possible.
 struct clap_plugin_factory {
    /* Get the number of plugins available.
     * [thread-safe] */
@@ -16,7 +17,7 @@ struct clap_plugin_factory {
 
    /* Retrieves a plugin descriptor by its index.
     * Returns null in case of error.
-    * The descriptor does not need to be freed.
+    * The descriptor must not be freed.
     * [thread-safe] */
    const clap_plugin_descriptor_t *(*get_plugin_descriptor)(
       const struct clap_plugin_factory *factory, uint32_t index);
