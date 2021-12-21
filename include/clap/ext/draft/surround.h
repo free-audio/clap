@@ -2,7 +2,7 @@
 
 #include "../../plugin.h"
 
-static CLAP_CONSTEXPR const char CLAP_EXT_SURROUND[] = "clap.surround.draft/0";
+static CLAP_CONSTEXPR const char CLAP_EXT_SURROUND[] = "clap.surround.draft/1";
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,11 +32,14 @@ enum {
 };
 
 typedef struct clap_plugin_surround {
+   // Stores into the channel_map array, the surround identifer of each channels.
+   // Returns the number of elements stored in channel_map
    // [main-thread]
-   uint32_t (*get_channel_type)(const clap_plugin_t *plugin,
-                                bool                 is_input,
-                                uint32_t             port_index,
-                                uint32_t             channel_index);
+   uint32_t (*get_channel_map)(const clap_plugin_t *plugin,
+                               bool                 is_input,
+                               uint32_t             port_index,
+                               uint8_t             *channel_map,
+                               uint32_t             channel_map_capacity);
 } clap_plugin_surround_t;
 
 typedef struct clap_host_surround {
