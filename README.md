@@ -15,7 +15,7 @@
 
 # Learn about CLAP
 
-The starting point is [clap.h](include/clap/clap.h).
+To work with clap, include [clap/clap.h](include/clap/clap.h).
 
 The two most important objects are `clap_host` and `clap_plugin`.
 
@@ -59,7 +59,8 @@ This is a list of the extensions that you most likely want to implement
 and use to get a basic plugin experience:
 - [log](include/clap/ext/log.h), lets the host aggregate plugin logs
 - [thread-check](include/clap/ext/thread-check.h), check which thread you are currently on, useful for correctness validation
-- [audio-ports](include/clap/ext/audio-ports.h), define and configure the ports layout
+- [audio-ports](include/clap/ext/audio-ports.h), define the audio ports
+- [note-ports](include/clap/ext/note-ports.h), define the note ports
 - [params](include/clap/ext/params.h), parameters management
 - [latency](include/clap/ext/latency.h), report the plugin latency
 - [state](include/clap/ext/state.h), save and load the plugin state
@@ -70,6 +71,7 @@ and use to get a basic plugin experience:
 - [gui-win32](include/clap/ext/gui-win32.h), win32 specific
 - [gui-cocoa](include/clap/ext/gui-cocoa.h), cocoa specific
 - [gui-x11](include/clap/ext/gui-x11.h), x11 specific
+- [gui-free-standing](include/clap/ext/gui-free-standing.h), open the gui without embedding it into the host's window
 - [timer-support](include/clap/ext/timer-support.h), lets the plugin register timer handlers
 - [fd-support](include/clap/ext/fd-support.h), lets the plugin register I/O handlers
 
@@ -83,6 +85,8 @@ and use to get a basic plugin experience:
 - [quick-controls](include/clap/ext/draft/quick-controls.h), bank of controls that can be mapped on a controlles with 8 knobs
 - [file-reference](include/clap/ext/draft/file-reference.h), let the host know about the plugin's file reference, and perform "Collect & Save"
 - [check-for-update](include/clap/ext/draft/check-for-update.h), check if there is a new version of a plugin
+- [audio-ports-config](include/clap/ext/audio-ports-config.h), simple list of possible configurations
+- [surround](include/clap/ext/draft/surround.h), inspect the surround channel mapping
 
 ## Examples
 
