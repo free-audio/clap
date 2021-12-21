@@ -62,3 +62,4 @@
 
 #include "converters/vst2-converter.h"
 #include "converters/vst3-converter.h"
+#include "converters/clap-converter.h"
