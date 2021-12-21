@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "macros.h"
+#include "private/macros.h"
 
 static const CLAP_CONSTEXPR char CLAP_PLUGIN_INVALIDATION_ID[] = "clap.plugin-invalidation";
 

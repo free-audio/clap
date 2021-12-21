@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "macros.h"
+#include "private/macros.h"
 
 #ifdef __cplusplus
 extern "C" {

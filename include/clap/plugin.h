@@ -1,6 +1,6 @@
 #pragma once
 
-#include "macros.h"
+#include "private/macros.h"
 #include "host.h"
 #include "process.h"
 
