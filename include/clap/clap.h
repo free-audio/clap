@@ -58,6 +58,7 @@
 #include "ext/draft/tuning.h"
 #include "ext/draft/file-reference.h"
 #include "ext/draft/midi-mappings.h"
+#include "ext/draft/surround.h"
 
 #include "converters/vst2-converter.h"
 #include "converters/vst3-converter.h"
