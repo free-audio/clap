@@ -41,7 +41,7 @@ typedef struct clap_vst2_converter {
 } clap_vst2_converter_t;
 
 // Factory identifier
-static CLAP_CONSTEXPR const char CLAP_VST2_CONVERTER_FACTORY_ID[] = "clap.vst2-converter";
+static CLAP_CONSTEXPR const char CLAP_VST2_CONVERTER_FACTORY_ID[] = "clap.vst2-converter-factory";
 
 // List all the converters available in the current DSO.
 typedef struct clap_vst2_converter_factory {
