@@ -6,6 +6,8 @@
 #include "fixedpoint.h"
 #include "id.h"
 
+#include "private/align_push.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -60,14 +62,14 @@ enum {
 typedef int32_t clap_note_expression;
 
 typedef struct clap_event_note_expression {
-   clap_note_expression expression_id;
+   alignas(4) clap_note_expression expression_id;
 
    // target a specific port, key and channel, -1 for global
-   int32_t port_index;
-   int32_t key;
-   int32_t channel;
+   alignas(4) int32_t port_index;
+   alignas(4) int32_t key;
+   alignas(4) int32_t channel;
 
-   double value; // see expression for the range
+   alignas(8) double value; // see expression for the range
 } clap_event_note_expression_t;
 
 enum {
@@ -84,30 +86,30 @@ typedef int32_t clap_event_param_flags;
 
 typedef struct clap_event_param_value {
    // target parameter
-   void   *cookie;   // @ref clap_param_info.cookie
-   clap_id param_id; // @ref clap_param_info.id
+   void *cookie;                // @ref clap_param_info.cookie
+   alignas(4) clap_id param_id; // @ref clap_param_info.id
 
    // target a specific port, key and channel, -1 for global
-   int32_t port_index;
-   int32_t key;
-   int32_t channel;
+   alignas(4) int32_t port_index;
+   alignas(4) int32_t key;
+   alignas(4) int32_t channel;
 
-   clap_event_param_flags flags;
+   alignas(4) clap_event_param_flags flags;
 
-   double value;
+   alignas(8) double value;
 } clap_event_param_value_t;
 
 typedef struct clap_event_param_mod {
    // target parameter
-   void   *cookie;   // @ref clap_param_info.cookie
-   clap_id param_id; // @ref clap_param_info.id
+   void *cookie;                // @ref clap_param_info.cookie
+   alignas(4) clap_id param_id; // @ref clap_param_info.id
 
    // target a specific port, key and channel, -1 for global
-   int32_t port_index;
-   int32_t key;
-   int32_t channel;
+   alignas(4) int32_t port_index;
+   alignas(4) int32_t key;
+   alignas(4) int32_t channel;
 
-   double amount; // modulation amount
+   alignas(8) double amount; // modulation amount
 } clap_event_param_mod_t;
 
 enum {
@@ -123,29 +125,29 @@ enum {
 typedef uint32_t clap_transport_flags;
 
 typedef struct clap_event_transport {
-   clap_transport_flags flags;
+   alignas(4) clap_transport_flags flags;
 
-   clap_beattime song_pos_beats;   // position in beats
-   clap_sectime  song_pos_seconds; // position in seconds
+   alignas(8) clap_beattime song_pos_beats;  // position in beats
+   alignas(8) clap_sectime song_pos_seconds; // position in seconds
 
-   double tempo;     // in bpm
-   double tempo_inc; // tempo increment for each samples and until the next
-                     // time info event
+   alignas(8) double tempo;     // in bpm
+   alignas(8) double tempo_inc; // tempo increment for each samples and until the next
+                                // time info event
 
-   clap_beattime bar_start;  // start pos of the current bar
-   int32_t       bar_number; // bar at song pos 0 has the number 0
+   alignas(8) clap_beattime bar_start; // start pos of the current bar
+   alignas(4) int32_t bar_number;      // bar at song pos 0 has the number 0
 
-   clap_beattime loop_start_beats;
-   clap_beattime loop_end_beats;
-   clap_sectime  loop_start_seconds;
-   clap_sectime  loop_end_seconds;
+   alignas(8) clap_beattime loop_start_beats;
+   alignas(8) clap_beattime loop_end_beats;
+   alignas(8) clap_sectime loop_start_seconds;
+   alignas(8) clap_sectime loop_end_seconds;
 
-   int16_t tsig_num;   // time signature numerator
-   int16_t tsig_denom; // time signature denominator
+   alignas(2) int16_t tsig_num;   // time signature numerator
+   alignas(2) int16_t tsig_denom; // time signature denominator
 } clap_event_transport_t;
 
 typedef struct clap_event_note_mask {
-   int32_t port_index;
+   uint32_t port_index;
 
    // bitset of active keys:
    // - 11 bits
@@ -154,26 +156,26 @@ typedef struct clap_event_note_mask {
    // 000 0100 0100 -> minor chord
    // 000 0100 1000 -> major chord
    // 010 1011 0101 -> locrian scale
-   uint16_t note_mask;
-   uint8_t  root_note; // 0..11, 0 for C
+   alignas(2) uint16_t note_mask;
+   alignas(1) uint8_t root_note; // 0..11, 0 for C
 } clap_event_note_mask_t;
 
 typedef struct clap_event_midi {
-   int32_t port_index;
-   uint8_t data[3];
+   alignas(4) uint32_t port_index;
+   alignas(1) uint8_t data[3];
 } clap_event_midi_t;
 
 typedef struct clap_event_midi_sysex {
-   int32_t        port_index;
+   alignas(4) uint32_t port_index;
    const uint8_t *buffer; // midi buffer
-   uint32_t       size;
+   alignas(4) uint32_t size;
 } clap_event_midi_sysex_t;
 
 typedef struct clap_event {
-   clap_event_type type;
-   uint32_t        time; // offset from the first sample in the process block
+   alignas(4) clap_event_type type;
+   alignas(4) uint32_t        time; // offset from the first sample in the process block
 
-   union {
+   alignas(8) union {
       clap_event_note_t            note;
       clap_event_note_expression_t note_expression;
       clap_event_param_value_t     param_value;
@@ -200,3 +202,5 @@ typedef struct clap_event_list {
 #ifdef __cplusplus
 }
 #endif
+
+#include "private/align_pop.h"

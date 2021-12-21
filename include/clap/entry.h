@@ -3,6 +3,8 @@
 #include "version.h"
 #include "private/macros.h"
 
+#include "private/align_push.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -42,3 +44,5 @@ CLAP_EXPORT extern const clap_plugin_entry_t clap_entry;
 #ifdef __cplusplus
 }
 #endif
+
+#include "private/align_pop.h"
