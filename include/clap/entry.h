@@ -3,11 +3,13 @@
 #include "version.h"
 #include "private/macros.h"
 
-#include "private/align_push.h"
+#include "private/align.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#pragma pack(push, CLAP_PTR_ALIGN)
 
 // This interface is the entry point of the dynamic library.
 //
@@ -41,8 +43,8 @@ typedef struct clap_plugin_entry {
 /* Entry point */
 CLAP_EXPORT extern const clap_plugin_entry_t clap_entry;
 
+#pragma pack(pop)
+
 #ifdef __cplusplus
 }
 #endif
-
-#include "private/align_pop.h"

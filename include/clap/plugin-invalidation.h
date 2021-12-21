@@ -4,12 +4,15 @@
 #include <stdint.h>
 
 #include "private/macros.h"
+#include "private/align.h"
 
 static const CLAP_CONSTEXPR char CLAP_PLUGIN_INVALIDATION_ID[] = "clap.plugin-invalidation";
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#pragma pack(push)
 
 typedef struct clap_plugin_invalidation_source {
    // Directory containing the file(s) to scan
@@ -19,7 +22,7 @@ typedef struct clap_plugin_invalidation_source {
    const char *filename_glob;
 
    // should the directory be scanned recursively?
-   bool recursive_scan;
+   alignas(1) bool recursive_scan;
 } clap_plugin_invalidation_source_t;
 
 // Used to figure out when a plugin needs to be scanned again.
@@ -40,6 +43,8 @@ typedef struct clap_plugin_invalidation_factory {
    // If the function returned false, then the plugin needs to be reloaded.
    bool (*refresh)(const struct clap_plugin_invalidation_factory *factory);
 } clap_plugin_invalidation_factory_t;
+
+#pragma pack(pop)
 
 #ifdef __cplusplus
 }

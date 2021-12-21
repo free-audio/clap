@@ -5,12 +5,13 @@
 
 #include "fixedpoint.h"
 #include "id.h"
-
-#include "private/align_push.h"
+#include "private/align.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#pragma pack(push, CLAP_PTR_ALIGN)
 
 enum {
    CLAP_EVENT_NOTE_ON,    // press a key; note attribute
@@ -175,7 +176,7 @@ typedef struct clap_event {
    alignas(4) clap_event_type type;
    alignas(4) uint32_t        time; // offset from the first sample in the process block
 
-   alignas(8) union {
+   union {
       clap_event_note_t            note;
       clap_event_note_expression_t note_expression;
       clap_event_param_value_t     param_value;
@@ -199,8 +200,8 @@ typedef struct clap_event_list {
    void (*push_back)(const struct clap_event_list *list, const clap_event_t *event);
 } clap_event_list_t;
 
+#pragma pack(pop)
+
 #ifdef __cplusplus
 }
 #endif
-
-#include "private/align_pop.h"

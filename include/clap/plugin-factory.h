@@ -1,12 +1,15 @@
 #pragma once
 
 #include "plugin.h"
+#include "private/align.h"
 
 static const CLAP_CONSTEXPR char CLAP_PLUGIN_FACTORY_ID[] = "clap.plugin-factory";
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#pragma pack(push, CLAP_PTR_ALIGN)
 
 // Every methods must be thread-safe.
 // It is very important to be able to scan the plugin as quickly as possible.
@@ -31,6 +34,8 @@ struct clap_plugin_factory {
                                          const clap_host_t                *host,
                                          const char                       *plugin_id);
 };
+
+#pragma pack(pop)
 
 #ifdef __cplusplus
 }

@@ -4,9 +4,13 @@
 #include "host.h"
 #include "process.h"
 
+#include "private/align.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#pragma pack(push, CLAP_PTR_ALIGN)
 
 /* bitfield
  * This gives an hint to the host what the plugin might do. */
@@ -52,7 +56,7 @@ typedef struct clap_plugin_descriptor {
    // "chip;chiptune;gameboy;nintendo;sega"
    const char *keywords;
 
-   uint64_t plugin_type; // bitfield of clap_plugin_type
+   alignas(8) uint64_t plugin_type; // bitfield of clap_plugin_type
 } clap_plugin_descriptor_t;
 
 typedef struct clap_plugin {
@@ -100,6 +104,8 @@ typedef struct clap_plugin {
    // [main-thread]
    void (*on_main_thread)(const struct clap_plugin *plugin);
 } clap_plugin_t;
+
+#pragma pack(pop)
 
 #ifdef __cplusplus
 }

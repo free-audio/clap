@@ -3,9 +3,13 @@
 #include "events.h"
 #include "audio-buffer.h"
 
+#include "private/align.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#pragma pack(push, CLAP_PTR_ALIGN)
 
 enum {
    // Processing failed. The output buffer must be discarded.
@@ -24,8 +28,8 @@ enum {
 typedef int32_t clap_process_status;
 
 typedef struct clap_process {
-   uint64_t steady_time;  // a steady sample time counter, requiered
-   uint32_t frames_count; // number of frame to process
+   alignas(8) uint64_t steady_time;             // a steady sample time counter, requiered
+   alignas(4) uint32_t frames_count; // number of frame to process
 
    // time info at sample 0
    // If null, then this is a free running host, no transport events will be provided
@@ -39,13 +43,15 @@ typedef struct clap_process {
    // then it gets a default stereo input and output.
    const clap_audio_buffer_t *audio_inputs;
    const clap_audio_buffer_t *audio_outputs;
-   uint32_t                   audio_inputs_count;
-   uint32_t                   audio_outputs_count;
+   alignas(4) uint32_t audio_inputs_count;
+   alignas(4) uint32_t audio_outputs_count;
 
    /* events */
    const clap_event_list_t *in_events;
    const clap_event_list_t *out_events;
 } clap_process_t;
+
+#pragma pack(pop)
 
 #ifdef __cplusplus
 }

@@ -4,4 +4,4 @@
 
 clap_version m = CLAP_VERSION;
 
-int main(int argc, char **argv) { return !clap_version_is_compatible(m); }
+int main(int, char **) { return !clap_version_is_compatible(m); }
