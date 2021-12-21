@@ -1,7 +1,5 @@
 #pragma once
 
-#include <stddef.h>
-
 #include "../plugin.h"
 
 static CLAP_CONSTEXPR const char CLAP_EXT_FD_SUPPORT[] = "clap.fd-support";

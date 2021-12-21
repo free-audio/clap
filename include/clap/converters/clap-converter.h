@@ -17,8 +17,8 @@ typedef struct clap_clap_converter {
 
    // [main-thread]
    bool (*convert_state)(const struct clap_clap_converter *converter,
-                         const clap_istream               *src,
-                         const clap_ostream               *dst);
+                         const clap_istream_t             *src,
+                         const clap_ostream_t             *dst);
 
    // converts the vst3 param id and plain value to clap param id and
    // plain value.

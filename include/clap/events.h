@@ -1,7 +1,6 @@
 #pragma once
 
-#include <stdbool.h>
-#include <stddef.h>
+#include "private/std.h"
 
 #include "fixedpoint.h"
 #include "id.h"

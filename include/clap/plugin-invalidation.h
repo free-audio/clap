@@ -1,8 +1,5 @@
 #pragma once
 
-#include <stdbool.h>
-#include <stdint.h>
-
 #include "private/macros.h"
 #include "private/align.h"
 

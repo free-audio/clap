@@ -1,7 +1,5 @@
 #pragma once
 
-#include <stdint.h>
-
 #include "private/align.h"
 
 #ifdef __cplusplus

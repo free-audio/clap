@@ -1,5 +1,6 @@
-#include <stdint.h>
-#include <stdalign.h>
+#pragma once
+
+#include "std.h"
 
 #if UINTPTR_MAX == UINT64_MAX
 #   define CLAP_PTR_ALIGN 8
