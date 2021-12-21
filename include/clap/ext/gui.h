@@ -15,7 +15,7 @@
 /// 4. clap_plugin_gui_win32->embed(), or any other platform specific interface
 /// 5. clap_plugin_gui->show()
 /// 6. clap_plugin_gui->hide()/show() ...
-/// 7. clap_plugin_gui->close() when done with the gui
+/// 7. clap_plugin_gui->destroy() when done with the gui
 ///
 /// Resizing the window:
 /// 1. Only possible if clap_plugin_gui->can_resize() returns true
