@@ -13,9 +13,11 @@ enum {
    // left, right
    CLAP_CHMAP_STEREO = 2,
 
-   // front left, front right, center, low, surround left, surround right
-   // surround back left, surround back right
+   // see clap_plugin_surround to inspect the exact channel layout
    CLAP_CHMAP_SURROUND = 3,
+
+   // see clap_plugin_ambisonic to inspect the exact channel layout
+   CLAP_CHMAP_AMBISONIC = 4,
 };
 typedef int32_t clap_chmap;
 
