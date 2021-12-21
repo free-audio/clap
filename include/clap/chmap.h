@@ -16,7 +16,7 @@ enum {
    // see clap_plugin_surround to inspect the exact channel layout
    CLAP_CHMAP_SURROUND = 3,
 
-   // see clap_plugin_ambisonic to inspect the exact channel layout
+   // opaque ambisonic channel map
    CLAP_CHMAP_AMBISONIC = 4,
 };
 typedef int32_t clap_chmap;
