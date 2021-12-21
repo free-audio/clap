@@ -2,7 +2,6 @@
 
 #ifdef __cplusplus
 #   include <cstdint>
-#   include <cstdalign>
 #   include <cstddef>
 #else
 #   include <stddef.h>
