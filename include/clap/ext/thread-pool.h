@@ -63,7 +63,7 @@ typedef struct clap_host_thread_pool {
    bool (*request_exec)(const clap_host_t *host, uint32_t num_tasks);
 } clap_host_thread_pool_t;
 
-#pragma pack(pop, CLAP_ALIGN)
+#pragma pack(pop)
 
 #ifdef __cplusplus
 }

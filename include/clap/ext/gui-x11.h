@@ -17,7 +17,7 @@ typedef struct clap_plugin_gui_x11 {
    bool (*attach)(const clap_plugin_t *plugin, const char *display_name, unsigned long window);
 } clap_plugin_gui_x11_t;
 
-#pragma pack(pop, CLAP_ALIGN)
+#pragma pack(pop)
 
 #ifdef __cplusplus
 }
