@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-#pragma pack(push, CLAP_PTR_ALIGN)
+#pragma pack(push, CLAP_ALIGN)
 
 typedef struct clap_audio_buffer {
    // Either data32 or data64 pointer will be set.

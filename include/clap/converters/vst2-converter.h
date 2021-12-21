@@ -2,10 +2,13 @@
 
 #include "../clap.h"
 #include "../stream.h"
+#include "../private/align.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#pragma pack(push, CLAP_ALIGN)
 
 // This interface provide all the tool to convert a vst2 plugin instance into a clap plugin instance
 typedef struct clap_vst2_converter {
@@ -49,6 +52,8 @@ typedef struct clap_vst2_converter_factory {
    const clap_vst2_converter_t *(*get)(const struct clap_vst2_converter_factory *factory,
                                        uint32_t                                  index);
 } clap_vst2_converter_factory_t;
+
+#pragma pack(pop)
 
 #ifdef __cplusplus
 }

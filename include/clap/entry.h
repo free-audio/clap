@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-#pragma pack(push, CLAP_PTR_ALIGN)
+#pragma pack(push, CLAP_ALIGN)
 
 // This interface is the entry point of the dynamic library.
 //

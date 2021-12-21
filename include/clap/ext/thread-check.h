@@ -1,12 +1,14 @@
 #pragma once
 
-#include "../clap.h"
+#include "../plugin.h"
 
 static CLAP_CONSTEXPR const char CLAP_EXT_THREAD_CHECK[] = "clap.thread-check";
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#pragma pack(push, CLAP_ALIGN)
 
 // This interface is useful to do runtime checks and make
 // sure that the functions are called on the correct threads.
@@ -20,6 +22,8 @@ typedef struct clap_host_thread_check {
    // [thread-safe]
    bool (*is_audio_thread)(const clap_host_t *host);
 } clap_host_thread_check_t;
+
+#pragma pack(pop)
 
 #ifdef __cplusplus
 }

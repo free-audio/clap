@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../clap.h"
+#include "../plugin.h"
 
 static CLAP_CONSTEXPR const char CLAP_EXT_GUI_COCOA[] = "clap.gui-cocoa";
 
@@ -8,10 +8,14 @@ static CLAP_CONSTEXPR const char CLAP_EXT_GUI_COCOA[] = "clap.gui-cocoa";
 extern "C" {
 #endif
 
+#pragma pack(push, CLAP_ALIGN)
+
 typedef struct clap_plugin_gui_cocoa {
    // [main-thread]
    bool (*attach)(const clap_plugin_t *plugin, void *nsView);
 } clap_plugin_gui_cocoa_t;
+
+#pragma pack(pop)
 
 #ifdef __cplusplus
 }

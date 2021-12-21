@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../clap.h"
+#include "../../plugin.h"
 
 static CLAP_CONSTEXPR const char CLAP_EXT_CHECK_FOR_UPDATE[] = "clap.check_for_update.draft/0";
 
@@ -8,12 +8,14 @@ static CLAP_CONSTEXPR const char CLAP_EXT_CHECK_FOR_UPDATE[] = "clap.check_for_u
 extern "C" {
 #endif
 
+#pragma pack(push, CLAP_ALIGN)
+
 typedef struct clap_check_for_update_info {
    const char *version;
    const char *release_date; // YYYY-MM-DD
    const char *url;
 
-   bool is_stable;
+   alignas(1) bool is_stable;
 } clap_check_for_update_info_t;
 
 typedef struct clap_plugin_check_for_update {
@@ -25,6 +27,8 @@ typedef struct clap_host_check_for_update {
    // [main-thread]
    void (*on_new_version)(const clap_host_t *host, const clap_check_for_update_info_t *update_info);
 } clap_host_check_for_update_t;
+
+#pragma pack(pop)
 
 #ifdef __cplusplus
 }

@@ -23,3 +23,8 @@ if (${CMAKE_C_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_C_COMPILER_ID} STREQUAL "Cl
     target_compile_options(clap-compile-test-c PRIVATE -Wall -Wextra -pedantic)
     target_compile_options(clap-compile-test-cpp PRIVATE -Wall -Wextra -pedantic)
 endif()
+
+if (${CMAKE_C_COMPILER_ID} STREQUAL "Clang")
+    target_compile_options(clap-compile-test-c PRIVATE -Werror=pragma-pack)
+    target_compile_options(clap-compile-test-cpp PRIVATE -Werror=pragma-pack)
+endif()

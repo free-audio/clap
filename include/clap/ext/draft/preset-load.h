@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../clap.h"
+#include "../../plugin.h"
 
 static const char CLAP_EXT_PRESET_LOAD[] = "clap.preset-load.draft/0";
 
@@ -8,11 +8,15 @@ static const char CLAP_EXT_PRESET_LOAD[] = "clap.preset-load.draft/0";
 extern "C" {
 #endif
 
+#pragma pack(push, CLAP_ALIGN)
+
 typedef struct clap_plugin_preset_load {
    // Loads a preset in the plugin native preset file format from a path.
    // [main-thread]
    bool (*from_file)(const clap_plugin_t *plugin, const char *path);
 } clap_plugin_preset_load_t;
+
+#pragma pack(pop)
 
 #ifdef __cplusplus
 }

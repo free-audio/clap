@@ -11,7 +11,7 @@
 extern "C" {
 #endif
 
-#pragma pack(push, CLAP_PTR_ALIGN)
+#pragma pack(push, CLAP_ALIGN)
 
 enum {
    CLAP_EVENT_NOTE_ON,    // press a key; note attribute

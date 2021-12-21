@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../clap.h"
+#include "../../plugin.h"
 #include "../../hash.h"
 #include "../../string-sizes.h"
 
@@ -9,6 +9,8 @@ static CLAP_CONSTEXPR const char CLAP_EXT_FILE_REFERENCE[] = "clap.file-referenc
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#pragma pack(push, CLAP_ALIGN)
 
 /// @page File Reference
 ///
@@ -24,9 +26,9 @@ extern "C" {
 ///   and needs to be saved.
 
 typedef struct clap_file_reference {
-   clap_id resource_id;
-   char    path[CLAP_PATH_SIZE];
-   bool    belongs_to_plugin_collection;
+   alignas(4) clap_id resource_id;
+   alignas(1) char path[CLAP_PATH_SIZE];
+   alignas(1) bool belongs_to_plugin_collection;
 } clap_file_reference_t;
 
 typedef struct clap_plugin_file_reference {
@@ -65,6 +67,8 @@ typedef struct clap_host_file_reference {
    // [main-thread]
    void (*set_dirty)(const clap_host_t *host, clap_id resource_id);
 } clap_host_file_reference;
+
+#pragma pack(pop)
 
 #ifdef __cplusplus
 }

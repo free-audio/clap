@@ -10,7 +10,7 @@
 extern "C" {
 #endif
 
-#pragma pack(push, CLAP_PTR_ALIGN)
+#pragma pack(push, CLAP_ALIGN)
 
 typedef struct clap_version {
    // This is the major ABI and API design

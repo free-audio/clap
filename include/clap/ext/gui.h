@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../clap.h"
+#include "../plugin.h"
 
 /// @page GUI
 ///
@@ -28,6 +28,8 @@ static CLAP_CONSTEXPR const char CLAP_EXT_GUI[] = "clap.gui";
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#pragma pack(push, CLAP_ALIGN)
 
 typedef struct clap_plugin_gui {
    // Create and allocate all resources necessary for the gui.
@@ -80,6 +82,8 @@ typedef struct clap_host_gui {
     * [thread-safe] */
    bool (*resize)(const clap_host_t *host, uint32_t width, uint32_t height);
 } clap_host_gui_t;
+
+#pragma pack(pop)
 
 #ifdef __cplusplus
 }

@@ -1,12 +1,14 @@
 #pragma once
 
-#include "../../clap.h"
+#include "../../plugin.h"
 
 static CLAP_CONSTEXPR const char CLAP_EXT_MIDI_MAPPINGS[] = "clap.midi-mappings.draft/0";
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#pragma pack(push, CLAP_ALIGN)
 
 enum {
    CLAP_MIDI_MAPPING_CC7,
@@ -17,9 +19,9 @@ enum {
 typedef int32_t clap_midi_mapping_type;
 
 typedef struct clap_midi_mapping {
-   int32_t channel;
-   int32_t number;
-   clap_id param_id;
+   alignas(4) int32_t channel;
+   alignas(4) int32_t number;
+   alignas(4) clap_id param_id;
 } clap_midi_mapping_t;
 
 typedef struct clap_plugin_midi_mappings {
@@ -34,6 +36,8 @@ typedef struct clap_host_midi_mappings {
    // [main-thread]
    void (*changed)(const clap_host_t *host);
 } clap_host_midi_mappings_t;
+
+#pragma pack(pop)
 
 #ifdef __cplusplus
 }

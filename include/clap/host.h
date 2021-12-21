@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-#pragma pack(push, CLAP_PTR_ALIGN)
+#pragma pack(push, CLAP_ALIGN)
 
 typedef struct clap_host {
    clap_version_t clap_version; // initialized to CLAP_VERSION

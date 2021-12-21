@@ -1,7 +1,6 @@
 #pragma once
 
-#include "../clap.h"
-#include "../chmap.h"
+#include "../plugin.h"
 #include "../string-sizes.h"
 
 /// @page Note Ports
@@ -18,9 +17,11 @@ static CLAP_CONSTEXPR const char CLAP_EXT_NOTE_PORTS[] = "clap.note-ports";
 extern "C" {
 #endif
 
+#pragma pack(push, CLAP_ALIGN)
+
 typedef struct clap_note_port_info {
-   clap_id id;                   // stable identifier
-   char    name[CLAP_NAME_SIZE]; // displayable name, i18n?
+   alignas(4) clap_id id;                // stable identifier
+   alignas(1) char name[CLAP_NAME_SIZE]; // displayable name, i18n?
 } clap_note_port_info_t;
 
 // The audio ports scan has to be done while the plugin is deactivated.
@@ -53,6 +54,8 @@ typedef struct clap_host_note_ports {
    // [main-thread]
    void (*rescan)(const clap_host_t *host, uint32_t flags);
 } clap_host_note_ports_t;
+
+#pragma pack(pop)
 
 #ifdef __cplusplus
 }

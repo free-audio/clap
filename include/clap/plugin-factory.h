@@ -9,7 +9,7 @@ static const CLAP_CONSTEXPR char CLAP_PLUGIN_FACTORY_ID[] = "clap.plugin-factory
 extern "C" {
 #endif
 
-#pragma pack(push, CLAP_PTR_ALIGN)
+#pragma pack(push, CLAP_ALIGN)
 
 // Every methods must be thread-safe.
 // It is very important to be able to scan the plugin as quickly as possible.

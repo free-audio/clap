@@ -8,3 +8,5 @@
 #elif UINTPTR_MAX == UINT16_MAX
 #   define CLAP_PTR_ALIGN 2
 #endif
+
+#define CLAP_ALIGN CLAP_PTR_ALIGN

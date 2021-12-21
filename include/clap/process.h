@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-#pragma pack(push, CLAP_PTR_ALIGN)
+#pragma pack(push, CLAP_ALIGN)
 
 enum {
    // Processing failed. The output buffer must be discarded.

@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "../clap.h"
+#include "../plugin.h"
 #include "../chmap.h"
 #include "../string-sizes.h"
 
@@ -18,19 +18,20 @@ static CLAP_CONSTEXPR const char CLAP_EXT_AUDIO_PORTS[] = "clap.audio-ports";
 extern "C" {
 #endif
 
+#pragma pack(push, CLAP_ALIGN)
+
 typedef struct clap_audio_port_info {
-   clap_id id;                   // stable identifier
-   char    name[CLAP_NAME_SIZE]; // displayable name
+   alignas(4) clap_id id;                // stable identifier
+   alignas(1) char name[CLAP_NAME_SIZE]; // displayable name
 
-   uint32_t   channel_count;
-   clap_chmap channel_map;
-   uint32_t   sample_size; // 32 for float and 64 for double
+   alignas(4) uint32_t channel_count;
+   alignas(4) clap_chmap channel_map;
+   alignas(4) uint32_t sample_size; // 32 for float and 64 for double
 
-   bool is_main;  // there can only be 1 main input and output
-   bool is_cv;    // control voltage
-   bool in_place; // if true the daw can use the same buffer for input
-                  // and output, only for main input to main output
-
+   alignas(1) bool is_main;  // there can only be 1 main input and output
+   alignas(1) bool is_cv;    // control voltage
+   alignas(1) bool in_place; // if true the daw can use the same buffer for input
+                             // and output, only for main input to main output
 } clap_audio_port_info_t;
 
 // The audio ports scan has to be done while the plugin is deactivated.
@@ -66,6 +67,8 @@ typedef struct clap_host_audio_ports {
    // [main-thread]
    void (*rescan)(const clap_host_t *host, uint32_t flags);
 } clap_host_audio_ports_t;
+
+#pragma pack(pop)
 
 #ifdef __cplusplus
 }

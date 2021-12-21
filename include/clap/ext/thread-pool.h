@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../clap.h"
+#include "../plugin.h"
 
 /// @page
 ///
@@ -44,6 +44,8 @@ static CLAP_CONSTEXPR const char CLAP_EXT_THREAD_POOL[] = "clap.thread-pool";
 extern "C" {
 #endif
 
+#pragma pack(push, CLAP_ALIGN)
+
 typedef struct clap_plugin_thread_pool {
    // Called by the thread pool
    void (*exec)(const clap_plugin_t *plugin, uint32_t task_index);
@@ -60,6 +62,8 @@ typedef struct clap_host_thread_pool {
    // [audio-thread]
    bool (*request_exec)(const clap_host_t *host, uint32_t num_tasks);
 } clap_host_thread_pool_t;
+
+#pragma pack(pop, CLAP_ALIGN)
 
 #ifdef __cplusplus
 }

@@ -2,13 +2,15 @@
 
 #include <stddef.h>
 
-#include "../clap.h"
+#include "../plugin.h"
 
 static CLAP_CONSTEXPR const char CLAP_EXT_FD_SUPPORT[] = "clap.fd-support";
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#pragma pack(push, CLAP_ALIGN)
 
 #ifdef _WIN32
 typedef void *clap_fd;
@@ -44,6 +46,8 @@ typedef struct clap_host_fd_support {
    // [main-thread]
    bool (*unregister_fd)(const clap_host_t *host, clap_fd fd);
 } clap_host_fd_support_t;
+
+#pragma pack(pop)
 
 #ifdef __cplusplus
 }

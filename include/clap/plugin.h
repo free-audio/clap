@@ -10,7 +10,7 @@
 extern "C" {
 #endif
 
-#pragma pack(push, CLAP_PTR_ALIGN)
+#pragma pack(push, CLAP_ALIGN)
 
 /* bitfield
  * This gives an hint to the host what the plugin might do. */

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../clap.h"
 #include "../chmap.h"
 #include "../string-sizes.h"
+#include "../plugin.h"
 
 /// @page Audio Ports Config
 ///
@@ -28,18 +28,20 @@ static CLAP_CONSTEXPR const char CLAP_EXT_AUDIO_PORTS_CONFIG[] = "clap.audio-por
 extern "C" {
 #endif
 
+#pragma pack(push, CLAP_ALIGN)
+
 // Minimalistic description of ports configuration
 typedef struct clap_audio_ports_config {
-   clap_id id;
-   char    name[CLAP_NAME_SIZE];
+   alignas(4) clap_id id;
+   alignas(1) char name[CLAP_NAME_SIZE];
 
    // main input info
-   uint32_t   input_channel_count;
-   clap_chmap input_channel_map;
+   alignas(4) uint32_t input_channel_count;
+   alignas(4) clap_chmap input_channel_map;
 
    // main output info
-   uint32_t   output_channel_count;
-   clap_chmap output_channel_map;
+   alignas(4) uint32_t output_channel_count;
+   alignas(4) clap_chmap output_channel_map;
 } clap_audio_ports_config_t;
 
 // The audio ports config scan has to be done while the plugin is deactivated.
@@ -63,6 +65,8 @@ typedef struct clap_host_audio_ports_config {
    // [main-thread]
    void (*rescan)(const clap_host_t *host);
 } clap_host_audio_ports_config_t;
+
+#pragma pack(pop)
 
 #ifdef __cplusplus
 }
