@@ -19,6 +19,12 @@ To work with clap, include [clap/clap.h](include/clap/clap.h).
 
 The two most important objects are `clap_host` and `clap_plugin`.
 
+## Entry point
+
+The entry point is declared in [entry.h](include/clap/entry.h).
+
+## Extensions
+
 Most features comes from extensions, which are in fact C interfaces.
 ```C
 // host extension
