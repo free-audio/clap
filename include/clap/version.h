@@ -22,7 +22,7 @@ typedef struct clap_version {
 
 static const uint32_t CLAP_VERSION_MAJOR = 0;
 static const uint32_t CLAP_VERSION_MINOR = 16;
-static const uint32_t CLAP_VERSION_REVISION = 0;
+static const uint32_t CLAP_VERSION_REVISION = 1;
 
 static const clap_version_t CLAP_VERSION = {
    CLAP_VERSION_MAJOR, CLAP_VERSION_MINOR, CLAP_VERSION_REVISION};
