@@ -30,6 +30,12 @@ enum {
    // If this is the only type reported by the plugin, the host can assume that it wont change the
    // audio and event signal.
    CLAP_PLUGIN_ANALYZER = (1 << 3),
+
+   // This plugin is able to process surround audio
+   CLAP_PLUGIN_SURROUND = (1 << 4),
+
+   // This plugin is able to process ambisonic audio
+   CLAP_PLUGIN_AMBISONIC = (1 << 4),
 };
 typedef int32_t clap_plugin_type;
 
