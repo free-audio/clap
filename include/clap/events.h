@@ -25,18 +25,46 @@ extern "C" {
 // The plugins are encouraged to be able to handle note events encoded as raw midi or midi2,
 // or implement clap_plugin_event_filter and reject raw midi and midi2 events.
 enum {
-   CLAP_EVENT_NOTE_ON,    // press a key; note attribute
-   CLAP_EVENT_NOTE_OFF,   // release a key; note attribute
-   CLAP_EVENT_NOTE_END,   // playback of a note is terminated (sent by the plugin); note attribute
-   CLAP_EVENT_NOTE_CHOKE, // chokes a set of notes; note attribute
-   CLAP_EVENT_NOTE_EXPRESSION, // plays standard note expression; note_expression attribute
-   CLAP_EVENT_NOTE_MASK,       // current chord/scale; note_mask attribute
-   CLAP_EVENT_PARAM_VALUE,     // sets a parameter value; param_value attribute
-   CLAP_EVENT_PARAM_MOD,       // sets a parameter modulation; param_mod attribute
-   CLAP_EVENT_TRANSPORT,       // update the transport info; transport attribute
-   CLAP_EVENT_MIDI,            // raw midi event; midi attribute
-   CLAP_EVENT_MIDI_SYSEX,      // raw midi sysex event; midi_sysex attribute
-   CLAP_EVENT_MIDI2,           // raw midi 2 event; midi2 attribute
+   // NOTE_ON and NOTE_OFF represents a key pressed and key released event.
+   //
+   // NOTE_CHOKE is meant to choke the voice(s), like in a drum machine when a closed hihat
+   // chokes an open hihat.
+   //
+   // NOTE_END is sent by the plugin to the host, when a voice terminates.
+   // When using polyphonic modulations, the host has to start voices for its modulators.
+   // This message helps the host to track the plugin's voice management.
+   //
+   // Those four events use the note attribute.
+   CLAP_EVENT_NOTE_ON,
+   CLAP_EVENT_NOTE_OFF,
+   CLAP_EVENT_NOTE_CHOKE,
+   CLAP_EVENT_NOTE_END,
+
+   // Represents a note expression.
+   // Uses the note_expression attribute.
+   CLAP_EVENT_NOTE_EXPRESSION,
+
+   // Sent by the host to the plugin.
+   // Indicate the current root note, and the set of notes which belongs to the scale or chord.
+   //
+   // uses the note_mask attribute
+   CLAP_EVENT_NOTE_MASK,
+
+   // PARAM_VALUE sets the parameter's value; uses param_value attribute
+   // PARAM_MOD sets the parameter's modulation amount; uses param_mod attribute
+   //
+   // The value heard is: param_value + param_mod.
+   //
+   // In case of a concurrent global value/modulation versus a polyphonic one,
+   // the voice should only use the polyphonic one and the polyphonic modulation
+   // amount will already include the monophonic signal.
+   CLAP_EVENT_PARAM_VALUE,
+   CLAP_EVENT_PARAM_MOD,
+
+   CLAP_EVENT_TRANSPORT,   // update the transport info; transport attribute
+   CLAP_EVENT_MIDI,        // raw midi event; midi attribute
+   CLAP_EVENT_MIDI_SYSEX,  // raw midi sysex event; midi_sysex attribute
+   CLAP_EVENT_MIDI2,       // raw midi 2 event; midi2 attribute
 };
 typedef int32_t clap_event_type;
 
@@ -197,7 +225,7 @@ typedef struct clap_event_midi2 {
 
 typedef struct clap_event {
    alignas(4) clap_event_type type;
-   alignas(4) uint32_t time; // offset from the first sample in the process block
+   alignas(4) uint32_t time;          // offset from the first sample in the process block
    alignas(4) clap_event_flags flags; // bitset of clap_event_flags
 
    union {
