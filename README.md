@@ -103,3 +103,4 @@ and use to get a basic plugin experience:
 ## Community related projects
 
 - [MIP2](https://github.com/skei/MIP2), host and plugins
+- [clap-sys](https://github.com/glowcoil/clap-sys), rust binding

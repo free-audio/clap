@@ -28,7 +28,7 @@ enum {
 typedef int32_t clap_process_status;
 
 typedef struct clap_process {
-   alignas(8) uint64_t steady_time;             // a steady sample time counter, requiered
+   alignas(8) uint64_t steady_time;  // a steady sample time counter, requiered
    alignas(4) uint32_t frames_count; // number of frame to process
 
    // time info at sample 0
