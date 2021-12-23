@@ -28,8 +28,17 @@ enum {
 typedef int32_t clap_process_status;
 
 typedef struct clap_process {
-   alignas(8) uint64_t steady_time;  // a steady sample time counter, requiered
-   alignas(4) uint32_t frames_count; // number of frame to process
+   // A steady sample time counter.
+   // This field can be used to calculate the sleep duration between two process calls.
+   // This value may be specific to this plugin instance and have no relation to what other plugin
+   // instance may receive.
+   //
+   // Set to -1 if not available, otherwise the value must be greater or equal to 0,
+   // and must be increased by at least `frames_count` for the next call to process.
+   alignas(8) int64_t steady_time;
+
+   // Number of frame to process
+   alignas(4) uint32_t frames_count;
 
    // time info at sample 0
    // If null, then this is a free running host, no transport events will be provided
@@ -46,7 +55,13 @@ typedef struct clap_process {
    alignas(4) uint32_t audio_inputs_count;
    alignas(4) uint32_t audio_outputs_count;
 
-   /* events */
+   // Input and output events.
+   //
+   // Events must be sorted by time.
+   // The input event list can't be modified.
+   //
+   // If a plugin does not implement clap_plugin_note_ports,
+   // then it gets a default note input and output.
    const clap_event_list_t *in_events;
    const clap_event_list_t *out_events;
 } clap_process_t;
