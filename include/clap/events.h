@@ -12,6 +12,18 @@ extern "C" {
 
 #pragma pack(push, CLAP_ALIGN)
 
+// Some of the following events overlap, a note on can be expressed with:
+// - CLAP_EVENT_NOTE_ON
+// - CLAP_EVENT_MIDI
+// - CLAP_EVENT_MIDI2
+//
+// The preferred way of sending a note event is to use CLAP_EVENT_NOTE_*.
+//
+// The same event must not be sent twice: it is forbidden to send a the same note on
+// encoded with both CLAP_EVENT_NOTE_ON and CLAP_EVENT_MIDI.
+//
+// The plugins are encouraged to be able to handle note events encoded as raw midi or midi2,
+// or implement clap_plugin_event_filter and reject raw midi and midi2 events.
 enum {
    CLAP_EVENT_NOTE_ON,    // press a key; note attribute
    CLAP_EVENT_NOTE_OFF,   // release a key; note attribute
@@ -29,8 +41,8 @@ enum {
 typedef int32_t clap_event_type;
 
 enum {
-   // Should be true if the events is external to the host, like a live user input
-   CLAP_EVENT_IS_LIVE = 1 << 0,
+   // Should be set if the events is external to the host, like a live user input
+   CLAP_EVENT_FLAG_IS_LIVE = 1 << 0,
 };
 typedef int32_t clap_event_flags;
 
@@ -186,7 +198,7 @@ typedef struct clap_event_midi2 {
 typedef struct clap_event {
    alignas(4) clap_event_type type;
    alignas(4) uint32_t time; // offset from the first sample in the process block
-   alignas(4) clap_event_flags flags;
+   alignas(4) clap_event_flags flags; // bitset of clap_event_flags
 
    union {
       clap_event_note_t            note;

@@ -30,8 +30,8 @@ typedef int32_t clap_process_status;
 typedef struct clap_process {
    // A steady sample time counter.
    // This field can be used to calculate the sleep duration between two process calls.
-   // This value may be specific to this plugin instance and have no relation to what other plugin
-   // instance may receive.
+   // This value may be specific to this plugin instance and have no relation to what
+   // other plugin instances may receive.
    //
    // Set to -1 if not available, otherwise the value must be greater or equal to 0,
    // and must be increased by at least `frames_count` for the next call to process.
