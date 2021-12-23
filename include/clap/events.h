@@ -24,6 +24,7 @@ enum {
    CLAP_EVENT_TRANSPORT,       // update the transport info; transport attribute
    CLAP_EVENT_MIDI,            // raw midi event; midi attribute
    CLAP_EVENT_MIDI_SYSEX,      // raw midi sysex event; midi_sysex attribute
+   CLAP_EVENT_MIDI2,           // raw midi 2 event; midi2 attribute
 };
 typedef int32_t clap_event_type;
 
@@ -177,6 +178,11 @@ typedef struct clap_event_midi_sysex {
    alignas(4) uint32_t size;
 } clap_event_midi_sysex_t;
 
+typedef struct clap_event_midi2 {
+   alignas(4) uint32_t port_index;
+   alignas(4) uint32_t data[4];
+} clap_event_midi2_t;
+
 typedef struct clap_event {
    alignas(4) clap_event_type type;
    alignas(4) uint32_t time; // offset from the first sample in the process block
@@ -191,6 +197,7 @@ typedef struct clap_event {
       clap_event_note_mask_t       note_mask;
       clap_event_midi_t            midi;
       clap_event_midi_sysex_t      midi_sysex;
+      clap_event_midi2_t           midi2;
    };
 } clap_event_t;
 
