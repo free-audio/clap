@@ -27,6 +27,12 @@ enum {
 };
 typedef int32_t clap_event_type;
 
+enum {
+   // Should be true if the events is external to the host, like a live user input
+   CLAP_EVENT_IS_LIVE = 1 << 0,
+};
+typedef int32_t clap_event_flags;
+
 /**
  * Note on, off, end and choke events.
  * In the case of note choke or end events:
@@ -173,7 +179,8 @@ typedef struct clap_event_midi_sysex {
 
 typedef struct clap_event {
    alignas(4) clap_event_type type;
-   alignas(4) uint32_t        time; // offset from the first sample in the process block
+   alignas(4) uint32_t time; // offset from the first sample in the process block
+   alignas(4) clap_event_flags flags;
 
    union {
       clap_event_note_t            note;
