@@ -20,19 +20,19 @@ typedef struct clap_version {
 
 #pragma pack(pop)
 
-static const uint32_t CLAP_VERSION_MAJOR = 0;
-static const uint32_t CLAP_VERSION_MINOR = 16;
-static const uint32_t CLAP_VERSION_REVISION = 1;
+#ifdef __cplusplus
+}
+#endif
 
-static const clap_version_t CLAP_VERSION = {
+static CLAP_CONSTEXPR const uint32_t CLAP_VERSION_MAJOR = 0;
+static CLAP_CONSTEXPR const uint32_t CLAP_VERSION_MINOR = 17;
+static CLAP_CONSTEXPR const uint32_t CLAP_VERSION_REVISION = 0;
+
+static CLAP_CONSTEXPR const clap_version_t CLAP_VERSION = {
    CLAP_VERSION_MAJOR, CLAP_VERSION_MINOR, CLAP_VERSION_REVISION};
 
 // For version 0, we require the same minor version because
 // we may still break the ABI at this point
-static inline bool clap_version_is_compatible(const clap_version_t v) {
+static CLAP_CONSTEXPR inline bool clap_version_is_compatible(const clap_version_t v) {
    return v.major == CLAP_VERSION_MAJOR && v.minor == CLAP_VERSION_MINOR;
 }
-
-#ifdef __cplusplus
-}
-#endif
