@@ -12,33 +12,6 @@ extern "C" {
 
 #pragma pack(push, CLAP_ALIGN)
 
-/* bitfield
- * This gives an hint to the host what the plugin might do. */
-enum {
-   /* Instruments can play notes, and generate audio */
-   CLAP_PLUGIN_INSTRUMENT = (1 << 0),
-
-   /* Audio effects, process audio input and produces audio.
-    * Exemple: delay, reverb, compressor. */
-   CLAP_PLUGIN_AUDIO_EFFECT = (1 << 1),
-
-   /* Event effects, takes events as input and produces events.
-    * Exemple: arpegiator */
-   CLAP_PLUGIN_EVENT_EFFECT = (1 << 2), // can be seen as midi effect
-
-   // Analyze audio and/or events.
-   // If this is the only type reported by the plugin, the host can assume that it wont change the
-   // audio and event signal.
-   CLAP_PLUGIN_ANALYZER = (1 << 3),
-
-   // This plugin is able to process surround audio
-   CLAP_PLUGIN_SURROUND = (1 << 4),
-
-   // This plugin is able to process ambisonic audio
-   CLAP_PLUGIN_AMBISONIC = (1 << 4),
-};
-typedef int32_t clap_plugin_type;
-
 typedef struct clap_plugin_descriptor {
    clap_version_t clap_version; // initialized to CLAP_VERSION
 
@@ -53,16 +26,23 @@ typedef struct clap_plugin_descriptor {
 
    // Arbitrary list of keywords, separated by `;'
    // They can be matched by the host search engine and used to classify the plugin.
+   //
+   // Some pre-defined keywords:
+   // - "instrument", "audio_effect", "note_effect", "analyzer"
+   // - "mono", "stereo", "surround", "ambisonic"
+   // - "distortion", "compressor", "limiter", "transient"
+   // - "equalizer", "filter", "de-esser"
+   // - "delay", "reverb", "chorus", "flanger"
+   // - "tool", "utility", "glitch"
+   //
    // Some examples:
-   // "master;eq;spectrum"
-   // "compressor;analog;character"
-   // "reverb;plate;cathedral"
-   // "kick;analog;808;roland"
-   // "analog;character;roland;moog"
-   // "chip;chiptune;gameboy;nintendo;sega"
-   const char *keywords;
-
-   alignas(8) uint64_t plugin_type; // bitfield of clap_plugin_type
+   // "equalizer;analyzer;stereo;mono"
+   // "compressor;analog;character;mono"
+   // "reverb;plate;stereo"
+   // "reverb;spring;surround"
+   // "kick;analog;808;roland;drum;mono;instrument"
+   // "instrument;chiptune;gameboy;nintendo;sega;mono"
+   const char *features;
 } clap_plugin_descriptor_t;
 
 typedef struct clap_plugin {
