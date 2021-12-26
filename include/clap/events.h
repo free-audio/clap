@@ -12,6 +12,15 @@ extern "C" {
 
 #pragma pack(push, CLAP_ALIGN)
 
+static const CLAP_CONSTEXPR uint16_t CLAP_EVENT_SPACE_CORE_ID = 0;
+
+// event header
+typedef struct clap_event_header {
+   alignas(4) uint32_t time;
+   alignas(2) uint16_t space_id;
+   alignas(2) uint16_t event_id;
+} clap_event_header_t;
+
 // Some of the following events overlap, a note on can be expressed with:
 // - CLAP_EVENT_NOTE_ON
 // - CLAP_EVENT_MIDI
@@ -81,10 +90,12 @@ typedef int32_t clap_event_flags;
  * - key and channel are used to match active notes, a value of -1 matches all.
  */
 typedef struct clap_event_note {
-   int32_t port_index;
-   int32_t key;      // 0..127
-   int32_t channel;  // 0..15
-   double  velocity; // 0..1
+   alignas(4) clap_event_header_t header;
+
+   alignas(4) int32_t port_index;
+   alignas(4) int32_t key;      // 0..127
+   alignas(4) int32_t channel;  // 0..15
+   alignas(8) double  velocity; // 0..1
 } clap_event_note_t;
 
 enum {
@@ -109,6 +120,8 @@ enum {
 typedef int32_t clap_note_expression;
 
 typedef struct clap_event_note_expression {
+   clap_event_header_t header;
+
    alignas(4) clap_note_expression expression_id;
 
    // target a specific port, key and channel, -1 for global
@@ -132,6 +145,8 @@ enum {
 typedef int32_t clap_event_param_flags;
 
 typedef struct clap_event_param_value {
+   clap_event_header_t header;
+
    // target parameter
    void *cookie;                // @ref clap_param_info.cookie
    alignas(4) clap_id param_id; // @ref clap_param_info.id
@@ -147,6 +162,8 @@ typedef struct clap_event_param_value {
 } clap_event_param_value_t;
 
 typedef struct clap_event_param_mod {
+   clap_event_header_t header;
+
    // target parameter
    void *cookie;                // @ref clap_param_info.cookie
    alignas(4) clap_id param_id; // @ref clap_param_info.id
@@ -172,6 +189,8 @@ enum {
 typedef uint32_t clap_transport_flags;
 
 typedef struct clap_event_transport {
+   clap_event_header_t header;
+
    alignas(4) clap_transport_flags flags;
 
    alignas(8) clap_beattime song_pos_beats;  // position in beats
@@ -194,6 +213,8 @@ typedef struct clap_event_transport {
 } clap_event_transport_t;
 
 typedef struct clap_event_note_mask {
+   clap_event_header_t header;
+
    uint32_t port_index;
 
    // bitset of active keys:
@@ -208,38 +229,26 @@ typedef struct clap_event_note_mask {
 } clap_event_note_mask_t;
 
 typedef struct clap_event_midi {
+   alignas(4) clap_event_header_t header;
+
    alignas(4) uint32_t port_index;
    alignas(1) uint8_t data[3];
 } clap_event_midi_t;
 
 typedef struct clap_event_midi_sysex {
+   alignas(4) clap_event_header_t header;
+
    alignas(4) uint32_t port_index;
    const uint8_t *buffer; // midi buffer
    alignas(4) uint32_t size;
 } clap_event_midi_sysex_t;
 
 typedef struct clap_event_midi2 {
+   alignas(4) clap_event_header_t header;
+
    alignas(4) uint32_t port_index;
    alignas(4) uint32_t data[4];
 } clap_event_midi2_t;
-
-typedef struct clap_event {
-   alignas(4) clap_event_type type;
-   alignas(4) uint32_t time;          // offset from the first sample in the process block
-   alignas(4) clap_event_flags flags; // bitset of clap_event_flags
-
-   union {
-      clap_event_note_t            note;
-      clap_event_note_expression_t note_expression;
-      clap_event_param_value_t     param_value;
-      clap_event_param_mod_t       param_mod;
-      clap_event_transport_t       time_info;
-      clap_event_note_mask_t       note_mask;
-      clap_event_midi_t            midi;
-      clap_event_midi_sysex_t      midi_sysex;
-      clap_event_midi2_t           midi2;
-   };
-} clap_event_t;
 
 typedef struct clap_event_list {
    void *ctx; // reserved pointer for the list
