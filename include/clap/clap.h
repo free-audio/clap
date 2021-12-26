@@ -46,7 +46,7 @@
 #include "ext/latency.h"
 #include "ext/thread-check.h"
 #include "ext/timer-support.h"
-#include "ext/fd-support.h"
+#include "ext/posix-fd-support.h"
 #include "ext/note-name.h"
 #include "ext/note-ports.h"
 #include "ext/event-filter.h"
