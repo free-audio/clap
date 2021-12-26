@@ -92,9 +92,9 @@ typedef int32_t clap_event_flags;
 typedef struct clap_event_note {
    alignas(4) clap_event_header_t header;
 
-   alignas(4) int32_t port_index;
-   alignas(4) int32_t key;      // 0..127
-   alignas(4) int32_t channel;  // 0..15
+   alignas(2) int16_t port_index;
+   alignas(2) int16_t key;      // 0..127
+   alignas(2) int16_t channel;  // 0..15
    alignas(8) double  velocity; // 0..1
 } clap_event_note_t;
 
@@ -120,14 +120,14 @@ enum {
 typedef int32_t clap_note_expression;
 
 typedef struct clap_event_note_expression {
-   clap_event_header_t header;
+   alignas(4) clap_event_header_t header;
 
    alignas(4) clap_note_expression expression_id;
 
    // target a specific port, key and channel, -1 for global
-   alignas(4) int32_t port_index;
-   alignas(4) int32_t key;
-   alignas(4) int32_t channel;
+   alignas(2) int16_t port_index;
+   alignas(2) int16_t key;
+   alignas(2) int16_t channel;
 
    alignas(8) double value; // see expression for the range
 } clap_event_note_expression_t;
@@ -145,33 +145,33 @@ enum {
 typedef int32_t clap_event_param_flags;
 
 typedef struct clap_event_param_value {
-   clap_event_header_t header;
+   alignas(4) clap_event_header_t header;
 
    // target parameter
    void *cookie;                // @ref clap_param_info.cookie
    alignas(4) clap_id param_id; // @ref clap_param_info.id
 
    // target a specific port, key and channel, -1 for global
-   alignas(4) int32_t port_index;
-   alignas(4) int32_t key;
-   alignas(4) int32_t channel;
+   alignas(2) int16_t port_index;
+   alignas(2) int16_t key;
+   alignas(2) int16_t channel;
 
-   alignas(4) clap_event_param_flags flags;
+   alignas(2) uint16_t flags;
 
    alignas(8) double value;
 } clap_event_param_value_t;
 
 typedef struct clap_event_param_mod {
-   clap_event_header_t header;
+   alignas(4) clap_event_header_t header;
 
    // target parameter
-   void *cookie;                // @ref clap_param_info.cookie
    alignas(4) clap_id param_id; // @ref clap_param_info.id
+   void *cookie;                // @ref clap_param_info.cookie
 
    // target a specific port, key and channel, -1 for global
-   alignas(4) int32_t port_index;
-   alignas(4) int32_t key;
-   alignas(4) int32_t channel;
+   alignas(2) int16_t port_index;
+   alignas(2) int16_t key;
+   alignas(2) int16_t channel;
 
    alignas(8) double amount; // modulation amount
 } clap_event_param_mod_t;
@@ -189,7 +189,7 @@ enum {
 typedef uint32_t clap_transport_flags;
 
 typedef struct clap_event_transport {
-   clap_event_header_t header;
+   alignas(4) clap_event_header_t header;
 
    alignas(4) clap_transport_flags flags;
 
@@ -213,9 +213,9 @@ typedef struct clap_event_transport {
 } clap_event_transport_t;
 
 typedef struct clap_event_note_mask {
-   clap_event_header_t header;
+   alignas(4) clap_event_header_t header;
 
-   uint32_t port_index;
+   alignas(2) uint16_t port_index;
 
    // bitset of active keys:
    // - 11 bits
@@ -231,14 +231,14 @@ typedef struct clap_event_note_mask {
 typedef struct clap_event_midi {
    alignas(4) clap_event_header_t header;
 
-   alignas(4) uint32_t port_index;
+   alignas(2) uint16_t port_index;
    alignas(1) uint8_t data[3];
 } clap_event_midi_t;
 
 typedef struct clap_event_midi_sysex {
    alignas(4) clap_event_header_t header;
 
-   alignas(4) uint32_t port_index;
+   alignas(2) uint16_t port_index;
    const uint8_t *buffer; // midi buffer
    alignas(4) uint32_t size;
 } clap_event_midi_sysex_t;
@@ -246,7 +246,7 @@ typedef struct clap_event_midi_sysex {
 typedef struct clap_event_midi2 {
    alignas(4) clap_event_header_t header;
 
-   alignas(4) uint32_t port_index;
+   alignas(2) uint16_t port_index;
    alignas(4) uint32_t data[4];
 } clap_event_midi2_t;
 

@@ -51,6 +51,7 @@
 #include "ext/note-ports.h"
 #include "ext/event-filter.h"
 #include "ext/thread-pool.h"
+#include "ext/event-registry.h"
 
 #include "ext/draft/preset-load.h"
 #include "ext/draft/quick-controls.h"
