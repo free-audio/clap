@@ -52,10 +52,12 @@ typedef struct clap_plugin {
 
    // Must be called after creating the plugin.
    // If init returns false, the host must destroy the plugin instance.
+   // [main-thread]
    bool (*init)(const struct clap_plugin *plugin);
 
-   /* Free the plugin and its resources.
-    * It is not required to deactivate the plugin prior to this call. */
+   // Free the plugin and its resources.
+   // It is not required to deactivate the plugin prior to this call.
+   // [main-thread & !active]
    void (*destroy)(const struct clap_plugin *plugin);
 
    // Activate and deactivate the plugin.
@@ -64,25 +66,29 @@ typedef struct clap_plugin {
    // the [min, max] range, which is bounded by [1, INT32_MAX].
    // Once activated the latency and port configuration must remain constant, until deactivation.
    //
-   // [main-thread]
+   // [main-thread & !active_state]
    bool (*activate)(const struct clap_plugin *plugin,
                     double                    sample_rate,
                     uint32_t                  min_frames_count,
                     uint32_t                  max_frames_count);
+   // [main-thread & active_state]
    void (*deactivate)(const struct clap_plugin *plugin);
 
-   // Set to true before processing, and to false before sending the plugin to sleep.
-   // [audio-thread]
+   // Call start processing before processing.
+   // [audio-thread & active_state & !processing_state]
    bool (*start_processing)(const struct clap_plugin *plugin);
+
+   // Call stop processing before sending the plugin to sleep.
+   // [audio-thread & active_state & processing_state]
    void (*stop_processing)(const struct clap_plugin *plugin);
 
-   /* process audio, events, ...
-    * [audio-thread] */
+   // process audio, events, ...
+   // [audio-thread & active_state & processing_state]
    clap_process_status (*process)(const struct clap_plugin *plugin, const clap_process_t *process);
 
-   /* Query an extension.
-    * The returned pointer is owned by the plugin.
-    * [thread-safe] */
+   // Query an extension.
+   // The returned pointer is owned by the plugin.
+   // [thread-safe]
    const void *(*get_extension)(const struct clap_plugin *plugin, const char *id);
 
    // Called by the host on the main thread in response to a previous call to:
