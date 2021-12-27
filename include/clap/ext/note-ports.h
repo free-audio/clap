@@ -27,8 +27,8 @@ enum clap_note_dialect {
 
 typedef struct clap_note_port_info {
    alignas(4) clap_id id;                       // stable identifier
-   alignas(4) uint32_t clap_supported_dialects; // see clap_note_dialect
-   alignas(4) uint32_t clap_preferred_dialect;  // clap_note_dialect
+   alignas(4) uint32_t clap_supported_dialects; // bitfield, see clap_note_dialect
+   alignas(4) uint32_t clap_preferred_dialect;  // one value of clap_note_dialect
    alignas(1) char name[CLAP_NAME_SIZE];        // displayable name, i18n?
 } clap_note_port_info_t;
 
