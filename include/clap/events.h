@@ -70,12 +70,6 @@ enum {
    // Uses the note_expression attribute.
    CLAP_EVENT_NOTE_EXPRESSION,
 
-   // Sent by the host to the plugin.
-   // Indicate the current root note, and the set of notes which belongs to the scale or chord.
-   //
-   // uses the note_mask attribute
-   CLAP_EVENT_NOTE_MASK,
-
    // PARAM_VALUE sets the parameter's value; uses param_value attribute
    // PARAM_MOD sets the parameter's modulation amount; uses param_mod attribute
    //
@@ -207,22 +201,6 @@ typedef struct clap_event_transport {
    alignas(2) int16_t tsig_num;   // time signature numerator
    alignas(2) int16_t tsig_denom; // time signature denominator
 } clap_event_transport_t;
-
-typedef struct clap_event_note_mask {
-   alignas(4) clap_event_header_t header;
-
-   alignas(2) uint16_t port_index;
-
-   // bitset of active keys:
-   // - 11 bits
-   // - root note is not part of the bitset
-   // - bit N is: root note + N + 1
-   // 000 0100 0100 -> minor chord
-   // 000 0100 1000 -> major chord
-   // 010 1011 0101 -> locrian scale
-   alignas(2) uint16_t note_mask;
-   alignas(1) uint8_t  root_note; // 0..11, 0 for C
-} clap_event_note_mask_t;
 
 typedef struct clap_event_midi {
    alignas(4) clap_event_header_t header;
