@@ -12,14 +12,31 @@ extern "C" {
 
 #pragma pack(push, CLAP_ALIGN)
 
-static const CLAP_CONSTEXPR uint16_t CLAP_EVENT_SPACE_CORE_ID = 0;
-
 // event header
+// must be the first field of the event
 typedef struct clap_event_header {
    alignas(4) uint32_t time;
    alignas(2) uint16_t space_id;
    alignas(2) uint16_t event_id;
+   alignas(2) uint16_t flags; // see clap_event_flags
 } clap_event_header_t;
+
+// The clap core event space
+static const CLAP_CONSTEXPR uint16_t CLAP_CORE_EVENT_SPACE_ID = 0;
+
+enum clap_event_flags {
+   // indicate a live momentary event
+   CLAP_EVENT_IS_LIVE = 1 << 0,
+
+   // live user adjustment begun
+   CLAP_EVENT_BEGIN_ADJUST = 1 << 1,
+
+   // live user adjustment ended
+   CLAP_EVENT_END_ADJUST = 1 << 2,
+
+   // should record this event be recorded?
+   CLAP_EVENT_SHOULD_RECORD = 1 << 3,
+};
 
 // Some of the following events overlap, a note on can be expressed with:
 // - CLAP_EVENT_NOTE_ON
@@ -70,18 +87,12 @@ enum {
    CLAP_EVENT_PARAM_VALUE,
    CLAP_EVENT_PARAM_MOD,
 
-   CLAP_EVENT_TRANSPORT,   // update the transport info; transport attribute
-   CLAP_EVENT_MIDI,        // raw midi event; midi attribute
-   CLAP_EVENT_MIDI_SYSEX,  // raw midi sysex event; midi_sysex attribute
-   CLAP_EVENT_MIDI2,       // raw midi 2 event; midi2 attribute
+   CLAP_EVENT_TRANSPORT,  // update the transport info; transport attribute
+   CLAP_EVENT_MIDI,       // raw midi event; midi attribute
+   CLAP_EVENT_MIDI_SYSEX, // raw midi sysex event; midi_sysex attribute
+   CLAP_EVENT_MIDI2,      // raw midi 2 event; midi2 attribute
 };
 typedef int32_t clap_event_type;
-
-enum {
-   // Should be set if the events is external to the host, like a live user input
-   CLAP_EVENT_FLAG_IS_LIVE = 1 << 0,
-};
-typedef int32_t clap_event_flags;
 
 /**
  * Note on, off, end and choke events.
@@ -93,8 +104,8 @@ typedef struct clap_event_note {
    alignas(4) clap_event_header_t header;
 
    alignas(2) int16_t port_index;
-   alignas(2) int16_t key;      // 0..127
-   alignas(2) int16_t channel;  // 0..15
+   alignas(2) int16_t key;     // 0..127
+   alignas(2) int16_t channel; // 0..15
    alignas(8) double  velocity; // 0..1
 } clap_event_note_t;
 
@@ -132,18 +143,6 @@ typedef struct clap_event_note_expression {
    alignas(8) double value; // see expression for the range
 } clap_event_note_expression_t;
 
-enum {
-   // live user adjustment begun
-   CLAP_EVENT_PARAM_BEGIN_ADJUST = 1 << 0,
-
-   // live user adjustment ended
-   CLAP_EVENT_PARAM_END_ADJUST = 1 << 1,
-
-   // should record this parameter change and create an automation point?
-   CLAP_EVENT_PARAM_SHOULD_RECORD = 1 << 2,
-};
-typedef int32_t clap_event_param_flags;
-
 typedef struct clap_event_param_value {
    alignas(4) clap_event_header_t header;
 
@@ -155,8 +154,6 @@ typedef struct clap_event_param_value {
    alignas(2) int16_t port_index;
    alignas(2) int16_t key;
    alignas(2) int16_t channel;
-
-   alignas(2) uint16_t flags;
 
    alignas(8) double value;
 } clap_event_param_value_t;
@@ -176,7 +173,7 @@ typedef struct clap_event_param_mod {
    alignas(8) double amount; // modulation amount
 } clap_event_param_mod_t;
 
-enum {
+enum clap_transport_flags {
    CLAP_TRANSPORT_HAS_TEMPO = 1 << 0,
    CLAP_TRANSPORT_HAS_BEATS_TIMELINE = 1 << 1,
    CLAP_TRANSPORT_HAS_SECONDS_TIMELINE = 1 << 2,
@@ -186,12 +183,11 @@ enum {
    CLAP_TRANSPORT_IS_LOOP_ACTIVE = 1 << 6,
    CLAP_TRANSPORT_IS_WITHIN_PRE_ROLL = 1 << 7,
 };
-typedef uint32_t clap_transport_flags;
 
 typedef struct clap_event_transport {
    alignas(4) clap_event_header_t header;
 
-   alignas(4) clap_transport_flags flags;
+   alignas(4) uint32_t flags; // see clap_transport_flags
 
    alignas(8) clap_beattime song_pos_beats;  // position in beats
    alignas(8) clap_sectime song_pos_seconds; // position in seconds
@@ -258,8 +254,10 @@ typedef struct clap_event_list {
    // Don't free the return event, it belongs to the list
    const clap_event_t *(*get)(const struct clap_event_list *list, uint32_t index);
 
-   // Makes a copy of the event
-   void (*push_back)(const struct clap_event_list *list, const clap_event_t *event);
+   // Pushes a copy of the event
+   void (*push_back)(const struct clap_event_list *list,
+                     const clap_event_t           *event,
+                     size_t                        event_size);
 } clap_event_list_t;
 
 #pragma pack(pop)
