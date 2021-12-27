@@ -221,7 +221,7 @@ typedef struct clap_event_note_mask {
    // 000 0100 1000 -> major chord
    // 010 1011 0101 -> locrian scale
    alignas(2) uint16_t note_mask;
-   alignas(1) uint8_t root_note; // 0..11, 0 for C
+   alignas(1) uint8_t  root_note; // 0..11, 0 for C
 } clap_event_note_mask_t;
 
 typedef struct clap_event_midi {
@@ -252,11 +252,11 @@ typedef struct clap_event_list {
    uint32_t (*size)(const struct clap_event_list *list);
 
    // Don't free the return event, it belongs to the list
-   const clap_event_t *(*get)(const struct clap_event_list *list, uint32_t index);
+   const clap_event_header_t *(*get)(const struct clap_event_list *list, uint32_t index);
 
    // Pushes a copy of the event
    void (*push_back)(const struct clap_event_list *list,
-                     const clap_event_t           *event,
+                     const clap_event_header_t    *event,
                      size_t                        event_size);
 } clap_event_list_t;
 
