@@ -7,7 +7,7 @@ project(CLAP C CXX)
 add_library(clap-core INTERFACE)
 target_include_directories(clap-core INTERFACE include)
 
-install(DIRECTORY include DESTINATION "${CMAKE_INSTALL_PREFIX}" OPTIONAL EXCLUDE_FROM_ALL)
+install(DIRECTORY include DESTINATION "." OPTIONAL EXCLUDE_FROM_ALL)
 
 add_executable(clap-compile-test-c EXCLUDE_FROM_ALL src/main.c)
 target_link_libraries(clap-compile-test-c clap-core)
