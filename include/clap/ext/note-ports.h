@@ -19,9 +19,17 @@ extern "C" {
 
 #pragma pack(push, CLAP_ALIGN)
 
+enum clap_note_dialect {
+   CLAP_NOTE_DIALECT_CLAP = 1 << 0,
+   CLAP_NOTE_DIALECT_MIDI = 1 << 1,
+   CLAP_NOTE_DIALECT_MIDI2 = 1 << 2,
+};
+
 typedef struct clap_note_port_info {
-   alignas(4) clap_id id;                // stable identifier
-   alignas(1) char name[CLAP_NAME_SIZE]; // displayable name, i18n?
+   alignas(4) clap_id id;                       // stable identifier
+   alignas(4) uint32_t clap_supported_dialects; // bitfield, see clap_note_dialect
+   alignas(4) uint32_t clap_preferred_dialect;  // one value of clap_note_dialect
+   alignas(1) char name[CLAP_NAME_SIZE];        // displayable name, i18n?
 } clap_note_port_info_t;
 
 // The audio ports scan has to be done while the plugin is deactivated.
