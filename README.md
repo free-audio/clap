@@ -96,8 +96,7 @@ and use to get a basic plugin experience:
 
 ## Examples
 
-- [clap-host](https://github.com/free-audio/clap-host), very simple host
-- [clap-plugins](https://github.com/free-audio/clap-plugins), very simple plugin
+- [clap-examples](https://github.com/free-audio/clap-examples), very simple host and plugins
 - [clap-juce-extension ](https://github.com/free-audio/clap-juce-extension), juce add-on
 
 ## Community related projects
