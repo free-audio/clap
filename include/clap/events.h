@@ -225,7 +225,7 @@ typedef struct clap_event_midi2 {
    alignas(4) uint32_t data[4];
 } clap_event_midi2_t;
 
-// Input event list
+// Input event list, events must be sorted by time.
 typedef struct clap_input_events {
    void *ctx; // reserved pointer for the list
 
@@ -235,7 +235,7 @@ typedef struct clap_input_events {
    const clap_event_header_t *(*get)(const struct clap_input_events *list, uint32_t index);
 } clap_input_events_t;
 
-// Output event list
+// Output event list, events must be sorted by time.
 typedef struct clap_output_events {
    void *ctx; // reserved pointer for the list
 
