@@ -101,7 +101,7 @@ typedef struct clap_event_note {
    alignas(2) int16_t port_index;
    alignas(2) int16_t key;     // 0..127
    alignas(2) int16_t channel; // 0..15
-   alignas(8) double  velocity; // 0..1
+   alignas(8) double velocity; // 0..1
 } clap_event_note_t;
 
 enum {

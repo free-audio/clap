@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "../plugin.h"
 #include "../string-sizes.h"
