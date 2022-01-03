@@ -19,7 +19,7 @@ typedef struct clap_event_header {
    alignas(4) uint32_t time;     // time at which the event happens
    alignas(2) uint16_t space_id; // event space, see clap_host_event_registry
    alignas(2) uint16_t type;     // event type
-   alignas(2) uint16_t flags;    // see clap_event_flags
+   alignas(4) uint32_t flags;    // see clap_event_flags
 } clap_event_header_t;
 
 // The clap core event space
