@@ -225,19 +225,23 @@ typedef struct clap_event_midi2 {
    alignas(4) uint32_t data[4];
 } clap_event_midi2_t;
 
-typedef struct clap_event_list {
+// Input event list
+typedef struct clap_input_events {
    void *ctx; // reserved pointer for the list
 
-   uint32_t (*size)(const struct clap_event_list *list);
+   uint32_t (*size)(const struct clap_input_events *list);
 
    // Don't free the return event, it belongs to the list
-   const clap_event_header_t *(*get)(const struct clap_event_list *list, uint32_t index);
+   const clap_event_header_t *(*get)(const struct clap_input_events *list, uint32_t index);
+} clap_input_events_t;
+
+// Output event list
+typedef struct clap_output_events {
+   void *ctx; // reserved pointer for the list
 
    // Pushes a copy of the event
-   void (*push_back)(const struct clap_event_list *list,
-                     const clap_event_header_t    *event,
-                     size_t                        event_size);
-} clap_event_list_t;
+   void (*push_back)(const struct clap_output_events *list, const clap_event_header_t *event);
+} clap_output_events_t;
 
 #pragma pack(pop)
 

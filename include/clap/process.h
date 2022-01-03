@@ -62,8 +62,8 @@ typedef struct clap_process {
    //
    // If a plugin does not implement clap_plugin_note_ports,
    // then it gets a default note input and output.
-   const clap_event_list_t *in_events;
-   const clap_event_list_t *out_events;
+   const clap_input_events_t *in_events;
+   const clap_output_events_t *out_events;
 } clap_process_t;
 
 #pragma pack(pop)
