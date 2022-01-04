@@ -41,9 +41,13 @@ typedef struct clap_plugin_gui {
    // [main-thread]
    void (*destroy)(const clap_plugin_t *plugin);
 
-   // Set the absolute GUI scaling factor.
-   // [main-thread]
-   void (*set_scale)(const clap_plugin_t *plugin, double scale);
+   // Set the absolute GUI scaling factor, and override any OS info.
+   // If the plugin does not provide this function, then it should work out the scaling factor
+   // itself by querying the OS directly.
+   //
+   // Return false if the plugin can't apply the scaling; true on success.
+   // [main-thread,optional]
+   bool (*set_scale)(const clap_plugin_t *plugin, double scale);
 
    // Get the current size of the plugin UI, with the scaling applied.
    // clap_plugin_gui->create() must have been called prior to asking the size.

@@ -35,6 +35,8 @@ typedef struct clap_plugin_descriptor {
    // - "delay", "reverb", "chorus", "flanger"
    // - "tool", "utility", "glitch"
    //
+   // - "win32-dpi-aware" informs the host that this plugin is dpi-aware on Windows
+   //
    // Some examples:
    // "equalizer;analyzer;stereo;mono"
    // "compressor;analog;character;mono"
