@@ -83,8 +83,18 @@ typedef struct clap_plugin_gui {
 typedef struct clap_host_gui {
    /* Request the host to resize the client area to width, height.
     * Return true on success, false otherwise.
-    * [thread-safe] */
-   bool (*resize)(const clap_host_t *host, uint32_t width, uint32_t height);
+    * [main-thread] */
+   bool (*request_resize)(const clap_host_t *host, uint32_t width, uint32_t height);
+
+   /* Request the host to show the plugin gui.
+    * Return true on success, false otherwise.
+    * [main-thread] */
+   bool (*request_show)(const clap_host_t *host);
+
+   /* Request the host to hide the plugin gui.
+    * Return true on success, false otherwise.
+    * [main-thread] */
+   bool (*request_hide)(const clap_host_t *host);
 } clap_host_gui_t;
 
 #pragma pack(pop)
