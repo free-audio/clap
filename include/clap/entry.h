@@ -13,6 +13,18 @@ extern "C" {
 
 // This interface is the entry point of the dynamic library.
 //
+// CLAP plugins standard search path:
+//
+// Linux
+//   - /usr/lib/clap/
+//   - To Be Defined: ~/.clap or ~/.local/lib/clap/ for user location
+//
+// Windows
+//   - %CommonFilesFolder%/CLAP/
+//
+// MacOS
+//   - /Library/Audio/Plug-Ins/CLAP
+//
 // Every methods must be thread-safe.
 typedef struct clap_plugin_entry {
    clap_version_t clap_version; // initialized to CLAP_VERSION
