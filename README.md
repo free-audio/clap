@@ -79,7 +79,7 @@ and use to get a basic plugin experience:
 - [gui-x11](include/clap/ext/gui-x11.h), x11 specific
 - [gui-free-standing](include/clap/ext/gui-free-standing.h), open the gui without embedding it into the host's window
 - [timer-support](include/clap/ext/timer-support.h), lets the plugin register timer handlers
-- [fd-support](include/clap/ext/fd-support.h), lets the plugin register I/O handlers
+- [posix-fd-support](include/clap/ext/posix-fd-support.h), lets the plugin register I/O handlers
 
 ## Extra extensions
 
