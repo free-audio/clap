@@ -189,9 +189,9 @@ typedef struct clap_plugin_params {
    //
    // [active && !processing : audio-thread]
    // [!active : main-thread]
-   void (*flush)(const clap_plugin_t     *plugin,
-                 const clap_event_list_t *input_parameter_changes,
-                 const clap_event_list_t *output_parameter_changes);
+   void (*flush)(const clap_plugin_t        *plugin,
+                 const clap_input_events_t  *in,
+                 const clap_output_events_t *out);
 } clap_plugin_params_t;
 
 enum {

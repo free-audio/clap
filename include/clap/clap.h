@@ -2,7 +2,7 @@
  * CLAP - CLever Audio Plugin
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~
  *
- * Copyright (c) 2014...2021 Alexandre BIQUE <bique.alexandre@gmail.com>
+ * Copyright (c) 2014...2022 Alexandre BIQUE <bique.alexandre@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -46,11 +46,12 @@
 #include "ext/latency.h"
 #include "ext/thread-check.h"
 #include "ext/timer-support.h"
-#include "ext/fd-support.h"
+#include "ext/posix-fd-support.h"
 #include "ext/note-name.h"
 #include "ext/note-ports.h"
 #include "ext/event-filter.h"
 #include "ext/thread-pool.h"
+#include "ext/event-registry.h"
 
 #include "ext/draft/preset-load.h"
 #include "ext/draft/quick-controls.h"

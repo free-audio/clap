@@ -16,11 +16,8 @@ enum {
    // see clap_plugin_surround to inspect the exact channel layout
    CLAP_CHMAP_SURROUND = 3,
 
-   // FuMa channel ordering
-   CLAP_CHMAP_AMBISONIC_FUMA = 4,
-
-   // ACN channel ordering
-   CLAP_CHMAP_AMBISONIC_ACN = 5,
+   // see clap_plugin_ambisonic to inspect the mapping
+   CLAP_CHMAP_AMBISONIC = 4,
 };
 typedef int32_t clap_chmap;
 

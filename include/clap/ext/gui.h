@@ -41,9 +41,13 @@ typedef struct clap_plugin_gui {
    // [main-thread]
    void (*destroy)(const clap_plugin_t *plugin);
 
-   // Set the absolute GUI scaling factor.
-   // [main-thread]
-   void (*set_scale)(const clap_plugin_t *plugin, double scale);
+   // Set the absolute GUI scaling factor, and override any OS info.
+   // If the plugin does not provide this function, then it should work out the scaling factor
+   // itself by querying the OS directly.
+   //
+   // Return false if the plugin can't apply the scaling; true on success.
+   // [main-thread,optional]
+   bool (*set_scale)(const clap_plugin_t *plugin, double scale);
 
    // Get the current size of the plugin UI, with the scaling applied.
    // clap_plugin_gui->create() must have been called prior to asking the size.
@@ -79,8 +83,18 @@ typedef struct clap_plugin_gui {
 typedef struct clap_host_gui {
    /* Request the host to resize the client area to width, height.
     * Return true on success, false otherwise.
-    * [thread-safe] */
-   bool (*resize)(const clap_host_t *host, uint32_t width, uint32_t height);
+    * [main-thread] */
+   bool (*request_resize)(const clap_host_t *host, uint32_t width, uint32_t height);
+
+   /* Request the host to show the plugin gui.
+    * Return true on success, false otherwise.
+    * [main-thread] */
+   bool (*request_show)(const clap_host_t *host);
+
+   /* Request the host to hide the plugin gui.
+    * Return true on success, false otherwise.
+    * [main-thread] */
+   bool (*request_hide)(const clap_host_t *host);
 } clap_host_gui_t;
 
 #pragma pack(pop)

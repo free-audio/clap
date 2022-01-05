@@ -17,7 +17,7 @@ extern "C" {
 typedef struct clap_plugin_event_filter {
    // Returns true if the plugin is interested in the given event type.
    // [main-thread]
-   bool (*accepts)(const clap_plugin_t *plugin, clap_event_type event_type);
+   bool (*accepts)(const clap_plugin_t *plugin, uint16_t space_id, uint16_t event_type);
 } clap_plugin_event_filter_t;
 
 
