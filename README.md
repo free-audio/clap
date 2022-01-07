@@ -103,4 +103,4 @@ and use to get a basic plugin experience:
 
 - [MIP2](https://github.com/skei/MIP2), host and plugins
 - [clap-sys](https://github.com/glowcoil/clap-sys), rust binding
-- [schwaaa's plugins](https://github.com/schwaaa/clap-plugin), basic framework for prototyping CLAP audio plugins using Dear ImGui as the user interface
+- [schwaaa's plugin](https://github.com/schwaaa/clap-plugin), basic example for prototyping CLAP audio plugins using Dear ImGui as the user interface
