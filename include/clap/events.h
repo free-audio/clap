@@ -142,8 +142,8 @@ typedef struct clap_event_param_value {
    alignas(4) clap_event_header_t header;
 
    // target parameter
-   void *cookie;                // @ref clap_param_info.cookie
    alignas(4) clap_id param_id; // @ref clap_param_info.id
+   void *cookie;                // @ref clap_param_info.cookie
 
    // target a specific port, key and channel, -1 for global
    alignas(2) int16_t port_index;
