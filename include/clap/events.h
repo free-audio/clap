@@ -61,18 +61,18 @@ enum {
    // When using polyphonic modulations, the host has to start voices for its modulators.
    // This message helps the host to track the plugin's voice management.
    //
-   // Those four events use the note attribute.
+   // Those four events use clap_event_note.
    CLAP_EVENT_NOTE_ON,
    CLAP_EVENT_NOTE_OFF,
    CLAP_EVENT_NOTE_CHOKE,
    CLAP_EVENT_NOTE_END,
 
    // Represents a note expression.
-   // Uses the note_expression attribute.
+   // Uses clap_event_note_expression.
    CLAP_EVENT_NOTE_EXPRESSION,
 
-   // PARAM_VALUE sets the parameter's value; uses param_value attribute
-   // PARAM_MOD sets the parameter's modulation amount; uses param_mod attribute
+   // PARAM_VALUE sets the parameter's value; uses clap_event_param_value.
+   // PARAM_MOD sets the parameter's modulation amount; uses clap_event_param_mod.
    //
    // The value heard is: param_value + param_mod.
    //
@@ -82,10 +82,10 @@ enum {
    CLAP_EVENT_PARAM_VALUE,
    CLAP_EVENT_PARAM_MOD,
 
-   CLAP_EVENT_TRANSPORT,  // update the transport info; transport attribute
-   CLAP_EVENT_MIDI,       // raw midi event; midi attribute
-   CLAP_EVENT_MIDI_SYSEX, // raw midi sysex event; midi_sysex attribute
-   CLAP_EVENT_MIDI2,      // raw midi 2 event; midi2 attribute
+   CLAP_EVENT_TRANSPORT,  // update the transport info; clap_event_transport
+   CLAP_EVENT_MIDI,       // raw midi event; clap_event_midi
+   CLAP_EVENT_MIDI_SYSEX, // raw midi sysex event; clap_event_midi_sysex
+   CLAP_EVENT_MIDI2,      // raw midi 2 event; clap_event_midi2
 };
 typedef int32_t clap_event_type;
 
@@ -218,6 +218,8 @@ typedef struct clap_event_midi_sysex {
    alignas(4) uint32_t size;
 } clap_event_midi_sysex_t;
 
+// While it is possible to use a series of midi2 event to send a sysex,
+// prefer clap_event_midi if possible for efficiency.
 typedef struct clap_event_midi2 {
    alignas(4) clap_event_header_t header;
 
