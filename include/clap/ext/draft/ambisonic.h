@@ -22,9 +22,17 @@ enum {
    CLAP_AMBISONIC_ACN = 1,
 };
 
+enum {
+   CLAP_AMBISONIC_NORMALIZATION_MAXN = 0,
+   CLAP_AMBISONIC_NORMALIZATION_SN3D = 1,
+   CLAP_AMBISONIC_NORMALIZATION_N3D = 2,
+   CLAP_AMBISONIC_NORMALIZATION_SN2D = 3,
+   CLAP_AMBISONIC_NORMALIZATION_N2D = 4,
+};
+
 typedef struct clap_ambisonic_info {
    alignas(4) uint32_t ordering;
-   alignas(1) bool is_normalized;
+   alignas(4) uint32_t normalization;
 } clap_ambisonic_info_t;
 
 typedef struct clap_plugin_ambisonic {
