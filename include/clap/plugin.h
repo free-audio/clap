@@ -24,8 +24,10 @@ typedef struct clap_plugin_descriptor {
    const char *version;     // eg: "1.4.4"
    const char *description; // eg: "The spirit of analogue"
 
-   // Arbitrary list of keywords, separated by `;'
+   // Arbitrary list of keywords.
    // They can be matched by the host search engine and used to classify the plugin.
+   //
+   // The array of pointers must be null terminated.
    //
    // Some pre-defined keywords:
    // - "instrument", "audio_effect", "note_effect", "analyzer"
@@ -38,13 +40,13 @@ typedef struct clap_plugin_descriptor {
    // - "win32-dpi-aware" informs the host that this plugin is dpi-aware on Windows
    //
    // Some examples:
-   // "equalizer;analyzer;stereo;mono"
-   // "compressor;analog;character;mono"
-   // "reverb;plate;stereo"
-   // "reverb;spring;surround"
-   // "kick;analog;808;roland;drum;mono;instrument"
-   // "instrument;chiptune;gameboy;nintendo;sega;mono"
-   const char *features;
+   // - equalizer, analyzer, stereo, mono
+   // - compressor, analog, character, mono
+   // - reverb, plate, stereo
+   // - reverb, spring, surround
+   // - kick, analog, 808, roland, drum, mono, instrument
+   // - instrument, chiptune, gameboy, nintendo, sega, mono
+   const char **features;
 } clap_plugin_descriptor_t;
 
 typedef struct clap_plugin {
