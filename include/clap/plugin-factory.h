@@ -15,8 +15,7 @@ extern "C" {
 // It is very important to be able to scan the plugin as quickly as possible.
 //
 // If the content of the factory may change due to external events, like the user installed
-// additional modules for this plugin, then use clap_plugin_invalidation_factory.
-struct clap_plugin_factory {
+typedef struct clap_plugin_factory {
    /* Get the number of plugins available.
     * [thread-safe] */
    uint32_t (*get_plugin_count)(const struct clap_plugin_factory *factory);
@@ -36,7 +35,7 @@ struct clap_plugin_factory {
    const clap_plugin_t *(*create_plugin)(const struct clap_plugin_factory *factory,
                                          const clap_host_t                *host,
                                          const char                       *plugin_id);
-};
+} clap_plugin_factory_t;
 
 #pragma pack(pop)
 
