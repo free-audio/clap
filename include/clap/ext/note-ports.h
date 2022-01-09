@@ -67,6 +67,10 @@ enum {
 };
 
 typedef struct clap_host_note_ports {
+   // Query which dialects the host supports
+   // [main-thread]
+   uint32_t (*supported_dialects)(const clap_host_t *host);
+
    // Rescan the full list of audio ports according to the flags.
    // [main-thread]
    void (*rescan)(const clap_host_t *host, uint32_t flags);
