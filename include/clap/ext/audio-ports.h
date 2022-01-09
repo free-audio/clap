@@ -8,7 +8,8 @@
 ///
 /// This extension provides a way for the plugin to describe its current audio ports.
 ///
-/// If the plugin does not implement this extension, it will have a default stereo input and output.
+/// If the plugin does not implement this extension, it will have a default 32 bits stereo input and output.
+/// This makes 32 bit support a requirement for both plugin and host.
 ///
 /// The plugin is only allowed to change its ports configuration while it is deactivated.
 
@@ -20,18 +21,31 @@ extern "C" {
 
 #pragma pack(push, CLAP_ALIGN)
 
+enum {
+   // This port main audio input or output.
+   // There can be only one main input and main output.
+   CLAP_AUDIO_PORT_IS_MAIN = 1 << 0,
+
+   // Indicates that the host can use 64 bits audio with this port
+   CLAP_AUDIO_PORTS_SUPPORT_64BITS = 1 << 1,
+
+   // Indicates that the host should use 64 bits audio with this port.
+   // For this port, the extra precision will lead to better processing.
+   CLAP_AUDIO_PORTS_PREFERS_64BITS = (1 << 2) | CLAP_AUDIO_PORTS_SUPPORT_64BITS,
+};
+
 typedef struct clap_audio_port_info {
    alignas(4) clap_id id;                // stable identifier
    alignas(1) char name[CLAP_NAME_SIZE]; // displayable name
 
+   alignas(4) uint32_t flags;
    alignas(4) uint32_t channel_count;
    alignas(4) clap_chmap channel_map;
-   alignas(4) uint32_t sample_size; // 32 for float and 64 for double
 
-   alignas(1) bool is_main;  // there can only be 1 main input and output
-   alignas(1) bool is_cv;    // control voltage
-   alignas(1) bool in_place; // if true the daw can use the same buffer for input
-                             // and output, only for main input to main output
+   // in-place processing: allow the host to use the same buffer for input and output
+   // if supported set the pair port id.
+   // if not supported set to CLAP_INVALID_ID
+   alignas(4) clap_id in_place_pair;
 } clap_audio_port_info_t;
 
 // The audio ports scan has to be done while the plugin is deactivated.
@@ -60,11 +74,8 @@ enum {
 };
 
 typedef struct clap_host_audio_ports {
-   // [main-thread]
-   uint32_t (*get_preferred_sample_size)(const clap_host_t *host);
-
    // Rescan the full list of audio ports according to the flags.
-   // [main-thread]
+   // [main-thread,!active]
    void (*rescan)(const clap_host_t *host, uint32_t flags);
 } clap_host_audio_ports_t;
 
