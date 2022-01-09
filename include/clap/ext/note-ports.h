@@ -20,9 +20,17 @@ extern "C" {
 #pragma pack(push, CLAP_ALIGN)
 
 enum clap_note_dialect {
+   // Uses clap_event_note and clap_event_note_expression.
+   // Default if the port info are not provided or inspected.
    CLAP_NOTE_DIALECT_CLAP = 1 << 0,
+
+   // Uses clap_event_midi, no polyphonic expression
    CLAP_NOTE_DIALECT_MIDI = 1 << 1,
+
+   // Uses clap_event_midi, with polyphonic expression
    CLAP_NOTE_DIALECT_MIDI_MPE = 1 << 2,
+
+   // Uses clap_event_midi2
    CLAP_NOTE_DIALECT_MIDI2 = 1 << 3,
 };
 
