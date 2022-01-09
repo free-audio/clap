@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include "../plugin.h"
-#include "../chmap.h"
 #include "../string-sizes.h"
 
 /// @page Audio Ports
@@ -14,6 +13,8 @@
 /// The plugin is only allowed to change its ports configuration while it is deactivated.
 
 static CLAP_CONSTEXPR const char CLAP_EXT_AUDIO_PORTS[] = "clap.audio-ports";
+static CLAP_CONSTEXPR const char CLAP_PORT_MONO[] = "mono";
+static CLAP_CONSTEXPR const char CLAP_PORT_STEREO[] = "stereo";
 
 #ifdef __cplusplus
 extern "C" {
@@ -26,12 +27,8 @@ enum {
    // There can be only one main input and main output.
    CLAP_AUDIO_PORT_IS_MAIN = 1 << 0,
 
-   // Indicates that the host can use 64 bits audio with this port
-   CLAP_AUDIO_PORTS_SUPPORT_64BITS = 1 << 1,
-
-   // Indicates that the host should use 64 bits audio with this port.
-   // For this port, the extra precision will lead to better processing.
-   CLAP_AUDIO_PORTS_PREFERS_64BITS = (1 << 2) | CLAP_AUDIO_PORTS_SUPPORT_64BITS,
+   // The prefers 64 bits audio with this port.
+   CLAP_AUDIO_PORTS_PREFERS_64BITS = 1 << 1,
 };
 
 typedef struct clap_audio_port_info {
@@ -40,7 +37,17 @@ typedef struct clap_audio_port_info {
 
    alignas(4) uint32_t flags;
    alignas(4) uint32_t channel_count;
-   alignas(4) clap_chmap channel_map;
+
+   // If null or empty then it is unspecified (arbitrary audio).
+   // This filed can be compared against:
+   // - CLAP_PORT_MONO
+   // - CLAP_PORT_STEREO
+   // - CLAP_PORT_SURROUND (defined in the surround extension)
+   // - CLAP_PORT_AMBISONIC (defined in the ambisonic extension)
+   // - CLAP_PORT_CV (defined in the cv extension)
+   //
+   // An extension can provide its own port type and way to inspect the channels.
+   const char *port_type;
 
    // in-place processing: allow the host to use the same buffer for input and output
    // if supported set the pair port id.

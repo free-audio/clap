@@ -6,6 +6,8 @@
 
 static CLAP_CONSTEXPR const char CLAP_EXT_AMBISONIC[] = "clap.ambisonic.draft/0";
 
+static CLAP_CONSTEXPR const char CLAP_PORT_AMBISONIC[] = "ambisonic";
+
 #ifdef __cplusplus
 extern "C" {
 #endif

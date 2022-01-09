@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../../plugin.h"
-#include "../../chmap.h"
 #include "../../color.h"
 #include "../../string-sizes.h"
 
@@ -19,7 +18,7 @@ typedef struct clap_track_info {
    alignas(1) char         name[CLAP_NAME_SIZE];
    alignas(1) char         path[CLAP_MODULE_SIZE]; // Like "/group1/group2/drum-machine/drum-pad-13"
    alignas(4) int32_t      channel_count;
-   alignas(4) clap_chmap   channel_map;
+   const char             *audio_port_type;
    alignas(4) clap_color_t color;
    alignas(4) bool         is_return_track;
 } clap_track_info_t;

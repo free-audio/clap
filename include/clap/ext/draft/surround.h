@@ -26,6 +26,8 @@
 
 static CLAP_CONSTEXPR const char CLAP_EXT_SURROUND[] = "clap.surround.draft/1";
 
+static CLAP_CONSTEXPR const char CLAP_PORT_SURROUND[] = "surround";
+
 #ifdef __cplusplus
 extern "C" {
 #endif

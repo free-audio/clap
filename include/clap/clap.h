@@ -60,6 +60,8 @@
 #include "ext/draft/file-reference.h"
 #include "ext/draft/midi-mappings.h"
 #include "ext/draft/surround.h"
+#include "ext/draft/cv.h"
+#include "ext/draft/ambisonic.h"
 
 #include "converters/vst2-converter.h"
 #include "converters/vst3-converter.h"

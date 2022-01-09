@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../chmap.h"
 #include "../string-sizes.h"
 #include "../plugin.h"
 
@@ -37,11 +36,11 @@ typedef struct clap_audio_ports_config {
 
    // main input info
    alignas(4) uint32_t input_channel_count;
-   alignas(4) clap_chmap input_channel_map;
+   const char *input_port_type;
 
    // main output info
    alignas(4) uint32_t output_channel_count;
-   alignas(4) clap_chmap output_channel_map;
+   const char * output_port_type;
 } clap_audio_ports_config_t;
 
 // The audio ports config scan has to be done while the plugin is deactivated.
