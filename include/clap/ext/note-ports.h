@@ -22,7 +22,8 @@ extern "C" {
 enum clap_note_dialect {
    CLAP_NOTE_DIALECT_CLAP = 1 << 0,
    CLAP_NOTE_DIALECT_MIDI = 1 << 1,
-   CLAP_NOTE_DIALECT_MIDI2 = 1 << 2,
+   CLAP_NOTE_DIALECT_MIDI_MPE = 1 << 2,
+   CLAP_NOTE_DIALECT_MIDI2 = 1 << 3,
 };
 
 typedef struct clap_note_port_info {
