@@ -11,10 +11,11 @@ extern "C" {
 #pragma pack(push, CLAP_ALIGN)
 
 enum {
-   // Default setting, used to play "realtime"
+   // Default setting, for "realtime" processing
    CLAP_RENDER_REALTIME = 0,
 
-   // Used while rendering the song; no realtime pressure
+   // For processing without realtime pressure
+   // The plugin may use more expensive algorithms for higher sound quality.
    CLAP_RENDER_OFFLINE = 1,
 };
 typedef int32_t clap_plugin_render_mode;
@@ -25,8 +26,14 @@ typedef int32_t clap_plugin_render_mode;
 // If this information does not influence your rendering code, then don't
 // implement this extension.
 typedef struct clap_plugin_render {
+   // Returns true if the plugin has an hard requirement to process in real-time.
+   // This is especially useful for plugin acting as a proxy to an hardware device.
    // [main-thread]
-   void (*set)(const clap_plugin_t *plugin, clap_plugin_render_mode mode);
+   bool (*has_hard_realtime_requirement)(const clap_plugin_t *plugin);
+
+   // Returns true if the rendering mode could be applied.
+   // [main-thread]
+   bool (*set)(const clap_plugin_t *plugin, clap_plugin_render_mode mode);
 } clap_plugin_render_t;
 
 #pragma pack(pop)
