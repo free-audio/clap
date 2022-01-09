@@ -162,7 +162,7 @@ typedef struct clap_plugin_params {
    // Copies the parameter's info to param_info and returns true on success.
    // [main-thread]
    bool (*get_info)(const clap_plugin_t *plugin,
-                    int32_t              param_index,
+                    uint32_t             param_index,
                     clap_param_info_t   *param_info);
 
    // Gets the parameter plain value.
