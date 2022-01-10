@@ -219,7 +219,7 @@ typedef struct clap_event_midi_sysex {
 } clap_event_midi_sysex_t;
 
 // While it is possible to use a series of midi2 event to send a sysex,
-// prefer clap_event_midi if possible for efficiency.
+// prefer clap_event_midi_sysex if possible for efficiency.
 typedef struct clap_event_midi2 {
    alignas(4) clap_event_header_t header;
 
