@@ -17,13 +17,16 @@ extern "C" {
 //
 // Linux
 //   - /usr/lib/clap/
-//   - To Be Defined: ~/.clap or ~/.local/lib/clap/ for user location
+//   - ~/.clap
+//     `-> ~/.local/lib/clap/ is considered, see https://github.com/free-audio/clap/issues/46
 //
 // Windows
 //   - %CommonFilesFolder%/CLAP/
+//   - %LOCALAPPDATA%/Programs/Common/VST3/
 //
 // MacOS
 //   - /Library/Audio/Plug-Ins/CLAP
+//   - ~/Library/Audio/Plug-Ins/CLAP
 //
 // Every methods must be thread-safe.
 typedef struct clap_plugin_entry {
