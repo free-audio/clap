@@ -41,7 +41,7 @@ typedef struct clap_note_port_info {
    alignas(1) char name[CLAP_NAME_SIZE];        // displayable name, i18n?
 } clap_note_port_info_t;
 
-// The audio ports scan has to be done while the plugin is deactivated.
+// The note ports scan has to be done while the plugin is deactivated.
 typedef struct clap_plugin_note_ports {
    // number of ports, for either input or output
    // [main-thread]
@@ -71,7 +71,7 @@ typedef struct clap_host_note_ports {
    // [main-thread]
    uint32_t (*supported_dialects)(const clap_host_t *host);
 
-   // Rescan the full list of audio ports according to the flags.
+   // Rescan the full list of note ports according to the flags.
    // [main-thread]
    void (*rescan)(const clap_host_t *host, uint32_t flags);
 } clap_host_note_ports_t;
