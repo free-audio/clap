@@ -191,13 +191,13 @@ typedef struct clap_event_transport {
    alignas(8) double tempo_inc; // tempo increment for each samples and until the next
                                 // time info event
 
-   alignas(8) clap_beattime bar_start; // start pos of the current bar
-   alignas(4) int32_t bar_number;      // bar at song pos 0 has the number 0
-
    alignas(8) clap_beattime loop_start_beats;
    alignas(8) clap_beattime loop_end_beats;
    alignas(8) clap_sectime loop_start_seconds;
    alignas(8) clap_sectime loop_end_seconds;
+
+   alignas(8) clap_beattime bar_start; // start pos of the current bar
+   alignas(4) int32_t bar_number;      // bar at song pos 0 has the number 0
 
    alignas(2) int16_t tsig_num;   // time signature numerator
    alignas(2) int16_t tsig_denom; // time signature denominator
