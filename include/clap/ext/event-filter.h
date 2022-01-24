@@ -14,6 +14,8 @@ extern "C" {
 // in.
 // The host will cache the set of accepted events before activating the plugin.
 // The set of accepted events can't change while the plugin is active.
+//
+// If this extension is not provided by the plugin, then all events are accepted.
 typedef struct clap_plugin_event_filter {
    // Returns true if the plugin is interested in the given event type.
    // [main-thread]
