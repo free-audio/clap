@@ -51,7 +51,7 @@ typedef struct clap_process {
    // If a plugin does not implement clap_plugin_audio_ports,
    // then it gets a default stereo input and output.
    const clap_audio_buffer_t *audio_inputs;
-   const clap_audio_buffer_t *audio_outputs;
+   clap_audio_buffer_t *audio_outputs;
    alignas(4) uint32_t audio_inputs_count;
    alignas(4) uint32_t audio_outputs_count;
 
