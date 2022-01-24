@@ -8,6 +8,23 @@ extern "C" {
 
 #pragma pack(push, CLAP_ALIGN)
 
+// Sample code for reading a stereo buffer:
+//
+// bool isLeftConstant = (buffer->constant_mask & (1 << 0)) != 0;
+// bool isRightConstant = (buffer->constant_mask & (1 << 1)) != 0;
+//
+// for (int i = 0; i < N; ++i) {
+//    float l = data32[0][i * isLeftConstant];
+//    float r = data32[1][i * isRightConstant];
+// }
+//
+// Note: checking the constant mask is optional, and this implies that
+// the buffer must be filled with the constant value.
+// Rationale: if a buffer reader doesn't check the constant mask, then it may
+// process garbage samples and in result, garbage samples may be transmitted
+// to the audio interface with all the bad consequences it can have.
+//
+// The constant mask is a hint.
 typedef struct clap_audio_buffer {
    // Either data32 or data64 pointer will be set.
    float  **data32;
