@@ -17,7 +17,8 @@ typedef struct clap_vst3_converter {
 
    // [main-thread]
    bool (*convert_state)(const struct clap_vst3_converter *converter,
-                         const clap_istream_t             *vst3,
+                         const clap_istream_t             *vst3_processor,
+                         const clap_istream_t             *vst3_editor,
                          const clap_ostream_t             *clap);
 
    // converts the vst3 param id and normalized value to clap param id and
