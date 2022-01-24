@@ -12,7 +12,9 @@ extern "C" {
 
 // This interface provide all the tool to convert a vst3 plugin instance into a clap plugin instance
 typedef struct clap_vst3_converter {
-   const char *vst3_plugin_id;
+   // The VST FUID can be constructed by:
+   // Steinberg::FUID::fromTUID(conv->vst3_plugin_tuid);
+   const int8_t vst3_plugin_tuid[16];
    const char *clap_plugin_id;
 
    // [main-thread]
