@@ -70,9 +70,9 @@
 /// - if the plugin is activated call clap_host->restart()
 /// - once the plugin isn't active:
 ///   - apply the new state
-///   - call clap_host_params->rescan(CLAP_PARAM_RESCAN_ALL)
-///   - if a parameter is created with an id that may have been used before,
+///   - if a parameter is gone or is created with an id that may have been used before,
 ///     call clap_host_params.clear(host, param_id, CLAP_PARAM_CLEAR_ALL)
+///   - call clap_host_params->rescan(CLAP_PARAM_RESCAN_ALL)
 
 static CLAP_CONSTEXPR const char CLAP_EXT_PARAMS[] = "clap.params";
 
