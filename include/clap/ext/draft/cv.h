@@ -16,9 +16,9 @@ extern "C" {
 
 enum {
    // TODO: standardize values?
-   CLAP_CV_GATE = 0,
-   CLAP_CV_PITCH = 1,
-   CLAP_CV_VALUE = 2,
+   CLAP_CV_VALUE = 0,
+   CLAP_CV_GATE = 1,
+   CLAP_CV_PITCH = 2,
 };
 
 typedef struct clap_plugin_cv {
