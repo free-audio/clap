@@ -21,9 +21,9 @@
 ///
 /// When the plugin changes a parameter value, it must inform the host.
 /// It will send @ref CLAP_EVENT_PARAM_VALUE event during process() or flush().
-/// - set the flag CLAP_EVENT_PARAM_BEGIN_ADJUST to mark the begining of automation recording
-/// - set the flag CLAP_EVENT_PARAM_END_ADJUST to mark the end of automation recording
-/// - set the flag CLAP_EVENT_PARAM_SHOULD_RECORD if the event should be recorded
+/// - set the flag CLAP_EVENT_BEGIN_ADJUST to mark the begining of automation recording
+/// - set the flag CLAP_EVENT_END_ADJUST to mark the end of automation recording
+/// - set the flag CLAP_EVENT_SHOULD_RECORD if the event should be recorded
 ///
 /// @note MIDI CCs are a tricky because you may not know when the parameter adjustment ends.
 /// Also if the hosts records incoming MIDI CC and parameter change automation at the same time,
@@ -55,7 +55,7 @@
 /// - if the plugin is not processing, call clap_host_params->request_flush() or
 ///   clap_host->request_process().
 /// - send an automation event and don't forget to set begin_adjust, end_adjust and should_record
-///   attributes
+///   flags
 /// - the plugin is responsible to send the parameter value to its audio processor
 ///
 /// IV. Turning a knob via automation
@@ -70,9 +70,9 @@
 /// - if the plugin is activated call clap_host->restart()
 /// - once the plugin isn't active:
 ///   - apply the new state
-///   - call clap_host_params->rescan(CLAP_PARAM_RESCAN_ALL)
-///   - if a parameter is created with an id that may have been used before,
+///   - if a parameter is gone or is created with an id that may have been used before,
 ///     call clap_host_params.clear(host, param_id, CLAP_PARAM_CLEAR_ALL)
+///   - call clap_host_params->rescan(CLAP_PARAM_RESCAN_ALL)
 
 static CLAP_CONSTEXPR const char CLAP_EXT_PARAMS[] = "clap.params";
 
@@ -121,6 +121,14 @@ enum {
    // A simple example would be a DC Offset, changing it will change the output signal and must be
    // processed.
    CLAP_PARAM_REQUIRES_PROCESS = 1 << 9,
+
+   // The host should not record and play automation for this parameter.
+   // Though, the host can send live user changes for this parameter.
+   //
+   // If this parameters affect the internal processing structure of the plugin, ie: max delay, fft
+   // size, ... and the plugins needs to re-allocate its working buffers, then it should call
+   // host->request_restart(), and perform the change once the plugin is re-activated.
+   CLAP_PARAM_NOT_AUTOMATABLE = 1 << 10,
 };
 typedef uint32_t clap_param_info_flags;
 

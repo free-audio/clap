@@ -22,7 +22,7 @@ extern "C" {
 //
 // Windows
 //   - %CommonFilesFolder%/CLAP/
-//   - %LOCALAPPDATA%/Programs/Common/VST3/
+//   - %LOCALAPPDATA%/Programs/Common/CLAP/
 //
 // MacOS
 //   - /Library/Audio/Plug-Ins/CLAP
