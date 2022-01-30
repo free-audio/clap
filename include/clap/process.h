@@ -21,6 +21,10 @@ enum {
    // Processing succeed, keep processing if the output is not quiet.
    CLAP_PROCESS_CONTINUE_IF_NOT_QUIET = 2,
 
+   // Rely upon the plugin's tail to determine if the plugin should continue to process.
+   // see clap_plugin_tail
+   CLAP_PROCESS_TAIL,
+
    // Processing succeed, but no more processing is required,
    // until next event or variation in audio input.
    CLAP_PROCESS_SLEEP = 3,
