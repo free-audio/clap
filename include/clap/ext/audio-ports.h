@@ -70,19 +70,34 @@ typedef struct clap_plugin_audio_ports {
 } clap_plugin_audio_ports_t;
 
 enum {
-   // The ports have changed, the host shall perform a full scan of the ports.
-   // This flag can only be used if the plugin is not active.
-   // If the plugin active, call host->request_restart() and then call rescan()
-   // when the host calls deactivate()
-   CLAP_AUDIO_PORTS_RESCAN_ALL = 1 << 0,
-
    // The ports name did change, the host can scan them right away.
-   CLAP_AUDIO_PORTS_RESCAN_NAMES = 1 << 1,
+   CLAP_AUDIO_PORTS_RESCAN_NAMES = 1 << 0,
+
+   // [!active] The flags did change
+   CLAP_AUDIO_PORTS_RESCAN_FLAGS = 1 << 1,
+
+   // [!active] The channel_count did change
+   CLAP_AUDIO_PORTS_RESCAN_CHANNEL_COUNT = 1 << 2,
+
+   // [!active] The port type did change
+   CLAP_AUDIO_PORTS_RESCAN_PORT_TYPE = 1 << 3,
+
+   // [!active] The in-place pair did change, this requires.
+   CLAP_AUDIO_PORTS_RESCAN_IN_PLACE_PAIR = 1 << 4,
+
+   // [!active] The list ports of ports have changed: entries have been removed/added.
+   CLAP_AUDIO_PORTS_RESCAN_LIST = 1 << 5,
 };
 
 typedef struct clap_host_audio_ports {
+   // Checks if the host allows a plugin to change a given aspect of the audio ports definition.
+   // [main-thread]
+   bool (*is_rescan_flag_supported)(uint32_t flag);
+
    // Rescan the full list of audio ports according to the flags.
-   // [main-thread,!active]
+   // It is illegal to ask the host to rescan with a flag that is not supported.
+   // Certain flags require the plugin to be de-activated.
+   // [main-thread]
    void (*rescan)(const clap_host_t *host, uint32_t flags);
 } clap_host_audio_ports_t;
 
