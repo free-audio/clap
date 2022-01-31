@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-#pragma pack(push)
+#pragma pack(push, CLAP_ALIGN)
 
 typedef struct clap_plugin_invalidation_source {
    // Directory containing the file(s) to scan
