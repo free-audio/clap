@@ -26,7 +26,8 @@
       "configurePreset": "ninja",
       "displayName": "Build ninja-release",
       "description": "Build ninja Release configuration",
-      "configuration": "RelWithDebInfo"
+      "configuration": "RelWithDebInfo",
+      "targets": ["clap-tests"]
     }
   ],
   "testPresets": [
