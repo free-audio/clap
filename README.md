@@ -13,6 +13,17 @@
 
 **CL**ever **A**udio **P**lugin.
 
+- [Learn about CLAP](#learn-about-clap)
+  - [Entry point](#entry-point)
+  - [Extensions](#extensions)
+  - [Fundamental extensions](#fundamental-extensions)
+  - [GUI extensions](#gui-extensions)
+  - [Extra extensions](#extra-extensions)
+- [Resources](#resources)
+  - [Programming Language Bingings](#programming-language-bingings)
+  - [Examples](#examples)
+  - [Community related projects](#community-related-projects)
+
 # Learn about CLAP
 
 To work with clap, include [clap/clap.h](include/clap/clap.h).
@@ -93,6 +104,8 @@ and use to get a basic plugin experience:
 - [check-for-update](include/clap/ext/draft/check-for-update.h), check if there is a new version of a plugin
 - [audio-ports-config](include/clap/ext/audio-ports-config.h), simple list of possible configurations
 - [surround](include/clap/ext/draft/surround.h), inspect the surround channel mapping
+
+# Resources
 
 ## Programming Language Bingings
 
