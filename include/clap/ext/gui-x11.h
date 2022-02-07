@@ -10,6 +10,7 @@ extern "C" {
 
 #pragma pack(push, CLAP_ALIGN)
 
+// size will be in physical pixels
 typedef struct clap_plugin_gui_x11 {
    // Use the protocol XEmbed
    // https://specifications.freedesktop.org/xembed-spec/xembed-spec-latest.html

@@ -13,6 +13,7 @@ extern "C" {
 // we don't want to include windows.h from this file.
 typedef void *clap_hwnd;
 
+// size will be in physical pixels
 typedef struct clap_plugin_gui_win32 {
    // [main-thread]
    bool (*attach)(const clap_plugin_t *plugin, clap_hwnd window);

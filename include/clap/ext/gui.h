@@ -37,6 +37,8 @@ extern "C" {
 
 #pragma pack(push, CLAP_ALIGN)
 
+// Size (width, height) is in pixels; the corresponding windowing system extension is
+// responsible to define if it is physical pixels or logical pixels.
 typedef struct clap_plugin_gui {
    // Create and allocate all resources necessary for the gui.
    // After this call, the GUI is ready to be shown but it is not yet visible.
@@ -55,7 +57,7 @@ typedef struct clap_plugin_gui {
    // [main-thread,optional]
    bool (*set_scale)(const clap_plugin_t *plugin, double scale);
 
-   // Get the current size of the plugin UI, in physical pixels.
+   // Get the current size of the plugin UI.
    // clap_plugin_gui->create() must have been called prior to asking the size.
    // [main-thread]
    bool (*get_size)(const clap_plugin_t *plugin, uint32_t *width, uint32_t *height);

@@ -10,6 +10,7 @@ extern "C" {
 
 #pragma pack(push, CLAP_ALIGN)
 
+// size will be in logical pixels
 typedef struct clap_plugin_gui_cocoa {
    // [main-thread]
    bool (*attach)(const clap_plugin_t *plugin, void *nsView);
