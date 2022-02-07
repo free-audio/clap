@@ -122,13 +122,16 @@ enum {
    // processed.
    CLAP_PARAM_REQUIRES_PROCESS = 1 << 9,
 
-   // The host should not record and play automation for this parameter.
-   // Though, the host can send live user changes for this parameter.
+   // When set:
+   // - automation can be recorded
+   // - automation can be played back
+   //
+   // The host can send live user changes for this parameter regardless of this flag.
    //
    // If this parameters affect the internal processing structure of the plugin, ie: max delay, fft
    // size, ... and the plugins needs to re-allocate its working buffers, then it should call
    // host->request_restart(), and perform the change once the plugin is re-activated.
-   CLAP_PARAM_NOT_AUTOMATABLE = 1 << 10,
+   CLAP_PARAM_IS_AUTOMATABLE = 1 << 10,
 };
 typedef uint32_t clap_param_info_flags;
 
