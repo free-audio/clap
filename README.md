@@ -13,6 +13,17 @@
 
 **CL**ever **A**udio **P**lugin.
 
+- [Learn about CLAP](#learn-about-clap)
+  - [Entry point](#entry-point)
+  - [Extensions](#extensions)
+  - [Fundamental extensions](#fundamental-extensions)
+  - [GUI extensions](#gui-extensions)
+  - [Extra extensions](#extra-extensions)
+- [Resources](#resources)
+  - [Programming Language Bingings](#programming-language-bingings)
+  - [Examples](#examples)
+  - [Community related projects](#community-related-projects)
+
 # Learn about CLAP
 
 To work with clap, include [clap/clap.h](include/clap/clap.h).
@@ -94,13 +105,20 @@ and use to get a basic plugin experience:
 - [audio-ports-config](include/clap/ext/audio-ports-config.h), simple list of possible configurations
 - [surround](include/clap/ext/draft/surround.h), inspect the surround channel mapping
 
+# Resources
+
+## Programming Language Bingings
+
+- [clap-sys](https://github.com/glowcoil/clap-sys), rust binding
+- [CLAP-for-Delphi](https://github.com/Bremmers/CLAP-for-Delphi), Delphi binding
+
 ## Examples
 
-- [clap-examples](https://github.com/free-audio/clap-examples), very simple host and plugins
-- [clap-juce-extension ](https://github.com/free-audio/clap-juce-extension), juce add-on
+- [clap-host](https://github.com/free-audio/clap-host), very simple host
+- [clap-plugins](https://github.com/free-audio/clap-plugins), very simple plugins
 
 ## Community related projects
 
+- [clap-juce-extension](https://github.com/free-audio/clap-juce-extension), juce add-on
 - [MIP2](https://github.com/skei/MIP2), host and plugins
-- [clap-sys](https://github.com/glowcoil/clap-sys), rust binding
 - [schwaaa's plugin](https://github.com/schwaaa/clap-plugin), basic example for prototyping CLAP audio plugins using Dear ImGui as the user interface
