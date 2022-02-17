@@ -66,12 +66,11 @@ typedef struct clap_plugin_gui {
    bool (*can_resize)(const clap_plugin_t *plugin);
 
    // If the plugin gui is resizable, then the plugin will calculate the closest
-   // usable size to the given arguments.
-   // The scaling is applied.
+   // usable size which fits in the given size.
    // This method does not change the size.
    //
    // [main-thread]
-   void (*round_size)(const clap_plugin_t *plugin, uint32_t *width, uint32_t *height);
+   void (*compute_size_to_fit)(const clap_plugin_t *plugin, uint32_t *width, uint32_t *height);
 
    // Sets the window size
    // Returns true if the size is supported.
