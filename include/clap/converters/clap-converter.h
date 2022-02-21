@@ -10,7 +10,7 @@ extern "C" {
 
 #pragma pack(push, CLAP_ALIGN)
 
-// This interface provide all the tool to convert a vst3 plugin instance into a clap plugin instance
+// This interface provide all the tool to convert a clap plugin instance into a clap plugin instance
 typedef struct clap_clap_converter {
    const char *src_plugin_id;
    const char *dst_plugin_id;
@@ -20,7 +20,7 @@ typedef struct clap_clap_converter {
                          const clap_istream_t             *src,
                          const clap_ostream_t             *dst);
 
-   // converts the vst3 param id and plain value to clap param id and
+   // converts the clap param id and plain value to clap param id and
    // plain value.
    // [thread-safe]
    bool (*convert_plain_value)(const struct clap_clap_converter *converter,
