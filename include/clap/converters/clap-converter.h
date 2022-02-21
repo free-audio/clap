@@ -20,8 +20,15 @@ typedef struct clap_clap_converter {
                          const clap_istream_t             *src,
                          const clap_ostream_t             *dst);
 
-   // converts the clap param id and plain value to clap param id and
-   // plain value.
+   // converts the clap param id and plain value.
+   // [thread-safe]
+   bool (*convert_normalized_value)(const struct clap_clap_converter *converter,
+                                    clap_id                           src_param_id,
+                                    double                            src_normalized_value,
+                                    clap_id                          *dst_param_id,
+                                    double                           *dst_normalized_value);
+
+   // converts the clap param id and plain value.
    // [thread-safe]
    bool (*convert_plain_value)(const struct clap_clap_converter *converter,
                                clap_id                           src_param_id,
