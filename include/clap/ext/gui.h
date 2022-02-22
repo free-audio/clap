@@ -35,7 +35,7 @@ static CLAP_CONSTEXPR const char CLAP_EXT_GUI[] = "clap.gui";
 static CLAP_CONSTEXPR const char CLAP_GUI_API_WIN32[] = "win32";
 static CLAP_CONSTEXPR const char CLAP_GUI_API_X11[] = "x11";
 static CLAP_CONSTEXPR const char CLAP_GUI_API_WAYLAND[] = "wayland";
-static CLAP_CONSTEXPR const char CLAP_GUI_API_COCOA[] = "cocoa";
+static CLAP_CONSTEXPR const char CLAP_GUI_API_COCOA[] = "cocoa"; // use logical size
 static CLAP_CONSTEXPR const char CLAP_GUI_API_FREE[] = "free"; // free standing
 
 #ifdef __cplusplus
@@ -124,6 +124,10 @@ typedef struct clap_plugin_gui {
    // Sets the window to which the plugin's window shall stay above.
    // [main-thread]
    bool (*set_transient)(const clap_plugin_t *plugin, const clap_gui_window_t *daw_window);
+
+   // Suggests a window title. Only useful when using the "free" windowing API.
+   // [main-thread]
+   void (*suggest_window_title)(const clap_plugin_t *plugin);
 
    // Show the window.
    // [main-thread]
