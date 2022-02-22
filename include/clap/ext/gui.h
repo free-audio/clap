@@ -31,19 +31,58 @@
 
 static CLAP_CONSTEXPR const char CLAP_EXT_GUI[] = "clap.gui";
 
+// Known windowing API
+static CLAP_CONSTEXPR const char CLAP_GUI_API_WIN32[] = "win32";
+static CLAP_CONSTEXPR const char CLAP_GUI_API_X11[] = "x11";
+static CLAP_CONSTEXPR const char CLAP_GUI_API_WAYLAND[] = "wayland";
+static CLAP_CONSTEXPR const char CLAP_GUI_API_COCOA[] = "cocoa";
+static CLAP_CONSTEXPR const char CLAP_GUI_API_FREE[] = "free"; // free standing
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 #pragma pack(push, CLAP_ALIGN)
 
+// Reference to an OS window
+typedef struct clap_gui_window {
+   const char *api;
+   union {
+      struct {
+         void *hwnd;
+      } win32;
+
+      struct {
+         void *nsView;
+      } cocoa;
+
+      struct {
+         const char *display;
+         unsigned long window;
+      } x11;
+
+      struct {
+         // TODO
+         unsigned long window;
+      } wayland;
+   };
+} clap_gui_window_t;
+
 // Size (width, height) is in pixels; the corresponding windowing system extension is
 // responsible to define if it is physical pixels or logical pixels.
 typedef struct clap_plugin_gui {
-   // Create and allocate all resources necessary for the gui.
+   // Returns true if the given windowing API is supported by the plugin
+   // [main-thread]
+   bool (*is_api_supported)(const clap_plugin_t *plugin, const char *api);
+
+   // Returns the identifier of the preferred windowing API.
+   // [main-thread]
+   const char *(*get_preferred_api)(const clap_plugin_t *plugin);
+
+   // Create and allocate all resources necessary for the gui, and for the given windowing API.
    // After this call, the GUI is ready to be shown but it is not yet visible.
    // [main-thread]
-   bool (*create)(const clap_plugin_t *plugin);
+   bool (*create)(const clap_plugin_t *plugin, const char *api);
 
    // Free all resources associated with the gui.
    // [main-thread]
@@ -76,6 +115,15 @@ typedef struct clap_plugin_gui {
    // Returns true if the size is supported.
    // [main-thread]
    bool (*set_size)(const clap_plugin_t *plugin, uint32_t width, uint32_t height);
+
+   // Attaches the plugin's window to the given parent window.
+   // [main-thread]
+   bool (*attach)(const clap_plugin_t *plugin, const clap_gui_window_t *parent_window);
+
+   // In case the window was created with the "free" windowing API.
+   // Sets the window to which the plugin's window shall stay above.
+   // [main-thread]
+   bool (*set_transient)(const clap_plugin_t *plugin, const clap_gui_window_t *daw_window);
 
    // Show the window.
    // [main-thread]
