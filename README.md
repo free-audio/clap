@@ -17,7 +17,7 @@
   - [Entry point](#entry-point)
   - [Extensions](#extensions)
   - [Fundamental extensions](#fundamental-extensions)
-  - [GUI extensions](#gui-extensions)
+  - [Support extensions](#support-extensions)
   - [Extra extensions](#extra-extensions)
 - [Resources](#resources)
   - [Plugins](#plugins)
@@ -82,21 +82,17 @@ and use to get a basic plugin experience:
 - [note-ports](include/clap/ext/note-ports.h), define the note ports
 - [params](include/clap/ext/params.h), parameters management
 - [latency](include/clap/ext/latency.h), report the plugin latency
+- [render](include/clap/ext/render.h), renders realtime or offline
 - [state](include/clap/ext/state.h), save and load the plugin state
-
-## GUI extensions
-
 - [gui](include/clap/ext/gui.h), generic gui controller
-- [gui-win32](include/clap/ext/gui-win32.h), win32 specific
-- [gui-cocoa](include/clap/ext/gui-cocoa.h), cocoa specific
-- [gui-x11](include/clap/ext/gui-x11.h), x11 specific
-- [gui-free-standing](include/clap/ext/gui-free-standing.h), open the gui without embedding it into the host's window
+
+## Support extensions
+
 - [timer-support](include/clap/ext/timer-support.h), lets the plugin register timer handlers
 - [posix-fd-support](include/clap/ext/posix-fd-support.h), lets the plugin register I/O handlers
 
 ## Extra extensions
 
-- [render](include/clap/ext/render.h), renders realtime or offline
 - [note-name](include/clap/ext/draft/note-name.h), give a name to notes, useful for drum machines
 - [tuning](include/clap/ext/draft/tuning.h), host provided microtuning
 - [track-info](include/clap/ext/draft/track-info.h)
