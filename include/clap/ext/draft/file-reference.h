@@ -26,9 +26,9 @@ extern "C" {
 ///   and needs to be saved.
 
 typedef struct clap_file_reference {
-   alignas(4) clap_id resource_id;
-   alignas(1) char path[CLAP_PATH_SIZE];
-   alignas(1) bool belongs_to_plugin_collection;
+   clap_id resource_id;
+   char path[CLAP_PATH_SIZE];
+   bool belongs_to_plugin_collection;
 } clap_file_reference_t;
 
 typedef struct clap_plugin_file_reference {

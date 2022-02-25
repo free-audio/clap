@@ -31,8 +31,8 @@ enum {
 };
 
 typedef struct clap_ambisonic_info {
-   alignas(4) uint32_t ordering;
-   alignas(4) uint32_t normalization;
+   uint32_t ordering;
+   uint32_t normalization;
 } clap_ambisonic_info_t;
 
 typedef struct clap_plugin_ambisonic {

@@ -138,9 +138,9 @@ typedef uint32_t clap_param_info_flags;
 /* This describes a parameter */
 typedef struct clap_param_info {
    // stable parameter identifier, it must never change.
-   alignas(4) clap_id id;
+   clap_id id;
 
-   alignas(4) clap_param_info_flags flags;
+   clap_param_info_flags flags;
 
    // This value is optional and set by the plugin.
    // Its purpose is to provide a fast access to the plugin parameter:
@@ -155,14 +155,14 @@ typedef struct clap_param_info {
    // destroyed.
    void *cookie;
 
-   alignas(1) char name[CLAP_NAME_SIZE];     // the display name
-   alignas(1) char module[CLAP_MODULE_SIZE]; // the module containing the param, eg:
+   char name[CLAP_NAME_SIZE];     // the display name
+   char module[CLAP_MODULE_SIZE]; // the module containing the param, eg:
                                              // "oscillators/wt1"; '/' will be used as a
                                              // separator to show a tree like structure.
 
-   alignas(8) double min_value;     // minimum plain value
-   alignas(8) double max_value;     // maximum plain value
-   alignas(8) double default_value; // default plain value
+   double min_value;     // minimum plain value
+   double max_value;     // maximum plain value
+   double default_value; // default plain value
 } clap_param_info_t;
 
 typedef struct clap_plugin_params {

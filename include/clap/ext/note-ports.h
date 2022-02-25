@@ -35,10 +35,10 @@ enum clap_note_dialect {
 };
 
 typedef struct clap_note_port_info {
-   alignas(4) clap_id id;                  // stable identifier
-   alignas(4) uint32_t supported_dialects; // bitfield, see clap_note_dialect
-   alignas(4) uint32_t preferred_dialect;  // one value of clap_note_dialect
-   alignas(1) char name[CLAP_NAME_SIZE];   // displayable name, i18n?
+   clap_id id;                  // stable identifier
+   uint32_t supported_dialects; // bitfield, see clap_note_dialect
+   uint32_t preferred_dialect;  // one value of clap_note_dialect
+   char name[CLAP_NAME_SIZE];   // displayable name, i18n?
 } clap_note_port_info_t;
 
 // The note ports scan has to be done while the plugin is deactivated.

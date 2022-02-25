@@ -15,11 +15,11 @@ extern "C" {
 // event header
 // must be the first attribute of the event
 typedef struct clap_event_header {
-   alignas(4) uint32_t size;     // event size including this header, eg: sizeof (clap_event_note)
-   alignas(4) uint32_t time;     // time at which the event happens
-   alignas(2) uint16_t space_id; // event space, see clap_host_event_registry
-   alignas(2) uint16_t type;     // event type
-   alignas(4) uint32_t flags;    // see clap_event_flags
+   uint32_t size;     // event size including this header, eg: sizeof (clap_event_note)
+   uint32_t time;     // time at which the event happens
+   uint16_t space_id; // event space, see clap_host_event_registry
+   uint16_t type;     // event type
+   uint32_t flags;    // see clap_event_flags
 } clap_event_header_t;
 
 // The clap core event space
@@ -96,12 +96,12 @@ typedef int32_t clap_event_type;
  * - key and channel are used to match active notes, a value of -1 matches all.
  */
 typedef struct clap_event_note {
-   alignas(4) clap_event_header_t header;
+   clap_event_header_t header;
 
-   alignas(2) int16_t port_index;
-   alignas(2) int16_t key;     // 0..127
-   alignas(2) int16_t channel; // 0..15
-   alignas(8) double velocity; // 0..1
+   int16_t port_index;
+   int16_t key;      // 0..127
+   int16_t channel;  // 0..15
+   double  velocity; // 0..1
 } clap_event_note_t;
 
 enum {
@@ -126,46 +126,46 @@ enum {
 typedef int32_t clap_note_expression;
 
 typedef struct clap_event_note_expression {
-   alignas(4) clap_event_header_t header;
+   clap_event_header_t header;
 
-   alignas(4) clap_note_expression expression_id;
+   clap_note_expression expression_id;
 
    // target a specific port, key and channel, -1 for global
-   alignas(2) int16_t port_index;
-   alignas(2) int16_t key;
-   alignas(2) int16_t channel;
+   int16_t port_index;
+   int16_t key;
+   int16_t channel;
 
-   alignas(8) double value; // see expression for the range
+   double value; // see expression for the range
 } clap_event_note_expression_t;
 
 typedef struct clap_event_param_value {
-   alignas(4) clap_event_header_t header;
+   clap_event_header_t header;
 
    // target parameter
-   alignas(4) clap_id param_id; // @ref clap_param_info.id
-   void *cookie;                // @ref clap_param_info.cookie
+   clap_id param_id; // @ref clap_param_info.id
+   void   *cookie;   // @ref clap_param_info.cookie
 
    // target a specific port, key and channel, -1 for global
-   alignas(2) int16_t port_index;
-   alignas(2) int16_t key;
-   alignas(2) int16_t channel;
+   int16_t port_index;
+   int16_t key;
+   int16_t channel;
 
-   alignas(8) double value;
+   double value;
 } clap_event_param_value_t;
 
 typedef struct clap_event_param_mod {
-   alignas(4) clap_event_header_t header;
+   clap_event_header_t header;
 
    // target parameter
-   alignas(4) clap_id param_id; // @ref clap_param_info.id
-   void *cookie;                // @ref clap_param_info.cookie
+   clap_id param_id; // @ref clap_param_info.id
+   void   *cookie;   // @ref clap_param_info.cookie
 
    // target a specific port, key and channel, -1 for global
-   alignas(2) int16_t port_index;
-   alignas(2) int16_t key;
-   alignas(2) int16_t channel;
+   int16_t port_index;
+   int16_t key;
+   int16_t channel;
 
-   alignas(8) double amount; // modulation amount
+   double amount; // modulation amount
 } clap_event_param_mod_t;
 
 enum clap_transport_flags {
@@ -180,51 +180,51 @@ enum clap_transport_flags {
 };
 
 typedef struct clap_event_transport {
-   alignas(4) clap_event_header_t header;
+   clap_event_header_t header;
 
-   alignas(4) uint32_t flags; // see clap_transport_flags
+   uint32_t flags; // see clap_transport_flags
 
-   alignas(8) clap_beattime song_pos_beats;  // position in beats
-   alignas(8) clap_sectime song_pos_seconds; // position in seconds
+   clap_beattime song_pos_beats;   // position in beats
+   clap_sectime  song_pos_seconds; // position in seconds
 
-   alignas(8) double tempo;     // in bpm
-   alignas(8) double tempo_inc; // tempo increment for each samples and until the next
-                                // time info event
+   double tempo;     // in bpm
+   double tempo_inc; // tempo increment for each samples and until the next
+                     // time info event
 
-   alignas(8) clap_beattime loop_start_beats;
-   alignas(8) clap_beattime loop_end_beats;
-   alignas(8) clap_sectime loop_start_seconds;
-   alignas(8) clap_sectime loop_end_seconds;
+   clap_beattime loop_start_beats;
+   clap_beattime loop_end_beats;
+   clap_sectime  loop_start_seconds;
+   clap_sectime  loop_end_seconds;
 
-   alignas(8) clap_beattime bar_start; // start pos of the current bar
-   alignas(4) int32_t bar_number;      // bar at song pos 0 has the number 0
+   clap_beattime bar_start;  // start pos of the current bar
+   int32_t       bar_number; // bar at song pos 0 has the number 0
 
-   alignas(2) int16_t tsig_num;   // time signature numerator
-   alignas(2) int16_t tsig_denom; // time signature denominator
+   int16_t tsig_num;   // time signature numerator
+   int16_t tsig_denom; // time signature denominator
 } clap_event_transport_t;
 
 typedef struct clap_event_midi {
-   alignas(4) clap_event_header_t header;
+   clap_event_header_t header;
 
-   alignas(2) uint16_t port_index;
-   alignas(1) uint8_t data[3];
+   uint16_t port_index;
+   uint8_t  data[3];
 } clap_event_midi_t;
 
 typedef struct clap_event_midi_sysex {
-   alignas(4) clap_event_header_t header;
+   clap_event_header_t header;
 
-   alignas(2) uint16_t port_index;
+   uint16_t       port_index;
    const uint8_t *buffer; // midi buffer
-   alignas(4) uint32_t size;
+   uint32_t       size;
 } clap_event_midi_sysex_t;
 
 // While it is possible to use a series of midi2 event to send a sysex,
 // prefer clap_event_midi_sysex if possible for efficiency.
 typedef struct clap_event_midi2 {
-   alignas(4) clap_event_header_t header;
+   clap_event_header_t header;
 
-   alignas(2) uint16_t port_index;
-   alignas(4) uint32_t data[4];
+   uint16_t port_index;
+   uint32_t data[4];
 } clap_event_midi2_t;
 
 // Input event list, events must be sorted by time.

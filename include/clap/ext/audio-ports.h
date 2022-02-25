@@ -32,11 +32,11 @@ enum {
 };
 
 typedef struct clap_audio_port_info {
-   alignas(4) clap_id id;                // stable identifier
-   alignas(1) char name[CLAP_NAME_SIZE]; // displayable name
+   clap_id id;                // stable identifier
+   char name[CLAP_NAME_SIZE]; // displayable name
 
-   alignas(4) uint32_t flags;
-   alignas(4) uint32_t channel_count;
+   uint32_t flags;
+   uint32_t channel_count;
 
    // If null or empty then it is unspecified (arbitrary audio).
    // This filed can be compared against:
@@ -52,7 +52,7 @@ typedef struct clap_audio_port_info {
    // in-place processing: allow the host to use the same buffer for input and output
    // if supported set the pair port id.
    // if not supported set to CLAP_INVALID_ID
-   alignas(4) clap_id in_place_pair;
+   clap_id in_place_pair;
 } clap_audio_port_info_t;
 
 // The audio ports scan has to be done while the plugin is deactivated.

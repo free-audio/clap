@@ -17,10 +17,11 @@ typedef struct clap_plugin_invalidation_source {
    const char *filename_glob;
 
    // should the directory be scanned recursively?
-   alignas(1) bool recursive_scan;
+   bool recursive_scan;
 } clap_plugin_invalidation_source_t;
 
-static const CLAP_CONSTEXPR char CLAP_PLUGIN_INVALIDATION_FACTORY_ID[] = "clap.plugin-invalidation-factory";
+static const CLAP_CONSTEXPR char CLAP_PLUGIN_INVALIDATION_FACTORY_ID[] =
+   "clap.plugin-invalidation-factory";
 
 // Used to figure out when a plugin needs to be scanned again.
 // Imagine a situation with a single entry point: my-plugin.clap which then scans itself
