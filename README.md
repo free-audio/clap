@@ -20,10 +20,10 @@
   - [GUI extensions](#gui-extensions)
   - [Extra extensions](#extra-extensions)
 - [Resources](#resources)
-  - [Programming Language Bingings](#programming-language-bingings)
-  - [Examples](#examples)
   - [Plugins](#plugins)
+  - [Examples](#examples)
   - [Community related projects](#community-related-projects)
+  - [Programming Language Bingings](#programming-language-bingings)
 
 # Learn about CLAP
 
@@ -108,24 +108,24 @@ and use to get a basic plugin experience:
 
 # Resources
 
-## Programming Language Bingings
-
-- [clap-sys](https://github.com/glowcoil/clap-sys), rust binding
-- [CLAP-for-Delphi](https://github.com/Bremmers/CLAP-for-Delphi), Delphi binding
-
-## Examples
-
-- [clap-host](https://github.com/free-audio/clap-host), very simple host
-- [clap-plugins](https://github.com/free-audio/clap-plugins), very simple plugins
-
 ## Plugins
 
 - [u-he](https://u-he.com), synthesizers and effects
 - [Surge](https://surge-synthesizer.github.io/), open source synthesizer and effect
   - CLAP is enabled in [nightly builds](https://github.com/surge-synthesizer/releases-xt/releases/tag/Nightly)
 
+## Examples
+
+- [clap-host](https://github.com/free-audio/clap-host), very simple host
+- [clap-plugins](https://github.com/free-audio/clap-plugins), very simple plugins
+- [schwaaa's plugin](https://github.com/schwaaa/clap-plugin), basic example for prototyping CLAP audio plugins using Dear ImGui as the user interface
+
 ## Community related projects
 
 - [clap-juce-extension](https://github.com/free-audio/clap-juce-extension), juce add-on
 - [MIP2](https://github.com/skei/MIP2), host and plugins
-- [schwaaa's plugin](https://github.com/schwaaa/clap-plugin), basic example for prototyping CLAP audio plugins using Dear ImGui as the user interface
+
+## Programming Language Bingings
+
+- [clap-sys](https://github.com/glowcoil/clap-sys), rust binding
+- [CLAP-for-Delphi](https://github.com/Bremmers/CLAP-for-Delphi), Delphi binding
