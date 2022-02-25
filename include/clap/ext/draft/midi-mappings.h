@@ -19,9 +19,9 @@ enum {
 typedef int32_t clap_midi_mapping_type;
 
 typedef struct clap_midi_mapping {
-   alignas(4) int32_t channel;
-   alignas(4) int32_t number;
-   alignas(4) clap_id param_id;
+   int32_t channel;
+   int32_t number;
+   clap_id param_id;
 } clap_midi_mapping_t;
 
 typedef struct clap_plugin_midi_mappings {

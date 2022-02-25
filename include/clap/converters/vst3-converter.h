@@ -15,7 +15,7 @@ typedef struct clap_vst3_converter {
    // The VST FUID can be constructed by:
    // Steinberg::FUID::fromTUID(conv->vst3_plugin_tuid);
    const int8_t vst3_plugin_tuid[16];
-   const char *clap_plugin_id;
+   const char  *clap_plugin_id;
 
    // [main-thread]
    bool (*convert_state)(const struct clap_vst3_converter *converter,

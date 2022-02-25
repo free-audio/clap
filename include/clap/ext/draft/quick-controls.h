@@ -14,10 +14,10 @@ extern "C" {
 enum { CLAP_QUICK_CONTROLS_COUNT = 8 };
 
 typedef struct clap_quick_controls_page {
-   alignas(4) clap_id id;
-   alignas(1) char name[CLAP_NAME_SIZE];
-   alignas(1) char keywords[CLAP_KEYWORDS_SIZE];
-   alignas(4) clap_id param_ids[CLAP_QUICK_CONTROLS_COUNT];
+   clap_id id;
+   char name[CLAP_NAME_SIZE];
+   char keywords[CLAP_KEYWORDS_SIZE];
+   clap_id param_ids[CLAP_QUICK_CONTROLS_COUNT];
 } clap_quick_controls_page_t;
 
 typedef struct clap_plugin_quick_controls {

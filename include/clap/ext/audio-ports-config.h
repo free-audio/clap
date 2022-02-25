@@ -31,15 +31,15 @@ extern "C" {
 
 // Minimalistic description of ports configuration
 typedef struct clap_audio_ports_config {
-   alignas(4) clap_id id;
-   alignas(1) char name[CLAP_NAME_SIZE];
+   clap_id id;
+   char name[CLAP_NAME_SIZE];
 
    // main input info
-   alignas(4) uint32_t input_channel_count;
+   uint32_t input_channel_count;
    const char *input_port_type;
 
    // main output info
-   alignas(4) uint32_t output_channel_count;
+   uint32_t output_channel_count;
    const char * output_port_type;
 } clap_audio_ports_config_t;
 

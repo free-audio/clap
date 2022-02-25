@@ -15,7 +15,7 @@ typedef struct clap_check_for_update_info {
    const char *release_date; // YYYY-MM-DD
    const char *url;
 
-   alignas(1) bool is_stable;
+   bool is_stable;
 } clap_check_for_update_info_t;
 
 typedef struct clap_plugin_check_for_update {
