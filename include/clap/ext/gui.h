@@ -8,7 +8,7 @@
 ///
 /// There are two approaches:
 /// 1. the plugin creates a window and embeds it into the host's window
-/// 2. the plugin creates a floating window, and eventualy makes it on top of the host's window
+/// 2. the plugin creates a floating window
 ///
 /// Embedding the window gives more control to the host, and feels more integrated.
 /// Floating window are sometimes the only option due to technical limitations.
@@ -34,7 +34,7 @@
 /// Resizing the window (drag):
 /// 1. Only possible if clap_plugin_gui->can_resize() returns true
 /// 2. Mouse drag -> new_size
-/// 3. clap_plugin_gui->round_size(new_size) -> working_size
+/// 3. clap_plugin_gui->compute_size_to_fit(new_size) -> working_size
 /// 4. clap_plugin_gui->set_size(working_size)
 
 static CLAP_CONSTEXPR const char CLAP_EXT_GUI[] = "clap.gui";
