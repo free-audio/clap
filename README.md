@@ -111,7 +111,7 @@ and use to get a basic plugin experience:
 
 ## Plugins
 
-- [u-he](https://u-he.com), synthesizers and effects
+- [u-he](https://u-he.com/fwd/clap/), synthesizers and effects
 - [Surge](https://surge-synthesizer.github.io/), open source synthesizer and effect
   - CLAP is enabled in [nightly builds](https://github.com/surge-synthesizer/releases-xt/releases/tag/Nightly)
 
