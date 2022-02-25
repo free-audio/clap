@@ -22,6 +22,7 @@
 - [Resources](#resources)
   - [Programming Language Bingings](#programming-language-bingings)
   - [Examples](#examples)
+  - [Plugins](#plugins)
   - [Community related projects](#community-related-projects)
 
 # Learn about CLAP
@@ -116,6 +117,12 @@ and use to get a basic plugin experience:
 
 - [clap-host](https://github.com/free-audio/clap-host), very simple host
 - [clap-plugins](https://github.com/free-audio/clap-plugins), very simple plugins
+
+## Plugins
+
+- [u-he](https://u-he.com), synthesizers and effects
+- [Surge](https://surge-synthesizer.github.io/), open source synthesizer and effect
+  - CLAP is enabled in [nightly builds](https://github.com/surge-synthesizer/releases-xt/releases/tag/Nightly)
 
 ## Community related projects
 
