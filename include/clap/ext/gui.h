@@ -44,28 +44,25 @@ extern "C" {
 
 #pragma pack(push, CLAP_ALIGN)
 
-// Reference to an OS window
+typedef struct clap_gui_window_x11 {
+   const char *display;
+   unsigned long window;
+} clap_gui_window_x11_t;
+
+typedef struct clap_gui_window_cocoa {
+   void *nsView;
+} clap_gui_window_cocoa_t;
+
+typedef struct clap_gui_window_win32 {
+   void *hwnd;
+} clap_gui_window_win32_t;
+
+// Represent a window reference.
+// api is one of CLAP_GUI_API_XXX
+// specific has to be casted to the corresponding clap_gui_window_xxx.
 typedef struct clap_gui_window {
    const char *api;
-   union {
-      struct {
-         void *hwnd;
-      } win32;
-
-      struct {
-         void *nsView;
-      } cocoa;
-
-      struct {
-         const char *display;
-         unsigned long window;
-      } x11;
-
-      struct {
-         // TODO
-         unsigned long window;
-      } wayland;
-   };
+   const void *specific;
 } clap_gui_window_t;
 
 // Size (width, height) is in pixels; the corresponding windowing system extension is
