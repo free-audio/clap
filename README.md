@@ -21,6 +21,7 @@
   - [Extra extensions](#extra-extensions)
 - [Resources](#resources)
   - [Plugins](#plugins)
+  - [Hosts](#hosts)
   - [Examples](#examples)
   - [Community related projects](#community-related-projects)
   - [Programming Language Bingings](#programming-language-bingings)
@@ -113,6 +114,14 @@ and use to get a basic plugin experience:
 - [u-he](https://u-he.com), synthesizers and effects
 - [Surge](https://surge-synthesizer.github.io/), open source synthesizer and effect
   - CLAP is enabled in [nightly builds](https://github.com/surge-synthesizer/releases-xt/releases/tag/Nightly)
+
+## Hosts
+
+- [Bitwig](https://bitwig.com), DAW
+  - To enable CLAP, you need to add `clap : true` to:
+    - Linux: `$HOME/.BitwigStudio/config.json`
+    - macOS: `$HOME/Library/Application Support/Bitwig/Bitwig Studio/config.json`
+    - Windows: `%LOCALAPPDATA%\Bitwig Studio\config.json`
 
 ## Examples
 
