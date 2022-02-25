@@ -4,18 +4,26 @@
 
 /// @page GUI
 ///
-/// This extension is splet in two interfaces:
-/// - `gui` which is the generic part
-/// - `gui_XXX` which is the platform specific interfaces; @see clap_gui_win32.
+/// This extension defines how the plugin will present its GUI.
+///
+/// There are two approaches:
+/// 1. the plugin creates a window and embeds it into the host's window
+/// 2. the plugin creates a floating window, and eventualy makes it on top of the host's window
+///
+/// Embedding the window gives more control to the host, and feels more integrated.
+/// Floating window are sometimes the only option due to technical limitations.
 ///
 /// Showing the GUI works as follow:
 /// 1. clap_plugin_gui->create(), allocates gui resources
 /// 2. clap_plugin_gui->set_scale()
 /// 3. clap_plugin_gui->get_size(), gets initial size
-/// 4. clap_plugin_gui_win32->embed(), or any other platform specific interface
+/// 4. clap_plugin_gui->embed()
 /// 5. clap_plugin_gui->show()
 /// 6. clap_plugin_gui->hide()/show() ...
 /// 7. clap_plugin_gui->destroy() when done with the gui
+///
+/// For floating windows, simply don't call clap_plugin_gui_embed() and maybe call
+/// clap_plugin_gui->suggest_title(), clap_plugin_gui->set_transient()
 ///
 /// Resizing the window (initiated by the plugin):
 /// 1. Plugins calls clap_host_gui->request_resize()
@@ -36,7 +44,7 @@ static CLAP_CONSTEXPR const char CLAP_GUI_API_WIN32[] = "win32";
 static CLAP_CONSTEXPR const char CLAP_GUI_API_X11[] = "x11";
 static CLAP_CONSTEXPR const char CLAP_GUI_API_WAYLAND[] = "wayland";
 static CLAP_CONSTEXPR const char CLAP_GUI_API_COCOA[] = "cocoa"; // use logical size
-static CLAP_CONSTEXPR const char CLAP_GUI_API_FREE[] = "free"; // free standing
+static CLAP_CONSTEXPR const char CLAP_GUI_API_FLOATING[] = "floating";
 
 #ifdef __cplusplus
 extern "C" {
@@ -124,7 +132,7 @@ typedef struct clap_plugin_gui {
 
    // Suggests a window title. Only useful when using the "free" windowing API.
    // [main-thread]
-   void (*suggest_window_title)(const clap_plugin_t *plugin);
+   void (*suggest_title)(const clap_plugin_t *plugin, const char *title);
 
    // Show the window.
    // [main-thread]
