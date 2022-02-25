@@ -83,11 +83,13 @@ and use to get a basic plugin experience:
 - [params](include/clap/ext/params.h), parameters management
 - [latency](include/clap/ext/latency.h), report the plugin latency
 - [render](include/clap/ext/render.h), renders realtime or offline
+- [tail](include/clap/ext/tail.h), processing tail length
 - [state](include/clap/ext/state.h), save and load the plugin state
 - [gui](include/clap/ext/gui.h), generic gui controller
 
 ## Support extensions
 
+- [thread-pool](include/clap/ext/draft/thread-pool.h), use the host thread pool
 - [timer-support](include/clap/ext/timer-support.h), lets the plugin register timer handlers
 - [posix-fd-support](include/clap/ext/posix-fd-support.h), lets the plugin register I/O handlers
 
@@ -96,12 +98,12 @@ and use to get a basic plugin experience:
 - [note-name](include/clap/ext/draft/note-name.h), give a name to notes, useful for drum machines
 - [tuning](include/clap/ext/draft/tuning.h), host provided microtuning
 - [track-info](include/clap/ext/draft/track-info.h)
-- [thread-pool](include/clap/ext/draft/thread-pool.h), use the host thread pool
 - [quick-controls](include/clap/ext/draft/quick-controls.h), bank of controls that can be mapped on a controlles with 8 knobs
 - [file-reference](include/clap/ext/draft/file-reference.h), let the host know about the plugin's file reference, and perform "Collect & Save"
 - [check-for-update](include/clap/ext/draft/check-for-update.h), check if there is a new version of a plugin
 - [audio-ports-config](include/clap/ext/audio-ports-config.h), simple list of possible configurations
-- [surround](include/clap/ext/draft/surround.h), inspect the surround channel mapping
+- [surround](include/clap/ext/draft/surround.h), inspect surround channel mapping
+- [ambisonic](include/clap/ext/draft/ambisonic.h), inspect ambisonic channel mapping
 
 # Resources
 
