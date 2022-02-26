@@ -114,7 +114,7 @@ typedef struct clap_plugin_gui {
    // This method does not change the size.
    //
    // [main-thread]
-   void (*compute_size_to_fit)(const clap_plugin_t *plugin, uint32_t *width, uint32_t *height);
+   bool (*compute_size_to_fit)(const clap_plugin_t *plugin, uint32_t *width, uint32_t *height);
 
    // Sets the window size
    // Returns true if the size is supported.
