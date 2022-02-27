@@ -150,6 +150,7 @@ typedef struct clap_event_param_value {
    int16_t key;
    int16_t channel;
 
+   uint16_t ramp_time; // suggested ramp time in sample
    double value;
 } clap_event_param_value_t;
 
@@ -165,6 +166,7 @@ typedef struct clap_event_param_mod {
    int16_t key;
    int16_t channel;
 
+   uint16_t ramp_time; // suggested ramp time in samples
    double amount; // modulation amount
 } clap_event_param_mod_t;
 
