@@ -4,13 +4,10 @@
 #include "host.h"
 #include "process.h"
 
-#include "private/align.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#pragma pack(push, CLAP_ALIGN)
 
 typedef struct clap_plugin_descriptor {
    clap_version_t clap_version; // initialized to CLAP_VERSION
@@ -100,8 +97,6 @@ typedef struct clap_plugin {
    // [main-thread]
    void (*on_main_thread)(const struct clap_plugin *plugin);
 } clap_plugin_t;
-
-#pragma pack(pop)
 
 #ifdef __cplusplus
 }

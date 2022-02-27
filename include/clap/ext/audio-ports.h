@@ -20,8 +20,6 @@ static CLAP_CONSTEXPR const char CLAP_PORT_STEREO[] = "stereo";
 extern "C" {
 #endif
 
-#pragma pack(push, CLAP_ALIGN)
-
 enum {
    // This port main audio input or output.
    // There can be only one main input and main output.
@@ -100,8 +98,6 @@ typedef struct clap_host_audio_ports {
    // [main-thread]
    void (*rescan)(const clap_host_t *host, uint32_t flags);
 } clap_host_audio_ports_t;
-
-#pragma pack(pop)
 
 #ifdef __cplusplus
 }

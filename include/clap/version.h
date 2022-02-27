@@ -1,14 +1,11 @@
 #pragma once
 
 #include "private/macros.h"
-#include "private/align.h"
 #include "private/std.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#pragma pack(push, CLAP_ALIGN)
 
 typedef struct clap_version {
    // This is the major ABI and API design
@@ -18,8 +15,6 @@ typedef struct clap_version {
    uint32_t minor;
    uint32_t revision;
 } clap_version_t;
-
-#pragma pack(pop)
 
 #ifdef __cplusplus
 }

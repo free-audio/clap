@@ -9,8 +9,6 @@ static CLAP_CONSTEXPR const char CLAP_EXT_QUICK_CONTROLS[] = "clap.quick-control
 extern "C" {
 #endif
 
-#pragma pack(push, CLAP_ALIGN)
-
 enum { CLAP_QUICK_CONTROLS_COUNT = 8 };
 
 typedef struct clap_quick_controls_page {
@@ -45,8 +43,6 @@ typedef struct clap_host_quick_controls {
    // [main-thread]
    void (*changed)(const clap_host_t *host, clap_quick_controls_changed_flags flags);
 } clap_host_quick_controls_t;
-
-#pragma pack(pop)
 
 #ifdef __cplusplus
 }

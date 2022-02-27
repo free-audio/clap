@@ -10,8 +10,6 @@ static CLAP_CONSTEXPR const char CLAP_EXT_FILE_REFERENCE[] = "clap.file-referenc
 extern "C" {
 #endif
 
-#pragma pack(push, CLAP_ALIGN)
-
 /// @page File Reference
 ///
 /// This extension provides a way for the host to know about files which are used
@@ -67,8 +65,6 @@ typedef struct clap_host_file_reference {
    // [main-thread]
    void (*set_dirty)(const clap_host_t *host, clap_id resource_id);
 } clap_host_file_reference;
-
-#pragma pack(pop)
 
 #ifdef __cplusplus
 }

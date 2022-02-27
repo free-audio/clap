@@ -50,8 +50,6 @@ static CLAP_CONSTEXPR const char CLAP_GUI_API_FLOATING[] = "floating";
 extern "C" {
 #endif
 
-#pragma pack(push, CLAP_ALIGN)
-
 typedef struct clap_gui_window_x11 {
    const char *display;
    unsigned long window;
@@ -161,8 +159,6 @@ typedef struct clap_host_gui {
     * [main-thread] */
    bool (*request_hide)(const clap_host_t *host);
 } clap_host_gui_t;
-
-#pragma pack(pop)
 
 #ifdef __cplusplus
 }

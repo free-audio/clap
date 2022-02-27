@@ -8,8 +8,6 @@ static CLAP_CONSTEXPR const char CLAP_EXT_LOG[] = "clap.log";
 extern "C" {
 #endif
 
-#pragma pack(push, CLAP_ALIGN)
-
 enum {
    CLAP_LOG_DEBUG = 0,
    CLAP_LOG_INFO = 1,
@@ -29,8 +27,6 @@ typedef struct clap_host_log {
    // [thread-safe]
    void (*log)(const clap_host_t *host, clap_log_severity severity, const char *msg);
 } clap_host_log_t;
-
-#pragma pack(pop)
 
 #ifdef __cplusplus
 }

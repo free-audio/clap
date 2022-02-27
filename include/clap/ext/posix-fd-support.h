@@ -8,8 +8,6 @@ static CLAP_CONSTEXPR const char CLAP_EXT_POSIX_FD_SUPPORT[] = "clap.posix-fd-su
 extern "C" {
 #endif
 
-#pragma pack(push, CLAP_ALIGN)
-
 enum {
    // IO events flags
    CLAP_POSIX_FD_READ = 1 << 0,
@@ -37,8 +35,6 @@ typedef struct clap_host_posix_fd_support {
    // [main-thread]
    bool (*unregister_fd)(const clap_host_t *host, int fd);
 } clap_host_posix_fd_support_t;
-
-#pragma pack(pop)
 
 #ifdef __cplusplus
 }

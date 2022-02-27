@@ -12,8 +12,6 @@ static CLAP_CONSTEXPR const char CLAP_PORT_CV[] = "cv";
 extern "C" {
 #endif
 
-#pragma pack(push, CLAP_ALIGN)
-
 enum {
    // TODO: standardize values?
    CLAP_CV_VALUE = 0,
@@ -37,8 +35,6 @@ typedef struct clap_host_cv {
    // [main-thread,!active]
    void (*changed)(const clap_host_t *host);
 } clap_host_cv_t;
-
-#pragma pack(pop)
 
 #ifdef __cplusplus
 }

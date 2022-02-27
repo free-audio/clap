@@ -1,16 +1,12 @@
 #pragma once
 
 #include "private/std.h"
-
 #include "fixedpoint.h"
 #include "id.h"
-#include "private/align.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#pragma pack(push, CLAP_ALIGN)
 
 // event header
 // must be the first attribute of the event
@@ -246,8 +242,6 @@ typedef struct clap_output_events {
    // Pushes a copy of the event
    void (*push_back)(const struct clap_output_events *list, const clap_event_header_t *event);
 } clap_output_events_t;
-
-#pragma pack(pop)
 
 #ifdef __cplusplus
 }

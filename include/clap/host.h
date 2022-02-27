@@ -1,13 +1,10 @@
 #pragma once
 
 #include "version.h"
-#include "private/align.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#pragma pack(push, CLAP_ALIGN)
 
 typedef struct clap_host {
    clap_version_t clap_version; // initialized to CLAP_VERSION
@@ -38,8 +35,6 @@ typedef struct clap_host {
    // [thread-safe]
    void (*request_callback)(const struct clap_host *host);
 } clap_host_t;
-
-#pragma pack(pop)
 
 #ifdef __cplusplus
 }

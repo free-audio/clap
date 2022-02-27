@@ -80,8 +80,6 @@ static CLAP_CONSTEXPR const char CLAP_EXT_PARAMS[] = "clap.params";
 extern "C" {
 #endif
 
-#pragma pack(push, CLAP_ALIGN)
-
 enum {
    // Is this param stepped? (integer values only)
    // if so the double value is converted to integer using a cast (equivalent to trunc).
@@ -277,8 +275,6 @@ typedef struct clap_host_params {
    // [thread-safe]
    void (*request_flush)(const clap_host_t *host);
 } clap_host_params_t;
-
-#pragma pack(pop)
 
 #ifdef __cplusplus
 }

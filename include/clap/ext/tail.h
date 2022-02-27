@@ -8,8 +8,6 @@ static CLAP_CONSTEXPR const char CLAP_EXT_TAIL[] = "clap.tail";
 extern "C" {
 #endif
 
-#pragma pack(push, CLAP_ALIGN)
-
 typedef struct clap_plugin_tail {
    // Returns tail length in samples.
    // [main-thread,audio-thread]
@@ -21,8 +19,6 @@ typedef struct clap_host_tail {
    // [audio-thread]
    void (*changed)(const clap_host_t *host);
 } clap_host_tail_t;
-
-#pragma pack(pop)
 
 #ifdef __cplusplus
 }

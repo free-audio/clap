@@ -8,8 +8,6 @@ static CLAP_CONSTEXPR const char CLAP_EXT_MIDI_MAPPINGS[] = "clap.midi-mappings.
 extern "C" {
 #endif
 
-#pragma pack(push, CLAP_ALIGN)
-
 enum {
    CLAP_MIDI_MAPPING_CC7,
    CLAP_MIDI_MAPPING_CC14,
@@ -36,8 +34,6 @@ typedef struct clap_host_midi_mappings {
    // [main-thread]
    void (*changed)(const clap_host_t *host);
 } clap_host_midi_mappings_t;
-
-#pragma pack(pop)
 
 #ifdef __cplusplus
 }

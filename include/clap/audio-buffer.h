@@ -1,12 +1,10 @@
 #pragma once
 
-#include "private/align.h"
+#include "private/std.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#pragma pack(push, CLAP_ALIGN)
 
 // Sample code for reading a stereo buffer:
 //
@@ -33,8 +31,6 @@ typedef struct clap_audio_buffer {
    uint32_t latency;       // latency from/to the audio interface
    uint64_t constant_mask; // mask & (1 << N) to test if channel N is constant
 } clap_audio_buffer_t;
-
-#pragma pack(pop)
 
 #ifdef __cplusplus
 }

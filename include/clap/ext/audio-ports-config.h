@@ -27,8 +27,6 @@ static CLAP_CONSTEXPR const char CLAP_EXT_AUDIO_PORTS_CONFIG[] = "clap.audio-por
 extern "C" {
 #endif
 
-#pragma pack(push, CLAP_ALIGN)
-
 // Minimalistic description of ports configuration
 typedef struct clap_audio_ports_config {
    clap_id id;
@@ -64,8 +62,6 @@ typedef struct clap_host_audio_ports_config {
    // [main-thread]
    void (*rescan)(const clap_host_t *host);
 } clap_host_audio_ports_config_t;
-
-#pragma pack(pop)
 
 #ifdef __cplusplus
 }

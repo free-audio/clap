@@ -17,8 +17,6 @@ static CLAP_CONSTEXPR const char CLAP_EXT_NOTE_PORTS[] = "clap.note-ports";
 extern "C" {
 #endif
 
-#pragma pack(push, CLAP_ALIGN)
-
 enum clap_note_dialect {
    // Uses clap_event_note and clap_event_note_expression.
    // Default if the port info are not provided or inspected.
@@ -75,8 +73,6 @@ typedef struct clap_host_note_ports {
    // [main-thread]
    void (*rescan)(const clap_host_t *host, uint32_t flags);
 } clap_host_note_ports_t;
-
-#pragma pack(pop)
 
 #ifdef __cplusplus
 }

@@ -9,8 +9,6 @@ static CLAP_CONSTEXPR const char CLAP_EXT_STATE[] = "clap.state";
 extern "C" {
 #endif
 
-#pragma pack(push, CLAP_ALIGN)
-
 typedef struct clap_plugin_state {
    // Saves the plugin state into stream.
    // Returns true if the state was correctly saved.
@@ -29,8 +27,6 @@ typedef struct clap_host_state {
    // [main-thread]
    void (*mark_dirty)(const clap_host_t *host);
 } clap_host_state_t;
-
-#pragma pack(pop)
 
 #ifdef __cplusplus
 }

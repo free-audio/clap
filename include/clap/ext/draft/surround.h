@@ -32,8 +32,6 @@ static CLAP_CONSTEXPR const char CLAP_PORT_SURROUND[] = "surround";
 extern "C" {
 #endif
 
-#pragma pack(push, CLAP_ALIGN)
-
 enum {
    CLAP_SURROUND_FL = 0,   // Front Left
    CLAP_SURROUND_FR = 1,   // Front Right
@@ -83,8 +81,6 @@ typedef struct clap_host_surround {
                                      uint32_t           channel_map_capacity,
                                      uint32_t          *channel_count);
 } clap_host_surround_t;
-
-#pragma pack(pop)
 
 #ifdef __cplusplus
 }

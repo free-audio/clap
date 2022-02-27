@@ -10,8 +10,6 @@ static CLAP_CONSTEXPR const char CLAP_EXT_TRACK_INFO[] = "clap.track-info.draft/
 extern "C" {
 #endif
 
-#pragma pack(push, CLAP_ALIGN)
-
 typedef struct clap_track_info {
    clap_id      id;
    int32_t      index;
@@ -33,8 +31,6 @@ typedef struct clap_host_track_info {
    // [main-thread]
    bool (*get)(const clap_host_t *host, clap_track_info_t *info);
 } clap_host_track_info_t;
-
-#pragma pack(pop)
 
 #ifdef __cplusplus
 }

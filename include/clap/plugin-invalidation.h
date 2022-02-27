@@ -1,13 +1,10 @@
 #pragma once
 
 #include "private/macros.h"
-#include "private/align.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#pragma pack(push, CLAP_ALIGN)
 
 typedef struct clap_plugin_invalidation_source {
    // Directory containing the file(s) to scan
@@ -41,8 +38,6 @@ typedef struct clap_plugin_invalidation_factory {
    // If the function returned false, then the plugin needs to be reloaded.
    bool (*refresh)(const struct clap_plugin_invalidation_factory *factory);
 } clap_plugin_invalidation_factory_t;
-
-#pragma pack(pop)
 
 #ifdef __cplusplus
 }

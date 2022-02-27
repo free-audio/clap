@@ -8,8 +8,6 @@ static CLAP_CONSTEXPR const char CLAP_EXT_EVENT_FILTER[] = "clap.event-filter";
 extern "C" {
 #endif
 
-#pragma pack(push, CLAP_ALIGN)
-
 // This extension lets the host know which event types the plugin is interested
 // in.
 // The host will cache the set of accepted events before activating the plugin.
@@ -31,8 +29,6 @@ typedef struct clap_host_event_filter {
    // [main-thread]
    void (*changed)(const clap_host_t *host);
 } clap_host_event_filter_t;
-
-#pragma pack(pop)
 
 #ifdef __cplusplus
 }

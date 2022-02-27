@@ -7,8 +7,6 @@
 extern "C" {
 #endif
 
-#pragma pack(push, CLAP_ALIGN)
-
 static CLAP_CONSTEXPR const char CLAP_EXT_NOTE_NAME[] = "clap.note-name";
 
 typedef struct clap_note_name {
@@ -33,8 +31,6 @@ typedef struct clap_host_note_name {
    // [main-thread]
    void (*changed)(const clap_host_t *host);
 } clap_host_note_name_t;
-
-#pragma pack(pop)
 
 #ifdef __cplusplus
 }

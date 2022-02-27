@@ -3,13 +3,10 @@
 #include "events.h"
 #include "audio-buffer.h"
 
-#include "private/align.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#pragma pack(push, CLAP_ALIGN)
 
 enum {
    // Processing failed. The output buffer must be discarded.
@@ -69,8 +66,6 @@ typedef struct clap_process {
    const clap_input_events_t  *in_events;
    const clap_output_events_t *out_events;
 } clap_process_t;
-
-#pragma pack(pop)
 
 #ifdef __cplusplus
 }
