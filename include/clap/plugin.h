@@ -82,6 +82,15 @@ typedef struct clap_plugin {
    // [audio-thread & active_state & processing_state]
    void (*stop_processing)(const struct clap_plugin *plugin);
 
+   // Clears all buffers, performs a full reset of the processing state (filters, oscillators,
+   // enveloppes, lfo, ...) and kills all voices.
+   // The parameter's value remain unchanged.
+   //
+   // clap_process.steady_time may jump backward.
+   //
+   // [audio-thread & active_state]
+   void (*reset)(const struct clap_plugin *plugin);
+
    // process audio, events, ...
    // [audio-thread & active_state & processing_state]
    clap_process_status (*process)(const struct clap_plugin *plugin, const clap_process_t *process);
