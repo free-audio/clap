@@ -40,11 +40,13 @@
 static CLAP_CONSTEXPR const char CLAP_EXT_GUI[] = "clap.gui";
 
 // Known windowing API
-static CLAP_CONSTEXPR const char CLAP_GUI_API_WIN32[] = "win32";
-static CLAP_CONSTEXPR const char CLAP_GUI_API_X11[] = "x11";
-static CLAP_CONSTEXPR const char CLAP_GUI_API_WAYLAND[] = "wayland";
-static CLAP_CONSTEXPR const char CLAP_GUI_API_COCOA[] = "cocoa"; // use logical size
-static CLAP_CONSTEXPR const char CLAP_GUI_API_FLOATING[] = "floating";
+enum {
+   CLAP_GUI_API_WIN32,
+   CLAP_GUI_API_X11,
+   CLAP_GUI_API_WAYLAND,
+   CLAP_GUI_API_COCOA, // uses logical size
+   CLAP_GUI_API_FLOATING,
+};
 
 #ifdef __cplusplus
 extern "C" {
@@ -59,33 +61,26 @@ typedef struct clap_gui_window_cocoa {
    void *nsView;
 } clap_gui_window_cocoa_t;
 
+typedef void *clap_hwnd;
 typedef struct clap_gui_window_win32 {
-   void *hwnd;
+   clap_hwnd window;
 } clap_gui_window_win32_t;
 
 // Represent a window reference.
 // api is one of CLAP_GUI_API_XXX
 // specific has to be casted to the corresponding clap_gui_window_xxx.
 typedef struct clap_gui_window {
-   const char *api;
+   uint32_t    api;
    const void *specific;
 } clap_gui_window_t;
 
 // Size (width, height) is in pixels; the corresponding windowing system extension is
 // responsible to define if it is physical pixels or logical pixels.
 typedef struct clap_plugin_gui {
-   // Returns true if the given windowing API is supported by the plugin
-   // [main-thread]
-   CLAP_NODISCARD bool (*is_api_supported)(const clap_plugin_t *plugin, const char *api);
-
-   // Returns the identifier of the preferred windowing API.
-   // [main-thread]
-   CLAP_NODISCARD const char *(*get_preferred_api)(const clap_plugin_t *plugin);
-
    // Create and allocate all resources necessary for the gui, and for the given windowing API.
    // After this call, the GUI is ready to be shown but it is not yet visible.
    // [main-thread]
-   CLAP_NODISCARD bool (*create)(const clap_plugin_t *plugin, const char *api);
+   CLAP_NODISCARD bool (*create)(const clap_plugin_t *plugin, uint32_t api);
 
    // Free all resources associated with the gui.
    // [main-thread]
