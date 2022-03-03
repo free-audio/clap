@@ -83,7 +83,7 @@ enum {
    // [!active] The in-place pair did change, this requires.
    CLAP_AUDIO_PORTS_RESCAN_IN_PLACE_PAIR = 1 << 4,
 
-   // [!active] The list ports of ports have changed: entries have been removed/added.
+   // [!active] The list of ports have changed: entries have been removed/added.
    CLAP_AUDIO_PORTS_RESCAN_LIST = 1 << 5,
 };
 
