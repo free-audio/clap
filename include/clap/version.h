@@ -21,7 +21,7 @@ typedef struct clap_version {
 #endif
 
 static CLAP_CONSTEXPR const uint32_t CLAP_VERSION_MAJOR = 0;
-static CLAP_CONSTEXPR const uint32_t CLAP_VERSION_MINOR = 18;
+static CLAP_CONSTEXPR const uint32_t CLAP_VERSION_MINOR = 19;
 static CLAP_CONSTEXPR const uint32_t CLAP_VERSION_REVISION = 0;
 
 static CLAP_CONSTEXPR const clap_version_t CLAP_VERSION = {
@@ -29,7 +29,7 @@ static CLAP_CONSTEXPR const clap_version_t CLAP_VERSION = {
 
 // For version 0, we require the same minor version because
 // we may still break the ABI at this point
-static CLAP_NODISCARD CLAP_CONSTEXPR inline bool
+CLAP_NODISCARD static inline CLAP_CONSTEXPR bool
 clap_version_is_compatible(const clap_version_t v) {
    return v.major == CLAP_VERSION_MAJOR && v.minor == CLAP_VERSION_MINOR;
 }
