@@ -227,10 +227,11 @@ typedef struct clap_event_midi2 {
 typedef struct clap_input_events {
    void *ctx; // reserved pointer for the list
 
-   uint32_t (*size)(const struct clap_input_events *list);
+   CLAP_NODISCARD uint32_t (*size)(const struct clap_input_events *list);
 
    // Don't free the return event, it belongs to the list
-   const clap_event_header_t *(*get)(const struct clap_input_events *list, uint32_t index);
+   CLAP_NODISCARD const clap_event_header_t *(*get)(const struct clap_input_events *list,
+                                                    uint32_t                        index);
 } clap_input_events_t;
 
 // Output event list, events must be sorted by time.
@@ -238,7 +239,9 @@ typedef struct clap_output_events {
    void *ctx; // reserved pointer for the list
 
    // Pushes a copy of the event
-   void (*push_back)(const struct clap_output_events *list, const clap_event_header_t *event);
+   // returns false if the event could not be pushed to the queue (out of memory?)
+   CLAP_NODISCARD bool (*try_push)(const struct clap_output_events *list,
+                                   const clap_event_header_t       *event);
 } clap_output_events_t;
 
 #ifdef __cplusplus
