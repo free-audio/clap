@@ -133,6 +133,7 @@ and use to get a basic plugin experience:
 
 - [clap-juce-extension](https://github.com/free-audio/clap-juce-extension), juce add-on
 - [MIP2](https://github.com/skei/MIP2), host and plugins
+- [Avendish](https://github.com/celtera/avendish), a reflection-based API for media plug-ins in C++ which supports Clap
 
 ## Programming Language Bingings
 
