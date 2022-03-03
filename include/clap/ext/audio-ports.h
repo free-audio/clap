@@ -7,8 +7,8 @@
 ///
 /// This extension provides a way for the plugin to describe its current audio ports.
 ///
-/// If the plugin does not implement this extension, it will have a default 32 bits stereo input and output.
-/// This makes 32 bit support a requirement for both plugin and host.
+/// If the plugin does not implement this extension, it will have a default 32 bits stereo input and
+/// output. This makes 32 bit support a requirement for both plugin and host.
 ///
 /// The plugin is only allowed to change its ports configuration while it is deactivated.
 
@@ -30,8 +30,8 @@ enum {
 };
 
 typedef struct clap_audio_port_info {
-   clap_id id;                // stable identifier
-   char name[CLAP_NAME_SIZE]; // displayable name
+   clap_id id;                   // stable identifier
+   char    name[CLAP_NAME_SIZE]; // displayable name
 
    uint32_t flags;
    uint32_t channel_count;
@@ -57,14 +57,14 @@ typedef struct clap_audio_port_info {
 typedef struct clap_plugin_audio_ports {
    // number of ports, for either input or output
    // [main-thread]
-   uint32_t (*count)(const clap_plugin_t *plugin, bool is_input);
+   CLAP_NODISCARD uint32_t (*count)(const clap_plugin_t *plugin, bool is_input);
 
    // get info about about an audio port.
    // [main-thread]
-   bool (*get)(const clap_plugin_t    *plugin,
-               uint32_t                index,
-               bool                    is_input,
-               clap_audio_port_info_t *info);
+   CLAP_NODISCARD bool (*get)(const clap_plugin_t    *plugin,
+                              uint32_t                index,
+                              bool                    is_input,
+                              clap_audio_port_info_t *info);
 } clap_plugin_audio_ports_t;
 
 enum {
@@ -90,7 +90,7 @@ enum {
 typedef struct clap_host_audio_ports {
    // Checks if the host allows a plugin to change a given aspect of the audio ports definition.
    // [main-thread]
-   bool (*is_rescan_flag_supported)(uint32_t flag);
+   CLAP_NODISCARD bool (*is_rescan_flag_supported)(uint32_t flag);
 
    // Rescan the full list of audio ports according to the flags.
    // It is illegal to ask the host to rescan with a flag that is not supported.

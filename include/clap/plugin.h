@@ -4,7 +4,6 @@
 #include "host.h"
 #include "process.h"
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -54,7 +53,7 @@ typedef struct clap_plugin {
    // Must be called after creating the plugin.
    // If init returns false, the host must destroy the plugin instance.
    // [main-thread]
-   bool (*init)(const struct clap_plugin *plugin);
+   CLAP_NODISCARD bool (*init)(const struct clap_plugin *plugin);
 
    // Free the plugin and its resources.
    // It is not required to deactivate the plugin prior to this call.
@@ -68,16 +67,16 @@ typedef struct clap_plugin {
    // Once activated the latency and port configuration must remain constant, until deactivation.
    //
    // [main-thread & !active_state]
-   bool (*activate)(const struct clap_plugin *plugin,
-                    double                    sample_rate,
-                    uint32_t                  min_frames_count,
-                    uint32_t                  max_frames_count);
+   CLAP_NODISCARD bool (*activate)(const struct clap_plugin *plugin,
+                                   double                    sample_rate,
+                                   uint32_t                  min_frames_count,
+                                   uint32_t                  max_frames_count);
    // [main-thread & active_state]
    void (*deactivate)(const struct clap_plugin *plugin);
 
    // Call start processing before processing.
    // [audio-thread & active_state & !processing_state]
-   bool (*start_processing)(const struct clap_plugin *plugin);
+   CLAP_NODISCARD bool (*start_processing)(const struct clap_plugin *plugin);
 
    // Call stop processing before sending the plugin to sleep.
    // [audio-thread & active_state & processing_state]

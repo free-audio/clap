@@ -19,7 +19,8 @@ typedef struct clap_host {
 
    // Query an extension.
    // [thread-safe]
-   const void *(*get_extension)(const struct clap_host *host, const char *extension_id);
+   CLAP_NODISCARD const void *(*get_extension)(const struct clap_host *host,
+                                               const char             *extension_id);
 
    // Request the host to deactivate and then reactivate the plugin.
    // The operation may be delayed by the host.

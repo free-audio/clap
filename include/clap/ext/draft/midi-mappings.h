@@ -27,7 +27,9 @@ typedef struct clap_plugin_midi_mappings {
    uint32_t (*count)(const clap_plugin_t *plugin);
 
    // [main-thread]
-   bool (*get)(const clap_plugin_t *plugin, uint32_t index, clap_midi_mapping_t *mapping);
+   CLAP_NODISCARD bool (*get)(const clap_plugin_t *plugin,
+                              uint32_t             index,
+                              clap_midi_mapping_t *mapping);
 } clap_plugin_midi_mappings_t;
 
 typedef struct clap_host_midi_mappings {

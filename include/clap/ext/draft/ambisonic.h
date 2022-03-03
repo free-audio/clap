@@ -36,10 +36,10 @@ typedef struct clap_ambisonic_info {
 typedef struct clap_plugin_ambisonic {
    // Returns true on success
    // [main-thread]
-   bool (*get_info)(const clap_plugin_t   *plugin,
-                    bool                   is_input,
-                    uint32_t               port_index,
-                    clap_ambisonic_info_t *info);
+   CLAP_NODISCARD bool (*get_info)(const clap_plugin_t   *plugin,
+                                   bool                   is_input,
+                                   uint32_t               port_index,
+                                   clap_ambisonic_info_t *info);
 
 } clap_plugin_ambisonic_t;
 

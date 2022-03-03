@@ -155,8 +155,8 @@ typedef struct clap_param_info {
 
    char name[CLAP_NAME_SIZE];     // the display name
    char module[CLAP_MODULE_SIZE]; // the module containing the param, eg:
-                                             // "oscillators/wt1"; '/' will be used as a
-                                             // separator to show a tree like structure.
+                                  // "oscillators/wt1"; '/' will be used as a
+                                  // separator to show a tree like structure.
 
    double min_value;     // minimum plain value
    double max_value;     // maximum plain value
@@ -166,31 +166,31 @@ typedef struct clap_param_info {
 typedef struct clap_plugin_params {
    // Returns the number of parameters.
    // [main-thread]
-   uint32_t (*count)(const clap_plugin_t *plugin);
+   CLAP_NODISCARD uint32_t (*count)(const clap_plugin_t *plugin);
 
    // Copies the parameter's info to param_info and returns true on success.
    // [main-thread]
-   bool (*get_info)(const clap_plugin_t *plugin,
-                    uint32_t             param_index,
-                    clap_param_info_t   *param_info);
+   CLAP_NODISCARD bool (*get_info)(const clap_plugin_t *plugin,
+                                   uint32_t             param_index,
+                                   clap_param_info_t   *param_info);
 
    // Gets the parameter plain value.
    // [main-thread]
-   bool (*get_value)(const clap_plugin_t *plugin, clap_id param_id, double *value);
+   CLAP_NODISCARD bool (*get_value)(const clap_plugin_t *plugin, clap_id param_id, double *value);
 
    // Formats the display text for the given parameter value.
    // The host should always format the parameter value to text using this function
    // before displaying it to the user.
    // [main-thread]
-   bool (*value_to_text)(
+   CLAP_NODISCARD bool (*value_to_text)(
       const clap_plugin_t *plugin, clap_id param_id, double value, char *display, uint32_t size);
 
    // Converts the display text to a parameter value.
    // [main-thread]
-   bool (*text_to_value)(const clap_plugin_t *plugin,
-                         clap_id              param_id,
-                         const char          *display,
-                         double              *value);
+   CLAP_NODISCARD bool (*text_to_value)(const clap_plugin_t *plugin,
+                                        clap_id              param_id,
+                                        const char          *display,
+                                        double              *value);
 
    // Flushes a set of parameter changes.
    // This method must not be called concurrently to clap_plugin->process().

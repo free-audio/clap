@@ -51,7 +51,7 @@ extern "C" {
 #endif
 
 typedef struct clap_gui_window_x11 {
-   const char *display;
+   const char   *display;
    unsigned long window;
 } clap_gui_window_x11_t;
 
@@ -76,16 +76,16 @@ typedef struct clap_gui_window {
 typedef struct clap_plugin_gui {
    // Returns true if the given windowing API is supported by the plugin
    // [main-thread]
-   bool (*is_api_supported)(const clap_plugin_t *plugin, const char *api);
+   CLAP_NODISCARD bool (*is_api_supported)(const clap_plugin_t *plugin, const char *api);
 
    // Returns the identifier of the preferred windowing API.
    // [main-thread]
-   const char *(*get_preferred_api)(const clap_plugin_t *plugin);
+   CLAP_NODISCARD const char *(*get_preferred_api)(const clap_plugin_t *plugin);
 
    // Create and allocate all resources necessary for the gui, and for the given windowing API.
    // After this call, the GUI is ready to be shown but it is not yet visible.
    // [main-thread]
-   bool (*create)(const clap_plugin_t *plugin, const char *api);
+   CLAP_NODISCARD bool (*create)(const clap_plugin_t *plugin, const char *api);
 
    // Free all resources associated with the gui.
    // [main-thread]
@@ -97,36 +97,40 @@ typedef struct clap_plugin_gui {
    //
    // Return false if the plugin can't apply the scaling; true on success.
    // [main-thread,optional]
-   bool (*set_scale)(const clap_plugin_t *plugin, double scale);
+   CLAP_NODISCARD bool (*set_scale)(const clap_plugin_t *plugin, double scale);
 
    // Get the current size of the plugin UI.
    // clap_plugin_gui->create() must have been called prior to asking the size.
    // [main-thread]
-   bool (*get_size)(const clap_plugin_t *plugin, uint32_t *width, uint32_t *height);
+   CLAP_NODISCARD bool (*get_size)(const clap_plugin_t *plugin, uint32_t *width, uint32_t *height);
 
    // [main-thread]
-   bool (*can_resize)(const clap_plugin_t *plugin);
+   CLAP_NODISCARD bool (*can_resize)(const clap_plugin_t *plugin);
 
    // If the plugin gui is resizable, then the plugin will calculate the closest
    // usable size which fits in the given size.
    // This method does not change the size.
    //
    // [main-thread]
-   bool (*compute_size_to_fit)(const clap_plugin_t *plugin, uint32_t *width, uint32_t *height);
+   CLAP_NODISCARD bool (*compute_size_to_fit)(const clap_plugin_t *plugin,
+                                              uint32_t            *width,
+                                              uint32_t            *height);
 
    // Sets the window size
    // Returns true if the size is supported.
    // [main-thread]
-   bool (*set_size)(const clap_plugin_t *plugin, uint32_t width, uint32_t height);
+   CLAP_NODISCARD bool (*set_size)(const clap_plugin_t *plugin, uint32_t width, uint32_t height);
 
    // Attaches the plugin's window to the given parent window.
    // [main-thread]
-   bool (*attach)(const clap_plugin_t *plugin, const clap_gui_window_t *parent_window);
+   CLAP_NODISCARD bool (*attach)(const clap_plugin_t     *plugin,
+                                 const clap_gui_window_t *parent_window);
 
    // In case the window was created with the "free" windowing API.
    // Sets the window to which the plugin's window shall stay above.
    // [main-thread]
-   bool (*set_transient)(const clap_plugin_t *plugin, const clap_gui_window_t *daw_window);
+   CLAP_NODISCARD bool (*set_transient)(const clap_plugin_t     *plugin,
+                                        const clap_gui_window_t *daw_window);
 
    // Suggests a window title. Only useful when using the "free" windowing API.
    // [main-thread]
@@ -147,17 +151,17 @@ typedef struct clap_host_gui {
     * Return true if the new size is accepted, false otherwise.
     * The host doesn't have to call set_size().
     * [main-thread] */
-   bool (*request_resize)(const clap_host_t *host, uint32_t width, uint32_t height);
+   CLAP_NODISCARD bool (*request_resize)(const clap_host_t *host, uint32_t width, uint32_t height);
 
    /* Request the host to show the plugin gui.
     * Return true on success, false otherwise.
     * [main-thread] */
-   bool (*request_show)(const clap_host_t *host);
+   CLAP_NODISCARD bool (*request_show)(const clap_host_t *host);
 
    /* Request the host to hide the plugin gui.
     * Return true on success, false otherwise.
     * [main-thread] */
-   bool (*request_hide)(const clap_host_t *host);
+   CLAP_NODISCARD bool (*request_hide)(const clap_host_t *host);
 } clap_host_gui_t;
 
 #ifdef __cplusplus

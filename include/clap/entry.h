@@ -3,7 +3,6 @@
 #include "version.h"
 #include "private/macros.h"
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -39,7 +38,7 @@ typedef struct clap_plugin_entry {
    //
    // If the initialization depends upon expensive computation, maybe try to do them ahead of time
    // and cache the result.
-   bool (*init)(const char *plugin_path);
+   CLAP_NODISCARD bool (*init)(const char *plugin_path);
 
    // No more calls into the DSO must be made after calling deinit().
    void (*deinit)(void);
@@ -49,7 +48,7 @@ typedef struct clap_plugin_entry {
    //
    // Returns null if the factory is not provided.
    // The returned pointer must *not* be freed by the caller.
-   const void *(*get_factory)(const char *factory_id);
+   CLAP_NODISCARD const void *(*get_factory)(const char *factory_id);
 } clap_plugin_entry_t;
 
 /* Entry point */

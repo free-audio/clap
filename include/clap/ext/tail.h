@@ -11,7 +11,7 @@ extern "C" {
 typedef struct clap_plugin_tail {
    // Returns tail length in samples.
    // [main-thread,audio-thread]
-   uint32_t (*get)(const clap_plugin_t *plugin);
+   CLAP_NODISCARD uint32_t (*get)(const clap_plugin_t *plugin);
 } clap_plugin_tail_t;
 
 typedef struct clap_host_tail {

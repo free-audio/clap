@@ -30,31 +30,33 @@ extern "C" {
 // Minimalistic description of ports configuration
 typedef struct clap_audio_ports_config {
    clap_id id;
-   char name[CLAP_NAME_SIZE];
+   char    name[CLAP_NAME_SIZE];
 
    // main input info
-   uint32_t input_channel_count;
+   uint32_t    input_channel_count;
    const char *input_port_type;
 
    // main output info
-   uint32_t output_channel_count;
-   const char * output_port_type;
+   uint32_t    output_channel_count;
+   const char *output_port_type;
 } clap_audio_ports_config_t;
 
 // The audio ports config scan has to be done while the plugin is deactivated.
 typedef struct clap_plugin_audio_ports_config {
    // gets the number of available configurations
    // [main-thread]
-   uint32_t (*count)(const clap_plugin_t *plugin);
+   CLAP_NODISCARD uint32_t (*count)(const clap_plugin_t *plugin);
 
    // gets information about a configuration
    // [main-thread]
-   bool (*get)(const clap_plugin_t *plugin, uint32_t index, clap_audio_ports_config_t *config);
+   CLAP_NODISCARD bool (*get)(const clap_plugin_t       *plugin,
+                              uint32_t                   index,
+                              clap_audio_ports_config_t *config);
 
    // selects the configuration designated by id
    // returns true if the configuration could be applied
    // [main-thread,plugin-deactivated]
-   bool (*select)(const clap_plugin_t *plugin, clap_id config_id);
+   CLAP_NODISCARD bool (*select)(const clap_plugin_t *plugin, clap_id config_id);
 } clap_plugin_audio_ports_config_t;
 
 typedef struct clap_host_audio_ports_config {

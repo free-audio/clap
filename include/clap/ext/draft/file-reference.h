@@ -25,36 +25,40 @@ extern "C" {
 
 typedef struct clap_file_reference {
    clap_id resource_id;
-   char path[CLAP_PATH_SIZE];
-   bool belongs_to_plugin_collection;
+   char    path[CLAP_PATH_SIZE];
+   bool    belongs_to_plugin_collection;
 } clap_file_reference_t;
 
 typedef struct clap_plugin_file_reference {
    // returns the number of file reference this plugin has
    // [main-thread]
-   uint32_t (*count)(const clap_plugin_t *plugin);
+   CLAP_NODISCARD uint32_t (*count)(const clap_plugin_t *plugin);
 
    // gets the file reference at index
    // returns true on success
    // [main-thread]
-   bool (*get)(const clap_plugin_t *plugin, uint32_t index, clap_file_reference_t *file_reference);
+   CLAP_NODISCARD bool (*get)(const clap_plugin_t   *plugin,
+                              uint32_t               index,
+                              clap_file_reference_t *file_reference);
 
    // This method does not compute the hash.
    // It is only used in case of missing resource. The host may have additionnal known resource
    // location and may be able to locate the file by using its known hash.
    // [main-thread]
-   bool (*get_hash)(const clap_plugin_t *plugin,
-                    clap_id              resource_id,
-                    clap_hash            hash,
-                    uint8_t             *digest,
-                    uint32_t             digest_size);
+   CLAP_NODISCARD bool (*get_hash)(const clap_plugin_t *plugin,
+                                   clap_id              resource_id,
+                                   clap_hash            hash,
+                                   uint8_t             *digest,
+                                   uint32_t             digest_size);
 
    // updates the path to a file reference
    // [main-thread]
-   bool (*update_path)(const clap_plugin_t *plugin, clap_id resource_id, const char *path);
+   CLAP_NODISCARD bool (*update_path)(const clap_plugin_t *plugin,
+                                      clap_id              resource_id,
+                                      const char          *path);
 
    // [main-thread]
-   bool (*save_resources)(const clap_plugin_t *plugin);
+   CLAP_NODISCARD bool (*save_resources)(const clap_plugin_t *plugin);
 } clap_plugin_file_reference_t;
 
 typedef struct clap_host_file_reference {

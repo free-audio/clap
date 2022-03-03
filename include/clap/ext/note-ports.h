@@ -33,24 +33,24 @@ enum clap_note_dialect {
 };
 
 typedef struct clap_note_port_info {
-   clap_id id;                  // stable identifier
-   uint32_t supported_dialects; // bitfield, see clap_note_dialect
-   uint32_t preferred_dialect;  // one value of clap_note_dialect
-   char name[CLAP_NAME_SIZE];   // displayable name, i18n?
+   clap_id  id;                   // stable identifier
+   uint32_t supported_dialects;   // bitfield, see clap_note_dialect
+   uint32_t preferred_dialect;    // one value of clap_note_dialect
+   char     name[CLAP_NAME_SIZE]; // displayable name, i18n?
 } clap_note_port_info_t;
 
 // The note ports scan has to be done while the plugin is deactivated.
 typedef struct clap_plugin_note_ports {
    // number of ports, for either input or output
    // [main-thread]
-   uint32_t (*count)(const clap_plugin_t *plugin, bool is_input);
+   CLAP_NODISCARD uint32_t (*count)(const clap_plugin_t *plugin, bool is_input);
 
    // get info about about a note port.
    // [main-thread]
-   bool (*get)(const clap_plugin_t   *plugin,
-               uint32_t               index,
-               bool                   is_input,
-               clap_note_port_info_t *info);
+   CLAP_NODISCARD bool (*get)(const clap_plugin_t   *plugin,
+                              uint32_t               index,
+                              bool                   is_input,
+                              clap_note_port_info_t *info);
 } clap_plugin_note_ports_t;
 
 enum {
@@ -67,7 +67,7 @@ enum {
 typedef struct clap_host_note_ports {
    // Query which dialects the host supports
    // [main-thread]
-   uint32_t (*supported_dialects)(const clap_host_t *host);
+   CLAP_NODISCARD uint32_t (*supported_dialects)(const clap_host_t *host);
 
    // Rescan the full list of note ports according to the flags.
    // [main-thread]
