@@ -137,12 +137,12 @@ typedef struct clap_plugin_gui {
 
    // Show the window.
    // [main-thread]
-   void (*show)(const clap_plugin_t *plugin);
+   CLAP_NODISCARD bool (*show)(const clap_plugin_t *plugin);
 
    // Hide the window, this method do not free the resources, it just hides
    // the window content. Yet it maybe a good idea to stop painting timers.
    // [main-thread]
-   void (*hide)(const clap_plugin_t *plugin);
+   CLAP_NODISCARD bool (*hide)(const clap_plugin_t *plugin);
 } clap_plugin_gui_t;
 
 typedef struct clap_host_gui {
