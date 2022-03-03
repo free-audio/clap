@@ -23,7 +23,7 @@
 
 #if defined(__cplusplus) && __cplusplus >= 201703L
 #   define CLAP_NODISCARD [[nodiscard]]
-#elsif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201300L
+#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201300L
 #   define CLAP_NODISCARD [[nodiscard]]
 #else
 #   define CLAP_NODISCARD
