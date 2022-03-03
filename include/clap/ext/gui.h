@@ -77,6 +77,10 @@ typedef struct clap_gui_window {
 // Size (width, height) is in pixels; the corresponding windowing system extension is
 // responsible to define if it is physical pixels or logical pixels.
 typedef struct clap_plugin_gui {
+   // Returns true if the requested gui api is supported
+   // [main-thread]
+   CLAP_NODISCARD bool (*is_api_supported)(const clap_plugin_t *plugin, uint32_t api);
+
    // Create and allocate all resources necessary for the gui, and for the given windowing API.
    // After this call, the GUI is ready to be shown but it is not yet visible.
    // [main-thread]
