@@ -17,15 +17,13 @@
 /// 1. clap_plugin_gui->is_api_supported(), check what can work
 /// 2. clap_plugin_gui->create(), allocates gui resources
 /// 3. if the plugin window is floating
-/// 4.    -> clap_plugin_gui->set_transient(), to keep the plugin window on top of the daw
-/// 5.    -> clap_plugin_gui->suggest_title()
-/// 6. else
-/// 7.    -> clap_plugin_gui->set_scale(), if the function pointer is provided by the plugin
-/// 8.    -> clap_plugin_gui->get_size(), gets initial size
-/// 9.    -> clap_plugin_gui->embed()
-/// 5. clap_plugin_gui->show()
-/// 6. clap_plugin_gui->hide()/show() ...
-/// 7. clap_plugin_gui->destroy() when done with the gui
+/// 4.    -> clap_plugin_gui->suggest_title()
+/// 5. else
+/// 6.    -> clap_plugin_gui->set_scale(), if the function pointer is provided by the plugin
+/// 7.    -> clap_plugin_gui->get_size(), gets initial size
+/// 8. clap_plugin_gui->show()
+/// 9. clap_plugin_gui->hide()/show() ...
+/// 10. clap_plugin_gui->destroy() when done with the gui
 ///
 /// Resizing the window (initiated by the plugin, if embedded):
 /// 1. Plugins calls clap_host_gui->request_resize()
@@ -41,8 +39,8 @@
 
 static CLAP_CONSTEXPR const char CLAP_EXT_GUI[] = "clap.gui";
 
-// Known windowing API
 // If your windowing API is not listed here, please open an issue and we'll figure it out.
+// https://github.com/free-audio/clap/issues/new
 
 // uses physical size
 // embed using https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setparent
@@ -63,44 +61,51 @@ static const CLAP_CONSTEXPR char CLAP_GUI_API_WAYLAND[] = "wayland";
 extern "C" {
 #endif
 
-typedef struct clap_gui_window_x11 {
+typedef struct clap_window_x11 {
    const char   *display;
    unsigned long window;
-} clap_gui_window_x11_t;
+} clap_window_x11_t;
 
-typedef struct clap_gui_window_cocoa {
+typedef struct clap_window_cocoa {
    void *nsView;
-} clap_gui_window_cocoa_t;
+} clap_window_cocoa_t;
 
 typedef void *clap_hwnd;
-typedef struct clap_gui_window_win32 {
+typedef struct clap_window_win32 {
    clap_hwnd window;
-} clap_gui_window_win32_t;
+} clap_window_win32_t;
 
 // Represent a window reference.
 // api is one of CLAP_GUI_API_XXX
 // specific has to be casted to the corresponding clap_gui_window_xxx.
-typedef struct clap_gui_window {
+typedef struct clap_window {
    const char *api;
    union {
-      const clap_gui_window_cocoa_t *cocoa;
-      const clap_gui_window_x11_t   *x11;
-      const clap_gui_window_win32_t *win32;
-      const void                    *ptr; // for anything defined outside of clap
+      clap_window_cocoa_t cocoa;
+      clap_window_x11_t   x11;
+      clap_window_win32_t win32;
+      void               *ptr; // for anything defined outside of clap
    };
-} clap_gui_window_t;
+} clap_window_t;
 
 // Size (width, height) is in pixels; the corresponding windowing system extension is
 // responsible to define if it is physical pixels or logical pixels.
 typedef struct clap_plugin_gui {
    // Returns true if the requested gui api is supported
    // [main-thread]
-   bool (*is_api_supported)(const clap_plugin_t *plugin, const char *api);
+   bool (*is_api_supported)(const clap_plugin_t *plugin, const char *api, bool is_floating);
 
-   // Create and allocate all resources necessary for the gui, and for the given windowing API.
+   // Create and allocate all resources necessary for the gui.
+   //
+   // If is_floating is true, then the window will not be managed by the host. The plugin
+   // can set its window to stays above the parent window.
+   //
+   // If is_floating is false, then the plugin has to embbed its window into the parent window.
+   //
    // After this call, the GUI is ready to be shown but it is not yet visible.
+   //
    // [main-thread]
-   bool (*create)(const clap_plugin_t *plugin, const char *api, bool is_floating);
+   bool (*create)(const clap_plugin_t *plugin, const clap_window_t *parentWindow, bool is_floating);
 
    // Free all resources associated with the gui.
    // [main-thread]
@@ -119,6 +124,8 @@ typedef struct clap_plugin_gui {
    // [main-thread]
    bool (*get_size)(const clap_plugin_t *plugin, uint32_t *width, uint32_t *height);
 
+   // Returns true if the window is resizeable (mouse drag).
+   // Only for embedded windows.
    // [main-thread]
    bool (*can_resize)(const clap_plugin_t *plugin);
 
@@ -126,24 +133,15 @@ typedef struct clap_plugin_gui {
    // usable size which fits in the given size.
    // This method does not change the size.
    //
+   // Only for embedded windows.
    // [main-thread]
    bool (*adjust_size)(const clap_plugin_t *plugin, uint32_t *width, uint32_t *height);
 
-   // Sets the window size
-   // Returns true if the size is supported.
+   // Sets the window size. Only for embedded windows.
    // [main-thread]
    bool (*set_size)(const clap_plugin_t *plugin, uint32_t width, uint32_t height);
 
-   // Attaches the plugin's window to the given parent window.
-   // [main-thread]
-   bool (*attach)(const clap_plugin_t *plugin, const clap_gui_window_t *parent_window);
-
-   // In case the window was created with the "free" windowing API.
-   // Sets the window to which the plugin's window shall stay above.
-   // [main-thread]
-   bool (*set_transient)(const clap_plugin_t *plugin, const clap_gui_window_t *daw_window);
-
-   // Suggests a window title. Only useful when using the "free" windowing API.
+   // Suggests a window title. Only for floating windows.
    // [main-thread]
    void (*suggest_title)(const clap_plugin_t *plugin, const char *title);
 
