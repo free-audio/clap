@@ -44,18 +44,18 @@ static CLAP_CONSTEXPR const char CLAP_EXT_GUI[] = "clap.gui";
 
 // uses physical size
 // embed using https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setparent
-static const CLAP_CONSTEXPR char CLAP_GUI_API_WIN32[] = "win32";
+static const CLAP_CONSTEXPR char CLAP_WINDOW_API_WIN32[] = "win32";
 
 // uses logical size
-static const CLAP_CONSTEXPR char CLAP_GUI_API_COCOA[] = "cocoa";
+static const CLAP_CONSTEXPR char CLAP_WINDOW_API_COCOA[] = "cocoa";
 
 // uses physical size
 // embed using https://specifications.freedesktop.org/xembed-spec/xembed-spec-latest.html
-static const CLAP_CONSTEXPR char CLAP_GUI_API_X11[] = "x11";
+static const CLAP_CONSTEXPR char CLAP_WINDOW_API_X11[] = "x11";
 
 // uses physical size
 // embed is currently not supported, use floating windows
-static const CLAP_CONSTEXPR char CLAP_GUI_API_WAYLAND[] = "wayland";
+static const CLAP_CONSTEXPR char CLAP_WINDOW_API_WAYLAND[] = "wayland";
 
 #ifdef __cplusplus
 extern "C" {
