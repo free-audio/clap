@@ -90,7 +90,7 @@ enum {
 typedef struct clap_host_audio_ports {
    // Checks if the host allows a plugin to change a given aspect of the audio ports definition.
    // [main-thread]
-   bool (*is_rescan_flag_supported)(uint32_t flag);
+   bool (*is_rescan_flag_supported)(const clap_host_t *host, uint32_t flag);
 
    // Rescan the full list of audio ports according to the flags.
    // It is illegal to ask the host to rescan with a flag that is not supported.
