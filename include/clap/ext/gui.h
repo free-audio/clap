@@ -159,6 +159,10 @@ typedef struct clap_host_gui {
     * Return true on success, false otherwise.
     * [main-thread] */
    bool (*request_hide)(const clap_host_t *host);
+
+   // The plugin's floating window has been closed.
+   // [main-thread]
+   void (*window_closed)(const clap_host_t *host);
 } clap_host_gui_t;
 
 #ifdef __cplusplus
