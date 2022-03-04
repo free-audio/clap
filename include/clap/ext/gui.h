@@ -160,9 +160,12 @@ typedef struct clap_host_gui {
     * [main-thread] */
    bool (*request_hide)(const clap_host_t *host);
 
-   // The plugin's floating window has been closed.
+   // The floating window has been closed, or the connection to the gui has been lost.
+   //
+   // If was_destroyed is true, then the host must call clap_plugin_gui->destroy() to acknowledge
+   // the gui destruction.
    // [main-thread]
-   void (*window_closed)(const clap_host_t *host);
+   void (*closed)(const clap_host_t *host, bool was_destroyed);
 } clap_host_gui_t;
 
 #ifdef __cplusplus
