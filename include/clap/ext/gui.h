@@ -16,12 +16,12 @@
 /// Showing the GUI works as follow:
 /// 1. clap_plugin_gui->is_api_supported(), check what can work
 /// 2. clap_plugin_gui->create(), allocates gui resources
-/// 3. clap_plugin_gui->set_scale(), if the function pointer is provided by the plugin
-/// 4. clap_plugin_gui->get_size(), gets initial size
-/// 5. if the plugin window is floating
-/// 6.    -> clap_plugin_gui->set_transient(), to keep the plugin window on top of the daw
-/// 7.    -> clap_plugin_gui->suggest_title()
-/// 8. else
+/// 3. if the plugin window is floating
+/// 4.    -> clap_plugin_gui->set_transient(), to keep the plugin window on top of the daw
+/// 5.    -> clap_plugin_gui->suggest_title()
+/// 6. else
+/// 7.    -> clap_plugin_gui->set_scale(), if the function pointer is provided by the plugin
+/// 8.    -> clap_plugin_gui->get_size(), gets initial size
 /// 9.    -> clap_plugin_gui->embed()
 /// 5. clap_plugin_gui->show()
 /// 6. clap_plugin_gui->hide()/show() ...
@@ -43,22 +43,21 @@ static CLAP_CONSTEXPR const char CLAP_EXT_GUI[] = "clap.gui";
 
 // Known windowing API
 // If your windowing API is not listed here, please open an issue and we'll figure it out.
-enum {
-   // uses physical size
-   // embed using https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setparent
-   CLAP_GUI_API_WIN32,
 
-   // uses logical size
-   CLAP_GUI_API_COCOA,
+// uses physical size
+// embed using https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setparent
+static const CLAP_CONSTEXPR char CLAP_GUI_API_WIN32[] = "win32";
 
-   // uses physical size
-   // embed using https://specifications.freedesktop.org/xembed-spec/xembed-spec-latest.html
-   CLAP_GUI_API_X11,
+// uses logical size
+static const CLAP_CONSTEXPR char CLAP_GUI_API_COCOA[] = "cocoa";
 
-   // uses physical size
-   // embed is currently not supported, use floating windows
-   CLAP_GUI_API_WAYLAND,
-};
+// uses physical size
+// embed using https://specifications.freedesktop.org/xembed-spec/xembed-spec-latest.html
+static const CLAP_CONSTEXPR char CLAP_GUI_API_X11[] = "x11";
+
+// uses physical size
+// embed is currently not supported, use floating windows
+static const CLAP_CONSTEXPR char CLAP_GUI_API_WAYLAND[] = "wayland";
 
 #ifdef __cplusplus
 extern "C" {
@@ -82,8 +81,13 @@ typedef struct clap_gui_window_win32 {
 // api is one of CLAP_GUI_API_XXX
 // specific has to be casted to the corresponding clap_gui_window_xxx.
 typedef struct clap_gui_window {
-   uint32_t    api;
-   const void *specific;
+   const char *api;
+   union {
+      const clap_gui_window_cocoa_t *cocoa;
+      const clap_gui_window_x11_t   *x11;
+      const clap_gui_window_win32_t *win32;
+      const void                    *ptr; // for anything defined outside of clap
+   };
 } clap_gui_window_t;
 
 // Size (width, height) is in pixels; the corresponding windowing system extension is
@@ -91,12 +95,12 @@ typedef struct clap_gui_window {
 typedef struct clap_plugin_gui {
    // Returns true if the requested gui api is supported
    // [main-thread]
-   bool (*is_api_supported)(const clap_plugin_t *plugin, uint32_t api);
+   bool (*is_api_supported)(const clap_plugin_t *plugin, const char *api);
 
    // Create and allocate all resources necessary for the gui, and for the given windowing API.
    // After this call, the GUI is ready to be shown but it is not yet visible.
    // [main-thread]
-   bool (*create)(const clap_plugin_t *plugin, uint32_t api, bool is_floating);
+   bool (*create)(const clap_plugin_t *plugin, const char *api, bool is_floating);
 
    // Free all resources associated with the gui.
    // [main-thread]
