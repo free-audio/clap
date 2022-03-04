@@ -61,30 +61,16 @@ static const CLAP_CONSTEXPR char CLAP_WINDOW_API_WAYLAND[] = "wayland";
 extern "C" {
 #endif
 
-typedef struct clap_window_x11 {
-   const char   *display;
-   unsigned long window;
-} clap_window_x11_t;
-
-typedef struct clap_window_cocoa {
-   void *nsView;
-} clap_window_cocoa_t;
-
-typedef void *clap_hwnd;
-typedef struct clap_window_win32 {
-   clap_hwnd window;
-} clap_window_win32_t;
-
 // Represent a window reference.
 // api is one of CLAP_GUI_API_XXX
 // specific has to be casted to the corresponding clap_gui_window_xxx.
 typedef struct clap_window {
    const char *api;
    union {
-      clap_window_cocoa_t cocoa;
-      clap_window_x11_t   x11;
-      clap_window_win32_t win32;
-      void               *ptr; // for anything defined outside of clap
+      void         *cocoa_nsview;
+      unsigned long x11_window;
+      void         *win32_window;
+      void         *ptr; // for anything defined outside of clap
    };
 } clap_window_t;
 
