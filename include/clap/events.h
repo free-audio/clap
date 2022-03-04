@@ -10,7 +10,7 @@ extern "C" {
 
 // event header
 // must be the first attribute of the event
-typedef struct clap_event_header {
+typedef struct alignas(8) clap_event_header {
    uint32_t size;     // event size including this header, eg: sizeof (clap_event_note)
    uint32_t time;     // time at which the event happens
    uint16_t space_id; // event space, see clap_host_event_registry
