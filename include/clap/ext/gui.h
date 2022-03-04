@@ -40,6 +40,7 @@
 static CLAP_CONSTEXPR const char CLAP_EXT_GUI[] = "clap.gui";
 
 // Known windowing API
+// If your windowing API is not listed here, please open an issue and we'll figure it out.
 enum {
    CLAP_GUI_API_WIN32,
    CLAP_GUI_API_X11,
