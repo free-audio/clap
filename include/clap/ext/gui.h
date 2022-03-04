@@ -14,27 +14,29 @@
 /// Floating window are sometimes the only option due to technical limitations.
 ///
 /// Showing the GUI works as follow:
-/// 1. clap_plugin_gui->create(), allocates gui resources
-/// 2. clap_plugin_gui->set_scale()
-/// 3. clap_plugin_gui->get_size(), gets initial size
-/// 4. clap_plugin_gui->embed()
+/// 1. clap_plugin_gui->is_api_supported(), check what can work
+/// 2. clap_plugin_gui->create(), allocates gui resources
+/// 3. clap_plugin_gui->set_scale(), if the function pointer is provided by the plugin
+/// 4. clap_plugin_gui->get_size(), gets initial size
+/// 5. if the plugin window is floating
+/// 6.    -> clap_plugin_gui->set_transient(), to keep the plugin window on top of the daw
+/// 7.    -> clap_plugin_gui->suggest_title()
+/// 8. else
+/// 9.    -> clap_plugin_gui->embed()
 /// 5. clap_plugin_gui->show()
 /// 6. clap_plugin_gui->hide()/show() ...
 /// 7. clap_plugin_gui->destroy() when done with the gui
 ///
-/// For floating windows, simply don't call clap_plugin_gui_embed() and maybe call
-/// clap_plugin_gui->suggest_title(), clap_plugin_gui->set_transient()
-///
-/// Resizing the window (initiated by the plugin):
+/// Resizing the window (initiated by the plugin, if embedded):
 /// 1. Plugins calls clap_host_gui->request_resize()
 /// 2. If the host returns true the new size is accepted,
 ///    the host doesn't have to call clap_plugin_gui->set_size().
 ///    If the host returns false, the new size is rejected.
 ///
-/// Resizing the window (drag):
+/// Resizing the window (drag, if embedded)):
 /// 1. Only possible if clap_plugin_gui->can_resize() returns true
 /// 2. Mouse drag -> new_size
-/// 3. clap_plugin_gui->compute_size_to_fit(new_size) -> working_size
+/// 3. clap_plugin_gui->adjust_size(new_size) -> working_size
 /// 4. clap_plugin_gui->set_size(working_size)
 
 static CLAP_CONSTEXPR const char CLAP_EXT_GUI[] = "clap.gui";
@@ -42,11 +44,20 @@ static CLAP_CONSTEXPR const char CLAP_EXT_GUI[] = "clap.gui";
 // Known windowing API
 // If your windowing API is not listed here, please open an issue and we'll figure it out.
 enum {
+   // uses physical size
+   // embed using https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setparent
    CLAP_GUI_API_WIN32,
+
+   // uses logical size
+   CLAP_GUI_API_COCOA,
+
+   // uses physical size
+   // embed using https://specifications.freedesktop.org/xembed-spec/xembed-spec-latest.html
    CLAP_GUI_API_X11,
+
+   // uses physical size
+   // embed is currently not supported, use floating windows
    CLAP_GUI_API_WAYLAND,
-   CLAP_GUI_API_COCOA, // uses logical size
-   CLAP_GUI_API_FLOATING,
 };
 
 #ifdef __cplusplus
@@ -85,7 +96,7 @@ typedef struct clap_plugin_gui {
    // Create and allocate all resources necessary for the gui, and for the given windowing API.
    // After this call, the GUI is ready to be shown but it is not yet visible.
    // [main-thread]
-   bool (*create)(const clap_plugin_t *plugin, uint32_t api);
+   bool (*create)(const clap_plugin_t *plugin, uint32_t api, bool is_floating);
 
    // Free all resources associated with the gui.
    // [main-thread]
