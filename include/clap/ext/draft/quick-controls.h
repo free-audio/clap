@@ -13,8 +13,8 @@ enum { CLAP_QUICK_CONTROLS_COUNT = 8 };
 
 typedef struct clap_quick_controls_page {
    clap_id id;
-   char name[CLAP_NAME_SIZE];
-   char keywords[CLAP_KEYWORDS_SIZE];
+   char    name[CLAP_NAME_SIZE];
+   char    keywords[CLAP_KEYWORDS_SIZE];
    clap_id param_ids[CLAP_QUICK_CONTROLS_COUNT];
 } clap_quick_controls_page_t;
 

@@ -18,10 +18,10 @@ typedef struct clap_host_timer_support {
    // The host may adjust the period if it is under a certain threshold.
    // 30 Hz should be allowed.
    // [main-thread]
-   CLAP_NODISCARD bool (*register_timer)(const clap_host_t *host, uint32_t period_ms, clap_id *timer_id);
+   bool (*register_timer)(const clap_host_t *host, uint32_t period_ms, clap_id *timer_id);
 
    // [main-thread]
-   CLAP_NODISCARD bool (*unregister_timer)(const clap_host_t *host, clap_id timer_id);
+   bool (*unregister_timer)(const clap_host_t *host, clap_id timer_id);
 } clap_host_timer_support_t;
 
 #ifdef __cplusplus

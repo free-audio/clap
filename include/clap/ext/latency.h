@@ -12,7 +12,7 @@ extern "C" {
 typedef struct clap_plugin_latency {
    // Returns the plugin latency.
    // [main-thread]
-   CLAP_NODISCARD uint32_t (*get)(const clap_plugin_t *plugin);
+   uint32_t (*get)(const clap_plugin_t *plugin);
 } clap_plugin_latency_t;
 
 typedef struct clap_host_latency {

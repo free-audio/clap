@@ -23,10 +23,10 @@ typedef struct clap_plugin_cv {
    // Stores into the channel_map array, the surround identifer of each channels.
    // Returns the number of elements stored in channel_map
    // [main-thread]
-   CLAP_NODISCARD uint32_t (*get_channel_type)(const clap_plugin_t *plugin,
-                                               bool                 is_input,
-                                               uint32_t             port_index,
-                                               uint32_t             channel_index);
+   uint32_t (*get_channel_type)(const clap_plugin_t *plugin,
+                                bool                 is_input,
+                                uint32_t             port_index,
+                                uint32_t             channel_index);
 } clap_plugin_cv_t;
 
 typedef struct clap_host_cv {

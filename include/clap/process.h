@@ -3,7 +3,6 @@
 #include "events.h"
 #include "audio-buffer.h"
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif

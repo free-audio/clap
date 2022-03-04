@@ -166,31 +166,31 @@ typedef struct clap_param_info {
 typedef struct clap_plugin_params {
    // Returns the number of parameters.
    // [main-thread]
-   CLAP_NODISCARD uint32_t (*count)(const clap_plugin_t *plugin);
+   uint32_t (*count)(const clap_plugin_t *plugin);
 
    // Copies the parameter's info to param_info and returns true on success.
    // [main-thread]
-   CLAP_NODISCARD bool (*get_info)(const clap_plugin_t *plugin,
-                                   uint32_t             param_index,
-                                   clap_param_info_t   *param_info);
+   bool (*get_info)(const clap_plugin_t *plugin,
+                    uint32_t             param_index,
+                    clap_param_info_t   *param_info);
 
    // Gets the parameter plain value.
    // [main-thread]
-   CLAP_NODISCARD bool (*get_value)(const clap_plugin_t *plugin, clap_id param_id, double *value);
+   bool (*get_value)(const clap_plugin_t *plugin, clap_id param_id, double *value);
 
    // Formats the display text for the given parameter value.
    // The host should always format the parameter value to text using this function
    // before displaying it to the user.
    // [main-thread]
-   CLAP_NODISCARD bool (*value_to_text)(
+   bool (*value_to_text)(
       const clap_plugin_t *plugin, clap_id param_id, double value, char *display, uint32_t size);
 
    // Converts the display text to a parameter value.
    // [main-thread]
-   CLAP_NODISCARD bool (*text_to_value)(const clap_plugin_t *plugin,
-                                        clap_id              param_id,
-                                        const char          *display,
-                                        double              *value);
+   bool (*text_to_value)(const clap_plugin_t *plugin,
+                         clap_id              param_id,
+                         const char          *display,
+                         double              *value);
 
    // Flushes a set of parameter changes.
    // This method must not be called concurrently to clap_plugin->process().

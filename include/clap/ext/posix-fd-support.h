@@ -27,13 +27,13 @@ typedef struct clap_plugin_posix_fd_support {
 
 typedef struct clap_host_posix_fd_support {
    // [main-thread]
-   CLAP_NODISCARD bool (*register_fd)(const clap_host_t *host, int fd, int flags);
+   bool (*register_fd)(const clap_host_t *host, int fd, int flags);
 
    // [main-thread]
-   CLAP_NODISCARD bool (*modify_fd)(const clap_host_t *host, int fd, int flags);
+   bool (*modify_fd)(const clap_host_t *host, int fd, int flags);
 
    // [main-thread]
-   CLAP_NODISCARD bool (*unregister_fd)(const clap_host_t *host, int fd);
+   bool (*unregister_fd)(const clap_host_t *host, int fd);
 } clap_host_posix_fd_support_t;
 
 #ifdef __cplusplus

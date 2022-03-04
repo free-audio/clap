@@ -57,14 +57,14 @@ typedef struct clap_audio_port_info {
 typedef struct clap_plugin_audio_ports {
    // number of ports, for either input or output
    // [main-thread]
-   CLAP_NODISCARD uint32_t (*count)(const clap_plugin_t *plugin, bool is_input);
+   uint32_t (*count)(const clap_plugin_t *plugin, bool is_input);
 
    // get info about about an audio port.
    // [main-thread]
-   CLAP_NODISCARD bool (*get)(const clap_plugin_t    *plugin,
-                              uint32_t                index,
-                              bool                    is_input,
-                              clap_audio_port_info_t *info);
+   bool (*get)(const clap_plugin_t    *plugin,
+               uint32_t                index,
+               bool                    is_input,
+               clap_audio_port_info_t *info);
 } clap_plugin_audio_ports_t;
 
 enum {
@@ -90,7 +90,7 @@ enum {
 typedef struct clap_host_audio_ports {
    // Checks if the host allows a plugin to change a given aspect of the audio ports definition.
    // [main-thread]
-   CLAP_NODISCARD bool (*is_rescan_flag_supported)(uint32_t flag);
+   bool (*is_rescan_flag_supported)(uint32_t flag);
 
    // Rescan the full list of audio ports according to the flags.
    // It is illegal to ask the host to rescan with a flag that is not supported.
