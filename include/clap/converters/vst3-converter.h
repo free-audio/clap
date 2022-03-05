@@ -26,7 +26,7 @@ typedef struct clap_vst3_converter {
                                     uint32_t                          vst3_param_id,
                                     double                            vst3_normalized_value,
                                     clap_id                          *clap_param_id,
-                                    double                           *clap_normaliezd_value);
+                                    double                           *clap_normalized_value);
 
    // converts the vst3 param id and plain value to clap.
    // [thread-safe]
