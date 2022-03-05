@@ -93,7 +93,7 @@ typedef struct clap_plugin_gui {
    // After this call, the GUI is ready to be shown but it is not yet visible.
    //
    // [main-thread]
-   bool (*create)(const clap_plugin_t *plugin, const clap_window_t *parentWindow, bool is_floating);
+   bool (*create)(const clap_plugin_t *plugin, const char *api, bool is_floating);
 
    // Free all resources associated with the gui.
    // [main-thread]
@@ -129,8 +129,16 @@ typedef struct clap_plugin_gui {
    // [main-thread]
    bool (*set_size)(const clap_plugin_t *plugin, uint32_t width, uint32_t height);
 
+   // Embbeds the plugin window into the given window.
+   // [main-thread & floating]
+   bool (*set_parent)(const clap_plugin_t *plugin, const clap_window_t *window);
+
+   // Set the plugin floating window to stay above the given window.
+   // [main-thread & !floating]
+   bool (*set_transient)(const clap_plugin_t *plugin, const clap_window_t *window);
+
    // Suggests a window title. Only for floating windows.
-   // [main-thread]
+   // [main-thread & floating]
    void (*suggest_title)(const clap_plugin_t *plugin, const char *title);
 
    // Show the window.
