@@ -14,16 +14,18 @@
 /// Floating window are sometimes the only option due to technical limitations.
 ///
 /// Showing the GUI works as follow:
-/// 1. clap_plugin_gui->is_api_supported(), check what can work
-/// 2. clap_plugin_gui->create(), allocates gui resources
-/// 3. if the plugin window is floating
-/// 4.    -> clap_plugin_gui->suggest_title()
-/// 5. else
-/// 6.    -> clap_plugin_gui->set_scale(), if the function pointer is provided by the plugin
-/// 7.    -> clap_plugin_gui->get_size(), gets initial size
-/// 8. clap_plugin_gui->show()
-/// 9. clap_plugin_gui->hide()/show() ...
-/// 10. clap_plugin_gui->destroy() when done with the gui
+///  1. clap_plugin_gui->is_api_supported(), check what can work
+///  2. clap_plugin_gui->create(), allocates gui resources
+///  3. if the plugin window is floating
+///  4.    -> clap_plugin_gui->set_transient()
+///  5.    -> clap_plugin_gui->suggest_title()
+///  6. else
+///  7.    -> clap_plugin_gui->set_scale(), if the function pointer is provided by the plugin
+///  8.    -> clap_plugin_gui->get_size(), gets initial size
+///  9.    -> clap_plugin_gui->can_resize()
+/// 10. clap_plugin_gui->show()
+/// 11. clap_plugin_gui->hide()/show() ...
+/// 12. clap_plugin_gui->destroy() when done with the gui
 ///
 /// Resizing the window (initiated by the plugin, if embedded):
 /// 1. Plugins calls clap_host_gui->request_resize()
@@ -86,11 +88,12 @@ typedef struct clap_plugin_gui {
    // Create and allocate all resources necessary for the gui.
    //
    // If is_floating is true, then the window will not be managed by the host. The plugin
-   // can set its window to stays above the parent window.
+   // can set its window to stays above the parent window, see set_transient().
    //
-   // If is_floating is false, then the plugin has to embbed its window into the parent window.
+   // If is_floating is false, then the plugin has to embbed its window into the parent window, see
+   // set_parent().
    //
-   // After this call, the GUI is ready to be shown but it is not yet visible.
+   // After this call, the GUI may not be visible yet; don't forget to call show().
    //
    // [main-thread]
    bool (*create)(const clap_plugin_t *plugin, const char *api, bool is_floating);
