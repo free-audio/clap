@@ -133,11 +133,11 @@ typedef struct clap_plugin_gui {
    bool (*set_size)(const clap_plugin_t *plugin, uint32_t width, uint32_t height);
 
    // Embbeds the plugin window into the given window.
-   // [main-thread & floating]
+   // [main-thread & !floating]
    bool (*set_parent)(const clap_plugin_t *plugin, const clap_window_t *window);
 
    // Set the plugin floating window to stay above the given window.
-   // [main-thread & !floating]
+   // [main-thread & floating]
    bool (*set_transient)(const clap_plugin_t *plugin, const clap_window_t *window);
 
    // Suggests a window title. Only for floating windows.
