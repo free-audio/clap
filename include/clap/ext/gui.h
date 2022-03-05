@@ -89,12 +89,12 @@ typedef struct clap_plugin_gui {
    //
    // If is_floating is true, then the window will not be managed by the host. The plugin
    // can set its window to stays above the parent window, see set_transient().
+   // api may be null or blank for floating window.
    //
    // If is_floating is false, then the plugin has to embbed its window into the parent window, see
    // set_parent().
    //
    // After this call, the GUI may not be visible yet; don't forget to call show().
-   //
    // [main-thread]
    bool (*create)(const clap_plugin_t *plugin, const char *api, bool is_floating);
 
