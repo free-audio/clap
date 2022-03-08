@@ -21,8 +21,9 @@ extern "C" {
 #endif
 
 enum {
-   // This port main audio input or output.
+   // This port is the main audio input or output.
    // There can be only one main input and main output.
+   // Main port must be at index 0.
    CLAP_AUDIO_PORT_IS_MAIN = 1 << 0,
 
    // The prefers 64 bits audio with this port.
