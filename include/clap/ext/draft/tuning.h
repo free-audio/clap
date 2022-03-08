@@ -10,9 +10,9 @@ static CLAP_CONSTEXPR const char CLAP_EXT_TUNING[] = "clap.tuning.draft/1";
 extern "C" {
 #endif
 
-// Use clap_host_event_registry(host, CLAP_EXT_TUNING, &space_id) to know the event space.
+// Use clap_host_event_registry->query(host, CLAP_EXT_TUNING, &space_id) to know the event space.
 //
-// Defines the tuning to be used on the given port/channel.
+// This event defines the tuning to be used on the given port/channel.
 typedef struct clap_event_tuning {
    clap_event_header_t header;
 
@@ -34,7 +34,8 @@ typedef struct clap_host_tuning {
    // Gets the relative tuning in semitone against equal temperament with A4=440Hz.
    // The plugin may query the tuning at a rate that makes sense for *low* frequency modulations.
    //
-   // If the tuning_id is not found, then it shall gracefuly return a sensible value.
+   // If the tuning_id is not found or equals CLAP_INVALID_ID,
+   // then the function shall gracefuly return a sensible value.
    //
    // [audio-thread]
    double (*get_relative)(const clap_host_t *host, clap_id tuning_id, int32_t key, int32_t channel);
