@@ -22,12 +22,19 @@ typedef struct clap_event_tuning {
 } clap_event_tuning_t;
 
 typedef struct clap_tuning_info {
-   char name[CLAP_NAME_SIZE];
-   bool is_dynamic; // true if the values may vary with time
+   clap_id tuning_id;
+   char    name[CLAP_NAME_SIZE];
+   bool    is_dynamic; // true if the values may vary with time
 
    // Table of relative tuning values in semi-tones against equal temperament with A4=440Hz
    double table[128];
 } clap_tuning_info_t;
+
+typedef struct clap_client_tuning {
+   // Called when a tuning is added or removed from the pool.
+   // [main-thread]
+   void (*changed)(const clap_plugin_t *plugin);
+} clap_client_tuning_t;
 
 // This extension provides a dynamic tuning table to the plugin.
 typedef struct clap_host_tuning {
@@ -37,12 +44,22 @@ typedef struct clap_host_tuning {
    // If the tuning_id is not found or equals CLAP_INVALID_ID,
    // then the function shall gracefuly return a sensible value.
    //
-   // [audio-thread]
-   double (*get_relative)(const clap_host_t *host, clap_id tuning_id, int32_t key, int32_t channel);
+   // sample_offset is the sample offset from the begining of the current process block.
+   //
+   // [audio-thread & in-process]
+   double (*get_relative)(const clap_host_t *host,
+                          clap_id            tuning_id,
+                          int32_t            key,
+                          int32_t            channel,
+                          uint32_t           sample_offset);
+
+   // Returns the number of tunings in the pool.
+   // [main-thread]
+   uint32_t (*get_tuning_count)(const clap_host_t *host);
 
    // Gets info about a tuning
    // [main-thread]
-   bool (*get_info)(const clap_host_t *host, clap_id tuning_id, clap_tuning_info_t *info);
+   bool (*get_info)(const clap_host_t *host, uint32_t tuning_index, clap_tuning_info_t *info);
 } clap_host_tuning_t;
 
 #ifdef __cplusplus
