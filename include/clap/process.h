@@ -19,11 +19,11 @@ enum {
 
    // Rely upon the plugin's tail to determine if the plugin should continue to process.
    // see clap_plugin_tail
-   CLAP_PROCESS_TAIL,
+   CLAP_PROCESS_TAIL = 3,
 
    // Processing succeed, but no more processing is required,
    // until next event or variation in audio input.
-   CLAP_PROCESS_SLEEP = 3,
+   CLAP_PROCESS_SLEEP = 4,
 };
 typedef int32_t clap_process_status;
 
