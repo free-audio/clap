@@ -12,9 +12,8 @@ extern "C" {
 // CLAP plugins standard search path:
 //
 // Linux
-//   - /usr/lib/clap/
 //   - ~/.clap
-//     `-> ~/.local/lib/clap/ is considered, see https://github.com/free-audio/clap/issues/46
+//   - /usr/lib/clap
 //
 // Windows
 //   - %CommonFilesFolder%/CLAP/
