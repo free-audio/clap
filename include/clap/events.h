@@ -101,7 +101,7 @@ typedef struct clap_event_note {
 } clap_event_note_t;
 
 enum {
-   // x >= 0, use 20 * log(4 * x)
+   // x in 0..1, plain = 20 * log(4 * x)
    CLAP_NOTE_EXPRESSION_VOLUME,
 
    // pan, 0 left, 0.5 center, 1 right
@@ -116,8 +116,6 @@ enum {
    CLAP_NOTE_EXPRESSION_BREATH,
    CLAP_NOTE_EXPRESSION_PRESSURE,
    CLAP_NOTE_EXPRESSION_TIMBRE,
-
-   // TODO...
 };
 typedef int32_t clap_note_expression;
 
