@@ -105,7 +105,7 @@ enum {
    // It implies that the parameter is stepped.
    // min: 0 -> bypass off
    // max: 1 -> bypass on
-   CLAP_PARAM_IS_BYPASS = (1 << 6) | CLAP_PARAM_IS_STEPPED,
+   CLAP_PARAM_IS_BYPASS = 1 << 6,
 
    // The parameter can't be changed by the host.
    CLAP_PARAM_IS_READONLY = 1 << 7,
