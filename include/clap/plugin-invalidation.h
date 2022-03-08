@@ -8,7 +8,7 @@ extern "C" {
 #endif
 
 typedef struct clap_plugin_invalidation_source {
-   // Directory containing the file(s) to scan
+   // Directory containing the file(s) to scan, must be absolute
    const char *directory;
 
    // globing pattern, in the form *.dll
@@ -35,7 +35,7 @@ typedef struct clap_plugin_invalidation_factory {
       const struct clap_plugin_invalidation_factory *factory, uint32_t index);
 
    // In case the host detected a invalidation event, it can call refresh() to let the
-   // plugin_entry scan the set of plugins available.
+   // plugin_entry update the set of plugins available.
    // If the function returned false, then the plugin needs to be reloaded.
    bool (*refresh)(const struct clap_plugin_invalidation_factory *factory);
 } clap_plugin_invalidation_factory_t;
