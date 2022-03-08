@@ -25,9 +25,6 @@ typedef struct clap_tuning_info {
    clap_id tuning_id;
    char    name[CLAP_NAME_SIZE];
    bool    is_dynamic; // true if the values may vary with time
-
-   // Table of relative tuning values in semi-tones against equal temperament with A4=440Hz
-   double table[128];
 } clap_tuning_info_t;
 
 typedef struct clap_client_tuning {
@@ -41,7 +38,7 @@ typedef struct clap_host_tuning {
    // Gets the relative tuning in semitone against equal temperament with A4=440Hz.
    // The plugin may query the tuning at a rate that makes sense for *low* frequency modulations.
    //
-   // If the tuning_id is not found or equals CLAP_INVALID_ID,
+   // If the tuning_id is not found or equals to CLAP_INVALID_ID,
    // then the function shall gracefuly return a sensible value.
    //
    // sample_offset is the sample offset from the begining of the current process block.
