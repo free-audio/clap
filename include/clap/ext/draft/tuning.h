@@ -4,7 +4,7 @@
 #include "../../events.h"
 #include "../../string-sizes.h"
 
-static CLAP_CONSTEXPR const char CLAP_EXT_TUNING[] = "clap.tuning.draft/1";
+static CLAP_CONSTEXPR const char CLAP_EXT_TUNING[] = "clap.tuning.draft/2";
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,12 +43,18 @@ typedef struct clap_host_tuning {
    //
    // sample_offset is the sample offset from the begining of the current process block.
    //
+   // should_play(...) should be checked before calling this function.
+   //
    // [audio-thread & in-process]
    double (*get_relative)(const clap_host_t *host,
                           clap_id            tuning_id,
-                          int32_t            key,
                           int32_t            channel,
+                          int32_t            key,
                           uint32_t           sample_offset);
+
+   // Returns true if the note should be played.
+   // [audio-thread & in-process]
+   bool (*should_play)(const clap_host_t *host, clap_id tuning_id, int32_t channel, int32_t key);
 
    // Returns the number of tunings in the pool.
    // [main-thread]
