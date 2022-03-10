@@ -13,12 +13,12 @@ typedef struct clap_plugin_state {
    // Saves the plugin state into stream.
    // Returns true if the state was correctly saved.
    // [main-thread]
-   bool (*save)(const clap_plugin_t *plugin, clap_ostream_t *stream);
+   bool (*save)(const clap_plugin_t *plugin, const clap_ostream_t *stream);
 
    // Loads the plugin state from stream.
    // Returns true if the state was correctly restored.
    // [main-thread]
-   bool (*load)(const clap_plugin_t *plugin, clap_istream_t *stream);
+   bool (*load)(const clap_plugin_t *plugin, const clap_istream_t *stream);
 } clap_plugin_state_t;
 
 typedef struct clap_host_state {
