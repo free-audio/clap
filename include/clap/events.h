@@ -25,8 +25,11 @@ enum clap_event_flags {
    // indicate a live momentary event
    CLAP_EVENT_IS_LIVE = 1 << 0,
 
-   // should record this event be recorded?
-   CLAP_EVENT_SHOULD_RECORD = 1 << 1,
+   // indicate that the event should not be recorded.
+   // For example this is useful when a parameter changes because of a MIDI CC,
+   // because if the host records both the MIDI CC automation and the parameter
+   // automation there will be a conflict.
+   CLAP_EVENT_DONT_RECORD = 1 << 1,
 };
 
 // Some of the following events overlap, a note on can be expressed with:
@@ -73,7 +76,7 @@ enum {
    CLAP_EVENT_PARAM_MOD,
 
    // uses clap_event_param_gesture
-   // Indicates that the knob is begining to be adjusted, or that the adjustement ended.
+   // Indicates that a parameter gesture begun or ended.
    CLAP_EVENT_PARAM_GESTURE_BEGIN,
    CLAP_EVENT_PARAM_GESTURE_END,
 
@@ -166,7 +169,6 @@ typedef struct clap_event_param_gesture {
    // target parameter
    clap_id param_id; // @ref clap_param_info.id
    void   *cookie;   // @ref clap_param_info.cookie
-
 } clap_event_param_gesture_t;
 
 enum clap_transport_flags {
