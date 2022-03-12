@@ -25,14 +25,8 @@ enum clap_event_flags {
    // indicate a live momentary event
    CLAP_EVENT_IS_LIVE = 1 << 0,
 
-   // live user adjustment begun
-   CLAP_EVENT_BEGIN_ADJUST = 1 << 1,
-
-   // live user adjustment ended
-   CLAP_EVENT_END_ADJUST = 1 << 2,
-
    // should record this event be recorded?
-   CLAP_EVENT_SHOULD_RECORD = 1 << 3,
+   CLAP_EVENT_SHOULD_RECORD = 1 << 1,
 };
 
 // Some of the following events overlap, a note on can be expressed with:
@@ -77,6 +71,11 @@ enum {
    // amount will already include the monophonic signal.
    CLAP_EVENT_PARAM_VALUE,
    CLAP_EVENT_PARAM_MOD,
+
+   // uses clap_event_param_gesture
+   // Indicates that the knob is begining to be adjusted, or that the adjustement ended.
+   CLAP_EVENT_PARAM_GESTURE_BEGIN,
+   CLAP_EVENT_PARAM_GESTURE_END,
 
    CLAP_EVENT_TRANSPORT,  // update the transport info; clap_event_transport
    CLAP_EVENT_MIDI,       // raw midi event; clap_event_midi
@@ -160,6 +159,15 @@ typedef struct clap_event_param_mod {
 
    double amount; // modulation amount
 } clap_event_param_mod_t;
+
+typedef struct clap_event_param_gesture {
+   clap_event_header_t header;
+
+   // target parameter
+   clap_id param_id; // @ref clap_param_info.id
+   void   *cookie;   // @ref clap_param_info.cookie
+
+} clap_event_param_gesture_t;
 
 enum clap_transport_flags {
    CLAP_TRANSPORT_HAS_TEMPO = 1 << 0,
