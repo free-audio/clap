@@ -168,7 +168,6 @@ typedef struct clap_event_param_gesture {
 
    // target parameter
    clap_id param_id; // @ref clap_param_info.id
-   void   *cookie;   // @ref clap_param_info.cookie
 } clap_event_param_gesture_t;
 
 enum clap_transport_flags {
