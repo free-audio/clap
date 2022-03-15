@@ -134,7 +134,7 @@ and use to get a basic plugin experience:
 - [Avendish](https://github.com/celtera/avendish), a reflection-based API for media plug-ins in C++ which supports Clap
 - [nih-plug](https://github.com/robbert-vdh/nih-plug), an API-agnostic, Rust-based plugin framework aiming to reduce boilerplate without getting in your way
 
-## Programming Language Bingings
+## Programming Language Bindings
 
 - [clap-sys](https://github.com/glowcoil/clap-sys), rust binding
 - [CLAP-for-Delphi](https://github.com/Bremmers/CLAP-for-Delphi), Delphi binding
