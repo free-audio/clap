@@ -10,6 +10,7 @@ thank you to all involved:
 - David Schornsheim (Schroedingers-Cat, u-he)
 - Frank Hoffmann (u-he)
 - Giel Bremmers (MultitrackStudio)
+- Jan Storm (u-he)
 - John Schwartz (Cockos)
 - Nicholas Allen (Bitwig)
 - Paul Walker (BaconPaul, Surge)
