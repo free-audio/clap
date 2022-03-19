@@ -16,15 +16,21 @@
 #endif
 
 #if defined(__cplusplus) && __cplusplus >= 201103L
+#   define CLAP_HAS_CXX11
 #   define CLAP_CONSTEXPR constexpr
 #else
 #   define CLAP_CONSTEXPR
 #endif
 
 #if defined(__cplusplus) && __cplusplus >= 201703L
+#   define CLAP_HAS_CXX17
 #   define CLAP_NODISCARD [[nodiscard]]
 #elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201300L
 #   define CLAP_NODISCARD [[nodiscard]]
 #else
 #   define CLAP_NODISCARD
+#endif
+
+#if defined(__cplusplus) && __cplusplus >= 202002L
+#   define CLAP_HAS_CXX20
 #endif
