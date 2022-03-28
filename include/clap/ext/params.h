@@ -21,9 +21,8 @@
 ///
 /// When the plugin changes a parameter value, it must inform the host.
 /// It will send @ref CLAP_EVENT_PARAM_VALUE event during process() or flush().
-/// - set the flag CLAP_EVENT_BEGIN_ADJUST to mark the begining of automation recording
-/// - set the flag CLAP_EVENT_END_ADJUST to mark the end of automation recording
-/// - set the flag CLAP_EVENT_SHOULD_RECORD if the event should be recorded
+/// If the user is adjusting the value, don't forget to mark the begining and end
+/// of the gesture by send CLAP_EVENT_PARAM_GESTURE_BEGIN and CLAP_EVENT_PARAM_GESTURE_END events.
 ///
 /// @note MIDI CCs are a tricky because you may not know when the parameter adjustment ends.
 /// Also if the hosts records incoming MIDI CC and parameter change automation at the same time,
