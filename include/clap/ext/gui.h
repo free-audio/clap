@@ -21,11 +21,13 @@
 ///  5.    -> clap_plugin_gui->suggest_title()
 ///  6. else
 ///  7.    -> clap_plugin_gui->set_scale(), if the function pointer is provided by the plugin
-///  8.    -> clap_plugin_gui->get_size(), gets initial size
-///  9.    -> clap_plugin_gui->can_resize()
-/// 10. clap_plugin_gui->show()
-/// 11. clap_plugin_gui->hide()/show() ...
-/// 12. clap_plugin_gui->destroy() when done with the gui
+///  8.    -> clap_plugin_gui->can_resize()
+///  9.    -> if resizable and has known size from previous session, clap_plugin_gui->set_size()
+/// 10.    -> else clap_plugin_gui->get_size(), gets initial size
+/// 11.    -> clap_plugin_gui->set_parent()
+/// 12. clap_plugin_gui->show()
+/// 13. clap_plugin_gui->hide()/show() ...
+/// 14. clap_plugin_gui->destroy() when done with the gui
 ///
 /// Resizing the window (initiated by the plugin, if embedded):
 /// 1. Plugins calls clap_host_gui->request_resize()
