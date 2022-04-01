@@ -80,12 +80,23 @@ typedef struct clap_window {
    };
 } clap_window_t;
 
+typedef struct clap_gui_resize_hints {
+   bool     preseve_aspect_ratio;
+   uint32_t aspect_ratio_width;
+   uint32_t aspect_ratio_height;
+} clap_gui_resize_hints_t;
+
 // Size (width, height) is in pixels; the corresponding windowing system extension is
 // responsible to define if it is physical pixels or logical pixels.
 typedef struct clap_plugin_gui {
    // Returns true if the requested gui api is supported
    // [main-thread]
    bool (*is_api_supported)(const clap_plugin_t *plugin, const char *api, bool is_floating);
+
+   // Returns true if the plugin has a preferred api.
+   // The host has no obligation to honor the plugin preferrence, this is just a hint.
+   // [main-thread]
+   bool (*get_preferred_api)(const clap_plugin_t *plugin, const char **api, bool *is_floating);
 
    // Create and allocate all resources necessary for the gui.
    //
@@ -121,6 +132,10 @@ typedef struct clap_plugin_gui {
    // Only for embedded windows.
    // [main-thread]
    bool (*can_resize)(const clap_plugin_t *plugin);
+
+   // Returns true if the plugin can provide hints on how to resize the window.
+   // [main-thread]
+   bool (*get_resize_hints)(const clap_plugin_t *plugin, clap_gui_resize_hints_t *hints);
 
    // If the plugin gui is resizable, then the plugin will calculate the closest
    // usable size which fits in the given size.
@@ -160,24 +175,29 @@ typedef struct clap_host_gui {
    /* Request the host to resize the client area to width, height.
     * Return true if the new size is accepted, false otherwise.
     * The host doesn't have to call set_size().
-    * [main-thread] */
+    *
+    * Note: if not called from the main thread, then a return value simply means that the host
+    * acknowledge the request and will process it asynchronously. If the request then can't be
+    * satisfied then the host will call set_size() to revert the operation.
+    *
+    * [thread-safe] */
    bool (*request_resize)(const clap_host_t *host, uint32_t width, uint32_t height);
 
    /* Request the host to show the plugin gui.
     * Return true on success, false otherwise.
-    * [main-thread] */
+    * [thread-safe] */
    bool (*request_show)(const clap_host_t *host);
 
    /* Request the host to hide the plugin gui.
     * Return true on success, false otherwise.
-    * [main-thread] */
+    * [thread-safe] */
    bool (*request_hide)(const clap_host_t *host);
 
    // The floating window has been closed, or the connection to the gui has been lost.
    //
    // If was_destroyed is true, then the host must call clap_plugin_gui->destroy() to acknowledge
    // the gui destruction.
-   // [main-thread]
+   // [thread-safe]
    void (*closed)(const clap_host_t *host, bool was_destroyed);
 } clap_host_gui_t;
 
