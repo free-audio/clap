@@ -84,40 +84,21 @@ enum {
    // if so the double value is converted to integer using a cast (equivalent to trunc).
    CLAP_PARAM_IS_STEPPED = 1 << 0,
 
-   // Does this param supports per note automations?
-   CLAP_PARAM_IS_PER_NOTE = 1 << 1,
-
-   // Does this param supports per channel automations?
-   CLAP_PARAM_IS_PER_CHANNEL = 1 << 2,
-
-   // Does this param supports per port automations?
-   CLAP_PARAM_IS_PER_PORT = 1 << 3,
-
    // Useful for for periodic parameters like a phase
-   CLAP_PARAM_IS_PERIODIC = 1 << 4,
+   CLAP_PARAM_IS_PERIODIC = 1 << 1,
 
    // The parameter should not be shown to the user, because it is currently not used.
    // It is not necessary to process automation for this parameter.
-   CLAP_PARAM_IS_HIDDEN = 1 << 5,
+   CLAP_PARAM_IS_HIDDEN = 1 << 2,
+
+   // The parameter can't be changed by the host.
+   CLAP_PARAM_IS_READONLY = 1 << 3,
 
    // This parameter is used to merge the plugin and host bypass button.
    // It implies that the parameter is stepped.
    // min: 0 -> bypass off
    // max: 1 -> bypass on
-   CLAP_PARAM_IS_BYPASS = 1 << 6,
-
-   // The parameter can't be changed by the host.
-   CLAP_PARAM_IS_READONLY = 1 << 7,
-
-   // Does the parameter support the modulation signal?
-   CLAP_PARAM_IS_MODULATABLE = 1 << 8,
-
-   // Any change to this parameter will affect the plugin output and requires to be done via
-   // process() if the plugin is active.
-   //
-   // A simple example would be a DC Offset, changing it will change the output signal and must be
-   // processed.
-   CLAP_PARAM_REQUIRES_PROCESS = 1 << 9,
+   CLAP_PARAM_IS_BYPASS = 1 << 4,
 
    // When set:
    // - automation can be recorded
@@ -128,7 +109,35 @@ enum {
    // If this parameters affect the internal processing structure of the plugin, ie: max delay, fft
    // size, ... and the plugins needs to re-allocate its working buffers, then it should call
    // host->request_restart(), and perform the change once the plugin is re-activated.
-   CLAP_PARAM_IS_AUTOMATABLE = 1 << 10,
+   CLAP_PARAM_IS_AUTOMATABLE = 1 << 5,
+
+   // Does this param supports per note automations?
+   CLAP_PARAM_IS_AUTOMATABLE_PER_NOTE = 1 << 6,
+
+   // Does this param supports per channel automations?
+   CLAP_PARAM_IS_AUTOMATABLE_PER_CHANNEL = 1 << 7,
+
+   // Does this param supports per port automations?
+   CLAP_PARAM_IS_AUTOMATABLE_PER_PORT = 1 << 8,
+
+   // Does the parameter support the modulation signal?
+   CLAP_PARAM_IS_MODULATABLE = 1 << 9,
+
+   // Does this param supports per note automations?
+   CLAP_PARAM_IS_MODULATABLE_PER_NOTE = 1 << 10,
+
+   // Does this param supports per channel automations?
+   CLAP_PARAM_IS_MODULATABLE_PER_CHANNEL = 1 << 11,
+
+   // Does this param supports per channel automations?
+   CLAP_PARAM_IS_MODULATABLE_PER_PORT = 1 << 12,
+
+   // Any change to this parameter will affect the plugin output and requires to be done via
+   // process() if the plugin is active.
+   //
+   // A simple example would be a DC Offset, changing it will change the output signal and must be
+   // processed.
+   CLAP_PARAM_REQUIRES_PROCESS = 1 << 13,
 };
 typedef uint32_t clap_param_info_flags;
 
