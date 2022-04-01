@@ -172,6 +172,10 @@ typedef struct clap_plugin_gui {
 } clap_plugin_gui_t;
 
 typedef struct clap_host_gui {
+   // The host should call get_resize_hints() again.
+   // [thread-safe]
+   void (*resize_hints_changed)(const clap_host_t *host);
+
    /* Request the host to resize the client area to width, height.
     * Return true if the new size is accepted, false otherwise.
     * The host doesn't have to call set_size().
