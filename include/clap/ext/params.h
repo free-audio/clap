@@ -30,9 +30,9 @@
 /// The parameter automation will always target the same parameter because the param_id is stable.
 /// The MIDI CC may have a different mapping in the future and may result in a different playback.
 ///
-/// When a MIDI CC changes a parameter's value, set @ref clap_event_param.should_record to false.
-/// That way the host may record the MIDI CC automation, but not the parameter change and there
-/// won't be conflict at playback.
+/// When a MIDI CC changes a parameter's value, set the flag CLAP_EVENT_DONT_RECORD in
+/// clap_event_param.header.flags. That way the host may record the MIDI CC automation, but not the
+/// parameter change and there won't be conflict at playback.
 ///
 /// Scenarios:
 ///
