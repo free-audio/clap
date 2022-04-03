@@ -7,8 +7,9 @@
 ///
 /// This extension provides a way for the plugin to describe its current audio ports.
 ///
-/// If the plugin does not implement this extension, it will have a default 32 bits stereo input and
-/// output. This makes 32 bit support a requirement for both plugin and host.
+/// If the plugin does not implement this extension, it won't have audio ports.
+///
+/// 32 bits support is required for both host and plugins. 64 bits audio is optional.
 ///
 /// The plugin is only allowed to change its ports configuration while it is deactivated.
 

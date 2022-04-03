@@ -7,7 +7,7 @@
 ///
 /// This extension provides a way for the plugin to describe its current note ports.
 ///
-/// If the plugin does not implement this extension, it will have a single note input and output.
+/// If the plugin does not implement this extension, it won't have note input or output.
 ///
 /// The plugin is only allowed to change its note ports configuration while it is deactivated.
 
@@ -25,7 +25,7 @@ enum clap_note_dialect {
    // Uses clap_event_midi, no polyphonic expression
    CLAP_NOTE_DIALECT_MIDI = 1 << 1,
 
-   // Uses clap_event_midi, with polyphonic expression
+   // Uses clap_event_midi, with polyphonic expression (MPE)
    CLAP_NOTE_DIALECT_MIDI_MPE = 1 << 2,
 
    // Uses clap_event_midi2
