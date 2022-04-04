@@ -32,13 +32,18 @@ typedef struct clap_audio_ports_config {
    clap_id id;
    char    name[CLAP_NAME_SIZE];
 
+   uint32_t input_port_count;
+   uint32_t output_port_count;
+
    // main input info
-   uint32_t    input_channel_count;
-   const char *input_port_type;
+   bool        has_main_input_channel;
+   uint32_t    main_input_channel_count;
+   const char *main_input_port_type;
 
    // main output info
-   uint32_t    output_channel_count;
-   const char *output_port_type;
+   bool        has_main_output_channel;
+   uint32_t    main_output_channel_count;
+   const char *main_output_port_type;
 } clap_audio_ports_config_t;
 
 // The audio ports config scan has to be done while the plugin is deactivated.
