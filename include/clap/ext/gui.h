@@ -80,6 +80,7 @@ typedef struct clap_window {
    };
 } clap_window_t;
 
+// Information to improve window resizement when initiated by the host or window manager.
 typedef struct clap_gui_resize_hints {
    bool     preseve_aspect_ratio;
    uint32_t aspect_ratio_width;
