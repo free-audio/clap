@@ -50,7 +50,7 @@ static CLAP_CONSTEXPR const char CLAP_EXT_GUI[] = "clap.gui";
 // embed using https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setparent
 static const CLAP_CONSTEXPR char CLAP_WINDOW_API_WIN32[] = "win32";
 
-// uses logical size
+// uses logical size, don't call clap_plugin_gui->set_scale()
 static const CLAP_CONSTEXPR char CLAP_WINDOW_API_COCOA[] = "cocoa";
 
 // uses physical size
@@ -117,12 +117,13 @@ typedef struct clap_plugin_gui {
    void (*destroy)(const clap_plugin_t *plugin);
 
    // Set the absolute GUI scaling factor, and override any OS info.
-   // If the plugin prefers to work out the scaling factor itself by querying the OS directly,
-   // then return false and ignore the call.
+   // Should not be used if the windowing api relies upon logical pixels.
    //
-   // Return true on success.
-   // [main-thread,optional]
-   bool (*set_scale)(const clap_plugin_t *plugin, double scale);
+   // If the plugin prefers to work out the scaling factor itself by querying the OS directly,
+   // then ignore the call.
+   //
+   // [main-thread]
+   void (*set_scale)(const clap_plugin_t *plugin, double scale);
 
    // Get the current size of the plugin UI.
    // clap_plugin_gui->create() must have been called prior to asking the size.
