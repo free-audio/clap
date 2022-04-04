@@ -122,8 +122,10 @@ typedef struct clap_plugin_gui {
    // If the plugin prefers to work out the scaling factor itself by querying the OS directly,
    // then ignore the call.
    //
+   // Returns false if the call was ignored.
+   // Returns true if the scaling could be applied, false otherwise.
    // [main-thread]
-   void (*set_scale)(const clap_plugin_t *plugin, double scale);
+   bool (*set_scale)(const clap_plugin_t *plugin, double scale);
 
    // Get the current size of the plugin UI.
    // clap_plugin_gui->create() must have been called prior to asking the size.
