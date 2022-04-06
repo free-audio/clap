@@ -31,7 +31,7 @@ enum {
    CLAP_AUDIO_PORT_SUPPORTS_64BITS = 1 << 1,
 
    // 64 bits audio is preferred with this port
-   CLAP_AUDIO_PORTS_PREFERS_64BITS = 1 << 2,
+   CLAP_AUDIO_PORT_PREFERS_64BITS = 1 << 2,
 };
 
 typedef struct clap_audio_port_info {
