@@ -120,6 +120,8 @@ and use to get a basic plugin experience:
     - Linux: `$HOME/.BitwigStudio/config.json`
     - macOS: `$HOME/Library/Application Support/Bitwig/Bitwig Studio/config.json`
     - Windows: `%LOCALAPPDATA%\Bitwig Studio\config.json`
+    - Create the file if needed. The format of `config.json` is not standard
+json, so a file only containing `clap : true` is correct.
 
 ## Examples
 
