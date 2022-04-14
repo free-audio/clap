@@ -50,9 +50,30 @@ enum {
    // NOTE_CHOKE is meant to choke the voice(s), like in a drum machine when a closed hihat
    // chokes an open hihat.
    //
-   // NOTE_END is sent by the plugin to the host, when a voice terminates.
-   // When using polyphonic modulations, the host has to start voices for its modulators.
-   // This message helps the host to track the plugin's voice management.
+   // NOTE_END is sent by the plugin to the host. The port, channel and key are those given
+   // by the host in the NOTE_ON event. In other words, this event is matched against the
+   // plugin's note input port. NOTE_END is only requiered if the plugin marked at least
+   // one of its parameters as polyphonic.
+   //
+   // When using polyphonic modulations, the host has to allocate and release voices for its
+   // polyphonic modulator. Yet only the plugin effectively knows when the host should terminate
+   // a voice. NOTE_END solves that issue in a non-intrusive and cooperative way.
+   //
+   // CLAP assumes that the host will allocate a unique voice on NOTE_ON event for a given port,
+   // channel and key. This voice will run until the plugin will instruct the host to terminate
+   // it by sending a NOTE_END event.
+   //
+   // Consider the following sequence:
+   // - process()
+   //    Host->Plugin NoteOn(port:0, channel:0, key:16, time:t0)
+   //    Host->Plugin NoteOn(port:0, channel:0, key:64, time:t0)
+   //    Host->Plugin NoteOff(port:0, channel:0, key:16, t1)
+   //    Host->Plugin NoteOff(port:0, channel:0, key:64, t1)
+   //    # on t2, both notes did terminate
+   //    Host->Plugin NoteOn(port:0, channel:0, key:64, t3)
+   //    # Here the plugin finished to process all the frames and will tell the host
+   //    # to terminate the voice on key 16 but not 64, because a note has been started at t3
+   //    Plugin->Host NoteEnd(port:0, channel:0, key:16, time:ignored)
    //
    // Those four events use clap_event_note.
    CLAP_EVENT_NOTE_ON,
