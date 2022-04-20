@@ -5,7 +5,9 @@
 // This extensions indicates the number of voices the synthesizer.
 // It is useful for the host when performing polyphonic modulations,
 // because the host needs its own voice management and should try to follow
-// what the plugin is doing.
+// what the plugin is doing:
+// - make the host's voice pool coherent with what the plugin has
+// - turn the host's voice management to mono when the plugin is mono
 
 static const char CLAP_EXT_VOICE_INFO[] = "clap.voice-info.draft/0";
 
