@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-// This interface provide all the tool to convert a clap plugin instance into a clap plugin instance
+// This interface provides all the tools to convert a clap plugin instance into a clap plugin instance.
 typedef struct clap_clap_converter {
    const char *src_plugin_id;
    const char *dst_plugin_id;

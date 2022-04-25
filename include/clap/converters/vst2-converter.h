@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-// This interface provide all the tool to convert a vst2 plugin instance into a clap plugin instance
+// This interface provides all the tools to convert a vst2 plugin instance into a clap plugin instance.
 typedef struct clap_vst2_converter {
    uint32_t    vst2_plugin_id;
    const char *vst2_plugin_name;
