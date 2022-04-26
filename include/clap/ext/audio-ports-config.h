@@ -36,12 +36,12 @@ typedef struct clap_audio_ports_config {
    uint32_t output_port_count;
 
    // main input info
-   bool        has_main_input_channel;
+   bool        has_main_input;
    uint32_t    main_input_channel_count;
    const char *main_input_port_type;
 
    // main output info
-   bool        has_main_output_channel;
+   bool        has_main_output;
    uint32_t    main_output_channel_count;
    const char *main_output_port_type;
 } clap_audio_ports_config_t;
