@@ -48,6 +48,7 @@
 #include "ext/event-filter.h"
 #include "ext/thread-pool.h"
 #include "ext/event-registry.h"
+#include "ext/tail.h"
 
 #include "ext/draft/preset-load.h"
 #include "ext/draft/quick-controls.h"
