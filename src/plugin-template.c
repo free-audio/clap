@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include <clap/clap.h>
 
@@ -19,6 +20,42 @@ typedef struct {
    clap_plugin_t      plugin;
    const clap_host_t *host;
 } my_plug_t;
+
+/////////////////////////////
+// clap_plugin_audio_ports //
+/////////////////////////////
+
+static uint32_t my_plug_audio_ports_count(const clap_plugin_t *plugin, bool is_input) { return 1; }
+
+static bool my_plug_audio_ports_get(const clap_plugin_t    *plugin,
+                                    uint32_t                index,
+                                    bool                    is_input,
+                                    clap_audio_port_info_t *info) {
+   if (index != 1)
+      return false;
+   info->id = 0;
+   snprintf(info->name, sizeof(info->name), "%s", "My Port Name");
+   info->channel_count = 2;
+   info->flags = CLAP_AUDIO_PORT_IS_MAIN;
+   info->port_type = CLAP_PORT_STEREO;
+   info->in_place_pair = CLAP_INVALID_ID;
+   return true;
+}
+
+static const clap_plugin_audio_ports_t s_my_plug_audio_ports = {
+   .count = my_plug_audio_ports_count,
+   .get = my_plug_audio_ports_get,
+};
+
+//////////////////
+// clap_latency //
+//////////////////
+
+uint32_t my_plug_latency_get(const clap_plugin_t *plugin) { return 0; }
+
+static const clap_plugin_latency_t s_my_plug_latency = {
+   .get = my_plug_latency_get,
+};
 
 /////////////////
 // clap_plugin //
@@ -49,6 +86,10 @@ static clap_process_status my_plug_process(const struct clap_plugin *plugin,
 }
 
 static const void *my_plug_get_extension(const struct clap_plugin *plugin, const char *id) {
+   if (!strcmp(id, CLAP_EXT_LATENCY))
+      return &s_my_plug_latency;
+   if (!strcmp(id, CLAP_EXT_AUDIO_PORTS))
+      return &s_my_plug_audio_ports;
    return NULL;
 }
 
