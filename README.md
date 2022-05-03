@@ -32,7 +32,7 @@ To work with clap, include [clap/clap.h](include/clap/clap.h).
 
 The two most important objects are `clap_host` and `clap_plugin`.
 
-[src/plugin-template.c](src/plugin-template.c) is a very minimal plugin which demonstrates how to wire a CLAP plugin.
+[src/plugin-template.c](src/plugin-template.c) is a very minimal example which demonstrates how to wire a CLAP plugin.
 
 ## Entry point
 
