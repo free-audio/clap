@@ -19,6 +19,7 @@ static const clap_plugin_descriptor_t s_my_plug_desc = {
 typedef struct {
    clap_plugin_t      plugin;
    const clap_host_t *host;
+   uint32_t           latency;
 } my_plug_t;
 
 /////////////////////////////
@@ -47,11 +48,39 @@ static const clap_plugin_audio_ports_t s_my_plug_audio_ports = {
    .get = my_plug_audio_ports_get,
 };
 
+////////////////////////////
+// clap_plugin_note_ports //
+////////////////////////////
+
+static uint32_t my_plug_note_ports_count(const clap_plugin_t *plugin, bool is_input) { return 1; }
+
+static bool my_plug_note_ports_get(const clap_plugin_t   *plugin,
+                                   uint32_t               index,
+                                   bool                   is_input,
+                                   clap_note_port_info_t *info) {
+   if (index != 1)
+      return false;
+   info->id = 0;
+   snprintf(info->name, sizeof(info->name), "%s", "My Port Name");
+   info->supported_dialects =
+      CLAP_NOTE_DIALECT_CLAP | CLAP_NOTE_DIALECT_MIDI_MPE | CLAP_NOTE_DIALECT_MIDI2;
+   info->preferred_dialect = CLAP_NOTE_DIALECT_CLAP;
+   return true;
+}
+
+static const clap_plugin_note_ports_t s_my_plug_note_ports = {
+   .count = my_plug_note_ports_count,
+   .get = my_plug_note_ports_get,
+};
+
 //////////////////
 // clap_latency //
 //////////////////
 
-uint32_t my_plug_latency_get(const clap_plugin_t *plugin) { return 0; }
+uint32_t my_plug_latency_get(const clap_plugin_t *plugin) {
+   my_plug_t *plug = plugin->plugin_data;
+   return plug->latency;
+}
 
 static const clap_plugin_latency_t s_my_plug_latency = {
    .get = my_plug_latency_get,
@@ -80,8 +109,109 @@ static void my_plug_stop_processing(const struct clap_plugin *plugin) {}
 
 static void my_plug_reset(const struct clap_plugin *plugin) {}
 
+static void my_plug_process_event(my_plug_t *plug, const clap_event_header_t *hdr) {
+   if (hdr->space_id == CLAP_CORE_EVENT_SPACE_ID) {
+      switch (hdr->type) {
+      case CLAP_EVENT_NOTE_ON: {
+         const clap_event_note_t *ev = (const clap_event_note_t *)hdr;
+         // TODO: handle note on
+         break;
+      }
+
+      case CLAP_EVENT_NOTE_OFF: {
+         const clap_event_note_t *ev = (const clap_event_note_t *)hdr;
+         // TODO: handle note on
+         break;
+      }
+
+      case CLAP_EVENT_NOTE_CHOKE: {
+         const clap_event_note_t *ev = (const clap_event_note_t *)hdr;
+         // TODO: handle note choke
+         break;
+      }
+
+      case CLAP_EVENT_NOTE_EXPRESSION: {
+         const clap_event_note_expression_t *ev = (const clap_event_note_expression_t *)hdr;
+         // TODO: handle note expression
+         break;
+      }
+
+      case CLAP_EVENT_PARAM_VALUE: {
+         const clap_event_param_value_t *ev = (const clap_event_param_value_t *)hdr;
+         // TODO: handle parameter change
+         break;
+      }
+
+      case CLAP_EVENT_PARAM_MOD: {
+         const clap_event_param_mod_t *ev = (const clap_event_param_mod_t *)hdr;
+         // TODO: handle parameter modulation
+         break;
+      }
+
+      case CLAP_EVENT_TRANSPORT: {
+         const clap_event_transport_t *ev = (const clap_event_transport_t *)hdr;
+         // TODO: handle transport event
+         break;
+      }
+
+      case CLAP_EVENT_MIDI: {
+         const clap_event_midi_t *ev = (const clap_event_midi_t *)hdr;
+         // TODO: handle MIDI event
+         break;
+      }
+
+      case CLAP_EVENT_MIDI_SYSEX: {
+         const clap_event_midi_sysex_t *ev = (const clap_event_midi_sysex_t *)hdr;
+         // TODO: handle MIDI Sysex event
+         break;
+      }
+
+      case CLAP_EVENT_MIDI2: {
+         const clap_event_midi2_t *ev = (const clap_event_midi2_t *)hdr;
+         // TODO: handle MIDI2 event
+         break;
+      }
+      }
+   }
+}
+
 static clap_process_status my_plug_process(const struct clap_plugin *plugin,
                                            const clap_process_t     *process) {
+   my_plug_t     *plug = plugin->plugin_data;
+   const uint32_t nframes = process->frames_count;
+   const uint32_t nev = process->in_events->size(process->in_events);
+   uint32_t       ev_index = 0;
+   uint32_t       next_ev_frame = (nev == 0 ? nframes : 0);
+
+   for (uint32_t i = 0; i < nframes;) {
+      while (ev_index < nev && next_ev_frame == i) {
+         const clap_event_header_t *hdr = process->in_events->get(process->in_events, ev_index);
+         if (hdr->time != i) {
+            next_ev_frame = hdr->time;
+            break;
+         }
+
+         my_plug_process_event(plug, hdr);
+         ++ev_index;
+         if (ev_index == nev) {
+            next_ev_frame = nframes;
+         }
+      }
+
+      const uint32_t until_frame = next_ev_frame < nframes ? next_ev_frame : nframes;
+      for (; i < until_frame; ++i) {
+         const float in_l = process->audio_inputs[0].data32[0][i];
+         const float in_r = process->audio_inputs[0].data32[1][i];
+
+         /* TODO: process samples, here we simply swap left and right channels */
+         const float out_l = in_r;
+         const float out_r = in_l;
+
+         process->audio_outputs[0].data32[0][i] = out_l;
+         process->audio_outputs[0].data32[1][i] = out_r;
+      }
+   }
+
    return CLAP_PROCESS_CONTINUE;
 }
 
@@ -90,6 +220,8 @@ static const void *my_plug_get_extension(const struct clap_plugin *plugin, const
       return &s_my_plug_latency;
    if (!strcmp(id, CLAP_EXT_AUDIO_PORTS))
       return &s_my_plug_audio_ports;
+   if (!strcmp(id, CLAP_EXT_NOTE_PORTS))
+      return &s_my_plug_note_ports;
    return NULL;
 }
 

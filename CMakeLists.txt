@@ -18,7 +18,7 @@ add_executable(clap-compile-cpp EXCLUDE_FROM_ALL src/main.cc)
 target_link_libraries(clap-compile-cpp clap-core)
 set_target_properties(clap-compile-cpp PROPERTIES CXX_STANDARD 14)
 
-add_library(clap-plugin-template EXCLUDE_FROM_ALL src/plugin-template.c)
+add_library(clap-plugin-template MODULE EXCLUDE_FROM_ALL src/plugin-template.c)
 target_link_libraries(clap-plugin-template clap-core)
 set_target_properties(clap-plugin-template PROPERTIES C_STANDARD 11)
 
@@ -30,6 +30,26 @@ endif()
 if (${CMAKE_C_COMPILER_ID} STREQUAL "Clang")
     target_compile_options(clap-compile-c PRIVATE -Werror=pragma-pack)
     target_compile_options(clap-compile-cpp PRIVATE -Werror=pragma-pack)
+endif()
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    target_link_libraries(clap-plugin-template PRIVATE -Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/src/linux-my_plug.version)
+    target_link_libraries(clap-plugin-template PRIVATE -Wl,-z,defs)
+    set_target_properties(clap-plugin-template PROPERTIES SUFFIX ".clap" PREFIX "")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    target_link_options(clap-plugin-template PRIVATE -exported_symbols_list ${CMAKE_CURRENT_SOURCE_DIR}/src/macos-symbols.txt)
+
+    set_target_properties(clap-plugin-template PROPERTIES
+                BUNDLE True
+                BUNDLE_EXTENSION clap
+                MACOSX_BUNDLE_GUI_IDENTIFIER com.my_company.my_plug
+                MACOSX_BUNDLE_BUNDLE_NAME my_plug
+                MACOSX_BUNDLE_BUNDLE_VERSION "1"
+                MACOSX_BUNDLE_SHORT_VERSION_STRING "1"
+                MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/src/plugins.plist.in
+                )
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    set_target_properties(clap-plugin-template PROPERTIES SUFFIX ".clap" PREFIX "")
 endif()
 
 add_test(NAME test-clap-compile-c COMMAND clap-compile-c)

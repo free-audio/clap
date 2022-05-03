@@ -1,0 +1,6 @@
+MY_PLUG_ABI_1.0 {
+  global:
+    clap_entry;
+  local:
+    *;
+};
