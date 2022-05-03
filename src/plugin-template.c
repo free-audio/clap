@@ -1,3 +1,8 @@
+// This file is here to demonstrate how to wire a CLAP plugin
+// You can use it as a starting point, however if you are implementing a C++
+// plugin, I'd encourage you to use the C++ glue layer instead:
+// https://github.com/free-audio/clap-helpers/blob/main/include/clap/helpers/plugin.hh
+
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
