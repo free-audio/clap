@@ -22,9 +22,13 @@ static const clap_plugin_descriptor_t s_my_plug_desc = {
 };
 
 typedef struct {
-   clap_plugin_t      plugin;
-   const clap_host_t *host;
-   uint32_t           latency;
+   clap_plugin_t                   plugin;
+   const clap_host_t              *host;
+   const clap_host_latency_t      *hostLatency;
+   const clap_host_log_t          *hostLog;
+   const clap_host_thread_check_t *hostThreadCheck;
+
+   uint32_t latency;
 } my_plug_t;
 
 /////////////////////////////
@@ -95,7 +99,15 @@ static const clap_plugin_latency_t s_my_plug_latency = {
 // clap_plugin //
 /////////////////
 
-static bool my_plug_init(const struct clap_plugin *plugin) { return true; }
+static bool my_plug_init(const struct clap_plugin *plugin) {
+   my_plug_t *plug = plugin->plugin_data;
+
+   // Fetch host's extensions here
+   plug->hostLog = plug->host->get_extension(plug->host, CLAP_EXT_LOG);
+   plug->hostThreadCheck = plug->host->get_extension(plug->host, CLAP_EXT_THREAD_CHECK);
+   plug->hostLatency = plug->host->get_extension(plug->host, CLAP_EXT_LATENCY);
+   return true;
+}
 
 static void my_plug_destroy(const struct clap_plugin *plugin) {}
 
@@ -233,6 +245,8 @@ static const void *my_plug_get_extension(const struct clap_plugin *plugin, const
       return &s_my_plug_audio_ports;
    if (!strcmp(id, CLAP_EXT_NOTE_PORTS))
       return &s_my_plug_note_ports;
+   // TODO: add support to CLAP_EXT_PARAMS
+   // TODO: add support to CLAP_EXT_STATE
    return NULL;
 }
 
@@ -253,6 +267,8 @@ clap_plugin_t *my_plug_create(const clap_host_t *host) {
    p->plugin.process = my_plug_process;
    p->plugin.get_extension = my_plug_get_extension;
    p->plugin.on_main_thread = my_plug_on_main_thread;
+
+   // Don't call into the host here
 
    return &p->plugin;
 }
@@ -283,10 +299,15 @@ plugin_factory_get_plugin_descriptor(const struct clap_plugin_factory *factory, 
 static const clap_plugin_t *plugin_factory_create_plugin(const struct clap_plugin_factory *factory,
                                                          const clap_host_t                *host,
                                                          const char *plugin_id) {
-   int N = sizeof(s_plugins) / sizeof(s_plugins[0]);
+   if (!clap_version_is_compatible(host->clap_version)) {
+      return NULL;
+   }
+
+   const int N = sizeof(s_plugins) / sizeof(s_plugins[0]);
    for (int i = 0; i < N; ++i)
       if (!strcmp(plugin_id, s_plugins[i].desc->id))
          return s_plugins[i].create(host);
+
    return NULL;
 }
 
@@ -301,12 +322,12 @@ static const clap_plugin_factory_t s_plugin_factory = {
 ////////////////
 
 static bool entry_init(const char *plugin_path) {
-   // called only once, and first
+   // called only once, and very first
    return true;
 }
 
 static void entry_deinit(void) {
-   // called last
+   // called before unloading the DSO
 }
 
 static const void *entry_get_factory(const char *factory_id) {
