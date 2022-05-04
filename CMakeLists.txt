@@ -19,7 +19,7 @@ target_link_libraries(clap-compile-cpp clap-core)
 set_target_properties(clap-compile-cpp PROPERTIES CXX_STANDARD 14)
 
 add_library(clap-plugin-template MODULE EXCLUDE_FROM_ALL src/plugin-template.c)
-target_link_libraries(clap-plugin-template clap-core)
+target_link_libraries(clap-plugin-template PRIVATE clap-core)
 set_target_properties(clap-plugin-template PROPERTIES C_STANDARD 11)
 
 if (${CMAKE_C_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_C_COMPILER_ID} STREQUAL "Clang")
