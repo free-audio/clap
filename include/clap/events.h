@@ -119,8 +119,8 @@ typedef struct clap_event_note {
 
    int32_t note_id;  // -1 if unspecified, otherwise >0
    int16_t port_index;
-   int16_t key;      // 0..127
    int16_t channel;  // 0..15
+   int16_t key;      // 0..127
    double  velocity; // 0..1
 } clap_event_note_t;
 
@@ -150,8 +150,8 @@ typedef struct clap_event_note_expression {
    // target a specific note_id, port, key and channel, -1 for global
    int32_t note_id;
    int16_t port_index;
-   int16_t key;
    int16_t channel;
+   int16_t key;
 
    double value; // see expression for the range
 } clap_event_note_expression_t;
