@@ -117,7 +117,7 @@ typedef int32_t clap_event_type;
 typedef struct clap_event_note {
    clap_event_header_t header;
 
-   int16_t note_id;  // -1 if unspecified, otherwise >0
+   int32_t note_id;  // -1 if unspecified, otherwise >0
    int16_t port_index;
    int16_t key;      // 0..127
    int16_t channel;  // 0..15
@@ -148,7 +148,7 @@ typedef struct clap_event_note_expression {
    clap_note_expression expression_id;
 
    // target a specific note_id, port, key and channel, -1 for global
-   int16_t note_id;
+   int32_t note_id;
    int16_t port_index;
    int16_t key;
    int16_t channel;
@@ -164,7 +164,7 @@ typedef struct clap_event_param_value {
    void   *cookie;   // @ref clap_param_info.cookie
 
    // target a specific note_id, port, key and channel, -1 for global
-   int16_t note_id;
+   int32_t note_id;
    int16_t port_index;
    int16_t channel;
    int16_t key;
@@ -180,7 +180,7 @@ typedef struct clap_event_param_mod {
    void   *cookie;   // @ref clap_param_info.cookie
 
    // target a specific note_id, port, key and channel, -1 for global
-   int16_t note_id;
+   int32_t note_id;
    int16_t port_index;
    int16_t channel;
    int16_t key;
