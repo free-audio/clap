@@ -15,6 +15,12 @@ static const char CLAP_EXT_VOICE_INFO[] = "clap.voice-info.draft/0";
 extern "C" {
 #endif
 
+enum {
+   // Allows the host to send overlapping NOTE_ON events.
+   // The plugin will then rely upon the note_id to distinguish between them.
+   CLAP_VOICE_INFO_SUPPORTS_OVERLAPPING_NOTES = 1 << 0,
+};
+
 typedef struct clap_voice_info {
    // voice_count is the current number of voices that the patch can use
    // voice_capacity is the number of voices allocated voices
@@ -29,6 +35,8 @@ typedef struct clap_voice_info {
    // can decide to only use global modulation mapping.
    uint32_t voice_count;
    uint32_t voice_capacity;
+
+   uint64_t flags;
 } clap_voice_info_t;
 
 typedef struct clap_plugin_voice_info {
