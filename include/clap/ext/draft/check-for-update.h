@@ -9,16 +9,16 @@ extern "C" {
 #endif
 
 typedef struct clap_check_for_update_info {
-   const char *version;
+   const char *version; // latest version
    const char *release_date; // YYYY-MM-DD
-   const char *url;
+   const char *url; // url to a download page which the user can visit
 
-   bool is_stable;
+   bool is_preview; // true if this version is a preview release
 } clap_check_for_update_info_t;
 
 typedef struct clap_plugin_check_for_update {
    // [main-thread]
-   void (*check)(const clap_host_t *host, bool include_beta);
+   void (*check)(const clap_plugin_t *plugin, bool include_preview);
 } clap_plugin_check_for_update;
 
 typedef struct clap_host_check_for_update {
