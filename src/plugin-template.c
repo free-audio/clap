@@ -42,7 +42,7 @@ static bool my_plug_audio_ports_get(const clap_plugin_t    *plugin,
                                     uint32_t                index,
                                     bool                    is_input,
                                     clap_audio_port_info_t *info) {
-   if (index != 1)
+   if (index > 0)
       return false;
    info->id = 0;
    snprintf(info->name, sizeof(info->name), "%s", "My Port Name");
@@ -68,7 +68,7 @@ static bool my_plug_note_ports_get(const clap_plugin_t   *plugin,
                                    uint32_t               index,
                                    bool                   is_input,
                                    clap_note_port_info_t *info) {
-   if (index != 1)
+   if (index > 0)
       return false;
    info->id = 0;
    snprintf(info->name, sizeof(info->name), "%s", "My Port Name");
@@ -199,7 +199,7 @@ static clap_process_status my_plug_process(const struct clap_plugin *plugin,
    const uint32_t nframes = process->frames_count;
    const uint32_t nev = process->in_events->size(process->in_events);
    uint32_t       ev_index = 0;
-   uint32_t       next_ev_frame = 0;
+   uint32_t       next_ev_frame = nev > 0 ? 0 : nframes;
 
    for (uint32_t i = 0; i < nframes;) {
       /* handle every events that happrens at the frame "i" */
