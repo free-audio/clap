@@ -23,7 +23,7 @@ typedef struct clap_plugin_posix_fd_support {
    //
    // [main-thread]
    void (*on_fd)(const clap_plugin_t *plugin, int fd, int flags);
-} clap_plugin_fd_support_t;
+} clap_plugin_posix_fd_support_t;
 
 typedef struct clap_host_posix_fd_support {
    // [main-thread]
