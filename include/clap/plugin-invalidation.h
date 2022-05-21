@@ -19,7 +19,7 @@ typedef struct clap_plugin_invalidation_source {
 } clap_plugin_invalidation_source_t;
 
 static const CLAP_CONSTEXPR char CLAP_PLUGIN_INVALIDATION_FACTORY_ID[] =
-   "clap.plugin-invalidation-factory";
+   "clap.plugin-invalidation-factory/draft0";
 
 // Used to figure out when a plugin needs to be scanned again.
 // Imagine a situation with a single entry point: my-plugin.clap which then scans itself

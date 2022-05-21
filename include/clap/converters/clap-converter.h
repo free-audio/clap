@@ -35,7 +35,7 @@ typedef struct clap_clap_converter {
 } clap_clap_converter_t;
 
 // Factory identifier
-static CLAP_CONSTEXPR const char CLAP_CLAP_CONVERTER_FACTORY_ID[] = "clap.clap-converter-factory";
+static CLAP_CONSTEXPR const char CLAP_CLAP_CONVERTER_FACTORY_ID[] = "clap.clap-converter-factory/draft0";
 
 // List all the converters available in the current DSO.
 typedef struct clap_clap_converter_factory {
