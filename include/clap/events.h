@@ -51,7 +51,7 @@ enum {
    // NOTE_CHOKE is meant to choke the voice(s), like in a drum machine when a closed hihat
    // chokes an open hihat.
    //
-   // NOTE_END is sent by the plugin to the host. The port, channel and key are those given
+   // NOTE_END is sent by the plugin to the host. The port, channel, key and note_id are those given
    // by the host in the NOTE_ON event. In other words, this event is matched against the
    // plugin's note input port. NOTE_END is only requiered if the plugin marked at least
    // one of its parameters as polyphonic.
@@ -109,16 +109,15 @@ enum {
 };
 typedef int32_t clap_event_type;
 
-/**
- * Note on, off, end and choke events.
- * In the case of note choke or end events:
- * - the velocity is ignored.
- * - key and channel are used to match active notes, a value of -1 matches all.
- */
+
+// Note on, off, end and choke events.
+// In the case of note choke or end events:
+// - the velocity is ignored.
+// - key and channel are used to match active notes, a value of -1 matches all.
 typedef struct clap_event_note {
    clap_event_header_t header;
 
-   int32_t note_id;  // -1 if unspecified, otherwise >0
+   int32_t note_id; // -1 if unspecified, otherwise >0
    int16_t port_index;
    int16_t channel;  // 0..15
    int16_t key;      // 0..127
