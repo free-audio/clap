@@ -15,7 +15,7 @@ typedef struct clap_host {
    const char *name;    // eg: "Bitwig Studio"
    const char *vendor;  // eg: "Bitwig GmbH"
    const char *url;     // eg: "https://bitwig.com"
-   const char *version; // eg: "3.3.8"
+   const char *version; // eg: "4.3"
 
    // Query an extension.
    // [thread-safe]
