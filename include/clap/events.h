@@ -22,10 +22,11 @@ typedef struct clap_event_header {
 static const CLAP_CONSTEXPR uint16_t CLAP_CORE_EVENT_SPACE_ID = 0;
 
 enum clap_event_flags {
-   // indicate a live momentary event
+   // Indicate a live user event, for example a user turning a phisical knob
+   // or playing a physical key.
    CLAP_EVENT_IS_LIVE = 1 << 0,
 
-   // indicate that the event should not be recorded.
+   // Indicate that the event should not be recorded.
    // For example this is useful when a parameter changes because of a MIDI CC,
    // because if the host records both the MIDI CC automation and the parameter
    // automation there will be a conflict.
