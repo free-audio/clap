@@ -11,8 +11,10 @@ extern "C" {
 typedef struct clap_plugin_descriptor {
    clap_version_t clap_version; // initialized to CLAP_VERSION
 
-   const char *id;          // eg: "com.u-he.diva"
-   const char *name;        // eg: "Diva"
+   // Mandatory fields must be set and must not be blank.
+   // Otherwise the fields can be null or blank, though it is safer to make them blank.
+   const char *id;          // eg: "com.u-he.diva", mandatory
+   const char *name;        // eg: "Diva", mandatory
    const char *vendor;      // eg: "u-he"
    const char *url;         // eg: "https://u-he.com/products/diva/"
    const char *manual_url;  // eg: "https://dl.u-he.com/manuals/plugins/diva/Diva-user-guide.pdf"

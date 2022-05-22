@@ -2,6 +2,7 @@
 
 #include "../plugin.h"
 
+// This extension let your plugin hook itself into the host select/poll/epoll/kqueue reactor.
 static CLAP_CONSTEXPR const char CLAP_EXT_POSIX_FD_SUPPORT[] = "clap.posix-fd-support";
 
 #ifdef __cplusplus
