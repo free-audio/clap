@@ -12,8 +12,8 @@ extern "C" {
 // bool isRightConstant = (buffer->constant_mask & (1 << 1)) != 0;
 //
 // for (int i = 0; i < N; ++i) {
-//    float l = data32[0][i * isLeftConstant];
-//    float r = data32[1][i * isRightConstant];
+//    float l = data32[0][isLeftConstant ? 0 : i];
+//    float r = data32[1][isRightConstant ? 0 : i];
 // }
 //
 // Note: checking the constant mask is optional, and this implies that
@@ -29,7 +29,7 @@ typedef struct clap_audio_buffer {
    double **data64;
    uint32_t channel_count;
    uint32_t latency;       // latency from/to the audio interface
-   uint64_t constant_mask; // mask & (1 << N) to test if channel N is constant
+   uint64_t constant_mask;
 } clap_audio_buffer_t;
 
 #ifdef __cplusplus
