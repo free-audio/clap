@@ -30,7 +30,7 @@ extern "C" {
 typedef struct clap_plugin_entry {
    clap_version_t clap_version; // initialized to CLAP_VERSION
 
-   // This function must be called fisrt, and can only be called once.
+   // This function must be called first, and can only be called once.
    //
    // It should be as fast as possible, in order to perform very quick scan of the plugin
    // descriptors.
