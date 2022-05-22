@@ -28,6 +28,7 @@
 #include "entry.h"
 #include "plugin-factory.h"
 #include "plugin-invalidation.h"
+#include "plugin-features.h"
 
 #include "plugin.h"
 #include "host.h"

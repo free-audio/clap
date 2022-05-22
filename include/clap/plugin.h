@@ -25,6 +25,7 @@ typedef struct clap_plugin_descriptor {
    //
    // The array of pointers must be null terminated.
    //
+   // For some standard features see plugin-features.h
    // Some pre-defined keywords:
    // - "instrument", "audio_effect", "note_effect", "analyzer"
    // - "mono", "stereo", "surround", "ambisonic"
