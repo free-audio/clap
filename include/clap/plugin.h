@@ -26,7 +26,6 @@ typedef struct clap_plugin_descriptor {
    // They can be matched by the host indexer and used to classify the plugin.
    // The array of pointers must be null terminated.
    // For some standard features see plugin-features.h
-   // Non standard feature should be formated as follow: "$namespace:$feature"
    const char **features;
 } clap_plugin_descriptor_t;
 
