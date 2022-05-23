@@ -19,7 +19,6 @@ extern "C" {
 
 enum clap_note_dialect {
    // Uses clap_event_note and clap_event_note_expression.
-   // Default if the port info are not provided or inspected.
    CLAP_NOTE_DIALECT_CLAP = 1 << 0,
 
    // Uses clap_event_midi, no polyphonic expression
