@@ -10,6 +10,7 @@ extern "C" {
 
 typedef struct clap_plugin_tail {
    // Returns tail length in samples.
+   // Any value greater or equal to INT32_MAX implies infinite tail.
    // [main-thread,audio-thread]
    uint32_t (*get)(const clap_plugin_t *plugin);
 } clap_plugin_tail_t;
