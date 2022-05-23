@@ -10,7 +10,9 @@ extern "C" {
 #endif
 
 enum {
-   // IO events flags
+   // IO events flags, they can be used to form a mask which describes:
+   // - which events you are interested in (register_fd/modify_fd)
+   // - which events happened (on_fd)
    CLAP_POSIX_FD_READ = 1 << 0,
    CLAP_POSIX_FD_WRITE = 1 << 1,
    CLAP_POSIX_FD_ERROR = 1 << 2,
