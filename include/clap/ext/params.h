@@ -273,7 +273,7 @@ typedef struct clap_host_params {
    // [main-thread]
    void (*rescan)(const clap_host_t *host, clap_param_rescan_flags flags);
 
-   // Clears references to a parameter
+   // Clears references to a parameter.
    // [main-thread]
    void (*clear)(const clap_host_t *host, clap_id param_id, clap_param_clear_flags flags);
 
