@@ -97,8 +97,8 @@ enum {
    CLAP_EVENT_PARAM_VALUE,
    CLAP_EVENT_PARAM_MOD,
 
-   // uses clap_event_param_gesture
-   // Indicates that a parameter gesture begun or ended.
+   // Indicates that the user started or finished to adjust a knob.
+   // Uses clap_event_param_gesture.
    CLAP_EVENT_PARAM_GESTURE_BEGIN,
    CLAP_EVENT_PARAM_GESTURE_END,
 
