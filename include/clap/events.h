@@ -49,7 +49,11 @@ enum {
    // NOTE_ON and NOTE_OFF represents a key pressed and key released event.
    //
    // NOTE_CHOKE is meant to choke the voice(s), like in a drum machine when a closed hihat
-   // chokes an open hihat.
+   // chokes an open hihat. This event can be sent by the host to the plugin. Here two use case:
+   // - a plugin is inside a drum pad in Bitwig Studio's drum machine, and this pad is choked by
+   //   another one
+   // - the user double clicks the DAW's stop button in the transport which then stops the sound on
+   //   every tracks
    //
    // NOTE_END is sent by the plugin to the host. The port, channel, key and note_id are those given
    // by the host in the NOTE_ON event. In other words, this event is matched against the
@@ -108,7 +112,6 @@ enum {
    CLAP_EVENT_MIDI2,      // raw midi 2 event; clap_event_midi2
 };
 typedef int32_t clap_event_type;
-
 
 // Note on, off, end and choke events.
 // In the case of note choke or end events:
