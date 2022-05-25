@@ -33,8 +33,9 @@ enum {
    // 64 bits audio is preferred with this port
    CLAP_AUDIO_PORT_PREFERS_64BITS = 1 << 2,
 
-   // This port must be used with the same sample size as all
-   // the other ports which have this flags.
+   // This port must be used with the same sample size as all the other ports which have this flags.
+   // In other words if all ports have this flags then the plugin may either be used entirely with
+   // 64 bits audio or 32 bits audio, but it can't be mixed.
    CLAP_AUDIO_PORT_REQUIRES_COMMON_SAMPLE_SIZE = 1 << 3,
 };
 
