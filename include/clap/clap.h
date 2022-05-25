@@ -60,7 +60,6 @@
 #include "ext/draft/cv.h"
 #include "ext/draft/ambisonic.h"
 #include "ext/draft/voice-info.h"
-#include "ext/draft/event-filter.h"
 
 #include "converters/vst2-converter.h"
 #include "converters/vst3-converter.h"
