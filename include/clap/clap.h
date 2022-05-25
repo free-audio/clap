@@ -46,7 +46,6 @@
 #include "ext/posix-fd-support.h"
 #include "ext/note-name.h"
 #include "ext/note-ports.h"
-#include "ext/event-filter.h"
 #include "ext/thread-pool.h"
 #include "ext/event-registry.h"
 #include "ext/tail.h"
@@ -61,6 +60,7 @@
 #include "ext/draft/cv.h"
 #include "ext/draft/ambisonic.h"
 #include "ext/draft/voice-info.h"
+#include "ext/draft/event-filter.h"
 
 #include "converters/vst2-converter.h"
 #include "converters/vst3-converter.h"

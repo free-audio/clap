@@ -1,15 +1,22 @@
 #pragma once
 
-#include "../plugin.h"
+#include "../../plugin.h"
 
-static CLAP_CONSTEXPR const char CLAP_EXT_EVENT_FILTER[] = "clap.event-filter";
+static CLAP_CONSTEXPR const char CLAP_EXT_EVENT_FILTER[] = "clap.event-filter/draft";
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 // This extension lets the host know which event types the plugin is interested
-// in.
+// in. The purpose is to reduce the number of events in the stream and not to
+// infer plugin's capabilities from it.
+//
+// This extension is currently in draft because we are not sure which aproach is best: whitelist vs
+// blacklist and how much impact it has over the number of events. When a plugin supports polyphonic
+// modulations, then the event queue can grow massively and this extension would then become
+// irrelevant.
+//
 // The host will cache the set of accepted events before activating the plugin.
 // The set of accepted events can't change while the plugin is active.
 //
