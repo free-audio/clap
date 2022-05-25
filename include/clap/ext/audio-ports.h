@@ -32,6 +32,10 @@ enum {
 
    // 64 bits audio is preferred with this port
    CLAP_AUDIO_PORT_PREFERS_64BITS = 1 << 2,
+
+   // This port must be used with the same sample size as all
+   // the other ports which have this flags.
+   CLAP_AUDIO_PORT_REQUIRES_COMMON_SAMPLE_SIZE = 1 << 3,
 };
 
 typedef struct clap_audio_port_info {
