@@ -102,6 +102,8 @@ enum {
    CLAP_EVENT_PARAM_MOD,
 
    // Indicates that the user started or finished to adjust a knob.
+   // This is not mandatory to wrap parameter changes with gesture events, but this improves a lot
+   // the user experience when recording automation or overriding automation playback.
    // Uses clap_event_param_gesture.
    CLAP_EVENT_PARAM_GESTURE_BEGIN,
    CLAP_EVENT_PARAM_GESTURE_END,
