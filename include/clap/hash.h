@@ -10,7 +10,10 @@ extern "C" {
 enum {
    CLAP_HASH_CRC32 = 0,
    CLAP_HASH_CRC64 = 1,
+
    CLAP_HASH_MD5 = 1000,
+
+   // SHA family
    CLAP_HASH_SHA1 = 2000,
 
    CLAP_HASH_SHA2_224 = 3000,
@@ -25,8 +28,9 @@ enum {
    CLAP_HASH_SHA3_384,
    CLAP_HASH_SHA3_512,
 
-   CLAP_BLAKE2 = 5000,
-   CLAP_BLAKE3 = 6000,
+   // BLAKE family
+   CLAP_BLAKE2 = 20000,
+   CLAP_BLAKE3 = 21000,
 };
 typedef uint32_t clap_hash;
 
