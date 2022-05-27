@@ -8,14 +8,25 @@ extern "C" {
 
 // Commonly used hashing algorithms
 enum {
-   CLAP_HASH_CRC32,
-   CLAP_HASH_CRC64,
-   CLAP_HASH_MD5,
-   CLAP_HASH_SHA1,
-   CLAP_HASH_SHA2,
-   CLAP_HASH_SHA3,
-   CLAP_BLAKE2,
-   CLAP_BLAKE3,
+   CLAP_HASH_CRC32 = 0,
+   CLAP_HASH_CRC64 = 1,
+   CLAP_HASH_MD5 = 1000,
+   CLAP_HASH_SHA1 = 2000,
+
+   CLAP_HASH_SHA2_224 = 3000,
+   CLAP_HASH_SHA2_256,
+   CLAP_HASH_SHA2_384,
+   CLAP_HASH_SHA2_512,
+   CLAP_HASH_SHA2_512_224, // state: 512, digest: 224
+   CLAP_HASH_SHA2_512_256, // state: 512, digest: 256
+
+   CLAP_HASH_SHA3_224 = 4000,
+   CLAP_HASH_SHA3_256,
+   CLAP_HASH_SHA3_384,
+   CLAP_HASH_SHA3_512,
+
+   CLAP_BLAKE2 = 5000,
+   CLAP_BLAKE3 = 6000,
 };
 typedef uint32_t clap_hash;
 
