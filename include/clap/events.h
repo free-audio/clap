@@ -265,7 +265,7 @@ typedef struct clap_input_events {
 
    uint32_t (*size)(const struct clap_input_events *list);
 
-   // Don't free the return event, it belongs to the list
+   // Don't free the returned event, it belongs to the list
    const clap_event_header_t *(*get)(const struct clap_input_events *list, uint32_t index);
 } clap_input_events_t;
 
