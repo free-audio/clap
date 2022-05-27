@@ -12,7 +12,7 @@ extern "C" {
 // must be the first attribute of the event
 typedef struct clap_event_header {
    uint32_t size;     // event size including this header, eg: sizeof (clap_event_note)
-   uint32_t time;     // time at which the event happens
+   uint32_t time;     // sample offset within the buffer for this event
    uint16_t space_id; // event space, see clap_host_event_registry
    uint16_t type;     // event type
    uint32_t flags;    // see clap_event_flags
