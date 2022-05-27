@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../../plugin.h"
-#include "../../hash.h"
 #include "../../string-sizes.h"
 
 static CLAP_CONSTEXPR const char CLAP_EXT_FILE_REFERENCE[] = "clap.file-reference.draft/0";
@@ -51,12 +50,16 @@ typedef struct clap_plugin_file_reference {
    // This method does not compute the hash.
    // It is only used in case of missing resource. The host may have additionnal known resource
    // location and may be able to locate the file by using its known hash.
+   //
+   // algorithm: string that identify the hashing algorithm to use.
+   // Currently only "blake3" is supported. See https://github.com/BLAKE3-team/BLAKE3 for details.
+   //
    // [main-thread]
-   bool (*get_hash)(const clap_plugin_t *plugin,
-                    clap_id              resource_id,
-                    clap_hash            hash,
-                    uint8_t             *digest,
-                    uint32_t             digest_size);
+   bool (*get_digest)(const clap_plugin_t *plugin,
+                      clap_id              resource_id,
+                      const char          *algorithm,
+                      uint8_t             *digest,
+                      uint32_t             digest_size);
 
    // updates the path to a file reference
    // [main-thread]
