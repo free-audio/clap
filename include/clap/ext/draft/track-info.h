@@ -14,7 +14,7 @@ typedef struct clap_track_info {
    clap_id      id;
    int32_t      index;
    char         name[CLAP_NAME_SIZE];
-   char         path[CLAP_MODULE_SIZE]; // Like "/group1/group2/drum-machine/drum-pad-13"
+   char         path[CLAP_PATH_SIZE]; // Like "/group1/group2/drum-machine/drum-pad-13"
    int32_t      channel_count;
    const char  *audio_port_type;
    clap_color_t color;

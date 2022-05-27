@@ -5,9 +5,13 @@ extern "C" {
 #endif
 
 enum {
+   // String capacity for names that can be displayed to the user.
+   // 256 characters is very large, and it would be impractical to display such a long name.
    CLAP_NAME_SIZE = 256,
-   CLAP_MODULE_SIZE = 512,
-   CLAP_PATH_SIZE = 4096,
+
+   // String capacity for describing a path, like a parameter in a module hierarchy or path within a
+   // set of nested track groups.
+   CLAP_PATH_SIZE = 1024,
 };
 
 #ifdef __cplusplus
