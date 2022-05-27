@@ -47,9 +47,6 @@ typedef struct clap_process {
    // Audio buffers, they must have the same count as specified
    // by clap_plugin_audio_ports->get_count().
    // The index maps to clap_plugin_audio_ports->get_info().
-   //
-   // If a plugin does not implement clap_plugin_audio_ports,
-   // then it gets a default stereo input and output.
    const clap_audio_buffer_t *audio_inputs;
    clap_audio_buffer_t       *audio_outputs;
    uint32_t                   audio_inputs_count;
@@ -59,9 +56,6 @@ typedef struct clap_process {
    //
    // Events must be sorted by time.
    // The input event list can't be modified.
-   //
-   // If a plugin does not implement clap_plugin_note_ports,
-   // then it gets a default note input and output.
    const clap_input_events_t  *in_events;
    const clap_output_events_t *out_events;
 } clap_process_t;
