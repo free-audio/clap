@@ -47,6 +47,7 @@ enum clap_event_flags {
 // or implement clap_plugin_event_filter and reject raw midi and midi2 events.
 enum {
    // NOTE_ON and NOTE_OFF represents a key pressed and key released event.
+   // A NOTE_ON with a velocity of 0 is valid and should not be interpreted as a NOTE_OFF.
    //
    // NOTE_CHOKE is meant to choke the voice(s), like in a drum machine when a closed hihat
    // chokes an open hihat. This event can be sent by the host to the plugin. Here two use case:
