@@ -12,29 +12,31 @@ extern "C" {
 /// @page File Reference
 ///
 /// This extension provides a way for the host to know about files which are used
-/// by the preset, like a wavetable, a sample, ...
+/// by the plugin, like a wavetable, a sample, ...
 ///
 /// The host can then:
 /// - collect and save
 /// - search for missing files by using:
 ///   - filename
 ///   - hash
-/// - be aware that some external file references are marked as dirty
-///   and needs to be saved.
+///   - file size
+/// - be aware that some external file references are marked as dirty and needs to be saved.
 ///
-/// Regarding the hash algorithm to choose, there are multiple options yet as of 2022,
-/// BLAKE3 seems to be the best choice in regards to performances and robustness while
-/// also providing a very small pure C library with permissive licensing.
-/// That's why we encourage plugins and hosts to support BLAKE3.
+/// Regarding the hashing algorithm, as of 2022 BLAKE3 seems to be the best choice in regards to
+/// performances and robustness while also providing a very small pure C library with permissive
+/// licensing. For more info see https://github.com/BLAKE3-team/BLAKE3
+///
+/// This extension only expose one hashing algorithm on purpose.
 
+// This describes a file currently used by the plugin
 typedef struct clap_file_reference {
    clap_id resource_id;
    bool    belongs_to_plugin_collection;
 
    size_t path_capacity; // [in] the number of bytes reserved in path
    size_t path_size;     // [out] the actual length of the path, can be bigger than path_capacity
-   char  *path; // path to the file on the disk, must be null terminated, and maybe truncated if the
-                // capacity is less than the size
+   char  *path; // [in,out] path to the file on the disk, must be null terminated, and maybe
+                // truncated if the capacity is less than the size
 } clap_file_reference_t;
 
 typedef struct clap_plugin_file_reference {
@@ -47,19 +49,19 @@ typedef struct clap_plugin_file_reference {
    // [main-thread]
    bool (*get)(const clap_plugin_t *plugin, uint32_t index, clap_file_reference_t *file_reference);
 
-   // This method does not compute the hash.
-   // It is only used in case of missing resource. The host may have additionnal known resource
-   // location and may be able to locate the file by using its known hash.
+   // This method can be called even if the file is missing.
+   // So the plugin is encouraged to store the digest in its state.
    //
-   // algorithm: string that identify the hashing algorithm to use.
-   // Currently only "blake3" is supported. See https://github.com/BLAKE3-team/BLAKE3 for details.
+   // digest is an array of 32 bytes.
    //
    // [main-thread]
-   bool (*get_digest)(const clap_plugin_t *plugin,
-                      clap_id              resource_id,
-                      const char          *algorithm,
-                      uint8_t             *digest,
-                      uint32_t             digest_size);
+   bool (*get_blake3_digest)(const clap_plugin_t *plugin, clap_id resource_id, uint8_t *digest);
+
+   // This method can be called even if the file is missing.
+   // So the plugin is encouraged to store the file's size in its state.
+   //
+   // [main-thread]
+   bool (*get_file_size)(const clap_plugin_t *plugin, clap_id resource_id, uint64_t *size);
 
    // updates the path to a file reference
    // [main-thread]
