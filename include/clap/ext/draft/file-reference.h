@@ -22,6 +22,11 @@ extern "C" {
 ///   - hash
 /// - be aware that some external file references are marked as dirty
 ///   and needs to be saved.
+///
+/// Regarding the hash algorithm to choose, there are multiple options yet as of 2022,
+/// BLAKE3 seems to be the best choice in regards to performances and robustness while
+/// also providing a very small pure C library with permissive licensing.
+/// That's why we encourage plugins and hosts to support BLAKE3.
 
 typedef struct clap_file_reference {
    clap_id resource_id;
