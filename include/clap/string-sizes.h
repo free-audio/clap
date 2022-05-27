@@ -6,7 +6,6 @@ extern "C" {
 
 enum {
    // String capacity for names that can be displayed to the user.
-   // 256 characters is very large, and it would be impractical to display such a long name.
    CLAP_NAME_SIZE = 256,
 
    // String capacity for describing a path, like a parameter in a module hierarchy or path within a
