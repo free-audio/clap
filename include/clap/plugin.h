@@ -3,6 +3,7 @@
 #include "private/macros.h"
 #include "host.h"
 #include "process.h"
+#include "plugin-features.h"
 
 #ifdef __cplusplus
 extern "C" {
