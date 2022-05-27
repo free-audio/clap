@@ -6,9 +6,7 @@
 /// @page Note Ports
 ///
 /// This extension provides a way for the plugin to describe its current note ports.
-///
 /// If the plugin does not implement this extension, it won't have note input or output.
-///
 /// The plugin is only allowed to change its note ports configuration while it is deactivated.
 
 static CLAP_CONSTEXPR const char CLAP_EXT_NOTE_PORTS[] = "clap.note-ports";
