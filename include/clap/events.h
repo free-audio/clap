@@ -57,8 +57,8 @@ enum {
    //
    // NOTE_END is sent by the plugin to the host. The port, channel, key and note_id are those given
    // by the host in the NOTE_ON event. In other words, this event is matched against the
-   // plugin's note input port. NOTE_END is only requiered if the plugin marked at least
-   // one of its parameters as polyphonic.
+   // plugin's note input port.
+   // NOTE_END is useful to help the host to match the plugin's voice life time.
    //
    // When using polyphonic modulations, the host has to allocate and release voices for its
    // polyphonic modulator. Yet only the plugin effectively knows when the host should terminate
