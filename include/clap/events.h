@@ -123,7 +123,7 @@ typedef int32_t clap_event_type;
 typedef struct clap_event_note {
    clap_event_header_t header;
 
-   int32_t note_id; // -1 if unspecified, otherwise >0
+   int32_t note_id; // -1 if unspecified, otherwise >=0
    int16_t port_index;
    int16_t channel;  // 0..15
    int16_t key;      // 0..127
