@@ -232,8 +232,8 @@ typedef struct clap_event_transport {
    clap_beattime bar_start;  // start pos of the current bar
    int32_t       bar_number; // bar at song pos 0 has the number 0
 
-   int16_t tsig_num;   // time signature numerator
-   int16_t tsig_denom; // time signature denominator
+   uint16_t tsig_num;   // time signature numerator
+   uint16_t tsig_denom; // time signature denominator
 } clap_event_transport_t;
 
 typedef struct clap_event_midi {
