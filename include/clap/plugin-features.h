@@ -54,6 +54,9 @@ static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_GLITCH = "glitch";
 
 static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_UTILITY = "utility";
 static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_PITCH_CORRECTION = "pitch-correction";
+static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_RESTORATION = "restoration"; // repair the sound
+
+static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_MULTI_EFFECTS = "multi-effects";
 
 static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_MIXING = "mixing";
 static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_MASTERING = "mastering";
