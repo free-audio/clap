@@ -50,9 +50,13 @@ static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_DELAY = "delay";
 static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_REVERB = "reverb";
 
 static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_TREMOLO = "tremolo";
+static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_GLITCH = "glitch";
 
 static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_UTILITY = "utility";
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_GLITCH = "glitch";
+static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_PITCH_CORRECTION = "pitch-correction";
+
+static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_MIXING = "mixing";
+static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_MASTERING = "mastering";
 
 ////////////////////////
 // Audio Capabilities //
