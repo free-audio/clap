@@ -34,6 +34,10 @@ static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_FILTER = "filter";
 static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_PHASER = "phaser";
 static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_EQUALIZER = "equalizer";
 static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_DEESSER = "de-esser";
+static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_PHASE_VOCODER = "phase-vocoder";
+static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_GRANULAR = "granular";
+static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_FREQUENCY_SHIFTER = "frequency-shifter";
+static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_PITCH_SHIFTER = "pitch-shifter";
 
 static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_DISTORTION = "distortion";
 static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_TRANSIENT_SHAPER = "transient-shaper";
@@ -44,6 +48,8 @@ static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_FLANGER = "flanger";
 static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_CHORUS = "chorus";
 static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_DELAY = "delay";
 static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_REVERB = "reverb";
+
+static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_TREMOLO = "tremolo";
 
 static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_UTILITY = "utility";
 static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_GLITCH = "glitch";
