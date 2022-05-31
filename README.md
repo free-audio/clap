@@ -1,4 +1,7 @@
-<img src="artwork/clap-full-logo-black.png" alt="drawing" width="400"/>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="artwork/clap-full-logo-white.png">
+  <img alt="CLAP" src="artwork/clap-full-logo-black.png" width="400">
+</picture>
 
 **CL**ever **A**udio **P**lugin.
 
