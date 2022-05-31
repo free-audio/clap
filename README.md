@@ -22,7 +22,10 @@
 
 # Learn about CLAP
 
-To work with clap, include [clap/clap.h](include/clap/clap.h).
+CLAP stands for **CL**ever **A**udio **P**lugin.
+It is an audio plugin ABI which defines a standard for *Digital Audio Workstations* and audio plugins (synthesizers, audio effects, ...) to work together.
+
+To work with CLAP, include [clap/clap.h](include/clap/clap.h).
 
 The two most important objects are `clap_host` and `clap_plugin`.
 
