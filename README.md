@@ -1,4 +1,4 @@
-![CLAP](artwork/clap-full-logo-black.png)
+<img src="artwork/clap-full-logo-black.png" alt="drawing" width="400"/>
 
 **CL**ever **A**udio **P**lugin.
 
