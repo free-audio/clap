@@ -18,6 +18,7 @@
   - [Examples](#examples)
   - [Community related projects](#community-related-projects)
   - [Programming Language Bindings](#programming-language-bindings)
+  - [Artwork](#artwork)
 
 # Learn about CLAP
 
@@ -64,7 +65,7 @@ An extension comes with:
 You can create your own extensions and share them, make sure that the extension identifier
 - includes versioning in case the ABI breaks
 - a unique identifier
- 
+
 **All strings are valid UTF-8**.
 
 ## Fundamental extensions
