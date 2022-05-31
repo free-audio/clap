@@ -1,6 +1,6 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/free-audio/clap/main/artwork/clap-full-logo-white.png">
-  <source media="(prefers-color-scheme: light)" srcset="[/artwork/clap-full-logo-black.png](https://raw.githubusercontent.com/free-audio/clap/main/artwork/clap-full-logo-black.png)">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/free-audio/clap/main/artwork/clap-full-logo-black.png">
   <img alt="CLAP" src="https://raw.githubusercontent.com/free-audio/clap/main/artwork/clap-full-logo-black.png" width=300>
 </picture>
 
