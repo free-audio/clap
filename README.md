@@ -64,7 +64,7 @@ An extension comes with:
 You can create your own extensions and share them, make sure that the extension identifier
 - includes versioning in case the ABI breaks
 - a unique identifier
-
+ 
 **All strings are valid UTF-8**.
 
 ## Fundamental extensions
@@ -133,3 +133,6 @@ and use to get a basic plugin experience:
 
 - [clap-sys](https://github.com/glowcoil/clap-sys), rust binding
 - [CLAP-for-Delphi](https://github.com/Bremmers/CLAP-for-Delphi), Delphi binding
+
+## Artwork
+ - [CLAP Logo Pack.zip](https://github.com/free-audio/clap/files/8804790/CLAP.Logo.Pack.zip)
