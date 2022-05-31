@@ -1,8 +1,10 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/free-audio/clap/main/artwork/clap-full-logo-white.png">
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/free-audio/clap/main/artwork/clap-full-logo-black.png">
-  <img alt="CLAP" src="https://raw.githubusercontent.com/free-audio/clap/main/artwork/clap-full-logo-black.png" width=300>
-</picture>
+<p align=center>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/free-audio/clap/main/artwork/clap-full-logo-white.png">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/free-audio/clap/main/artwork/clap-full-logo-black.png">
+    <img alt="CLAP" src="https://raw.githubusercontent.com/free-audio/clap/main/artwork/clap-full-logo-black.png" width=300>
+  </picture>
+</p>
 
 **CL**ever **A**udio **P**lugin.
 
