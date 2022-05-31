@@ -1,5 +1,8 @@
-![CLAP](artwork/clap-full-logo-black.png#gh-light-mode-only)
-![CLAP](artwork/clap-full-logo-white.png#gh-dark-mode-only)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="artwork/clap-full-logo-white.png">
+  <source media="(prefers-color-scheme: light)" srcset="artwork/clap-full-logo-black.png">
+  <img alt="CLAP" src="artwork/clap-full-logo-black.png">
+</picture>
 
 **CL**ever **A**udio **P**lugin.
 
