@@ -136,4 +136,4 @@ and use to get a basic plugin experience:
 - [CLAP-for-Delphi](https://github.com/Bremmers/CLAP-for-Delphi), Delphi binding
 
 ## Artwork
- - [CLAP Logo Pack.zip](https://github.com/free-audio/clap/files/8804994/CLAP.Logo.Pack.zip)
+ - [CLAP Logo Pack.zip](https://github.com/free-audio/clap/files/8805281/CLAP.Logo.Pack.zip)
