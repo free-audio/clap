@@ -18,8 +18,11 @@ static const clap_plugin_descriptor_t s_my_plug_desc = {
    .manual_url = "https://your-domain.com/your-plugin/manual",
    .support_url = "https://your-domain.com/support",
    .version = "1.4.2",
-   .description = "This is a spectral synthesizer made to blow your mind.",
-   .features = (const char *[]){"instrument", "additive", "surround"},
+   .description = "The plugin description.",
+   .features = (const char *[]){
+      CLAP_PLUGIN_FEATURE_INSTRUMENT,
+      CLAP_PLUGIN_FEATURE_STEREO
+   },
 };
 
 typedef struct {
