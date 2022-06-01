@@ -15,64 +15,64 @@
 /////////////////////
 
 // Add this feature if your plugin can process note events and then produce audio
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_INSTRUMENT = "instrument";
+#define CLAP_PLUGIN_FEATURE_INSTRUMENT "instrument"
 
 // Add this feature if your plugin is an audio effect
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_AUDIO_EFFECT = "audio-effect";
+#define CLAP_PLUGIN_FEATURE_AUDIO_EFFECT "audio-effect"
 
 // Add this feature if your plugin is a note effect or a note generator/sequencer
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_NOTE_EFFECT = "note-effect";
+#define CLAP_PLUGIN_FEATURE_NOTE_EFFECT "note-effect"
 
 // Add this feature if your plugin is an analyzer
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_ANALYZER = "analyzer";
+#define CLAP_PLUGIN_FEATURE_ANALYZER "analyzer"
 
 /////////////////////////
 // Plugin sub-category //
 /////////////////////////
 
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_FILTER = "filter";
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_PHASER = "phaser";
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_EQUALIZER = "equalizer";
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_DEESSER = "de-esser";
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_PHASE_VOCODER = "phase-vocoder";
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_GRANULAR = "granular";
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_FREQUENCY_SHIFTER = "frequency-shifter";
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_PITCH_SHIFTER = "pitch-shifter";
+#define CLAP_PLUGIN_FEATURE_FILTER "filter"
+#define CLAP_PLUGIN_FEATURE_PHASER "phaser"
+#define CLAP_PLUGIN_FEATURE_EQUALIZER "equalizer"
+#define CLAP_PLUGIN_FEATURE_DEESSER "de-esser"
+#define CLAP_PLUGIN_FEATURE_PHASE_VOCODER "phase-vocoder"
+#define CLAP_PLUGIN_FEATURE_GRANULAR "granular"
+#define CLAP_PLUGIN_FEATURE_FREQUENCY_SHIFTER "frequency-shifter"
+#define CLAP_PLUGIN_FEATURE_PITCH_SHIFTER "pitch-shifter"
 
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_DISTORTION = "distortion";
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_TRANSIENT_SHAPER = "transient-shaper";
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_COMPRESSOR = "compressor";
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_LIMITER = "limiter";
+#define CLAP_PLUGIN_FEATURE_DISTORTION "distortion"
+#define CLAP_PLUGIN_FEATURE_TRANSIENT_SHAPER "transient-shaper"
+#define CLAP_PLUGIN_FEATURE_COMPRESSOR "compressor"
+#define CLAP_PLUGIN_FEATURE_LIMITER "limiter"
 
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_FLANGER = "flanger";
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_CHORUS = "chorus";
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_DELAY = "delay";
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_REVERB = "reverb";
+#define CLAP_PLUGIN_FEATURE_FLANGER "flanger"
+#define CLAP_PLUGIN_FEATURE_CHORUS "chorus"
+#define CLAP_PLUGIN_FEATURE_DELAY "delay"
+#define CLAP_PLUGIN_FEATURE_REVERB "reverb"
 
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_TREMOLO = "tremolo";
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_GLITCH = "glitch";
+#define CLAP_PLUGIN_FEATURE_TREMOLO "tremolo"
+#define CLAP_PLUGIN_FEATURE_GLITCH "glitch"
 
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_UTILITY = "utility";
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_PITCH_CORRECTION = "pitch-correction";
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_RESTORATION = "restoration"; // repair the sound
+#define CLAP_PLUGIN_FEATURE_UTILITY "utility"
+#define CLAP_PLUGIN_FEATURE_PITCH_CORRECTION "pitch-correction"
+#define CLAP_PLUGIN_FEATURE_RESTORATION "restoration" // repair the sound
 
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_MULTI_EFFECTS = "multi-effects";
+#define CLAP_PLUGIN_FEATURE_MULTI_EFFECTS "multi-effects"
 
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_MIXING = "mixing";
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_MASTERING = "mastering";
+#define CLAP_PLUGIN_FEATURE_MIXING "mixing"
+#define CLAP_PLUGIN_FEATURE_MASTERING "mastering"
 
 ////////////////////////
 // Audio Capabilities //
 ////////////////////////
 
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_MONO = "mono";
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_STEREO = "stereo";
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_SURROUND = "surround";
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_AMBISONIC = "ambisonic";
+#define CLAP_PLUGIN_FEATURE_MONO "mono"
+#define CLAP_PLUGIN_FEATURE_STEREO "stereo"
+#define CLAP_PLUGIN_FEATURE_SURROUND "surround"
+#define CLAP_PLUGIN_FEATURE_AMBISONIC "ambisonic"
 
 /////////////////
 // GUI related //
 /////////////////
 
 // Add this feature if the plugin is DPI aware on Windows.
-static CLAP_CONSTEXPR const char *CLAP_PLUGIN_FEATURE_WIN32_DPI_AWARE = "win32-dpi-aware";
+#define CLAP_PLUGIN_FEATURE_WIN32_DPI_AWARE "win32-dpi-aware"
