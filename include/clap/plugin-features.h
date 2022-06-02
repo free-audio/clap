@@ -30,6 +30,11 @@
 // Plugin sub-category //
 /////////////////////////
 
+#define CLAP_PLUGIN_FEATURE_SYNTHESIZER "synthesizer"
+#define CLAP_PLUGIN_FEATURE_SAMPLER "sampler"
+#define CLAP_PLUGIN_FEATURE_DRUM "drum" // For single drum
+#define CLAP_PLUGIN_FEATURE_DRUM_MACHINE "drum-machine"
+
 #define CLAP_PLUGIN_FEATURE_FILTER "filter"
 #define CLAP_PLUGIN_FEATURE_PHASER "phaser"
 #define CLAP_PLUGIN_FEATURE_EQUALIZER "equalizer"
