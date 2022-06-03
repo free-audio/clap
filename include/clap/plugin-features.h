@@ -74,10 +74,3 @@
 #define CLAP_PLUGIN_FEATURE_STEREO "stereo"
 #define CLAP_PLUGIN_FEATURE_SURROUND "surround"
 #define CLAP_PLUGIN_FEATURE_AMBISONIC "ambisonic"
-
-/////////////////
-// GUI related //
-/////////////////
-
-// Add this feature if the plugin is DPI aware on Windows.
-#define CLAP_PLUGIN_FEATURE_WIN32_DPI_AWARE "win32-dpi-aware"
