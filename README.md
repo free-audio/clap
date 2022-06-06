@@ -88,13 +88,13 @@ and use to get a basic plugin experience:
 
 ## Support extensions
 
-- [thread-pool](include/clap/ext/draft/thread-pool.h), use the host thread pool
+- [thread-pool](include/clap/ext/thread-pool.h), use the host thread pool
 - [timer-support](include/clap/ext/timer-support.h), lets the plugin register timer handlers
 - [posix-fd-support](include/clap/ext/posix-fd-support.h), lets the plugin register I/O handlers
 
 ## Extra extensions
 
-- [note-name](include/clap/ext/draft/note-name.h), give a name to notes, useful for drum machines
+- [note-name](include/clap/ext/note-name.h), give a name to notes, useful for drum machines
 - [tuning](include/clap/ext/draft/tuning.h), host provided microtuning
 - [track-info](include/clap/ext/draft/track-info.h)
 - [quick-controls](include/clap/ext/draft/quick-controls.h), bank of controls that can be mapped on a controlles with 8 knobs
