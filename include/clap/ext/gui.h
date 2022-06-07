@@ -20,7 +20,7 @@
 ///  4.    -> clap_plugin_gui->set_transient()
 ///  5.    -> clap_plugin_gui->suggest_title()
 ///  6. else
-///  7.    -> clap_plugin_gui->set_scale(), if the function pointer is provided by the plugin
+///  7.    -> clap_plugin_gui->set_scale()
 ///  8.    -> clap_plugin_gui->can_resize()
 ///  9.    -> if resizable and has known size from previous session, clap_plugin_gui->set_size()
 /// 10.    -> else clap_plugin_gui->get_size(), gets initial size
