@@ -114,7 +114,6 @@ enum {
    CLAP_EVENT_MIDI_SYSEX, // raw midi sysex event; clap_event_midi_sysex
    CLAP_EVENT_MIDI2,      // raw midi 2 event; clap_event_midi2
 };
-typedef int32_t clap_event_type;
 
 // Note on, off, end and choke events.
 // In the case of note choke or end events:
