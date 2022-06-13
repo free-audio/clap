@@ -7,7 +7,7 @@
 
 ## Changes in 1.0.0
 
-# new stable interfaces
+# New stable interfaces
 
 * [audio-ports-config.h](include/clap/ext/audio-ports-config.h)
 * [audio-ports.h](include/clap/ext/audio-ports.h)
@@ -26,7 +26,7 @@
 * [thread-pool.h](include/clap/ext/thread-pool.h)
 * [timer-support.h](include/clap/ext/time-support.h)
 
-# new draft interfaces
+# New draft interfaces
 
 * [ambisonic.h](include/clap/ext/draft/ambisonic.h)
 * [check-for-update.h](include/clap/ext/draft/check-for-update.h)
