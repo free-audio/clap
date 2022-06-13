@@ -1,12 +1,9 @@
-## Changes in 1.1.0
+## Changes in 1.0.1
 
-# new stable interfaces
-
-* TODO
-
-# new draft interfaces
-
-* TODO
+* [gui.h](include/clap/ext/gui.h): fix doc: set_scale must be provided
+* rename `CLAP_EXT_CV` to `CLAP_EXT_TRANSPORT_CONTROL` in [cv.h](include/clap/ext/draft/cv.h)
+* remove `clap_event_type` in [events.h](include/clap/events.h) which was never used
+* rename `clap_client_tuning` to `clap_plugin_tuning` in [tuning.h](include/clap/ext/draft/tuning.h)
 
 ## Changes in 1.0.0
 
