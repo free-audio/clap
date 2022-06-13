@@ -1,9 +1,9 @@
 ## Changes in 1.0.1
 
 * [gui.h](include/clap/ext/gui.h): fix doc: set_scale must be provided
-* rename `CLAP_EXT_CV` to `CLAP_EXT_TRANSPORT_CONTROL` in [cv.h](include/clap/ext/draft/cv.h)
-* remove `clap_event_type` in [events.h](include/clap/events.h) which was never used
-* rename `clap_client_tuning` to `clap_plugin_tuning` in [tuning.h](include/clap/ext/draft/tuning.h)
+* [cv.h](include/clap/ext/draft/cv.h): rename `CLAP_EXT_CV` to `CLAP_EXT_TRANSPORT_CONTROL`
+* [events.h](include/clap/events.h): remove `clap_event_type` which was never used
+* [tuning.h](include/clap/ext/draft/tuning.h): rename `clap_client_tuning` to `clap_plugin_tuning`
 
 ## Changes in 1.0.0
 
