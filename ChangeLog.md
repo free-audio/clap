@@ -1,0 +1,45 @@
+## Changes in 1.1.0
+
+# new stable interfaces
+
+* TODO
+
+# new draft interfaces
+
+* TODO
+
+## Changes in 1.0.0
+
+# new stable interfaces
+
+* [audio-ports-config.h](include/clap/ext/audio-ports-config.h)
+* [audio-ports.h](include/clap/ext/audio-ports.h)
+* [event-registry.h](include/clap/ext/event-registry.h)
+* [gui.h](include/clap/ext/gui.h)
+* [latency.h](include/clap/ext/latency.h)
+* [log.h](include/clap/ext/log.h)
+* [note-name.h](include/clap/ext/note-name.h)
+* [note-ports.h](include/clap/ext/note-ports.h)
+* [params.h](include/clap/ext/params.h)
+* [posix-fd-support.h](include/clap/ext/posix-fd-support.h)
+* [render.h](include/clap/ext/render.h)
+* [state.h](include/clap/ext/state.h)
+* [tail.h](include/clap/ext/tail.h)
+* [thread-check.h](include/clap/ext/thread-check.h)
+* [thread-pool.h](include/clap/ext/thread-pool.h)
+* [timer-support.h](include/clap/ext/time-support.h)
+
+# new draft interfaces
+
+* [ambisonic.h](include/clap/ext/draft/ambisonic.h)
+* [check-for-update.h](include/clap/ext/draft/check-for-update.h)
+* [cv.h](include/clap/ext/draft/cv.h)
+* [file-reference.h](include/clap/ext/draft/file-reference.h)
+* [midi-mappings.h](include/clap/ext/draft/midi-mappings.h)
+* [preset-load.h](include/clap/ext/draft/preset-load.h)
+* [quick-controls.h](include/clap/ext/draft/quick-controls.h)
+* [surround.h](include/clap/ext/draft/surround.h)
+* [track-info.h](include/clap/ext/draft/track-info.h)
+* [transport-control.h](include/clap/ext/draft/transport-control.h)
+* [tuning.h](include/clap/ext/draft/tuning.h)
+* [voice-info.h](include/clap/ext/draft/voice-info.h)
