@@ -114,11 +114,7 @@ and use to get a basic plugin experience:
 
 ## Hosts
 
-- [Bitwig](https://bitwig.com), DAW
-  - To enable CLAP, you need at least _Bitwig Studio 4.2 Beta 1_ and you'll have to add `clap : true` to:
-    - Linux: `$HOME/.BitwigStudio/config.json`
-    - macOS: `$HOME/Library/Application Support/Bitwig/Bitwig Studio/config.json`
-    - Windows: `%LOCALAPPDATA%\Bitwig Studio\config.json`
+- [Bitwig](https://bitwig.com), you need at least _Bitwig Studio 4.3 Beta 5_
 
 ## Examples
 

@@ -167,10 +167,12 @@ typedef struct clap_param_info {
    // destroyed.
    void *cookie;
 
-   char name[CLAP_NAME_SIZE];   // the display name
-   char module[CLAP_PATH_SIZE]; // the module containing the param, eg:
-                                // "oscillators/wt1"; '/' will be used as a
-                                // separator to show a tree like structure.
+   // the display name
+   char name[CLAP_NAME_SIZE];
+
+   // the module path containing the param, eg:"oscillators/wt1"
+   // '/' will be used as a separator to show a tree like structure.
+   char module[CLAP_PATH_SIZE];
 
    double min_value;     // minimum plain value
    double max_value;     // maximum plain value
@@ -229,7 +231,7 @@ enum {
 
    // The parameter info did change, use this flag for:
    // - name change
-   // - module change
+   // - module_path change
    // - is_periodic (flag)
    // - is_hidden (flag)
    // New info takes effect immediately.

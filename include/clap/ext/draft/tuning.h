@@ -27,11 +27,11 @@ typedef struct clap_tuning_info {
    bool    is_dynamic; // true if the values may vary with time
 } clap_tuning_info_t;
 
-typedef struct clap_client_tuning {
+typedef struct clap_plugin_tuning {
    // Called when a tuning is added or removed from the pool.
    // [main-thread]
    void (*changed)(const clap_plugin_t *plugin);
-} clap_client_tuning_t;
+} clap_plugin_tuning_t;
 
 // This extension provides a dynamic tuning table to the plugin.
 typedef struct clap_host_tuning {
