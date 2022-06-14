@@ -231,7 +231,7 @@ enum {
 
    // The parameter info did change, use this flag for:
    // - name change
-   // - module_path change
+   // - module change
    // - is_periodic (flag)
    // - is_hidden (flag)
    // New info takes effect immediately.
