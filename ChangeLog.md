@@ -4,6 +4,7 @@
 * [events.h](include/clap/events.h): remove `clap_event_type` which was never used
 * [draft/transport-control.h](include/clap/ext/draft/transport-control.h): rename from `CLAP_EXT_CV` to `CLAP_EXT_TRANSPORT_CONTROL`
 * [draft/tuning.h](include/clap/ext/draft/tuning.h): rename `clap_client_tuning` to `clap_plugin_tuning`
+* [macros.h](include/clap/private/macros.h): fix compatibility with C17
 
 ## Changes in 1.0.0
 
