@@ -1,3 +1,8 @@
+# Changes in 1.0.3
+
+* Fix an inconsistence in `clap_plugin->destroy()` documentation:
+  it is now **required** to deactivate the plugin before destroying it.
+
 # Changes in 1.0.2
 
 * CMake: add `CLAP_BUILD_TESTS` which enables the tests.
