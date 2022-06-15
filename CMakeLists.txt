@@ -10,7 +10,7 @@ target_include_directories(clap-core INTERFACE include)
 
 install(DIRECTORY include DESTINATION "." OPTIONAL EXCLUDE_FROM_ALL)
 
-option(CLAP_BUILD_TESTS "Should CLap build tests and the like?" OFF)
+option(CLAP_BUILD_TESTS "Should CLAP build tests and the like?" OFF)
 
 if (${CLAP_BUILD_TESTS})
     message(STATUS "Including clap tests, compile tests, and versions")
