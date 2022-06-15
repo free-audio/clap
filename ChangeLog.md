@@ -1,4 +1,9 @@
-## Changes in 1.0.1
+# Changes in 1.0.2
+
+* CMake: add `CLAP_BUILD_TESTS` which enables the tests.
+* Fixes compilation for Visual Studio 2019 and GCC9.
+
+# Changes in 1.0.1
 
 * [gui.h](include/clap/ext/gui.h): fix doc: set_scale must be provided
 * [events.h](include/clap/events.h): remove `clap_event_type` which was never used
@@ -6,9 +11,9 @@
 * [draft/tuning.h](include/clap/ext/draft/tuning.h): rename `clap_client_tuning` to `clap_plugin_tuning`
 * [macros.h](include/clap/private/macros.h): fix compatibility with C17
 
-## Changes in 1.0.0
+# Changes in 1.0.0
 
-# New stable interfaces
+## New stable interfaces
 
 * [audio-ports-config.h](include/clap/ext/audio-ports-config.h)
 * [audio-ports.h](include/clap/ext/audio-ports.h)
@@ -27,7 +32,7 @@
 * [thread-pool.h](include/clap/ext/thread-pool.h)
 * [timer-support.h](include/clap/ext/time-support.h)
 
-# New draft interfaces
+## New draft interfaces
 
 * [ambisonic.h](include/clap/ext/draft/ambisonic.h)
 * [check-for-update.h](include/clap/ext/draft/check-for-update.h)

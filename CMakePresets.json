@@ -16,6 +16,10 @@
         "CMAKE_EXPORT_COMPILE_COMMANDS": {
           "type": "boolean",
           "value": true
+        },
+        "CLAP_BUILD_TESTS": {
+          "type": "boolean",
+          "value": true
         }
       }
     }
