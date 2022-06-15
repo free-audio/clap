@@ -39,8 +39,7 @@ if (${CLAP_BUILD_TESTS})
     clap_compile_cpp(c11    c 11 11)
     clap_compile_cpp(cpp11 cc 11 11)
     clap_compile_cpp(cpp14 cc 11 14)
-    # This configuration isn't supported by MSVC or older gccs so leave it off for now
-    # clap_compile_cpp(c17    c 17 17)
+    clap_compile_cpp(c17    c 17 17)
     clap_compile_cpp(cpp17 cc 17 17)
     clap_compile_cpp(cpp20 cc 17 20)
 
