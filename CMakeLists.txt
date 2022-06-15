@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.17)
 enable_testing()
 project(CLAP C CXX)
 
+option(CLAP_BUILD_TESTS "Should CLAP build tests and the like?" OFF)
+
 # If you use clap as a submodule of your plugin you need some interface projects
 # to allow you to link. clap-core gives you the include directory and clap-plugin-core
 # gives you the core + plugin-glue.
@@ -9,8 +11,6 @@ add_library(clap-core INTERFACE)
 target_include_directories(clap-core INTERFACE include)
 
 install(DIRECTORY include DESTINATION "." OPTIONAL EXCLUDE_FROM_ALL)
-
-option(CLAP_BUILD_TESTS "Should CLAP build tests and the like?" OFF)
 
 if (${CLAP_BUILD_TESTS})
     message(STATUS "Including clap tests, compile tests, and versions")
