@@ -10,14 +10,9 @@ target_include_directories(clap-core INTERFACE include)
 
 install(DIRECTORY include DESTINATION "." OPTIONAL EXCLUDE_FROM_ALL)
 
-get_directory_property(parent_dir PARENT_DIRECTORY)
-if ("${parent_dir}" STREQUAL "")
-    set(CLAP_IS_TOPLEVEL 1)
-else ()
-    set(CLAP_IS_TOPLEVEL 0)
-endif ()
+option(CLAP_BUILD_TESTS "Should CLap build tests and the like?" OFF)
 
-if (${CLAP_IS_TOPLEVEL})
+if (${CLAP_BUILD_TESTS})
     message(STATUS "Including clap tests, compile tests, and versions")
     add_custom_target(clap-tests)
 
