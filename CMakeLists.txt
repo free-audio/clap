@@ -13,10 +13,8 @@ target_include_directories(clap-core INTERFACE include)
 install(DIRECTORY include DESTINATION "." OPTIONAL EXCLUDE_FROM_ALL)
 
 if (${CLAP_BUILD_TESTS})
-    message(STATUS "Including clap tests, compile tests, and versions")
+    message(STATUS "Including CLAP tests, compile tests, and versions")
     add_custom_target(clap-tests)
-
-    add_executable(clap-compile-c EXCLUDE_FROM_ALL src/main.c)
 
     macro(clap_compile_cpp SUFFIX EXT STDC STDCPP)
         add_executable(clap-compile-${SUFFIX} EXCLUDE_FROM_ALL src/main.${EXT})

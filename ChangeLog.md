@@ -1,7 +1,7 @@
 # Changes in 1.0.2
 
-* CMake: add `CLAP_BUILD_TESTS` which enables the tests.<br/>
-  One test required a C17 compiler which is not available from Visual Studio 2019 and gcc9.
+* CMake: add `CLAP_BUILD_TESTS` which enables the tests.
+* Fixes compilation for Visual Studio 2019 and GCC9.
 
 # Changes in 1.0.1
 
