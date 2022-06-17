@@ -1,6 +1,6 @@
 # Changes in 1.0.3
 
-* Fix an inconsistence in `clap_plugin->destroy()` documentation:
+* Fix an inconsistency in `clap_plugin->destroy()` documentation:
   it is now **required** to deactivate the plugin before destroying it.
 * Improve documentation for `clap_host_params->request_flush()`.
 
