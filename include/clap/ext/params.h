@@ -279,16 +279,13 @@ typedef struct clap_host_params {
    // [main-thread]
    void (*clear)(const clap_host_t *host, clap_id param_id, clap_param_clear_flags flags);
 
-   // Request the host to call clap_plugin_params->fush().
-   // This is useful if the plugin has parameters value changes to report to the host but the plugin
-   // is not processing.
+   // Request a parameter flush.
    //
-   // eg. the plugin has a USB socket to some hardware controllers and receives a parameter change
-   // while it is not processing.
+   // If the plugin is processing, then the parameters flush will happen during the process() call.
+   // If the plugin isn't processing, then the host will call to clap_plugin_params->fush().
    //
    // This must not be called on the [audio-thread].
-   //
-   // [thread-safe]
+   // [thread-safe,!audio-thread]
    void (*request_flush)(const clap_host_t *host);
 } clap_host_params_t;
 
