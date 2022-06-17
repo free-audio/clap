@@ -281,8 +281,11 @@ typedef struct clap_host_params {
 
    // Request a parameter flush.
    //
-   // If the plugin is processing, then the parameters flush will happen during the process() call.
-   // If the plugin isn't processing, then the host will call to clap_plugin_params->fush().
+   // If the plugin is processing, this will result in no action. The process call
+   // will run normally. If plugin isn't processing, the host will make a subsequent
+   // call to clap_plugin_params->flush(). As a result, this function is always
+   // safe to call from a non-audio thread (typically the UI thread on a gesture)
+   // whether processing is active or not.
    //
    // This must not be called on the [audio-thread].
    // [thread-safe,!audio-thread]
