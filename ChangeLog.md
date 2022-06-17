@@ -2,7 +2,8 @@
 
 * Fix an inconsistency in `clap_plugin->destroy()` documentation:
   it is now **required** to deactivate the plugin before destroying it.
-* Improve documentation for `clap_host_params->request_flush()`.
+* [params.h](include/clap/ext/params.h): improve documentation for `clap_host_params->request_flush()`.
+* [entry.h](include/clap/entry.h): improve documentation regarding CLAP search path.
 
 # Changes in 1.0.2
 
