@@ -23,8 +23,13 @@ extern "C" {
 //   - /Library/Audio/Plug-Ins/CLAP
 //   - ~/Library/Audio/Plug-Ins/CLAP
 //
-// Additionally, extra path may be specified in CLAP_PATH environment variable.
-// CLAP_PATH is formated in the same way as the OS' binary search path (PATH on UNIX, Path on Windows).
+// In addition to the OS-specific default locations above, a CLAP host must query the environment
+// for a CLAP_PATH variable, which is a list of directories formatted in the same manner as the host
+// OS binary search path (PATH on Unix, separated by `:` and Path on Windows, separated by ';', as
+// of this writing).
+//
+// Each directory should be recursively searched for files and/or bundles as appropriate in your OS
+// ending with the extension `.clap`.
 //
 // Every methods must be thread-safe.
 typedef struct clap_plugin_entry {
