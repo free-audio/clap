@@ -1,6 +1,6 @@
 # Changes in 1.0.3
 
-* Fix an inconsistency in `clap_plugin->destroy()` documentation:
+* [plugin.h](include/clap/plugin.h): fix an inconsistency in `clap_plugin->destroy()` documentation:
   it is now **required** to deactivate the plugin before destroying it.
 * [params.h](include/clap/ext/params.h): improve documentation for `clap_host_params->request_flush()`.
 * [entry.h](include/clap/entry.h): improve documentation regarding CLAP search path.
