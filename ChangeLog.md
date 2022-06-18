@@ -4,6 +4,7 @@
   it is now **required** to deactivate the plugin before destroying it.
 * [params.h](include/clap/ext/params.h): improve documentation for `clap_host_params->request_flush()`.
 * [entry.h](include/clap/entry.h): improve documentation regarding CLAP search path.
+* [gui.h](inclued/clap/gui.h): fix typo `clap_gui_resize_hints.preserve_aspect_ratio`
 
 # Changes in 1.0.2
 
