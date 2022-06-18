@@ -59,7 +59,7 @@ Some extensions are still in the progress of being designed and they are in
 the [draft](include/clap/ext/draft) folder.
 
 An extension comes with:
-- an header `#include <clap/ext/xxx.h>`
+- a header `#include <clap/ext/xxx.h>`
 - an extension identifier: `#define CLAP_EXT_XXX "clap/XXX"`
 - host interfaces are named like: `struct clap_host_xxx`
 - plugin interfaces are named like: `struct clap_plugin_xxx`
