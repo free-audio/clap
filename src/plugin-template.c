@@ -21,7 +21,8 @@ static const clap_plugin_descriptor_t s_my_plug_desc = {
    .description = "The plugin description.",
    .features = (const char *[]){
       CLAP_PLUGIN_FEATURE_INSTRUMENT,
-      CLAP_PLUGIN_FEATURE_STEREO
+      CLAP_PLUGIN_FEATURE_STEREO,
+      NULL
    },
 };
 
