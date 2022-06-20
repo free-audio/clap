@@ -29,9 +29,12 @@ extern "C" {
 // of this writing).
 //
 // Each directory should be recursively searched for files and/or bundles as appropriate in your OS
-// ending with the extension `.clap`. On windows and linux, the '.clap' file is a renamed shared
-// library object, so traversing the path should stop at regular files or symlinks. On macOS
-// the '.clap' file is a bundle, so traversing the path should stop at directories.
+// ending with the extension `.clap`.
+//
+// On Windows and Linux, the '.clap' file is a renamed shared library object, so traversing the path
+// should stop at the first non-directory (regular file, symlink, etc...) whose name ends in '.clap'.
+// On macOS the '.clap' file is a bundle, so traversing the path should stop at directories whose
+// name ends in '.clap'.
 //
 // Every method must be thread-safe.
 typedef struct clap_plugin_entry {
