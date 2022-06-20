@@ -115,7 +115,7 @@ and use to get a basic plugin experience:
 ## Hosts
 
 - [Bitwig](https://bitwig.com), you need at least _Bitwig Studio 4.3 Beta 5_
-- [Multitrackstudio](https://www.multitrackstudio.com/), you need at least _Multitrack Studio 10.4.1_
+- [MultitrackStudio](https://www.multitrackstudio.com/), you need at least _MultitrackStudio 10.4.1_
 - [Qtractor](https://www.qtractor.org)
 
 ## Examples
