@@ -114,7 +114,9 @@ static bool my_plug_init(const struct clap_plugin *plugin) {
    return true;
 }
 
-static void my_plug_destroy(const struct clap_plugin *plugin) {}
+static void my_plug_destroy(const struct clap_plugin *plugin) {
+   free(plugin);
+}
 
 static bool my_plug_activate(const struct clap_plugin *plugin,
                              double                    sample_rate,
