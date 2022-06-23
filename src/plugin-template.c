@@ -115,7 +115,8 @@ static bool my_plug_init(const struct clap_plugin *plugin) {
 }
 
 static void my_plug_destroy(const struct clap_plugin *plugin) {
-   free(plugin);
+   my_plug_t *plug = plugin->plugin_data;
+   free(plug);
 }
 
 static bool my_plug_activate(const struct clap_plugin *plugin,
