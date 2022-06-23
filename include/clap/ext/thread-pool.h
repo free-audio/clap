@@ -27,7 +27,7 @@
 ///
 ///    if (!didComputeVoices)
 ///       for (uint32_t i = 0; i < N; ++i)
-///          myplug_thread_pool_exec(plugin, N);
+///          myplug_thread_pool_exec(plugin, i);
 ///    ...
 /// }
 /// @endcode
