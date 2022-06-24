@@ -5,7 +5,7 @@
 
 /// @page Audio Ports Config
 ///
-/// This extension provides a way for the plugin to describe possible ports configurations, for
+/// This extension provides a way for the plugin to describe possible port configurations, for
 /// example mono, stereo, surround, ... and a way for the host to select a configuration.
 ///
 /// After the plugin initialization, the host may scan the list of configurations and eventually
@@ -18,7 +18,7 @@
 ///
 /// The idea behind the configurations, is to let the user choose one via a menu.
 ///
-/// Plugin with very complex configuration possibilities should let the user configure the ports
+/// Plugins with very complex configuration possibilities should let the user configure the ports
 /// from the plugin GUI, and call @ref clap_host_audio_ports.rescan(CLAP_AUDIO_PORTS_RESCAN_ALL).
 
 static CLAP_CONSTEXPR const char CLAP_EXT_AUDIO_PORTS_CONFIG[] = "clap.audio-ports-config";
