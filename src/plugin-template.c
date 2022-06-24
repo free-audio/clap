@@ -142,7 +142,7 @@ static void my_plug_process_event(my_plug_t *plug, const clap_event_header_t *hd
 
       case CLAP_EVENT_NOTE_OFF: {
          const clap_event_note_t *ev = (const clap_event_note_t *)hdr;
-         // TODO: handle note on
+         // TODO: handle note off
          break;
       }
 
