@@ -8,13 +8,13 @@
 ///
 /// Main idea:
 ///
-/// The host sees the plugin as an atomic entity; and acts as a controler on top of its parameters.
-/// The plugin is responsible to keep in sync its audio processor and its GUI.
+/// The host sees the plugin as an atomic entity; and acts as a controller on top of its parameters.
+/// The plugin is responsible for keeping its audio processor and its GUI in sync.
 ///
-/// The host can read at any time parameters value on the [main-thread] using
+/// The host can at any time read parameters' value on the [main-thread] using
 /// @ref clap_plugin_params.value().
 ///
-/// There is two options to communicate parameter value change, and they are not concurrent.
+/// There are two options to communicate parameter value changes, and they are not concurrent.
 /// - send automation points during clap_plugin.process()
 /// - send automation points during clap_plugin_params.flush(), this one is used when the plugin is
 ///   not processing
@@ -22,10 +22,10 @@
 /// When the plugin changes a parameter value, it must inform the host.
 /// It will send @ref CLAP_EVENT_PARAM_VALUE event during process() or flush().
 /// If the user is adjusting the value, don't forget to mark the begining and end
-/// of the gesture by send CLAP_EVENT_PARAM_GESTURE_BEGIN and CLAP_EVENT_PARAM_GESTURE_END events.
+/// of the gesture by sending CLAP_EVENT_PARAM_GESTURE_BEGIN and CLAP_EVENT_PARAM_GESTURE_END events.
 ///
-/// @note MIDI CCs are a tricky because you may not know when the parameter adjustment ends.
-/// Also if the hosts records incoming MIDI CC and parameter change automation at the same time,
+/// @note MIDI CCs are tricky because you may not know when the parameter adjustment ends.
+/// Also if the host records incoming MIDI CC and parameter change automation at the same time,
 /// there will be a conflict at playback: MIDI CC vs Automation.
 /// The parameter automation will always target the same parameter because the param_id is stable.
 /// The MIDI CC may have a different mapping in the future and may result in a different playback.
@@ -41,11 +41,11 @@
 /// - call @ref clap_host_params.changed() if anything changed
 /// - call @ref clap_host_latency.changed() if latency changed
 /// - invalidate any other info that may be cached by the host
-/// - if the plugin is activated and the preset will introduce breaking change
+/// - if the plugin is activated and the preset will introduce breaking changes
 ///   (latency, audio ports, new parameters, ...) be sure to wait for the host
 ///   to deactivate the plugin to apply those changes.
 ///   If there are no breaking changes, the plugin can apply them them right away.
-///   The plugin is resonsible to update both its audio processor and its gui.
+///   The plugin is resonsible for updating both its audio processor and its gui.
 ///
 /// II. Turning a knob on the DAW interface
 /// - the host will send an automation event to the plugin via a process() or flush()
@@ -55,11 +55,11 @@
 ///   clap_host->request_process().
 /// - send an automation event and don't forget to set begin_adjust, end_adjust and should_record
 ///   flags
-/// - the plugin is responsible to send the parameter value to its audio processor
+/// - the plugin is responsible for sending the parameter value to its audio processor
 ///
 /// IV. Turning a knob via automation
 /// - host sends an automation point during clap_plugin->process() or clap_plugin_params->flush().
-/// - the plugin is responsible to update its GUI
+/// - the plugin is responsible for updating its GUI
 ///
 /// V. Turning a knob via plugin's internal MIDI mapping
 /// - the plugin sends a CLAP_EVENT_PARAM_SET output event, set should_record to false
@@ -111,31 +111,31 @@ enum {
    // host->request_restart(), and perform the change once the plugin is re-activated.
    CLAP_PARAM_IS_AUTOMATABLE = 1 << 5,
 
-   // Does this param supports per note automations?
+   // Does this parameter support per note automations?
    CLAP_PARAM_IS_AUTOMATABLE_PER_NOTE_ID = 1 << 6,
 
-   // Does this param supports per note automations?
+   // Does this parameter support per key automations?
    CLAP_PARAM_IS_AUTOMATABLE_PER_KEY = 1 << 7,
 
-   // Does this param supports per channel automations?
+   // Does this parameter support per channel automations?
    CLAP_PARAM_IS_AUTOMATABLE_PER_CHANNEL = 1 << 8,
 
-   // Does this param supports per port automations?
+   // Does this parameter support per port automations?
    CLAP_PARAM_IS_AUTOMATABLE_PER_PORT = 1 << 9,
 
-   // Does the parameter support the modulation signal?
+   // Does this parameter support the modulation signal?
    CLAP_PARAM_IS_MODULATABLE = 1 << 10,
 
-   // Does this param supports per note automations?
+   // Does this parameter support per note automations?
    CLAP_PARAM_IS_MODULATABLE_PER_NOTE_ID = 1 << 11,
 
-   // Does this param supports per note automations?
+   // Does this parameter support per key automations?
    CLAP_PARAM_IS_MODULATABLE_PER_KEY = 1 << 12,
 
-   // Does this param supports per channel automations?
+   // Does this parameter support per channel automations?
    CLAP_PARAM_IS_MODULATABLE_PER_CHANNEL = 1 << 13,
 
-   // Does this param supports per channel automations?
+   // Does this parameter support per port automations?
    CLAP_PARAM_IS_MODULATABLE_PER_PORT = 1 << 14,
 
    // Any change to this parameter will affect the plugin output and requires to be done via
@@ -280,7 +280,7 @@ typedef struct clap_host_params {
    void (*clear)(const clap_host_t *host, clap_id param_id, clap_param_clear_flags flags);
 
    // Request the host to call clap_plugin_params->fush().
-   // This is useful if the plugin has parameters value changes to report to the host but the plugin
+   // This is useful if the plugin has parameter value changes to report to the host but the plugin
    // is not processing.
    //
    // eg. the plugin has a USB socket to some hardware controllers and receives a parameter change
