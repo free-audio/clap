@@ -12,9 +12,12 @@ target_include_directories(clap-core INTERFACE include)
 
 install(DIRECTORY include DESTINATION "." OPTIONAL EXCLUDE_FROM_ALL)
 
+# clap-tests should always be available, to avoid build failing here and there
+# because the target doesn't exists
+add_custom_target(clap-tests)
+
 if (${CLAP_BUILD_TESTS})
     message(STATUS "Including CLAP tests, compile tests, and versions")
-    add_custom_target(clap-tests)
 
     macro(clap_compile_cpp SUFFIX EXT STDC STDCPP)
         add_executable(clap-compile-${SUFFIX} EXCLUDE_FROM_ALL src/main.${EXT})

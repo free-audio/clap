@@ -41,7 +41,7 @@ typedef struct clap_plugin {
    bool (*init)(const struct clap_plugin *plugin);
 
    // Free the plugin and its resources.
-   // It is not required to deactivate the plugin prior to this call.
+   // It is required to deactivate the plugin prior to this call.
    // [main-thread & !active]
    void (*destroy)(const struct clap_plugin *plugin);
 

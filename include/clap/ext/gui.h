@@ -86,7 +86,7 @@ typedef struct clap_gui_resize_hints {
    bool can_resize_vertically;
 
    // only if can resize horizontally and vertically
-   bool     preseve_aspect_ratio;
+   bool     preserve_aspect_ratio;
    uint32_t aspect_ratio_width;
    uint32_t aspect_ratio_height;
 } clap_gui_resize_hints_t;

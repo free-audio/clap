@@ -115,6 +115,8 @@ and use to get a basic plugin experience:
 ## Hosts
 
 - [Bitwig](https://bitwig.com), you need at least _Bitwig Studio 4.3 Beta 5_
+- [MultitrackStudio](https://www.multitrackstudio.com/), you need at least _MultitrackStudio 10.4.1_
+- [Qtractor](https://www.qtractor.org)
 
 ## Examples
 
@@ -127,7 +129,7 @@ and use to get a basic plugin experience:
 - [clap-juce-extension](https://github.com/free-audio/clap-juce-extension), juce add-on
 - [MIP2](https://github.com/skei/MIP2), host and plugins
 - [Avendish](https://github.com/celtera/avendish), a reflection-based API for media plug-ins in C++ which supports Clap
-- [nih-plug](https://github.com/robbert-vdh/nih-plug), an API-agnostic, Rust-based plugin framework aiming to reduce boilerplate without getting in your way
+- [NIH-plug](https://github.com/robbert-vdh/nih-plug), an API-agnostic, Rust-based plugin framework aiming to reduce boilerplate without getting in your way
 
 ## Programming Language Bindings
 

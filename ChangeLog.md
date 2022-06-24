@@ -1,3 +1,12 @@
+# Changes in 1.0.3
+
+* [plugin.h](include/clap/plugin.h): fix an inconsistency in `clap_plugin->destroy()` documentation:
+  it is now **required** to deactivate the plugin before destroying it.
+* [params.h](include/clap/ext/params.h): improve documentation for `clap_host_params->request_flush()`.
+* [entry.h](include/clap/entry.h): improve documentation regarding CLAP search path.
+* [gui.h](inclued/clap/gui.h): fix typo `clap_gui_resize_hints.preserve_aspect_ratio`
+* [plugin-template](src/plugin-template.c): missing impl of plugin destroy.
+
 # Changes in 1.0.2
 
 * CMake: add `CLAP_BUILD_TESTS` which enables the tests.
