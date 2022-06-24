@@ -44,7 +44,7 @@ typedef struct clap_plugin_ambisonic {
 } clap_plugin_ambisonic_t;
 
 typedef struct clap_host_ambisonic {
-   // Informs the host that the info have changed.
+   // Informs the host that the info has changed.
    // The info can only change when the plugin is de-activated.
    // [main-thread]
    void (*changed)(const clap_host_t *host);

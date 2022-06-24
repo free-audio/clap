@@ -35,7 +35,7 @@ typedef struct clap_plugin_tuning {
 
 // This extension provides a dynamic tuning table to the plugin.
 typedef struct clap_host_tuning {
-   // Gets the relative tuning in semitone against equal temperament with A4=440Hz.
+   // Gets the relative tuning in semitones against equal temperament with A4=440Hz.
    // The plugin may query the tuning at a rate that makes sense for *low* frequency modulations.
    //
    // If the tuning_id is not found or equals to CLAP_INVALID_ID,

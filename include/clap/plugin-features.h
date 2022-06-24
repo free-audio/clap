@@ -2,13 +2,13 @@
 
 #include "private/macros.h"
 
-// This files provides a set of standard plugin features meant to be use
+// This file provides a set of standard plugin features meant to be used
 // within clap_plugin_descriptor.features.
 //
 // For practical reasons we'll avoid spaces and use `-` instead to facilitate
 // scripts that generate the feature array.
 //
-// Non standard feature should be formated as follow: "$namespace:$feature"
+// Non-standard features should be formated as follow: "$namespace:$feature"
 
 /////////////////////
 // Plugin category //

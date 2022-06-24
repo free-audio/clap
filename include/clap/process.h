@@ -11,18 +11,18 @@ enum {
    // Processing failed. The output buffer must be discarded.
    CLAP_PROCESS_ERROR = 0,
 
-   // Processing succeed, keep processing.
+   // Processing succeeded, keep processing.
    CLAP_PROCESS_CONTINUE = 1,
 
-   // Processing succeed, keep processing if the output is not quiet.
+   // Processing succeeded, keep processing if the output is not quiet.
    CLAP_PROCESS_CONTINUE_IF_NOT_QUIET = 2,
 
    // Rely upon the plugin's tail to determine if the plugin should continue to process.
    // see clap_plugin_tail
    CLAP_PROCESS_TAIL = 3,
 
-   // Processing succeed, but no more processing is required,
-   // until next event or variation in audio input.
+   // Processing succeeded, but no more processing is required,
+   // until the next event or variation in audio input.
    CLAP_PROCESS_SLEEP = 4,
 };
 typedef int32_t clap_process_status;
@@ -37,7 +37,7 @@ typedef struct clap_process {
    // and must be increased by at least `frames_count` for the next call to process.
    int64_t steady_time;
 
-   // Number of frame to process
+   // Number of frames to process
    uint32_t frames_count;
 
    // time info at sample 0

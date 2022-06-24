@@ -22,7 +22,7 @@ typedef struct clap_event_header {
 static const CLAP_CONSTEXPR uint16_t CLAP_CORE_EVENT_SPACE_ID = 0;
 
 enum clap_event_flags {
-   // Indicate a live user event, for example a user turning a phisical knob
+   // Indicate a live user event, for example a user turning a physical knob
    // or playing a physical key.
    CLAP_EVENT_IS_LIVE = 1 << 0,
 
@@ -46,11 +46,11 @@ enum clap_event_flags {
 // The plugins are encouraged to be able to handle note events encoded as raw midi or midi2,
 // or implement clap_plugin_event_filter and reject raw midi and midi2 events.
 enum {
-   // NOTE_ON and NOTE_OFF represents a key pressed and key released event.
+   // NOTE_ON and NOTE_OFF represent a key pressed and key released event, respectively.
    // A NOTE_ON with a velocity of 0 is valid and should not be interpreted as a NOTE_OFF.
    //
    // NOTE_CHOKE is meant to choke the voice(s), like in a drum machine when a closed hihat
-   // chokes an open hihat. This event can be sent by the host to the plugin. Here two use case:
+   // chokes an open hihat. This event can be sent by the host to the plugin. Here are two use cases:
    // - a plugin is inside a drum pad in Bitwig Studio's drum machine, and this pad is choked by
    //   another one
    // - the user double clicks the DAW's stop button in the transport which then stops the sound on
@@ -77,11 +77,11 @@ enum {
    //    Host->Plugin NoteOff(port:0, channel:0, key:64, t1)
    //    # on t2, both notes did terminate
    //    Host->Plugin NoteOn(port:0, channel:0, key:64, t3)
-   //    # Here the plugin finished to process all the frames and will tell the host
+   //    # Here the plugin finished processing all the frames and will tell the host
    //    # to terminate the voice on key 16 but not 64, because a note has been started at t3
    //    Plugin->Host NoteEnd(port:0, channel:0, key:16, time:ignored)
    //
-   // Those four events use clap_event_note.
+   // These four events use clap_event_note.
    CLAP_EVENT_NOTE_ON,
    CLAP_EVENT_NOTE_OFF,
    CLAP_EVENT_NOTE_CHOKE,
@@ -102,9 +102,9 @@ enum {
    CLAP_EVENT_PARAM_VALUE,
    CLAP_EVENT_PARAM_MOD,
 
-   // Indicates that the user started or finished to adjust a knob.
-   // This is not mandatory to wrap parameter changes with gesture events, but this improves a lot
-   // the user experience when recording automation or overriding automation playback.
+   // Indicates that the user started or finished adjusting a knob.
+   // This is not mandatory to wrap parameter changes with gesture events, but this improves
+   // the user experience a lot when recording automation or overriding automation playback.
    // Uses clap_event_param_gesture.
    CLAP_EVENT_PARAM_GESTURE_BEGIN,
    CLAP_EVENT_PARAM_GESTURE_END,

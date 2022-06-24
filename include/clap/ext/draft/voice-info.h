@@ -2,7 +2,7 @@
 
 #include "../../plugin.h"
 
-// This extensions indicates the number of voices the synthesizer.
+// This extension indicates the number of voices the synthesizer has.
 // It is useful for the host when performing polyphonic modulations,
 // because the host needs its own voice management and should try to follow
 // what the plugin is doing:
@@ -46,7 +46,7 @@ typedef struct clap_plugin_voice_info {
 } clap_plugin_voice_info_t;
 
 typedef struct clap_host_voice_info {
-   // informs the host that the voice info have changed
+   // informs the host that the voice info has changed
    // [main-thread]
    void (*changed)(const clap_host_t *host);
 } clap_host_voice_info_t;
