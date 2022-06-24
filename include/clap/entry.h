@@ -23,20 +23,20 @@ extern "C" {
 //   - /Library/Audio/Plug-Ins/CLAP
 //   - ~/Library/Audio/Plug-Ins/CLAP
 //
-// Additionally, extra path may be specified in CLAP_PATH environment variable.
-// CLAP_PATH is formated in the same way as the OS' binary search path (PATH on UNIX, Path on Windows).
+// Additionally, extra paths may be specified in CLAP_PATH environment variable.
+// CLAP_PATH is formatted in the same way as the OS' binary search path (PATH on UNIX, Path on Windows).
 //
-// Every methods must be thread-safe.
+// Every method must be thread-safe.
 typedef struct clap_plugin_entry {
    clap_version_t clap_version; // initialized to CLAP_VERSION
 
    // This function must be called first, and can only be called once.
    //
-   // It should be as fast as possible, in order to perform very quick scan of the plugin
+   // It should be as fast as possible, in order to perform a very quick scan of the plugin
    // descriptors.
    //
    // It is forbidden to display graphical user interface in this call.
-   // It is forbidden to perform user inter-action in this call.
+   // It is forbidden to perform user interaction in this call.
    //
    // If the initialization depends upon expensive computation, maybe try to do them ahead of time
    // and cache the result.
