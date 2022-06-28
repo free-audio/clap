@@ -13,8 +13,6 @@
   - [Support extensions](#support-extensions)
   - [Extra extensions](#extra-extensions)
 - [Resources](#resources)
-  - [Plugins](#plugins)
-  - [Hosts](#hosts)
   - [Examples](#examples)
   - [Community related projects](#community-related-projects)
   - [Programming Language Bindings](#programming-language-bindings)
@@ -106,17 +104,7 @@ and use to get a basic plugin experience:
 
 # Resources
 
-## Plugins
-
-- [u-he](https://u-he.com/fwd/clap/), synthesizers and effects
-- [Surge](https://surge-synthesizer.github.io/), open source synthesizer and effects
-  - CLAP is enabled in [nightly builds](https://github.com/surge-synthesizer/releases-xt/releases/tag/Nightly)
-
-## Hosts
-
-- [Bitwig](https://bitwig.com), you need at least _Bitwig Studio 4.3 Beta 5_
-- [MultitrackStudio](https://www.multitrackstudio.com/), you need at least _MultitrackStudio 10.4.1_
-- [Qtractor](https://www.qtractor.org)
+- [clapdb](https://clapdb.tech), a list of plugins and DAWs which supports CLAP
 
 ## Examples
 
@@ -137,4 +125,5 @@ and use to get a basic plugin experience:
 - [CLAP-for-Delphi](https://github.com/Bremmers/CLAP-for-Delphi), Delphi binding
 
 ## Artwork
+
  - [CLAP Logo Pack.zip](https://github.com/free-audio/clap/files/8805281/CLAP.Logo.Pack.zip)
