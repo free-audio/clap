@@ -6,6 +6,7 @@
 * [entry.h](include/clap/entry.h): improve documentation regarding CLAP search path.
 * [gui.h](inclued/clap/gui.h): fix typo `clap_gui_resize_hints.preserve_aspect_ratio`
 * [plugin-template](src/plugin-template.c): missing impl of plugin destroy.
+* various documentation improvements
 
 # Changes in 1.0.2
 
