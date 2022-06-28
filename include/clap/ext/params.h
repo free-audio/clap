@@ -16,8 +16,8 @@
 ///
 /// There are two options to communicate parameter value changes, and they are not concurrent.
 /// - send automation points during clap_plugin.process()
-/// - send automation points during clap_plugin_params.flush(), this one is used when the plugin is
-///   not processing
+/// - send automation points during clap_plugin_params.flush(), for parameter changes
+///   without processing audio
 ///
 /// When the plugin changes a parameter value, it must inform the host.
 /// It will send @ref CLAP_EVENT_PARAM_VALUE event during process() or flush().
@@ -51,11 +51,11 @@
 /// - the host will send an automation event to the plugin via a process() or flush()
 ///
 /// III. Turning a knob on the Plugin interface
-/// - if the plugin is not processing, call clap_host_params->request_flush() or
-///   clap_host->request_process().
-/// - send an automation event and don't forget to set begin_adjust, end_adjust and should_record
-///   flags
 /// - the plugin is responsible for sending the parameter value to its audio processor
+/// - call clap_host_params->request_flush() or clap_host->request_process().
+/// - when the host calls either clap_plugin->process() or clap_plugin_params->flush(),
+///   send an automation event and don't forget to set begin_adjust,
+///   end_adjust and should_record flags
 ///
 /// IV. Turning a knob via automation
 /// - host sends an automation point during clap_plugin->process() or clap_plugin_params->flush().
@@ -210,10 +210,8 @@ typedef struct clap_plugin_params {
 
    // Flushes a set of parameter changes.
    // This method must not be called concurrently to clap_plugin->process().
-   // This method must not be used if the plugin is processing.
    //
-   // [active && !processing : audio-thread]
-   // [!active : main-thread]
+   // [active ? audio-thread : main-thread]
    void (*flush)(const clap_plugin_t        *plugin,
                  const clap_input_events_t  *in,
                  const clap_output_events_t *out);
@@ -282,13 +280,11 @@ typedef struct clap_host_params {
 
    // Request a parameter flush.
    //
-   // If the plugin is processing, this will result in no action. The process call
-   // will run normally. If plugin isn't processing, the host will make a subsequent
-   // call to clap_plugin_params->flush(). As a result, this function is always
-   // safe to call from a non-audio thread (typically the UI thread on a gesture)
-   // whether processing is active or not.
+   // The host will then schedule a call to either:
+   // - clap_plugin.process()
+   // - clap_plugin_params->flush()
    //
-   // This must not be called on the [audio-thread].
+   // This function is always safe to use and must not be called on the [audio-thread].
    // [thread-safe,!audio-thread]
    void (*request_flush)(const clap_host_t *host);
 } clap_host_params_t;
