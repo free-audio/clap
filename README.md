@@ -53,7 +53,7 @@ if (params)
 }
 ```
 
-The extensions are defined in [ext](include/clap/ext) folder.
+The extensions are defined in the [ext](include/clap/ext) folder.
 
 Some extensions are still in the progress of being designed and they are in
 the [draft](include/clap/ext/draft) folder.
@@ -63,11 +63,11 @@ An extension comes with:
 - an extension identifier: `#define CLAP_EXT_XXX "clap/XXX"`
 - host interfaces are named like: `struct clap_host_xxx`
 - plugin interfaces are named like: `struct clap_plugin_xxx`
-- each methods must have a clear thread specification
+- each method must have a clear thread specification
 
-You can create your own extensions and share them, make sure that the extension identifier
+You can create your own extensions and share them. Make sure that the extension identifier:
 - includes versioning in case the ABI breaks
-- a unique identifier
+- is a unique identifier
 
 **All strings are valid UTF-8**.
 
@@ -109,7 +109,7 @@ and use to get a basic plugin experience:
 ## Plugins
 
 - [u-he](https://u-he.com/fwd/clap/), synthesizers and effects
-- [Surge](https://surge-synthesizer.github.io/), open source synthesizer and effect
+- [Surge](https://surge-synthesizer.github.io/), open source synthesizer and effects
   - CLAP is enabled in [nightly builds](https://github.com/surge-synthesizer/releases-xt/releases/tag/Nightly)
 
 ## Hosts

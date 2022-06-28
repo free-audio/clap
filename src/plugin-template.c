@@ -114,7 +114,10 @@ static bool my_plug_init(const struct clap_plugin *plugin) {
    return true;
 }
 
-static void my_plug_destroy(const struct clap_plugin *plugin) {}
+static void my_plug_destroy(const struct clap_plugin *plugin) {
+   my_plug_t *plug = plugin->plugin_data;
+   free(plug);
+}
 
 static bool my_plug_activate(const struct clap_plugin *plugin,
                              double                    sample_rate,
@@ -142,7 +145,7 @@ static void my_plug_process_event(my_plug_t *plug, const clap_event_header_t *hd
 
       case CLAP_EVENT_NOTE_OFF: {
          const clap_event_note_t *ev = (const clap_event_note_t *)hdr;
-         // TODO: handle note on
+         // TODO: handle note off
          break;
       }
 
