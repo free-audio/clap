@@ -40,7 +40,9 @@ enum {
 };
 
 typedef struct clap_audio_port_info {
-   clap_id id;                   // stable identifier
+   // id identifies a port and must be stable.
+   // id may overlap between input and output ports.
+   clap_id id;
    char    name[CLAP_NAME_SIZE]; // displayable name
 
    uint32_t flags;
