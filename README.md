@@ -104,6 +104,7 @@ and use to get a basic plugin experience:
 
 # Resources
 
+- [clap-validator](https://github.com/robbert-vdh/clap-validator), a validator and automatic test suite for CLAP plugins.
 - [clapdb](https://clapdb.tech), a list of plugins and DAWs which supports CLAP
 
 ## Examples
