@@ -3,9 +3,9 @@
 #include "../../plugin.h"
 #include "../../string-sizes.h"
 
-// This extensions provides a set a pages, where each page contains up to 8 controls.
+// This extensions provides a set of pages, where each page contains up to 8 controls.
 // Those controls are param_id, and they are meant to be mapped onto a physical controller.
-// We chose 8 because this what most controllers offers, and it is more or less a standard.
+// We chose 8 because this what most controllers offer, and it is more or less a standard.
 
 static CLAP_CONSTEXPR const char CLAP_EXT_QUICK_CONTROLS[] = "clap.quick-controls.draft/0";
 

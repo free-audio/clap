@@ -20,13 +20,13 @@ extern "C" {
 ///   - filename
 ///   - hash
 ///   - file size
-/// - be aware that some external file references are marked as dirty and needs to be saved.
+/// - be aware that some external file references are marked as dirty and need to be saved.
 ///
 /// Regarding the hashing algorithm, as of 2022 BLAKE3 seems to be the best choice in regards to
 /// performances and robustness while also providing a very small pure C library with permissive
 /// licensing. For more info see https://github.com/BLAKE3-team/BLAKE3
 ///
-/// This extension only expose one hashing algorithm on purpose.
+/// This extension only exposes one hashing algorithm on purpose.
 
 // This describes a file currently used by the plugin
 typedef struct clap_file_reference {
@@ -35,7 +35,7 @@ typedef struct clap_file_reference {
 
    size_t path_capacity; // [in] the number of bytes reserved in path
    size_t path_size;     // [out] the actual length of the path, can be bigger than path_capacity
-   char  *path; // [in,out] path to the file on the disk, must be null terminated, and maybe
+   char  *path; // [in,out] path to the file on the disk, must be null terminated, and may be
                 // truncated if the capacity is less than the size
 } clap_file_reference_t;
 

@@ -4,10 +4,10 @@
 
 /// @page
 ///
-/// This extension let the plugin use the host's thread pool.
+/// This extension lets the plugin use the host's thread pool.
 ///
 /// The plugin must provide @ref clap_plugin_thread_pool, and the host may provide @ref
-/// clap_host_thread_pool. If it doesn't, the plugin should process its data by its own mean. In the
+/// clap_host_thread_pool. If it doesn't, the plugin should process its data by its own means. In the
 /// worst case, a single threaded for-loop.
 ///
 /// Simple example with N voices to process
@@ -27,7 +27,7 @@
 ///
 ///    if (!didComputeVoices)
 ///       for (uint32_t i = 0; i < N; ++i)
-///          myplug_thread_pool_exec(plugin, N);
+///          myplug_thread_pool_exec(plugin, i);
 ///    ...
 /// }
 /// @endcode

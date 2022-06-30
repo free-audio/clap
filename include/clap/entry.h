@@ -23,23 +23,31 @@ extern "C" {
 //   - /Library/Audio/Plug-Ins/CLAP
 //   - ~/Library/Audio/Plug-Ins/CLAP
 //
-// Additionally, extra path may be specified in CLAP_PATH environment variable.
-// CLAP_PATH is formated in the same way as the OS' binary search path (PATH on UNIX, Path on Windows).
+// In addition to the OS-specific default locations above, a CLAP host must query the environment
+// for a CLAP_PATH variable, which is a list of directories formatted in the same manner as the host
+// OS binary search path (PATH on Unix, separated by `:` and Path on Windows, separated by ';', as
+// of this writing).
 //
-// Every methods must be thread-safe.
+// Each directory should be recursively searched for files and/or bundles as appropriate in your OS
+// ending with the extension `.clap`.
+//
+// Every method must be thread-safe.
 typedef struct clap_plugin_entry {
    clap_version_t clap_version; // initialized to CLAP_VERSION
 
    // This function must be called first, and can only be called once.
    //
-   // It should be as fast as possible, in order to perform very quick scan of the plugin
+   // It should be as fast as possible, in order to perform a very quick scan of the plugin
    // descriptors.
    //
    // It is forbidden to display graphical user interface in this call.
-   // It is forbidden to perform user inter-action in this call.
+   // It is forbidden to perform user interaction in this call.
    //
    // If the initialization depends upon expensive computation, maybe try to do them ahead of time
    // and cache the result.
+   //
+   // If init() returns false, then the host must not call deinit() nor any other clap
+   // related symbols from the DSO.
    bool (*init)(const char *plugin_path);
 
    // No more calls into the DSO must be made after calling deinit().

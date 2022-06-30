@@ -80,19 +80,19 @@ typedef struct clap_window {
    };
 } clap_window_t;
 
-// Information to improve window resizement when initiated by the host or window manager.
+// Information to improve window resizing when initiated by the host or window manager.
 typedef struct clap_gui_resize_hints {
    bool can_resize_horizontally;
    bool can_resize_vertically;
 
    // only if can resize horizontally and vertically
-   bool     preseve_aspect_ratio;
+   bool     preserve_aspect_ratio;
    uint32_t aspect_ratio_width;
    uint32_t aspect_ratio_height;
 } clap_gui_resize_hints_t;
 
 // Size (width, height) is in pixels; the corresponding windowing system extension is
-// responsible to define if it is physical pixels or logical pixels.
+// responsible for defining if it is physical pixels or logical pixels.
 typedef struct clap_plugin_gui {
    // Returns true if the requested gui api is supported
    // [main-thread]
@@ -173,8 +173,8 @@ typedef struct clap_plugin_gui {
    // [main-thread]
    bool (*show)(const clap_plugin_t *plugin);
 
-   // Hide the window, this method do not free the resources, it just hides
-   // the window content. Yet it maybe a good idea to stop painting timers.
+   // Hide the window, this method does not free the resources, it just hides
+   // the window content. Yet it may be a good idea to stop painting timers.
    // [main-thread]
    bool (*hide)(const clap_plugin_t *plugin);
 } clap_plugin_gui_t;
@@ -189,7 +189,7 @@ typedef struct clap_host_gui {
     * The host doesn't have to call set_size().
     *
     * Note: if not called from the main thread, then a return value simply means that the host
-    * acknowledge the request and will process it asynchronously. If the request then can't be
+    * acknowledged the request and will process it asynchronously. If the request then can't be
     * satisfied then the host will call set_size() to revert the operation.
     *
     * [thread-safe] */

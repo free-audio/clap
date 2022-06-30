@@ -30,7 +30,9 @@ enum clap_note_dialect {
 };
 
 typedef struct clap_note_port_info {
-   clap_id  id;                   // stable identifier
+   // id identifies a port and must be stable.
+   // id may overlap between input and output ports.
+   clap_id  id;
    uint32_t supported_dialects;   // bitfield, see clap_note_dialect
    uint32_t preferred_dialect;    // one value of clap_note_dialect
    char     name[CLAP_NAME_SIZE]; // displayable name, i18n?

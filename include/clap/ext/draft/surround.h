@@ -4,7 +4,7 @@
 
 // This extension can be used to specify the channel mapping used by the plugin.
 //
-// To have a consistent surround features across all the plugin instances,
+// To have consistent surround features across all the plugin instances,
 // here is the proposed workflow:
 // 1. the plugin queries the host preferred channel mapping and
 //    adjusts its configuration to match it.
@@ -14,7 +14,7 @@
 // 1. deactivate the plugin
 // 2. host calls clap_plugin_surround->changed()
 // 3. plugin calls clap_host_surround->get_preferred_channel_map()
-// 4. plugin eventualy calls clap_host_surround->changed()
+// 4. plugin eventually calls clap_host_surround->changed()
 // 5. host calls clap_plugin_surround->get_channel_map() if changed
 // 6. host activates the plugin and can start processing audio
 //
@@ -69,7 +69,7 @@ typedef struct clap_plugin_surround {
 } clap_plugin_surround_t;
 
 typedef struct clap_host_surround {
-   // Informs the host that the channel map have changed.
+   // Informs the host that the channel map has changed.
    // The channel map can only change when the plugin is de-activated.
    // [main-thread]
    void (*changed)(const clap_host_t *host);

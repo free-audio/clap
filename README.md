@@ -13,8 +13,6 @@
   - [Support extensions](#support-extensions)
   - [Extra extensions](#extra-extensions)
 - [Resources](#resources)
-  - [Plugins](#plugins)
-  - [Hosts](#hosts)
   - [Examples](#examples)
   - [Community related projects](#community-related-projects)
   - [Programming Language Bindings](#programming-language-bindings)
@@ -53,21 +51,21 @@ if (params)
 }
 ```
 
-The extensions are defined in [ext](include/clap/ext) folder.
+The extensions are defined in the [ext](include/clap/ext) folder.
 
 Some extensions are still in the progress of being designed and they are in
 the [draft](include/clap/ext/draft) folder.
 
 An extension comes with:
-- an header `#include <clap/ext/xxx.h>`
+- a header `#include <clap/ext/xxx.h>`
 - an extension identifier: `#define CLAP_EXT_XXX "clap/XXX"`
 - host interfaces are named like: `struct clap_host_xxx`
 - plugin interfaces are named like: `struct clap_plugin_xxx`
-- each methods must have a clear thread specification
+- each method must have a clear thread specification
 
-You can create your own extensions and share them, make sure that the extension identifier
+You can create your own extensions and share them. Make sure that the extension identifier:
 - includes versioning in case the ABI breaks
-- a unique identifier
+- is a unique identifier
 
 **All strings are valid UTF-8**.
 
@@ -106,15 +104,8 @@ and use to get a basic plugin experience:
 
 # Resources
 
-## Plugins
-
-- [u-he](https://u-he.com/fwd/clap/), synthesizers and effects
-- [Surge](https://surge-synthesizer.github.io/), open source synthesizer and effect
-  - CLAP is enabled in [nightly builds](https://github.com/surge-synthesizer/releases-xt/releases/tag/Nightly)
-
-## Hosts
-
-- [Bitwig](https://bitwig.com), you need at least _Bitwig Studio 4.3 Beta 5_
+- [clap-validator](https://github.com/robbert-vdh/clap-validator), a validator and automatic test suite for CLAP plugins.
+- [clapdb](https://clapdb.tech), a list of plugins and DAWs which supports CLAP
 
 ## Examples
 
@@ -127,7 +118,7 @@ and use to get a basic plugin experience:
 - [clap-juce-extension](https://github.com/free-audio/clap-juce-extension), juce add-on
 - [MIP2](https://github.com/skei/MIP2), host and plugins
 - [Avendish](https://github.com/celtera/avendish), a reflection-based API for media plug-ins in C++ which supports Clap
-- [nih-plug](https://github.com/robbert-vdh/nih-plug), an API-agnostic, Rust-based plugin framework aiming to reduce boilerplate without getting in your way
+- [NIH-plug](https://github.com/robbert-vdh/nih-plug), an API-agnostic, Rust-based plugin framework aiming to reduce boilerplate without getting in your way
 
 ## Programming Language Bindings
 
@@ -135,4 +126,5 @@ and use to get a basic plugin experience:
 - [CLAP-for-Delphi](https://github.com/Bremmers/CLAP-for-Delphi), Delphi binding
 
 ## Artwork
+
  - [CLAP Logo Pack.zip](https://github.com/free-audio/clap/files/8805281/CLAP.Logo.Pack.zip)
