@@ -74,7 +74,7 @@ typedef struct clap_plugin_state_context {
    // Assign the context for subsequent calls to ->save() or load() of the
    // clap_plugin_state extension.
    // [main-thread]
-   void (*set_state_context)(const clap_plugin_t *plugin, uint32_t context);
+   void (*set)(const clap_plugin_t *plugin, uint32_t context);
 } clap_plugin_state_context_t;
 
 #ifdef __cplusplus
