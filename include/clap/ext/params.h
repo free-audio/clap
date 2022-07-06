@@ -278,7 +278,10 @@ typedef struct clap_host_params {
    void (*clear)(const clap_host_t *host, clap_id param_id, clap_param_clear_flags flags);
 
 
-   // Request a parameter flush.
+   // Request a parameter flush. Note that this is not useful to call from an
+   // [audio-thread], because a plugin executing within any [audio-thread] is either:
+   //   1. within process() (which may include clap_plugin_thread_pool->exec)
+   //   2. within flush()
    //
    // The host will then schedule a call to either:
    // - clap_plugin.process()
