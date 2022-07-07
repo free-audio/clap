@@ -38,7 +38,7 @@
 ///
 /// I. Loading a preset
 /// - load the preset in a temporary state
-/// - call @ref clap_host_params.changed() if anything changed
+/// - call @ref clap_host_params.rescan() if anything changed
 /// - call @ref clap_host_latency.changed() if latency changed
 /// - invalidate any other info that may be cached by the host
 /// - if the plugin is activated and the preset will introduce breaking changes
