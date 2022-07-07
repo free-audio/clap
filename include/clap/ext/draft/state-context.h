@@ -50,9 +50,9 @@
 ///
 /// The host is responsible to declare the context the state operation in which it is happening.
 ///
-/// @note if an unknown context index is provided, it should be handled as
-/// `CLAP_STATE_CONTEXT_PROJECT`.
-///
+/// @note If an unknown context type is provided or if the host does not call
+/// clap_plugin_state_context->set() at all, then the state context type should
+/// be treated as `CLAP_STATE_CONTEXT_PROJECT`.
 
 #ifdef __cplusplus
 extern "C" {
