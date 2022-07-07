@@ -18,8 +18,9 @@ extern "C" {
  * to meet realtime requirements. I.e. only carry out sufficiently performant and time-bound
  * operations. So mutexes, memory (de-)allocations, IO, UI rendering should generally be avoided.
  *
- * Depending on the host, [main-thread] and [audio-thread] may or may not map to the same
- * system thread. So while plugins should use the thread checking functions and may assert
+ * Depending on the host scheduler, the [audio-thread] may move from one OS thread to another,
+ * including the same OS thread as the [main-thread].
+ * So while plugins are encouraged to use the thread checking functions and may assert
  * is_main_thread() == true or is_audio_thread() == true in a particular context, it should
  * be avoided to assert that the current thread is *NOT* is_main_thread() or is_audio_thread().
  */
