@@ -22,7 +22,7 @@
 ///
 /// Therefore the host should give a context hint for the operation it executes.
 ///
-/// Scenarios for save() function:
+/// Scenarios for the state save() function:
 ///
 /// - Context `CLAP_STATE_CONTEXT_PROJECT`: The plugin stores all aound settings including
 ///   the project specific settings (like the hardware's id)
@@ -32,7 +32,7 @@
 ///   a new instance of the plugin to be presented as 'duplicate' effectively, like
 ///   using the next index of an enumeration, a channel etc.
 ///
-/// Scenarios for the load() function:
+/// Scenarios for the state load() function:
 ///
 /// - Context `CLAP_STATE_CONTEXT_PROJECT`: The plugin restores all aound settings including
 ///   the project specific settings (like the hardware's id). If no project specific settings
@@ -50,9 +50,9 @@
 ///
 /// The host is responsible to declare the context the state operation in which it is happening.
 ///
-/// @note if an unknown context index is provided, it should be handled as
-/// `CLAP_STATE_CONTEXT_PROJECT`.
-///
+/// @note If an unknown context type is provided or if the host does not call
+/// clap_plugin_state_context->set() at all, then the state context type should
+/// be treated as `CLAP_STATE_CONTEXT_PROJECT`.
 
 #ifdef __cplusplus
 extern "C" {
@@ -67,12 +67,14 @@ enum clap_plugin_state_context_type {
 };
 
 typedef struct clap_plugin_state_context {
-   // Hosts that use the set_state_context() function should *always* call it directly before
-   // ->save() or load(). Plugins that implement the set_state_context() function should
-   // keep the last assigned context around, regardless of the frequency of invocations.
+   // Hosts that use the set_state_context() function should *always* call it
+   // directly before clap_plugin_state->save() or clap_plugin_state->load().
+   // Plugins that implement the clap_plugin_state_context->set() function
+   // should keep the last assigned context around, regardless of the frequency
+   // of invocations.
 
-   // Assign the context for subsequent calls to ->save() or load() of the
-   // clap_plugin_state extension.
+   // Assign the context for subsequent calls to clap_plugin_state->save() or
+   // clap_plugin_state->load() of the clap_plugin_state extension.
    // [main-thread]
    void (*set)(const clap_plugin_t *plugin, uint32_t context);
 } clap_plugin_state_context_t;
