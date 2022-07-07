@@ -11,7 +11,8 @@ extern "C" {
 /* A note on threads as understood by CLAP:
  *
  * In the [main-thread], a CLAP plugin may carry out allocations, acquire a mutex and do IO,
- * bascially anything a reasonably performing program could do.
+ * basically anything a reasonably performing program could do. Long running tasks such as
+ * indexing presets, should still be run in background threads to keep the [main-thread] responsive.
  *
  * Within an [audio-thread] (of which there may be many in a given host), plugins should strive
  * to meet realtime requirements. I.e. only carry out sufficiently performant and time-bound
