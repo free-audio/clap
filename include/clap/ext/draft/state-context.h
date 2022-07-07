@@ -68,7 +68,7 @@ enum clap_plugin_state_context_type {
 
 typedef struct clap_plugin_state_context {
    // Hosts that use the set_state_context() function should *always* call it directly before
-   // ->save() or load(). Plugins that implement the set_state_context() function should
+   // ->save() or load(). Plugins that implement the set() function should
    // keep the last assigned context around, regardless of the frequency of invocations.
 
    // Assign the context for subsequent calls to ->save() or load() of the
