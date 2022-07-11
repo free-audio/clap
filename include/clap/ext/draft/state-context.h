@@ -6,7 +6,7 @@
 /// @page state-context extension
 /// @brief extended state handling
 ///
-/// This extension let the host specify how the plugin state should be loaded.
+/// This extension let the host save and load the plugin state for special purpose.
 ///
 /// Briefly, when loading a preset or duplicating a device, the plugin may want to partially load
 /// the state and initialize certain things differently.
@@ -26,8 +26,19 @@ enum clap_plugin_state_context_type {
 };
 
 typedef struct clap_plugin_state_context {
-   // Loads the plugin state from stream.
+   // Saves the plugin state into stream, according to context_type.
+   // Returns true if the state was correctly saved.
+   //
+   // Note that the result may be loaded by both clap_plugin_state.load() and
+   // clap_plugin_state_context.load().
+   // [main-thread]
+   bool (*save)(const clap_plugin_t *plugin, const clap_ostream_t *stream, uint32_t context_type);
+
+   // Loads the plugin state from stream, according to context_type.
    // Returns true if the state was correctly restored.
+   //
+   // Note that the state may have been saved by clap_plugin_state.save() or
+   // clap_plugin_state_context.save() with a different context_type.
    // [main-thread]
    void (*load)(const clap_plugin_t *plugin, const clap_istream_t *stream, uint32_t context_type);
 } clap_plugin_state_context_t;
