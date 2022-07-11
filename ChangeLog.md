@@ -1,3 +1,7 @@
+# Changes in 1.0.4
+
+* [state-context.h](include/clap/ext/draft/state-context.h): save/load state for duplicate or preset.
+
 # Changes in 1.0.3
 
 * [plugin.h](include/clap/plugin.h): fix an inconsistency in `clap_plugin->destroy()` documentation:
