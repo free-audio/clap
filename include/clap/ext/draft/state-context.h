@@ -10,6 +10,19 @@
 ///
 /// Briefly, when loading a preset or duplicating a device, the plugin may want to partially load
 /// the state and initialize certain things differently.
+///
+/// Save and Load operations may have a different context.
+///
+/// Here is a conceptual implementation:
+/// state clap_plugin_state_context.save(ctx) {
+///    state = clap_plugin_state.save();
+///    return reduce(state, ctx);
+/// }
+///
+/// bool clap_plugin_state_context.load(state, ctx) {
+///    state = reduce(state, ctx);
+///    return clap_plugin_state.load(state);
+/// }
 
 #ifdef __cplusplus
 extern "C" {
@@ -40,7 +53,7 @@ typedef struct clap_plugin_state_context {
    // Note that the state may have been saved by clap_plugin_state.save() or
    // clap_plugin_state_context.save() with a different context_type.
    // [main-thread]
-   void (*load)(const clap_plugin_t *plugin, const clap_istream_t *stream, uint32_t context_type);
+   bool (*load)(const clap_plugin_t *plugin, const clap_istream_t *stream, uint32_t context_type);
 } clap_plugin_state_context_t;
 
 #ifdef __cplusplus
