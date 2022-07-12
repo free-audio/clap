@@ -129,13 +129,13 @@ enum {
    // Does this parameter support per note automations?
    CLAP_PARAM_IS_MODULATABLE_PER_NOTE_ID = 1 << 11,
 
-   // Does this parameter support per key automations?
+   // Does this parameter support per key modulations?
    CLAP_PARAM_IS_MODULATABLE_PER_KEY = 1 << 12,
 
-   // Does this parameter support per channel automations?
+   // Does this parameter support per channel modulations?
    CLAP_PARAM_IS_MODULATABLE_PER_CHANNEL = 1 << 13,
 
-   // Does this parameter support per port automations?
+   // Does this parameter support per port modulations?
    CLAP_PARAM_IS_MODULATABLE_PER_PORT = 1 << 14,
 
    // Any change to this parameter will affect the plugin output and requires to be done via
