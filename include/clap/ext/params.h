@@ -126,7 +126,7 @@ enum {
    // Does this parameter support the modulation signal?
    CLAP_PARAM_IS_MODULATABLE = 1 << 10,
 
-   // Does this parameter support per note automations?
+   // Does this parameter support per note modulations?
    CLAP_PARAM_IS_MODULATABLE_PER_NOTE_ID = 1 << 11,
 
    // Does this parameter support per key modulations?
