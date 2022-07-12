@@ -6,7 +6,7 @@
 /// @page state-context extension
 /// @brief extended state handling
 ///
-/// This extension let the host save and load the plugin state for special purpose.
+/// This extension lets the host save and load the plugin state with different semantics depending on the context.
 ///
 /// Briefly, when loading a preset or duplicating a device, the plugin may want to partially load
 /// the state and initialize certain things differently.
