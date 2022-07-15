@@ -31,10 +31,10 @@ static CLAP_CONSTEXPR const char CLAP_EXT_STATE_CONTEXT[] = "clap.state-context.
 
 enum clap_plugin_state_context_type {
    // suitable for duplicating a plugin instance
-   CLAP_STATE_CONTEXT_FOR_DUPLICATE = 0,
+   CLAP_STATE_CONTEXT_FOR_DUPLICATE = 1,
 
    // suitable for loading a state as a preset
-   CLAP_STATE_CONTEXT_FOR_PRESET = 1,
+   CLAP_STATE_CONTEXT_FOR_PRESET = 2,
 };
 
 typedef struct clap_plugin_state_context {
