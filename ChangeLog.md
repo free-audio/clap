@@ -5,6 +5,7 @@
 * [note-name.h](include/clap/ext/note-name.h): missing typedef `clap_plugin_note_name_t`.
 * [params.h](include/clap/ext/params.h): clarify `request_flush()` documentation.
 * [thread-check.h](include/clap/ext/thread-check.h): clarify documentation.
+* [voice-info.h](include/clap/ext/voice-info.h): promote `voice-info` out of draft.
 
 # Changes in 1.0.3
 
