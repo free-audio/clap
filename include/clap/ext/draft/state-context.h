@@ -16,6 +16,9 @@
 /// Both operations shall be equivalent:
 /// 1. clap_plugin_state_context.load(clap_plugin_state.save(), CLAP_STATE_CONTEXT_FOR_PRESET)
 /// 2. clap_plugin_state.load(clap_plugin_state_context.save(CLAP_STATE_CONTEXT_FOR_PRESET))
+/// 3. clap_plugin_state_context.load(
+///        clap_plugin_state_context.save(CLAP_STATE_CONTEXT_FOR_PRESET),
+///        CLAP_STATE_CONTEXT_FOR_PRESET)
 
 #ifdef __cplusplus
 extern "C" {
