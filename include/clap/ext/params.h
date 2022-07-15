@@ -22,7 +22,8 @@
 /// When the plugin changes a parameter value, it must inform the host.
 /// It will send @ref CLAP_EVENT_PARAM_VALUE event during process() or flush().
 /// If the user is adjusting the value, don't forget to mark the begining and end
-/// of the gesture by sending CLAP_EVENT_PARAM_GESTURE_BEGIN and CLAP_EVENT_PARAM_GESTURE_END events.
+/// of the gesture by sending CLAP_EVENT_PARAM_GESTURE_BEGIN and CLAP_EVENT_PARAM_GESTURE_END
+/// events.
 ///
 /// @note MIDI CCs are tricky because you may not know when the parameter adjustment ends.
 /// Also if the host records incoming MIDI CC and parameter change automation at the same time,
@@ -277,17 +278,15 @@ typedef struct clap_host_params {
    // [main-thread]
    void (*clear)(const clap_host_t *host, clap_id param_id, clap_param_clear_flags flags);
 
-
-   // Request a parameter flush. Note that this is not useful to call from an
-   // [audio-thread], because a plugin executing within any [audio-thread] is either:
-   //   1. within process() (which may include clap_plugin_thread_pool->exec)
-   //   2. within flush()
+   // Request a parameter flush.
    //
    // The host will then schedule a call to either:
    // - clap_plugin.process()
    // - clap_plugin_params->flush()
    //
-   // This function is always safe to use and must not be called on the [audio-thread].
+   // This function is always safe to use and should not be called from an [audio-thread] as the
+   // plugin would already be within process() or flush().
+   //
    // [thread-safe,!audio-thread]
    void (*request_flush)(const clap_host_t *host);
 } clap_host_params_t;
