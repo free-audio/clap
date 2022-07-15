@@ -12,17 +12,9 @@
 /// the state and initialize certain things differently.
 ///
 /// Save and Load operations may have a different context.
-///
-/// Here is a conceptual implementation:
-/// state clap_plugin_state_context.save(ctx) {
-///    state = clap_plugin_state.save();
-///    return reduce(state, ctx);
-/// }
-///
-/// bool clap_plugin_state_context.load(state, ctx) {
-///    state = reduce(state, ctx);
-///    return clap_plugin_state.load(state);
-/// }
+/// Both operations shall be equivalent:
+/// 1. clap_plugin_state_context.load(clap_plugin_state.save(), CLAP_STATE_CONTEXT_FOR_PRESET)
+/// 2. clap_plugin_state.load(clap_plugin_state_context.save(CLAP_STATE_CONTEXT_FOR_PRESET))
 
 #ifdef __cplusplus
 extern "C" {
