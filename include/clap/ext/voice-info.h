@@ -19,10 +19,6 @@ enum {
    // Allows the host to send overlapping NOTE_ON events.
    // The plugin will then rely upon the note_id to distinguish between them.
    CLAP_VOICE_INFO_SUPPORTS_OVERLAPPING_NOTES = 1 << 0,
-
-   // Allows the host to use any channel for notes, this is useful for having multiple notes on the
-   // same key receiving polyphonic modulation when the note_id isn't supported.
-   CLAP_VOICE_INFO_CAN_CHANNEL_ROBBIN = 1 << 1,
 };
 
 typedef struct clap_voice_info {
