@@ -19,6 +19,9 @@
 /// 3. clap_plugin_state_context.load(
 ///        clap_plugin_state_context.save(CLAP_STATE_CONTEXT_FOR_PRESET),
 ///        CLAP_STATE_CONTEXT_FOR_PRESET)
+///
+/// If the plugin implements CLAP_EXT_STATE_CONTEXT then it is mandatory to also implement
+/// CLAP_EXT_STATE.
 
 #ifdef __cplusplus
 extern "C" {
