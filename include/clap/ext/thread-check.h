@@ -8,22 +8,30 @@ static CLAP_CONSTEXPR const char CLAP_EXT_THREAD_CHECK[] = "clap.thread-check";
 extern "C" {
 #endif
 
-/* A note on threads as understood by CLAP:
- *
- * In the [main-thread], a CLAP plugin may carry out allocations, acquire a mutex and do IO,
- * basically anything a reasonably performing program could do. Long running tasks such as
- * indexing presets, should still be run in background threads to keep the [main-thread] responsive.
- *
- * Within an [audio-thread] (of which there may be many in a given host), plugins should strive
- * to meet realtime requirements. I.e. only carry out sufficiently performant and time-bound
- * operations. So mutexes, memory (de-)allocations, IO, UI rendering should generally be avoided.
- *
- * Depending on the host scheduler, the [audio-thread] may move from one OS thread to another,
- * including the same OS thread as the [main-thread].
- * So while plugins are encouraged to use the thread checking functions and may assert
- * is_main_thread() == true or is_audio_thread() == true in a particular context, it should
- * be avoided to assert that the current thread is *NOT* is_main_thread() or is_audio_thread().
- */
+/// @page thread-check
+///
+/// CLAP defines two symbolic threads:
+///
+/// main-thread:
+///    This is the thread in which most of the interaction between the plugin and host happens.
+///    It is usually the thread on which the GUI receives its events.
+///    It isn't a realtime thread, yet this thread needs to respond fast enough to user interaction,
+///    so it is recommended to run long and expensive tasks such as preset indexing or asset loading
+///    in dedicated background threads.
+///
+/// audio-thread:
+///    This thread is used for realtime audio processing. Its execution should be as deterministic
+///    as possible to meet the audio interface's deadline (can be <1ms). In other words, there is a
+///    known set of operations that should be avoided: malloc() and free(), mutexes (spin mutexes
+///    are worse), I/O, waiting, ...
+///    The audio-thread is something symbolic, there isn't one OS thread that remains the
+///    audio-thread for the plugin lifetime. As you may guess, the host is likely to have a
+///    thread pool and the plugin.process() call may be scheduled on different OS threads over time.
+///    The most important thing is that there can't be two audio-threads at the same time. All the
+///    functions marked with [audio-thread] **ARE NOT CONCURRENT**. The host may mark any OS thread,
+///    including the main-thread as the audio-thread, as long as it can guarentee that only one OS
+///    thread is the audio-thread at a time. The audio-thread can be seen as a concurrency guard for
+///    all functions marked with [audio-thread].
 
 // This interface is useful to do runtime checks and make
 // sure that the functions are called on the correct threads.
