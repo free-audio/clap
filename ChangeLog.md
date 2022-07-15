@@ -3,6 +3,7 @@
 * [state-context.h](include/clap/ext/draft/state-context.h): save/load state for duplicate or preset.
 * [std.h](include/clap/private/std.h): fix compatibility with C++98.
 * [note-name.h](include/clap/ext/note-name.h): missing typedef `clap_plugin_note_name_t`.
+* [params.h](include/clap/ext/params.h): clarify `request_flush()` documentation.
 
 # Changes in 1.0.3
 
