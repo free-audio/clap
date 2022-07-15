@@ -1,4 +1,4 @@
-# Changes in 1.0.4
+# Changes in 1.1.0
 
 * [state-context.h](include/clap/ext/draft/state-context.h): save/load state for duplicate or preset.
 * [std.h](include/clap/private/std.h): fix compatibility with C++98.
