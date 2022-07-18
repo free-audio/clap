@@ -13,7 +13,7 @@
 /// the state and initialize certain things differently.
 ///
 /// Save and Load operations may have a different context.
-/// Both operations shall be equivalent:
+/// All three operations should be equivalent:
 /// 1. clap_plugin_state_context.load(clap_plugin_state.save(), CLAP_STATE_CONTEXT_FOR_PRESET)
 /// 2. clap_plugin_state.load(clap_plugin_state_context.save(CLAP_STATE_CONTEXT_FOR_PRESET))
 /// 3. clap_plugin_state_context.load(
