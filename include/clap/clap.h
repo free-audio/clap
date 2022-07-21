@@ -57,6 +57,7 @@
 #include "ext/draft/midi-mappings.h"
 #include "ext/draft/preset-load.h"
 #include "ext/draft/quick-controls.h"
+#include "ext/draft/state-context.h"
 #include "ext/draft/surround.h"
 #include "ext/draft/track-info.h"
 #include "ext/draft/tuning.h"

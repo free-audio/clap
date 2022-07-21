@@ -1,3 +1,7 @@
+# Changes in 1.1.1
+
+* [clap.h](include/clap/clap.h): missing include for [state-context.h](include/clap/ext/draft/state-context.h).
+
 # Changes in 1.1.0
 
 * [state-context.h](include/clap/ext/draft/state-context.h): save/load state for duplicate or preset.
