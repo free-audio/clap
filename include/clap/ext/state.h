@@ -9,7 +9,7 @@ static CLAP_CONSTEXPR const char CLAP_EXT_STATE[] = "clap.state";
 extern "C" {
 #endif
 
-typedef struct clap_plugin_state {
+typedef struct clap_plugin_state_context {
    // Saves the plugin state into stream.
    // Returns true if the state was correctly saved.
    // [main-thread]
