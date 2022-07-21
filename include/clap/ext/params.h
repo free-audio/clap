@@ -22,7 +22,8 @@
 /// When the plugin changes a parameter value, it must inform the host.
 /// It will send @ref CLAP_EVENT_PARAM_VALUE event during process() or flush().
 /// If the user is adjusting the value, don't forget to mark the begining and end
-/// of the gesture by sending CLAP_EVENT_PARAM_GESTURE_BEGIN and CLAP_EVENT_PARAM_GESTURE_END events.
+/// of the gesture by sending CLAP_EVENT_PARAM_GESTURE_BEGIN and CLAP_EVENT_PARAM_GESTURE_END
+/// events.
 ///
 /// @note MIDI CCs are tricky because you may not know when the parameter adjustment ends.
 /// Also if the host records incoming MIDI CC and parameter change automation at the same time,
@@ -38,7 +39,7 @@
 ///
 /// I. Loading a preset
 /// - load the preset in a temporary state
-/// - call @ref clap_host_params.changed() if anything changed
+/// - call @ref clap_host_params.rescan() if anything changed
 /// - call @ref clap_host_latency.changed() if latency changed
 /// - invalidate any other info that may be cached by the host
 /// - if the plugin is activated and the preset will introduce breaking changes
@@ -126,16 +127,16 @@ enum {
    // Does this parameter support the modulation signal?
    CLAP_PARAM_IS_MODULATABLE = 1 << 10,
 
-   // Does this parameter support per note automations?
+   // Does this parameter support per note modulations?
    CLAP_PARAM_IS_MODULATABLE_PER_NOTE_ID = 1 << 11,
 
-   // Does this parameter support per key automations?
+   // Does this parameter support per key modulations?
    CLAP_PARAM_IS_MODULATABLE_PER_KEY = 1 << 12,
 
-   // Does this parameter support per channel automations?
+   // Does this parameter support per channel modulations?
    CLAP_PARAM_IS_MODULATABLE_PER_CHANNEL = 1 << 13,
 
-   // Does this parameter support per port automations?
+   // Does this parameter support per port modulations?
    CLAP_PARAM_IS_MODULATABLE_PER_PORT = 1 << 14,
 
    // Any change to this parameter will affect the plugin output and requires to be done via
@@ -277,14 +278,15 @@ typedef struct clap_host_params {
    // [main-thread]
    void (*clear)(const clap_host_t *host, clap_id param_id, clap_param_clear_flags flags);
 
-
    // Request a parameter flush.
    //
    // The host will then schedule a call to either:
    // - clap_plugin.process()
    // - clap_plugin_params->flush()
    //
-   // This function is always safe to use and must not be called on the [audio-thread].
+   // This function is always safe to use and should not be called from an [audio-thread] as the
+   // plugin would already be within process() or flush().
+   //
    // [thread-safe,!audio-thread]
    void (*request_flush)(const clap_host_t *host);
 } clap_host_params_t;

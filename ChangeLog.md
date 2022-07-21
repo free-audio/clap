@@ -1,3 +1,12 @@
+# Changes in 1.1.0
+
+* [state-context.h](include/clap/ext/draft/state-context.h): save/load state for duplicate or preset.
+* [std.h](include/clap/private/std.h): fix compatibility with C++98.
+* [note-name.h](include/clap/ext/note-name.h): missing typedef `clap_plugin_note_name_t`.
+* [params.h](include/clap/ext/params.h): clarify `request_flush()` documentation.
+* [thread-check.h](include/clap/ext/thread-check.h): clarify documentation.
+* [voice-info.h](include/clap/ext/voice-info.h): promote `voice-info` out of draft.
+
 # Changes in 1.0.3
 
 * [plugin.h](include/clap/plugin.h): fix an inconsistency in `clap_plugin->destroy()` documentation:
