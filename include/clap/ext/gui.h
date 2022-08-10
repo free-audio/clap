@@ -100,6 +100,8 @@ typedef struct clap_plugin_gui {
 
    // Returns true if the plugin has a preferred api.
    // The host has no obligation to honor the plugin preferrence, this is just a hint.
+   // The const char **api variable should be explicitly assigned as a pointer to
+   // one of the CLAP_WINDOW_API_ constants defined above, not strcopied.
    // [main-thread]
    bool (*get_preferred_api)(const clap_plugin_t *plugin, const char **api, bool *is_floating);
 
