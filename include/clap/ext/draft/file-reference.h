@@ -78,6 +78,7 @@ typedef struct clap_host_file_reference {
    // [main-thread]
    void (*changed)(const clap_host_t *host);
 
+   // Informs the host that file contents have changed, a call to save_resources() is needed.
    // [main-thread]
    void (*set_dirty)(const clap_host_t *host, clap_id resource_id);
 } clap_host_file_reference;
