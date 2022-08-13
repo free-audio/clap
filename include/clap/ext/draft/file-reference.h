@@ -67,6 +67,8 @@ typedef struct clap_plugin_file_reference {
    // [main-thread]
    bool (*update_path)(const clap_plugin_t *plugin, clap_id resource_id, const char *path);
 
+   // Request all pending changes to be flushed to disk (e.g. for destructive
+   // sample editor plugins), needed during "collect and save".
    // [main-thread]
    bool (*save_resources)(const clap_plugin_t *plugin);
 } clap_plugin_file_reference_t;
