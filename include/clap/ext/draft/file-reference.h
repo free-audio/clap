@@ -40,11 +40,11 @@ typedef struct clap_file_reference {
 } clap_file_reference_t;
 
 typedef struct clap_plugin_file_reference {
-   // returns the number of file reference this plugin has
+   // Returns the number of file reference this plugin has
    // [main-thread]
    uint32_t (*count)(const clap_plugin_t *plugin);
 
-   // gets the file reference at index
+   // Gets the file reference at index
    // returns true on success
    // [main-thread]
    bool (*get)(const clap_plugin_t *plugin, uint32_t index, clap_file_reference_t *file_reference);
@@ -63,7 +63,7 @@ typedef struct clap_plugin_file_reference {
    // [main-thread]
    bool (*get_file_size)(const clap_plugin_t *plugin, clap_id resource_id, uint64_t *size);
 
-   // updates the path to a file reference
+   // Updates the path to a file reference
    // [main-thread]
    bool (*update_path)(const clap_plugin_t *plugin, clap_id resource_id, const char *path);
 
