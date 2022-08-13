@@ -74,7 +74,7 @@ typedef struct clap_plugin_file_reference {
 } clap_plugin_file_reference_t;
 
 typedef struct clap_host_file_reference {
-   // informs the host that the file references have changed, the host should schedule a full rescan
+   // Informs the host that the file references have changed, the host should schedule a full rescan.
    // [main-thread]
    void (*changed)(const clap_host_t *host);
 
