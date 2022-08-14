@@ -31,6 +31,10 @@ extern "C" {
 // This describes a file currently used by the plugin
 typedef struct clap_file_reference {
    clap_id resource_id;
+
+   // Flag indicating that the plugin may be able to (re-)install a collection that provides
+   // this resource. DAWs can provide a user option to ignore or include this resource during
+   // "collect and save".
    bool    belongs_to_plugin_collection;
 
    size_t path_capacity; // [in] the number of bytes reserved in path
