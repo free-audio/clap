@@ -39,8 +39,8 @@ typedef struct clap_file_reference {
 
    size_t path_capacity; // [in] the number of bytes reserved in path
    size_t path_size;     // [out] the actual length of the path, can be bigger than path_capacity
-   char  *path; // [in,out] path to the file on the disk, must be null terminated, and may be
-                // truncated if the capacity is less than the size
+   char  *path; // [in,out] absolute path to the file on the disk, must be null terminated, and
+                // may be truncated if the capacity is less than the size
 } clap_file_reference_t;
 
 typedef struct clap_plugin_file_reference {
