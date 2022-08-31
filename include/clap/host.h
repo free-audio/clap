@@ -19,21 +19,21 @@ typedef struct clap_host {
 
    // Query an extension.
    // [thread-safe]
-   const void *(*get_extension)(const struct clap_host *host, const char *extension_id);
+   const void *(CLAP_ABI *get_extension)(const struct clap_host *host, const char *extension_id);
 
    // Request the host to deactivate and then reactivate the plugin.
    // The operation may be delayed by the host.
    // [thread-safe]
-   void (*request_restart)(const struct clap_host *host);
+   void(CLAP_ABI *request_restart)(const struct clap_host *host);
 
    // Request the host to activate and start processing the plugin.
    // This is useful if you have external IO and need to wake up the plugin from "sleep".
    // [thread-safe]
-   void (*request_process)(const struct clap_host *host);
+   void(CLAP_ABI *request_process)(const struct clap_host *host);
 
    // Request the host to schedule a call to plugin->on_main_thread(plugin) on the main thread.
    // [thread-safe]
-   void (*request_callback)(const struct clap_host *host);
+   void(CLAP_ABI *request_callback)(const struct clap_host *host);
 } clap_host_t;
 
 #ifdef __cplusplus

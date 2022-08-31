@@ -36,10 +36,10 @@ typedef struct clap_ambisonic_info {
 typedef struct clap_plugin_ambisonic {
    // Returns true on success
    // [main-thread]
-   bool (*get_info)(const clap_plugin_t   *plugin,
-                    bool                   is_input,
-                    uint32_t               port_index,
-                    clap_ambisonic_info_t *info);
+   bool(CLAP_ABI *get_info)(const clap_plugin_t   *plugin,
+                            bool                   is_input,
+                            uint32_t               port_index,
+                            clap_ambisonic_info_t *info);
 
 } clap_plugin_ambisonic_t;
 
@@ -47,7 +47,7 @@ typedef struct clap_host_ambisonic {
    // Informs the host that the info has changed.
    // The info can only change when the plugin is de-activated.
    // [main-thread]
-   void (*changed)(const clap_host_t *host);
+   void(CLAP_ABI *changed)(const clap_host_t *host);
 } clap_host_ambisonic_t;
 
 #ifdef __cplusplus

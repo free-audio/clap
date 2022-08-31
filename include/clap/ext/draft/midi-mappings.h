@@ -24,15 +24,15 @@ typedef struct clap_midi_mapping {
 
 typedef struct clap_plugin_midi_mappings {
    // [main-thread]
-   uint32_t (*count)(const clap_plugin_t *plugin);
+   uint32_t(CLAP_ABI *count)(const clap_plugin_t *plugin);
 
    // [main-thread]
-   bool (*get)(const clap_plugin_t *plugin, uint32_t index, clap_midi_mapping_t *mapping);
+   bool(CLAP_ABI *get)(const clap_plugin_t *plugin, uint32_t index, clap_midi_mapping_t *mapping);
 } clap_plugin_midi_mappings_t;
 
 typedef struct clap_host_midi_mappings {
    // [main-thread]
-   void (*changed)(const clap_host_t *host);
+   void(CLAP_ABI *changed)(const clap_host_t *host);
 } clap_host_midi_mappings_t;
 
 #ifdef __cplusplus
