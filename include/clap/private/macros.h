@@ -17,6 +17,14 @@
 #   endif
 #endif
 
+#if !defined(CLAP_ABI)
+#   if defined _WIN32 || defined __CYGWIN__
+#      define CLAP_ABI __cdecl
+#   else
+#      define CLAP_ABI
+#   endif
+#endif
+
 #if defined(__cplusplus) && __cplusplus >= 201103L
 #   define CLAP_HAS_CXX11
 #   define CLAP_CONSTEXPR constexpr
