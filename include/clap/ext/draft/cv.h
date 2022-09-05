@@ -25,18 +25,18 @@ enum {
 typedef struct clap_plugin_cv {
    // Returns true on success.
    // [main-thread]
-   bool (*get_channel_type)(const clap_plugin_t *plugin,
-                            bool                 is_input,
-                            uint32_t             port_index,
-                            uint32_t             channel_index,
-                            uint32_t            *channel_type);
+   bool(CLAP_ABI *get_channel_type)(const clap_plugin_t *plugin,
+                                    bool                 is_input,
+                                    uint32_t             port_index,
+                                    uint32_t             channel_index,
+                                    uint32_t            *channel_type);
 } clap_plugin_cv_t;
 
 typedef struct clap_host_cv {
    // Informs the host that the channels type have changed.
    // The channels type can only change when the plugin is de-activated.
    // [main-thread,!active]
-   void (*changed)(const clap_host_t *host);
+   void(CLAP_ABI *changed)(const clap_host_t *host);
 } clap_host_cv_t;
 
 #ifdef __cplusplus

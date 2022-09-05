@@ -287,7 +287,7 @@ clap_plugin_t *my_plug_create(const clap_host_t *host) {
 
 static struct {
    const clap_plugin_descriptor_t *desc;
-   clap_plugin_t *(*create)(const clap_host_t *host);
+   clap_plugin_t *(CLAP_ABI *create)(const clap_host_t *host);
 } s_plugins[] = {
    {
       .desc = &s_my_plug_desc,

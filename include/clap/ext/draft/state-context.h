@@ -44,7 +44,9 @@ typedef struct clap_plugin_state_context {
    // Note that the result may be loaded by both clap_plugin_state.load() and
    // clap_plugin_state_context.load().
    // [main-thread]
-   bool (*save)(const clap_plugin_t *plugin, const clap_ostream_t *stream, uint32_t context_type);
+   bool(CLAP_ABI *save)(const clap_plugin_t  *plugin,
+                        const clap_ostream_t *stream,
+                        uint32_t              context_type);
 
    // Loads the plugin state from stream, according to context_type.
    // Returns true if the state was correctly restored.
@@ -52,7 +54,9 @@ typedef struct clap_plugin_state_context {
    // Note that the state may have been saved by clap_plugin_state.save() or
    // clap_plugin_state_context.save() with a different context_type.
    // [main-thread]
-   bool (*load)(const clap_plugin_t *plugin, const clap_istream_t *stream, uint32_t context_type);
+   bool(CLAP_ABI *load)(const clap_plugin_t  *plugin,
+                        const clap_istream_t *stream,
+                        uint32_t              context_type);
 } clap_plugin_state_context_t;
 
 #ifdef __cplusplus
