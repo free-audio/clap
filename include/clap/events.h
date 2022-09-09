@@ -263,6 +263,7 @@ typedef struct clap_event_midi2 {
 typedef struct clap_input_events {
    void *ctx; // reserved pointer for the list
 
+   // returns the number of events in the list
    uint32_t(CLAP_ABI *size)(const struct clap_input_events *list);
 
    // Don't free the returned event, it belongs to the list
