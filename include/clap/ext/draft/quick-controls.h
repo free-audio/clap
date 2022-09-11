@@ -23,21 +23,23 @@ typedef struct clap_quick_controls_page {
 
 typedef struct clap_plugin_quick_controls {
    // [main-thread]
-   uint32_t (*count)(const clap_plugin_t *plugin);
+   uint32_t(CLAP_ABI *count)(const clap_plugin_t *plugin);
 
    // [main-thread]
-   bool (*get)(const clap_plugin_t *plugin, uint32_t page_index, clap_quick_controls_page_t *page);
+   bool(CLAP_ABI *get)(const clap_plugin_t        *plugin,
+                       uint32_t                    page_index,
+                       clap_quick_controls_page_t *page);
 } clap_plugin_quick_controls_t;
 
 typedef struct clap_host_quick_controls {
    // Informs the host that the quick controls have changed.
    // [main-thread]
-   void (*changed)(const clap_host_t *host);
+   void(CLAP_ABI *changed)(const clap_host_t *host);
 
    // Suggest a page to the host because it correspond to what the user is currently editing in the
    // plugin's GUI.
    // [main-thread]
-   void (*suggest_page)(const clap_host_t *host, clap_id page_id);
+   void(CLAP_ABI *suggest_page)(const clap_host_t *host, clap_id page_id);
 } clap_host_quick_controls_t;
 
 #ifdef __cplusplus

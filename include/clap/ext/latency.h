@@ -12,7 +12,7 @@ extern "C" {
 typedef struct clap_plugin_latency {
    // Returns the plugin latency.
    // [main-thread]
-   uint32_t (*get)(const clap_plugin_t *plugin);
+   uint32_t(CLAP_ABI *get)(const clap_plugin_t *plugin);
 } clap_plugin_latency_t;
 
 typedef struct clap_host_latency {
@@ -20,7 +20,7 @@ typedef struct clap_host_latency {
    // The latency is only allowed to change if the plugin is deactivated.
    // If the plugin is activated, call host->request_restart()
    // [main-thread]
-   void (*changed)(const clap_host_t *host);
+   void(CLAP_ABI *changed)(const clap_host_t *host);
 } clap_host_latency_t;
 
 #ifdef __cplusplus

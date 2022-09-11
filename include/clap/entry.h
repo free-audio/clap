@@ -48,16 +48,16 @@ typedef struct clap_plugin_entry {
    //
    // If init() returns false, then the host must not call deinit() nor any other clap
    // related symbols from the DSO.
-   bool (*init)(const char *plugin_path);
+   bool(CLAP_ABI *init)(const char *plugin_path);
 
    // No more calls into the DSO must be made after calling deinit().
-   void (*deinit)(void);
+   void(CLAP_ABI *deinit)(void);
 
    // Get the pointer to a factory. See plugin-factory.h for an example.
    //
    // Returns null if the factory is not provided.
    // The returned pointer must *not* be freed by the caller.
-   const void *(*get_factory)(const char *factory_id);
+   const void *(CLAP_ABI *get_factory)(const char *factory_id);
 } clap_plugin_entry_t;
 
 /* Entry point */

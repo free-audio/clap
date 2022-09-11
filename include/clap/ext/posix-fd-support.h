@@ -27,18 +27,18 @@ typedef struct clap_plugin_posix_fd_support {
    // done writting.
    //
    // [main-thread]
-   void (*on_fd)(const clap_plugin_t *plugin, int fd, clap_posix_fd_flags_t flags);
+   void(CLAP_ABI *on_fd)(const clap_plugin_t *plugin, int fd, clap_posix_fd_flags_t flags);
 } clap_plugin_posix_fd_support_t;
 
 typedef struct clap_host_posix_fd_support {
    // [main-thread]
-   bool (*register_fd)(const clap_host_t *host, int fd, clap_posix_fd_flags_t flags);
+   bool(CLAP_ABI *register_fd)(const clap_host_t *host, int fd, clap_posix_fd_flags_t flags);
 
    // [main-thread]
-   bool (*modify_fd)(const clap_host_t *host, int fd, clap_posix_fd_flags_t flags);
+   bool(CLAP_ABI *modify_fd)(const clap_host_t *host, int fd, clap_posix_fd_flags_t flags);
 
    // [main-thread]
-   bool (*unregister_fd)(const clap_host_t *host, int fd);
+   bool(CLAP_ABI *unregister_fd)(const clap_host_t *host, int fd);
 } clap_host_posix_fd_support_t;
 
 #ifdef __cplusplus

@@ -42,13 +42,13 @@ typedef struct clap_voice_info {
 typedef struct clap_plugin_voice_info {
    // gets the voice info, returns true on success
    // [main-thread && active]
-   bool (*get)(const clap_plugin_t *plugin, clap_voice_info_t *info);
+   bool(CLAP_ABI *get)(const clap_plugin_t *plugin, clap_voice_info_t *info);
 } clap_plugin_voice_info_t;
 
 typedef struct clap_host_voice_info {
    // informs the host that the voice info has changed
    // [main-thread]
-   void (*changed)(const clap_host_t *host);
+   void(CLAP_ABI *changed)(const clap_host_t *host);
 } clap_host_voice_info_t;
 
 #ifdef __cplusplus

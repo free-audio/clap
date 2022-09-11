@@ -30,7 +30,7 @@ typedef struct clap_tuning_info {
 typedef struct clap_plugin_tuning {
    // Called when a tuning is added or removed from the pool.
    // [main-thread]
-   void (*changed)(const clap_plugin_t *plugin);
+   void(CLAP_ABI *changed)(const clap_plugin_t *plugin);
 } clap_plugin_tuning_t;
 
 // This extension provides a dynamic tuning table to the plugin.
@@ -46,23 +46,28 @@ typedef struct clap_host_tuning {
    // should_play(...) should be checked before calling this function.
    //
    // [audio-thread & in-process]
-   double (*get_relative)(const clap_host_t *host,
-                          clap_id            tuning_id,
-                          int32_t            channel,
-                          int32_t            key,
-                          uint32_t           sample_offset);
+   double(CLAP_ABI *get_relative)(const clap_host_t *host,
+                                  clap_id            tuning_id,
+                                  int32_t            channel,
+                                  int32_t            key,
+                                  uint32_t           sample_offset);
 
    // Returns true if the note should be played.
    // [audio-thread & in-process]
-   bool (*should_play)(const clap_host_t *host, clap_id tuning_id, int32_t channel, int32_t key);
+   bool(CLAP_ABI *should_play)(const clap_host_t *host,
+                               clap_id            tuning_id,
+                               int32_t            channel,
+                               int32_t            key);
 
    // Returns the number of tunings in the pool.
    // [main-thread]
-   uint32_t (*get_tuning_count)(const clap_host_t *host);
+   uint32_t(CLAP_ABI *get_tuning_count)(const clap_host_t *host);
 
    // Gets info about a tuning
    // [main-thread]
-   bool (*get_info)(const clap_host_t *host, uint32_t tuning_index, clap_tuning_info_t *info);
+   bool(CLAP_ABI *get_info)(const clap_host_t  *host,
+                            uint32_t            tuning_index,
+                            clap_tuning_info_t *info);
 } clap_host_tuning_t;
 
 #ifdef __cplusplus
