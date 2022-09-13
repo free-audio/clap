@@ -47,6 +47,7 @@ typedef struct clap_process {
    // Audio buffers, they must have the same count as specified
    // by clap_plugin_audio_ports->count().
    // The index maps to clap_plugin_audio_ports->get().
+   // Input buffer and its contents are read-only.
    const clap_audio_buffer_t *audio_inputs;
    clap_audio_buffer_t       *audio_outputs;
    uint32_t                   audio_inputs_count;
