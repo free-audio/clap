@@ -166,7 +166,9 @@ typedef struct clap_event_param_value {
 
    // target parameter
    clap_id param_id; // @ref clap_param_info.id
-   void   *cookie;   // @ref clap_param_info.cookie
+   void   *cookie;   // @ref clap_param_info.cookie. Mandatory field.
+                     // This field must be the value the plugin delivered the host
+                     // for the param_id in question
 
    // target a specific note_id, port, key and channel, -1 for global
    int32_t note_id;
@@ -182,7 +184,9 @@ typedef struct clap_event_param_mod {
 
    // target parameter
    clap_id param_id; // @ref clap_param_info.id
-   void   *cookie;   // @ref clap_param_info.cookie
+   void   *cookie;   // @ref clap_param_info.cookie. Mandatory field.
+                     // This field must be the value the plugin delivered the host
+                     // for the param_id in question
 
    // target a specific note_id, port, key and channel, -1 for global
    int32_t note_id;

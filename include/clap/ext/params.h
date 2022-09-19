@@ -157,17 +157,18 @@ typedef struct clap_param_info {
 
    // This cookie value is optionally set by the plugin. If, however, the plugin
    // chooses to set it the host *must* set that value on every subsequent
-   // event which references a parameter. The host should view this value as
-   // a required, plugin provided, opaque, immutable value for all subsequent communications.
+   // event which references the parameter. The host should view this value as
+   // a required, plugin provided, per-param-id, opaque, immutable value for 
+   // all subsequent communications.
    //
-   // When `clap_host_params->rescan(CLAP_PARAM_RESCAN_ALL)` the cookie is
+   // When `clap_host_params->rescan(CLAP_PARAM_RESCAN_ALL)` is called the cookie is
    // invalidated and the plugin can provide a new cookie value (or the same cookie value).
    // After the plugin is destroyed, the cookie is no longer valid. 
    //
    // The host should make no assumptions about the cookie, what it points to, or if
    // any value of the cookie, including nullptr, is special.
    //
-   // The purpose to allow the plugin fast access to an internal plugin parameter
+   // The purpose is to allow the plugin fast access to an internal plugin parameter
    // data structure. For instance, if a plugin has its own internal class "MyParam"
    // you could imagine code during the CLAP setup like
    //
