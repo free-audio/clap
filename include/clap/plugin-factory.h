@@ -11,7 +11,8 @@ extern "C" {
 // Every method must be thread-safe.
 // It is very important to be able to scan the plugin as quickly as possible.
 //
-// If the content of the factory may change due to external events, like the user installed
+// The host may use clap_plugin_invalidation_factory to detect filesystem changes
+// which may change the factory's content.
 typedef struct clap_plugin_factory {
    // Get the number of plugins available.
    // [thread-safe]
