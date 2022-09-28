@@ -157,7 +157,7 @@ typedef struct clap_param_info {
 
    // This value is optional and set by the plugin. The host will
    // set it on all subsequent events regarding this param_id 
-   // or set the cookie or nullptr if the host chooses to
+   // or set the cookie to nullptr if the host chooses to
    // not implement cookies. It is very strongly recommended
    // that the host implement cookies and some plugins may ignore
    // events which disregard their cookie.
