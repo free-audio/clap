@@ -155,16 +155,33 @@ typedef struct clap_param_info {
 
    clap_param_info_flags flags;
 
-   // This value is optional and set by the plugin.
-   // Its purpose is to provide a fast access to the plugin parameter:
+   // This value is optional and set by the plugin. The host will
+   // set it on all subsequent events regarding this param_id 
+   // or set the cookie or nullptr if the host chooses to
+   // not implement cookies. It is very strongly recommended
+   // that the host implement cookies and some plugins may ignore
+   // events which disregard their cookie.
    //
+   // Its purpose is to provide a fast access to the plugin parameter
+   // objects. For instance:
+   //
+   // in clap_plugin_params.get_info
    //    Parameter *p = findParameter(param_id);
    //    param_info->cookie = p;
    //
-   //    /* and later on */
-   //    Parameter *p = (Parameter *)cookie;
+   // later, in clap_plugin.process:
    //
-   // It is invalidated on clap_host_params->rescan(CLAP_PARAM_RESCAN_ALL) and when the plugin is
+   //    Parameter *p{nullptr};
+   //    if (evt->cookie) [[likely]]
+   //       p =  (Parameter *)evt->cookie;
+   //    else
+   //       p = -- alternate mechanism --
+   //
+   // where "alternate mechanism" is a mechanism the plugin implements
+   // to map parameter ids to internal objects.
+   //
+   // Once set, the cookie is valid until invalidated by a call to 
+   // clap_host_params->rescan(CLAP_PARAM_RESCAN_ALL) or when the plugin is
    // destroyed.
    void *cookie;
 
