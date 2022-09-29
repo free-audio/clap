@@ -4,6 +4,6 @@
 int main(int argc, char **argv) {
    (void)argc;
    (void)argv;
-   clap_version_t m = CLAP_VERSION;
+   const clap_version_t m = CLAP_VERSION;
    return !clap_version_is_compatible(m);
 }
