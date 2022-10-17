@@ -181,8 +181,9 @@ typedef struct clap_param_info {
    //    in events addressing parameters.
    //  - The plugin must gracefully handle the case of a cookie
    //    which is nullptr.
-   //  - Many plugins will deliver better performance if the host can provide
-   //    the cookie in a faster time than a hashmap lookup per param per event.
+   //  - Many plugins will process the parameter events more quickly if the host
+   //    can provide the cookie in a faster time than a hashmap lookup per param
+   //    per event.
    void *cookie;
 
    // the display name
