@@ -155,42 +155,43 @@ typedef struct clap_param_info {
 
    clap_param_info_flags flags;
 
-   // This value is optional and set by the plugin. The host will
-   // set it on all subsequent events regarding this param_id 
-   // or set the cookie to nullptr if the host chooses to
-   // not implement cookies. 
+   // This value is optional and set by the plugin.
+   // Its purpose is to provide a fast access to the
+   // plugin parameter objects by caching its pointer.
+   // For instance:
    //
-   // The plugin must gracefully handle the case of a cookie 
-   // which is nullptr, but can safely assume any cookie 
-   // which is not nullptr is the value it issued.
-   // 
-   // It is very strongly recommended that the host implement 
-   // cookies. Some plugins may have noticably reduced
-   // performance when addressing params in hosts without cookies.
-   //
-   // The cookie's purpose is to provide a fast access to the 
-   // plugin parameter objects. For instance:
-   //
-   // in clap_plugin_params.get_info
+   // in clap_plugin_params.get_info():
    //    Parameter *p = findParameter(param_id);
    //    param_info->cookie = p;
    //
-   // later, in clap_plugin.process:
+   // later, in clap_plugin.process():
    //
-   //    Parameter *p{nullptr};
-   //    if (evt->cookie) [[likely]]
-   //       p =  (Parameter *)evt->cookie;
-   //    else
-   //       p = -- alternate mechanism --
+   //    Parameter *p = (Parameter *)event->cookie;
+   //    if (!p) [[unlikely]]
+   //       p = findParameter(event->param_id);
    //
-   // where "alternate mechanism" is a mechanism the plugin implements
-   // to map parameter ids to internal objects. 
+   // where findParameter() is a function the plugin implements
+   // to map parameter ids to internal objects.
    //
-   // The host should make no assumption about the
-   // value of the cookie other than passing it back to the plugin or
-   // replacing it with nullptr. 
+   // The host will either provide the cookie as issued or nullptr
+   // in events addressing parameters.
    //
-   // Once set, the cookie is valid until invalidated by a call to 
+   // The plugin must gracefully handle the case of a cookie
+   // which is nullptr, but can safely assume any cookie
+   // which is not nullptr is the value it issued.
+   //
+   // The host should provide the cookie if its retrival is cheaper
+   // than an hastable lookup, otherwise the plugin may as well do
+   // the parameter lookup.
+   //
+   // TIP: the host may build a cached array of parameters info
+   // and internally work with parameter index, that way the retrival cost
+   // of the cookie is equivalent to an array access.
+   //
+   // The host should make no assumption about the value of the cookie
+   // other than passing it back to the plugin or replacing it with nullptr.
+   //
+   // Once set, the cookie is valid until invalidated by a call to
    // clap_host_params->rescan(CLAP_PARAM_RESCAN_ALL) or when the plugin is
    // destroyed.
    void *cookie;
