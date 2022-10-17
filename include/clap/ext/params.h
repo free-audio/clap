@@ -157,7 +157,7 @@ typedef struct clap_param_info {
 
    // This value is optional and set by the plugin.
    // Its purpose is to provide a fast access to the
-   // plugin parameter objects by caching its pointer.
+   // plugin parameter object by caching its pointer.
    // For instance:
    //
    // in clap_plugin_params.get_info():
