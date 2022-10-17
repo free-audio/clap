@@ -1,3 +1,12 @@
+# Changes in 1.1.2
+
+* [macros.h](include/clap/private/macros.h): add `CLAP_ABI` which defines the calling convention and use it everywhere
+* [events.h](include/clap/events.h): clarify `clap_input_events.size()`
+* [check-for-update.h](include/clap/ext/draft/check-for-update.h): fix typedef
+* [file-reference.h](include/clap/ext/draft/file-reference.h): improve documentation
+* [params.h](include/clap/ext/params.h): clarify how the cookie works and add some notes about `flush()`
+* [process.h](include/clap/process.h): clarify how the audio buffer mapping works
+
 # Changes in 1.1.1
 
 * [clap.h](include/clap/clap.h): missing include for [state-context.h](include/clap/ext/draft/state-context.h).
