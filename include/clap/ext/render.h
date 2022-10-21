@@ -27,11 +27,11 @@ typedef struct clap_plugin_render {
    // Returns true if the plugin has an hard requirement to process in real-time.
    // This is especially useful for plugin acting as a proxy to an hardware device.
    // [main-thread]
-   bool (*has_hard_realtime_requirement)(const clap_plugin_t *plugin);
+   bool(CLAP_ABI *has_hard_realtime_requirement)(const clap_plugin_t *plugin);
 
    // Returns true if the rendering mode could be applied.
    // [main-thread]
-   bool (*set)(const clap_plugin_t *plugin, clap_plugin_render_mode mode);
+   bool(CLAP_ABI *set)(const clap_plugin_t *plugin, clap_plugin_render_mode mode);
 } clap_plugin_render_t;
 
 #ifdef __cplusplus

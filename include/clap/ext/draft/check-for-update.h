@@ -18,12 +18,13 @@ typedef struct clap_check_for_update_info {
 
 typedef struct clap_plugin_check_for_update {
    // [main-thread]
-   void (*check)(const clap_plugin_t *plugin, bool include_preview);
-} clap_plugin_check_for_update;
+   void(CLAP_ABI *check)(const clap_plugin_t *plugin, bool include_preview);
+} clap_plugin_check_for_update_t;
 
 typedef struct clap_host_check_for_update {
    // [main-thread]
-   void (*on_new_version)(const clap_host_t *host, const clap_check_for_update_info_t *update_info);
+   void(CLAP_ABI *on_new_version)(const clap_host_t                  *host,
+                                  const clap_check_for_update_info_t *update_info);
 } clap_host_check_for_update_t;
 
 #ifdef __cplusplus

@@ -57,29 +57,29 @@ typedef struct clap_plugin_surround {
    // Stores into the channel_map array, the surround identifer of each channels.
    // Returns the number of elements stored in channel_map
    // [main-thread]
-   uint32_t (*get_channel_map)(const clap_plugin_t *plugin,
-                               bool                 is_input,
-                               uint32_t             port_index,
-                               uint8_t             *channel_map,
-                               uint32_t             channel_map_capacity);
+   uint32_t(CLAP_ABI *get_channel_map)(const clap_plugin_t *plugin,
+                                       bool                 is_input,
+                                       uint32_t             port_index,
+                                       uint8_t             *channel_map,
+                                       uint32_t             channel_map_capacity);
 
    // Informs the plugin that the host preferred channel map has changed.
    // [main-thread]
-   void (*changed)(const clap_plugin_t *plugin);
+   void(CLAP_ABI *changed)(const clap_plugin_t *plugin);
 } clap_plugin_surround_t;
 
 typedef struct clap_host_surround {
    // Informs the host that the channel map has changed.
    // The channel map can only change when the plugin is de-activated.
    // [main-thread]
-   void (*changed)(const clap_host_t *host);
+   void(CLAP_ABI *changed)(const clap_host_t *host);
 
    // Ask the host what is the prefered/project surround channel map.
    // [main-thread]
-   void (*get_preferred_channel_map)(const clap_host_t *host,
-                                     uint8_t           *channel_map,
-                                     uint32_t           channel_map_capacity,
-                                     uint32_t          *channel_count);
+   void(CLAP_ABI *get_preferred_channel_map)(const clap_host_t *host,
+                                             uint8_t           *channel_map,
+                                             uint32_t           channel_map_capacity,
+                                             uint32_t          *channel_count);
 } clap_host_surround_t;
 
 #ifdef __cplusplus

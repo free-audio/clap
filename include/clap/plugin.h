@@ -38,12 +38,12 @@ typedef struct clap_plugin {
    // Must be called after creating the plugin.
    // If init returns false, the host must destroy the plugin instance.
    // [main-thread]
-   bool (*init)(const struct clap_plugin *plugin);
+   bool(CLAP_ABI *init)(const struct clap_plugin *plugin);
 
    // Free the plugin and its resources.
    // It is required to deactivate the plugin prior to this call.
    // [main-thread & !active]
-   void (*destroy)(const struct clap_plugin *plugin);
+   void(CLAP_ABI *destroy)(const struct clap_plugin *plugin);
 
    // Activate and deactivate the plugin.
    // In this call the plugin may allocate memory and prepare everything needed for the process
@@ -52,20 +52,20 @@ typedef struct clap_plugin {
    // Once activated the latency and port configuration must remain constant, until deactivation.
    //
    // [main-thread & !active_state]
-   bool (*activate)(const struct clap_plugin *plugin,
-                    double                    sample_rate,
-                    uint32_t                  min_frames_count,
-                    uint32_t                  max_frames_count);
+   bool(CLAP_ABI *activate)(const struct clap_plugin *plugin,
+                            double                    sample_rate,
+                            uint32_t                  min_frames_count,
+                            uint32_t                  max_frames_count);
    // [main-thread & active_state]
-   void (*deactivate)(const struct clap_plugin *plugin);
+   void(CLAP_ABI *deactivate)(const struct clap_plugin *plugin);
 
    // Call start processing before processing.
    // [audio-thread & active_state & !processing_state]
-   bool (*start_processing)(const struct clap_plugin *plugin);
+   bool(CLAP_ABI *start_processing)(const struct clap_plugin *plugin);
 
    // Call stop processing before sending the plugin to sleep.
    // [audio-thread & active_state & processing_state]
-   void (*stop_processing)(const struct clap_plugin *plugin);
+   void(CLAP_ABI *stop_processing)(const struct clap_plugin *plugin);
 
    // - Clears all buffers, performs a full reset of the processing state (filters, oscillators,
    //   enveloppes, lfo, ...) and kills all voices.
@@ -73,21 +73,22 @@ typedef struct clap_plugin {
    // - clap_process.steady_time may jump backward.
    //
    // [audio-thread & active_state]
-   void (*reset)(const struct clap_plugin *plugin);
+   void(CLAP_ABI *reset)(const struct clap_plugin *plugin);
 
    // process audio, events, ...
    // [audio-thread & active_state & processing_state]
-   clap_process_status (*process)(const struct clap_plugin *plugin, const clap_process_t *process);
+   clap_process_status(CLAP_ABI *process)(const struct clap_plugin *plugin,
+                                          const clap_process_t     *process);
 
    // Query an extension.
    // The returned pointer is owned by the plugin.
    // [thread-safe]
-   const void *(*get_extension)(const struct clap_plugin *plugin, const char *id);
+   const void *(CLAP_ABI *get_extension)(const struct clap_plugin *plugin, const char *id);
 
    // Called by the host on the main thread in response to a previous call to:
    //   host->request_callback(host);
    // [main-thread]
-   void (*on_main_thread)(const struct clap_plugin *plugin);
+   void(CLAP_ABI *on_main_thread)(const struct clap_plugin *plugin);
 } clap_plugin_t;
 
 #ifdef __cplusplus

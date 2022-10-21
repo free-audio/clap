@@ -25,7 +25,7 @@ typedef int32_t clap_log_severity;
 typedef struct clap_host_log {
    // Log a message through the host.
    // [thread-safe]
-   void (*log)(const clap_host_t *host, clap_log_severity severity, const char *msg);
+   void(CLAP_ABI *log)(const clap_host_t *host, clap_log_severity severity, const char *msg);
 } clap_host_log_t;
 
 #ifdef __cplusplus
