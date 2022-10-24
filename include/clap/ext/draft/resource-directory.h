@@ -35,6 +35,10 @@ extern "C" {
 /// Note for the host
 /// - try to use the filesytem's copy-on-write feature when possible for reducing exclusive folder
 ///   space usage on duplication
+/// - host can "garbage collect" the files in the shared folder using:
+///     clap_plugin_resource_directory.get_files_count()
+///     clap_plugin_resource_directory.get_file_path()
+///   but be **very** careful before deleting any resources
 
 typedef struct clap_plugin_resource_directory {
    // Returns true if the plugin wants a resource directory with the specified sharing.
@@ -54,13 +58,16 @@ typedef struct clap_plugin_resource_directory {
    // [main-thread]
    void(CLAP_ABI *collect)(const clap_plugin_t *plugin, bool all);
 
-   // Returns true if the plugin is using the file pointed by path or any file under the path
-   // directory.
-   //
-   // path must be absolute.
+   // Returns the number of files used by the plugin in the shared resource folder.
    //
    // [main-thread]
-   bool(CLAP_ABI *is_using_file)(const clap_plugin *plugin, const char *path);
+   uint32_t(CLAP_ABI *get_files_count)(const clap_plugin_t *plugin);
+
+   // Retrieves file path.
+   // @param path writable memory to store the path
+   // @param path_size number of available bytes in path
+   // Returns the number of bytes in the path, or -1 on error
+   int32_t(CLAP_ABI* get_file_path)(const clap_plugin_t *plugin, uint32_t index, char *path, uint32_t path_size);
 } clap_plugin_resource_directory_t;
 
 typedef struct clap_host_resource_directory {
