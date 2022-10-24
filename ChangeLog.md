@@ -6,6 +6,8 @@
 * [file-reference.h](include/clap/ext/draft/file-reference.h): improve documentation
 * [params.h](include/clap/ext/params.h): clarify how the cookie works and add some notes about `flush()`
 * [process.h](include/clap/process.h): clarify how the audio buffer mapping works
+* [gui.h](include/clap/ext/gui.h): clarify `clap_plugin_gui.get_preferred_agi()`
+* [plugin-factory.h](include/clap/plugin-factory.h): mention `clap_plugin_invalidation_factory` which can be use to invalidate cached entries
 
 # Changes in 1.1.1
 
