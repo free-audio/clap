@@ -24,6 +24,7 @@ extern "C" {
 /// Keeping the shared directory clean:
 /// - to avoid clashes in the shared directory, plugins are encourraged to organize their files in
 ///   sub-folders, for example create one subdirectory using the vendor name
+/// - don't use symbolic links or hard links which points outside of the directory
 ///
 /// Resource life-time:
 /// - exclusive folder content is managed by the plugin instance
@@ -52,6 +53,14 @@ typedef struct clap_plugin_resource_directory {
    // factory content unless the param all is true.
    // [main-thread]
    void(CLAP_ABI *collect)(const clap_plugin_t *plugin, bool all);
+
+   // Returns true if the plugin is using the file pointed by path or any file under the path
+   // directory.
+   //
+   // path must be absolute.
+   //
+   // [main-thread]
+   bool(CLAP_ABI *is_using_file)(const clap_plugin *plugin, const char *path);
 } clap_plugin_resource_directory_t;
 
 typedef struct clap_host_resource_directory {
