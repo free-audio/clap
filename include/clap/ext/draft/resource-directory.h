@@ -14,13 +14,26 @@ extern "C" {
 /// provided by the host and recover them later on.
 ///
 /// Resource sharing:
-/// - shared directory is shared among all plugin instances
-/// - exclusive directory is exclusive to the plugin instance, which means that if the plugin
-///   is duplicated, its exclusive directory must be duplicated too
+/// - shared directory is shared among all plugin instances, hence mostly appropriate for read-only
+/// content
+///   -> suitable for read-only content
+/// - exclusive directory is exclusive to the plugin instance
+///   -> if the plugin, then its exclusive directory must be duplicated too
+///   -> suitable for read-write content
 ///
 /// Keeping the shared directory clean:
 /// - to avoid clashes in the shared directory, plugins are encourraged to organize their files in
 ///   sub-folders, for example create one subdirectory using the vendor name
+///
+/// Resource life-time:
+/// - exclusive folder content is managed by the plugin instance
+/// - exclusive folder content is deleted when the plugin instance is removed from the project
+/// - shared folder content isn't managed by the host, until all plugins using the shared directory
+///   are removed from the project
+///
+/// Note for the host
+/// - try to use the filesytem's copy-on-write feature when possible for reducing exclusive folder
+///   space usage on duplication
 
 typedef struct clap_plugin_resource_directory {
    // Returns true if the plugin wants a resource directory with the specified sharing.
@@ -32,9 +45,7 @@ typedef struct clap_plugin_resource_directory {
    // If path is null or blank, it clears the directory location.
    //
    // [main-thread]
-   void(CLAP_ABI *set_directory)(const clap_plugin_t *plugin,
-                                          const char          *path,
-                                          bool                 is_shared);
+   void(CLAP_ABI *set_directory)(const clap_plugin_t *plugin, const char *path, bool is_shared);
 
    // Asks the plugin to put its resources into the resources directory.
    // It is not necessary to collect files which belongs to the plugin's
