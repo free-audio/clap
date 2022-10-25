@@ -13,6 +13,8 @@ extern "C" {
 /// This extension provides a way for the plugin to store its resources as file in a directory
 /// provided by the host and recover them later on.
 ///
+/// The plugin **must** store relative path in its state toward resource directories.
+///
 /// Resource sharing:
 /// - shared directory is shared among all plugin instances, hence mostly appropriate for read-only
 /// content
@@ -48,6 +50,7 @@ typedef struct clap_plugin_resource_directory {
    // Sets the directory in which the plugin can save its resources.
    // The directory remains valid until it is overriden or the plugin is destroyed.
    // If path is null or blank, it clears the directory location.
+   // path must be absolute.
    //
    // [main-thread]
    void(CLAP_ABI *set_directory)(const clap_plugin_t *plugin, const char *path, bool is_shared);
@@ -63,7 +66,7 @@ typedef struct clap_plugin_resource_directory {
    // [main-thread]
    uint32_t(CLAP_ABI *get_files_count)(const clap_plugin_t *plugin);
 
-   // Retrieves file path.
+   // Retrieves relative file path to the resources directory.
    // @param path writable memory to store the path
    // @param path_size number of available bytes in path
    // Returns the number of bytes in the path, or -1 on error
