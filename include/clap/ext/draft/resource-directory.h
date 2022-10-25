@@ -47,7 +47,6 @@ typedef struct clap_plugin_resource_directory {
    // The directory remains valid until it is overriden or the plugin is destroyed.
    // If path is null or blank, it clears the directory location.
    // path must be absolute.
-   //
    // [main-thread]
    void(CLAP_ABI *set_directory)(const clap_plugin_t *plugin, const char *path, bool is_shared);
 
@@ -58,7 +57,6 @@ typedef struct clap_plugin_resource_directory {
    void(CLAP_ABI *collect)(const clap_plugin_t *plugin, bool all);
 
    // Returns the number of files used by the plugin in the shared resource folder.
-   //
    // [main-thread]
    uint32_t(CLAP_ABI *get_files_count)(const clap_plugin_t *plugin);
 
@@ -66,19 +64,18 @@ typedef struct clap_plugin_resource_directory {
    // @param path writable memory to store the path
    // @param path_size number of available bytes in path
    // Returns the number of bytes in the path, or -1 on error
+   // [main-thread]
    int32_t(CLAP_ABI* get_file_path)(const clap_plugin_t *plugin, uint32_t index, char *path, uint32_t path_size);
 } clap_plugin_resource_directory_t;
 
 typedef struct clap_host_resource_directory {
    // Request the host to setup a resource directory with the specified sharing.
    // Returns true if the host will perform the request.
-   //
    // [main-thread]
    bool(CLAP_ABI *request_directory)(const clap_host *host, bool is_shared);
 
    // Tell the host that the resource directory of the specified sharing is no longer required.
    // If is_shared = false, then the host may delete the directory content.
-   //
    // [main-thread]
    void(CLAP_ABI *release_directory)(const clap_host *host, bool is_shared);
 } clap_host_resource_directory_t;
