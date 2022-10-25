@@ -43,10 +43,6 @@ extern "C" {
 ///   but be **very** careful before deleting any resources
 
 typedef struct clap_plugin_resource_directory {
-   // Returns true if the plugin wants a resource directory with the specified sharing.
-   // [main-thread]
-   bool(CLAP_ABI *wants_directory)(const clap_plugin_t *plugin, bool is_shared);
-
    // Sets the directory in which the plugin can save its resources.
    // The directory remains valid until it is overriden or the plugin is destroyed.
    // If path is null or blank, it clears the directory location.
