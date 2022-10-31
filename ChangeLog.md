@@ -1,3 +1,6 @@
+# Changes in 1.1.3
+* [plugin.h](include/clap/plugin.h) make feature list on clap_plugin_descriptor_t const
+
 # Changes in 1.1.2
 
 * [macros.h](include/clap/private/macros.h): add `CLAP_ABI` which defines the calling convention and use it everywhere
