@@ -18,6 +18,9 @@ static CLAP_CONSTEXPR const char CLAP_PROPERTY_STRING[] = "clap:string";
 // value = clap_color_t* and size == sizeof(clap_color_t)
 static CLAP_CONSTEXPR const char CLAP_PROPERTY_COLOR[] = "clap:color";
 
+// value = void* and size is the length in bytes
+static CLAP_CONSTEXPR const char CLAP_PROPERTY_BLOB[] = "clap:blob";
+
 typedef struct clap_properties {
    void *ctx; // reserved pointer for the object
 
