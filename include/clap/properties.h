@@ -3,10 +3,19 @@
 #include "private/std.h"
 #include "private/macros.h"
 
+// value = bool* and size == sizeof(bool)
 static CLAP_CONSTEXPR const char CLAP_PROPERTY_BOOL[] = "clap:bool";
+
+// value = int64_t* and size == sizeof(int64_t)
 static CLAP_CONSTEXPR const char CLAP_PROPERTY_INT64[] = "clap:int64";
+
+// value = double* and size == sizeof(double)
 static CLAP_CONSTEXPR const char CLAP_PROPERTY_DOUBLE[] = "clap:double";
+
+// value = char* and size is the length in bytes including terminating null byte
 static CLAP_CONSTEXPR const char CLAP_PROPERTY_STRING[] = "clap:string";
+
+// value = clap_color_t* and size == sizeof(clap_color_t)
 static CLAP_CONSTEXPR const char CLAP_PROPERTY_COLOR[] = "clap:color";
 
 typedef struct clap_properties {
