@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.17)
 enable_testing()
-project(CLAP C CXX)
+project(CLAP LANGUAGES C CXX VERSION 1.1.2)
 
 option(CLAP_BUILD_TESTS "Should CLAP build tests and the like?" OFF)
 
