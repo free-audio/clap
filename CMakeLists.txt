@@ -5,8 +5,7 @@ project(CLAP LANGUAGES C CXX VERSION 1.1.2)
 option(CLAP_BUILD_TESTS "Should CLAP build tests and the like?" OFF)
 
 # If you use clap as a submodule of your plugin you need some interface projects
-# to allow you to link. clap-core gives you the include directory and clap-plugin-core
-# gives you the core + plugin-glue.
+# to allow you to link
 add_library(clap INTERFACE)
 target_include_directories(clap INTERFACE include)
 
