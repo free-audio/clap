@@ -1,6 +1,18 @@
 cmake_minimum_required(VERSION 3.17)
 enable_testing()
-project(CLAP LANGUAGES C CXX VERSION 1.1.2)
+
+# Extract the version from header file
+file(READ "include/clap/version.h" clap_version_header)
+string(REGEX MATCH "CLAP_VERSION_MAJOR \\(\\(uint32_t\\)([0-9]+)\\)" CLAP_VERSION_MAJOR ${clap_version_header})
+set(CLAP_VERSION_MAJOR ${CMAKE_MATCH_1})
+string(REGEX MATCH "CLAP_VERSION_MINOR \\(\\(uint32_t\\)([0-9]+)\\)" _ ${clap_version_header})
+set(CLAP_VERSION_MINOR ${CMAKE_MATCH_1})
+string(REGEX MATCH "CLAP_VERSION_REVISION \\(\\(uint32_t\\)([0-9]+)\\)" _ ${clap_version_header})
+set(CLAP_VERSION_REVISION ${CMAKE_MATCH_1})
+
+message("CLAP version: ${CLAP_VERSION_MAJOR}.${CLAP_VERSION_MINOR}.${CLAP_VERSION_REVISION}")
+
+project(CLAP LANGUAGES C CXX VERSION ${CLAP_VERSION_MAJOR}.${CLAP_VERSION_MINOR}.${CLAP_VERSION_REVISION})
 
 option(CLAP_BUILD_TESTS "Should CLAP build tests and the like?" OFF)
 
