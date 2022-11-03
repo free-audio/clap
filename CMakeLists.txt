@@ -7,8 +7,13 @@ option(CLAP_BUILD_TESTS "Should CLAP build tests and the like?" OFF)
 # If you use clap as a submodule of your plugin you need some interface projects
 # to allow you to link. clap-core gives you the include directory and clap-plugin-core
 # gives you the core + plugin-glue.
-add_library(clap-core INTERFACE)
-target_include_directories(clap-core INTERFACE include)
+add_library(clap INTERFACE)
+target_include_directories(clap INTERFACE include)
+
+# Older versions of the CLAP interfaces only defined a `clap-core` library.
+# Exposing the main library with the same name as the project makes it much
+# simpler for build systems to find the CLAP package.
+add_library(clap-core ALIAS clap)
 
 include(GNUInstallDirs)
 install(DIRECTORY "include/clap" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
