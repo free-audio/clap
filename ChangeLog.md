@@ -1,4 +1,5 @@
 # Changes in 1.1.3
+
 * [plugin.h](include/clap/plugin.h) make feature list on clap_plugin_descriptor_t const
 
 # Changes in 1.1.2
