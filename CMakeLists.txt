@@ -21,6 +21,13 @@ install(DIRECTORY "include/clap" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
 install(TARGETS clap EXPORT clap INCLUDES DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
 install(EXPORT clap DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/clap" FILE "clap-config.cmake")
 
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/clap-config-version.cmake"
+    VERSION "${PROJECT_VERSION}"
+    COMPATIBILITY AnyNewerVersion)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/clap-config-version.cmake" DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/clap")
+
 # clap-tests should always be available, to avoid build failing here and there
 # because the target doesn't exists
 add_custom_target(clap-tests)
