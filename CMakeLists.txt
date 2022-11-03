@@ -10,7 +10,8 @@ option(CLAP_BUILD_TESTS "Should CLAP build tests and the like?" OFF)
 add_library(clap-core INTERFACE)
 target_include_directories(clap-core INTERFACE include)
 
-install(DIRECTORY include DESTINATION "." OPTIONAL EXCLUDE_FROM_ALL)
+include(GNUInstallDirs)
+install(DIRECTORY "include/clap" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
 
 # clap-tests should always be available, to avoid build failing here and there
 # because the target doesn't exists
