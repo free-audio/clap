@@ -7,7 +7,9 @@ option(CLAP_BUILD_TESTS "Should CLAP build tests and the like?" OFF)
 # If you use clap as a submodule of your plugin you need some interface projects
 # to allow you to link
 add_library(clap INTERFACE)
-target_include_directories(clap INTERFACE include)
+target_include_directories(clap INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 # Older versions of the CLAP interfaces only defined a `clap-core` library.
 # Exposing the main library with the same name as the project makes it much
@@ -16,6 +18,8 @@ add_library(clap-core ALIAS clap)
 
 include(GNUInstallDirs)
 install(DIRECTORY "include/clap" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
+install(TARGETS clap EXPORT clap INCLUDES DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
+install(EXPORT clap DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/clap" FILE "clap-config.cmake")
 
 # clap-tests should always be available, to avoid build failing here and there
 # because the target doesn't exists
