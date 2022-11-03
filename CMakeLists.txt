@@ -28,6 +28,12 @@ write_basic_package_version_file(
     COMPATIBILITY AnyNewerVersion)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/clap-config-version.cmake" DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/clap")
 
+# In addition to the above generated `clap-config.cmake` file, we'll also
+# provide a pkg-config file to make it easier to consume this library in a
+# portable way
+configure_file(clap.pc.in "${CMAKE_CURRENT_BINARY_DIR}/clap.pc" @ONLY)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/clap.pc" DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
+
 # clap-tests should always be available, to avoid build failing here and there
 # because the target doesn't exists
 add_custom_target(clap-tests)
