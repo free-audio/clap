@@ -14,6 +14,9 @@ enum {
    // This is not suited for describing a file path on the disk, as NTFS allows up to 32K long
    // paths.
    CLAP_PATH_SIZE = 1024,
+
+   // String capacity for storing custom identifiers, it could be a uuid for example.
+   CLAP_CUSTOM_ID_SIZE = 256,
 };
 
 #ifdef __cplusplus
