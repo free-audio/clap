@@ -27,6 +27,7 @@ target_include_directories(clap INTERFACE
 # Exposing the main library with the same name as the project makes it much
 # simpler for build systems to find the CLAP package.
 add_library(clap-core ALIAS clap)
+set_target_properties(clap-core PROPERTIES DEPRECATION "Link against clap instead of clap-core")
 
 include(GNUInstallDirs)
 install(DIRECTORY "include/clap" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
