@@ -59,6 +59,6 @@
 #include "ext/draft/remote-controls.h"
 #include "ext/draft/state-context.h"
 #include "ext/draft/surround.h"
-#include "ext/draft/channel-info.h"
+#include "ext/draft/track-info.h"
 #include "ext/draft/tuning.h"
 #include "ext/draft/param-indication.h"
