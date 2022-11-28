@@ -23,11 +23,8 @@ target_include_directories(clap INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
-# Older versions of the CLAP interfaces only defined a `clap-core` library.
-# Exposing the main library with the same name as the project makes it much
-# simpler for build systems to find the CLAP package.
+# `clap-core` is deprecated, please `clap` instead.
 add_library(clap-core ALIAS clap)
-set_target_properties(clap-core PROPERTIES DEPRECATION "Link against clap instead of clap-core")
 
 include(GNUInstallDirs)
 install(DIRECTORY "include/clap" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
