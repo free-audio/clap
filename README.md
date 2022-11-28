@@ -12,6 +12,7 @@
   - [Fundamental extensions](#fundamental-extensions)
   - [Support extensions](#support-extensions)
   - [Extra extensions](#extra-extensions)
+- [Adapters](#adapters)
 - [Resources](#resources)
   - [Examples](#examples)
   - [Community related projects](#community-related-projects)
@@ -101,6 +102,10 @@ and use to get a basic plugin experience:
 - [audio-ports-config](include/clap/ext/audio-ports-config.h), simple list of possible configurations
 - [surround](include/clap/ext/draft/surround.h), inspect surround channel mapping
 - [ambisonic](include/clap/ext/draft/ambisonic.h), inspect ambisonic channel mapping
+
+# Adapters
+
+- [clap-wrapper](https://github.com/free-audio/clap-wrapper), wrappers for using CLAP in other plugin environments
 
 # Resources
 
