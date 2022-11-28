@@ -100,8 +100,6 @@ if (${CLAP_BUILD_TESTS})
                     MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/src/plugins.plist.in
                     )
     elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-        # this is already exported by using CLAP_EXPORT
-        # target_link_options(clap-plugin-template PRIVATE /EXPORT:clap_entry)
         set_target_properties(clap-plugin-template PROPERTIES SUFFIX ".clap" PREFIX "")
     endif()
 endif()
