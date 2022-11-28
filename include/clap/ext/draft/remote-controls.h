@@ -57,7 +57,7 @@ typedef struct clap_plugin_remote_controls {
                        clap_remote_controls_page_t *page);
 } clap_plugin_remote_controls_t;
 
-typedef struct clap_host_remotecontrols {
+typedef struct clap_host_remote_controls {
    // Informs the host that the remote controls have changed.
    // [main-thread]
    void(CLAP_ABI *changed)(const clap_host_t *host);
