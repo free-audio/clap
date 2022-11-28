@@ -1,6 +1,7 @@
 # Changes in 1.1.3
 
 * CMake: generate CMake and pkg-config package files on install
+* CMake: `clap-core` target is now deprecated, use `clap` target instead
 * [plugin.h](include/clap/plugin.h) make feature list on clap_plugin_descriptor_t const
 
 # Changes in 1.1.2
