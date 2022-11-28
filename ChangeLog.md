@@ -1,3 +1,10 @@
+# Changes in 1.1.3
+
+* CMake: generate CMake and pkg-config package files on install
+* CMake: `clap-core` target is now deprecated, use `clap` target instead
+* [plugin.h](include/clap/plugin.h): make feature list on clap_plugin_descriptor_t const
+* [entry.h](include/clap/entry.h): fix bad location on windows: replaced `%CommonFilesFolder%/CLAP/` by `%COMMONPROGRAMFILES%\CLAP`
+
 # Changes in 1.1.2
 
 * [macros.h](include/clap/private/macros.h): add `CLAP_ABI` which defines the calling convention and use it everywhere
@@ -6,7 +13,7 @@
 * [file-reference.h](include/clap/ext/draft/file-reference.h): improve documentation
 * [params.h](include/clap/ext/params.h): clarify how the cookie works and add some notes about `flush()`
 * [process.h](include/clap/process.h): clarify how the audio buffer mapping works
-* [gui.h](include/clap/ext/gui.h): clarify `clap_plugin_gui.get_preferred_agi()`
+* [gui.h](include/clap/ext/gui.h): clarify `clap_plugin_gui.get_preferred_api()`
 * [plugin-factory.h](include/clap/plugin-factory.h): mention `clap_plugin_invalidation_factory` which can be use to invalidate cached entries
 
 # Changes in 1.1.1

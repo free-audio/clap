@@ -1,0 +1,8 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@
+
+Name: clap
+Description: The interface headers for the CLAP audio plugin API
+Version: @CMAKE_PROJECT_VERSION@
+
+Cflags: -I${includedir}

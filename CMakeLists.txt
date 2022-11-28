@@ -1,16 +1,48 @@
 cmake_minimum_required(VERSION 3.17)
 enable_testing()
-project(CLAP C CXX)
+
+# Extract the version from header file
+file(READ "include/clap/version.h" clap_version_header)
+string(REGEX MATCH "CLAP_VERSION_MAJOR \\(\\(uint32_t\\)([0-9]+)\\)" _ ${clap_version_header})
+set(CLAP_VERSION_MAJOR ${CMAKE_MATCH_1})
+string(REGEX MATCH "CLAP_VERSION_MINOR \\(\\(uint32_t\\)([0-9]+)\\)" _ ${clap_version_header})
+set(CLAP_VERSION_MINOR ${CMAKE_MATCH_1})
+string(REGEX MATCH "CLAP_VERSION_REVISION \\(\\(uint32_t\\)([0-9]+)\\)" _ ${clap_version_header})
+set(CLAP_VERSION_REVISION ${CMAKE_MATCH_1})
+
+message("CLAP version: ${CLAP_VERSION_MAJOR}.${CLAP_VERSION_MINOR}.${CLAP_VERSION_REVISION}")
+
+project(CLAP LANGUAGES C CXX VERSION ${CLAP_VERSION_MAJOR}.${CLAP_VERSION_MINOR}.${CLAP_VERSION_REVISION})
 
 option(CLAP_BUILD_TESTS "Should CLAP build tests and the like?" OFF)
 
 # If you use clap as a submodule of your plugin you need some interface projects
-# to allow you to link. clap-core gives you the include directory and clap-plugin-core
-# gives you the core + plugin-glue.
-add_library(clap-core INTERFACE)
-target_include_directories(clap-core INTERFACE include)
+# to allow you to link
+add_library(clap INTERFACE)
+target_include_directories(clap INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
-install(DIRECTORY include DESTINATION "." OPTIONAL EXCLUDE_FROM_ALL)
+# `clap-core` is deprecated, please `clap` instead.
+add_library(clap-core ALIAS clap)
+
+include(GNUInstallDirs)
+install(DIRECTORY "include/clap" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
+install(TARGETS clap EXPORT clap INCLUDES DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
+install(EXPORT clap DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/clap" FILE "clap-config.cmake")
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/clap-config-version.cmake"
+    VERSION "${PROJECT_VERSION}"
+    COMPATIBILITY AnyNewerVersion)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/clap-config-version.cmake" DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/clap")
+
+# In addition to the above generated `clap-config.cmake` file, we'll also
+# provide a pkg-config file to make it easier to consume this library in a
+# portable way
+configure_file(clap.pc.in "${CMAKE_CURRENT_BINARY_DIR}/clap.pc" @ONLY)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/clap.pc" DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
 
 # clap-tests should always be available, to avoid build failing here and there
 # because the target doesn't exists
@@ -65,7 +97,6 @@ if (${CLAP_BUILD_TESTS})
                     MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/src/plugins.plist.in
                     )
     elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-        target_link_options(clap-plugin-template PRIVATE /EXPORT:clap_entry)
         set_target_properties(clap-plugin-template PROPERTIES SUFFIX ".clap" PREFIX "")
     endif()
 endif()
