@@ -53,7 +53,7 @@ if (${CLAP_BUILD_TESTS})
 
     macro(clap_compile_cpp SUFFIX EXT STDC STDCPP)
         add_executable(clap-compile-${SUFFIX} EXCLUDE_FROM_ALL src/main.${EXT})
-        target_link_libraries(clap-compile-${SUFFIX} clap-core)
+        target_link_libraries(clap-compile-${SUFFIX} clap)
         set_target_properties(clap-compile-${SUFFIX} PROPERTIES
             C_STANDARD ${STDC}
             CXX_STANDARD ${STDCPP})
@@ -77,7 +77,7 @@ if (${CLAP_BUILD_TESTS})
     clap_compile_cpp(cpp20 cc 17 20)
 
     add_library(clap-plugin-template MODULE EXCLUDE_FROM_ALL src/plugin-template.c)
-    target_link_libraries(clap-plugin-template PRIVATE clap-core)
+    target_link_libraries(clap-plugin-template PRIVATE clap)
     set_target_properties(clap-plugin-template PROPERTIES C_STANDARD 11)
 
     if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
