@@ -26,7 +26,7 @@ typedef struct clap_context_menu_builder {
    bool(CLAP_ABI *add_separator)(const struct clap_context_menu_builder *builder);
    bool(CLAP_ABI *begin_submenu)(const struct clap_context_menu_builder *builder,
                                  const char                             *label);
-   bool(CLAP_ABI *end_submenu)(const struct clap_context_menu_builder *builder, const char *label);
+   bool(CLAP_ABI *end_submenu)(const struct clap_context_menu_builder *builder);
 } clap_context_menu_builder_t;
 
 typedef struct clap_plugin_context_menu {
