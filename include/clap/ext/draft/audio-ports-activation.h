@@ -11,7 +11,8 @@
 /// - the plugin knows that an output is not consumed by the host, and doesn't need to
 ///   compute it
 ///
-/// Audio ports can be activated and deactivated at any time, even while processing.
+/// Audio ports can only be activated or deactivated when the plugin is deactivated, unless
+/// can_activate_while_processing() returns true.
 ///
 /// Audio buffers must still be provided if the audio port is deactivated.
 /// In such case, they shall be filled with 0 (or whatever is the neutral value in your context)
@@ -31,6 +32,10 @@ extern "C" {
 #endif
 
 typedef struct clap_plugin_audio_ports_activation {
+   // returns true if the plugin supports activation/deactivation while processing.
+   // [main-thread]
+   bool(CLAP_ABI *can_activate_while_processing)(const clap_plugin_t *plugin);
+
    // activate the given port
    // [main-thread]
    uint32_t(CLAP_ABI *set_active)(const clap_plugin_t *plugin, bool is_input, uint32_t port_index, bool is_active);
