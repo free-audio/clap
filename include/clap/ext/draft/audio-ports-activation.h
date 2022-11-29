@@ -24,7 +24,7 @@
 /// Audio ports state is invalidated by clap_plugin_audio_ports_config.select() and
 /// clap_host_audio_ports.rescan(CLAP_AUDIO_PORTS_RESCAN_LIST).
 
-static CLAP_CONSTEXPR const char CLAP_EXT_AUDIO_PORTS_ACTIVATION[] = "clap.audio-ports-activation";
+static CLAP_CONSTEXPR const char CLAP_EXT_AUDIO_PORTS_ACTIVATION[] = "clap.audio-ports-activation/draft-0";
 
 #ifdef __cplusplus
 extern "C" {
