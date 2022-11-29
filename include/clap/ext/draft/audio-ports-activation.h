@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../../string-sizes.h"
 #include "../../plugin.h"
 
 /// @page Audio Ports Activation
