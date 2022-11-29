@@ -4,6 +4,20 @@
 #include "../../color.h"
 #include "../../string-sizes.h"
 
+// This extensions let the plugin query info about the track and device chain it's in.
+// It is useful when the plugin is created, to initialize some parameters (mix, dry, wet)
+// and pick a suitable configuartion regarding audio port type and channel count.
+//
+// The terminology used in this extension:
+// A track is a channel.
+// A channel contains one device chain and usually a mixer at the end.
+// A device chain, contains a bunch of devices.
+// A device may contain nested channels, return channels (for send FX) and device chains.
+//
+// For example, consider a Drum Machine device, each drum pads contains a channel which contains
+// themselves device chains. Additionnaly a Drum Machine device can contain return channels for
+// send FX.
+
 static CLAP_CONSTEXPR const char CLAP_EXT_TRACK_INFO[] = "clap.track-info.draft/0";
 
 #ifdef __cplusplus
@@ -40,19 +54,12 @@ typedef struct clap_track_info {
    bool         is_return_track;
 
    // Info relatives to the device chain owning the plugin instance.
-   // A track is a channel.
-   // A channel contains one device chain and usually a mixer at the end.
-   // A device chain, contains a bunch of devices.
-   // A device may contain nested channels, return channels (for send FX) and device chains.
-   // For example, consider a Drum Machine device, each drum pads contains a channel which contains
-   // themselves device chains. Additionnaly a Drum Machine device can contain return channels for
-   // send FX.
    //
    // device_chain_id: a host specific device_chain identifier, can be a uuid for example
    // device_chain_path: "/group1/group2/808 Legend/drum-machine/pads/808 Legend CLAP"
    //                 or "/group1/group2/808 Legend/drum-machine/returns/Delay"
-   // device_chain_color: the device chain's color, in our example, that could be the drum pad
-   // color. is_return_channel: true if the channel owning the plugin is a return channel, in which
+   // device_chain_color: the device chain's color, in our example, that could be the drum pad color.
+   // is_return_channel: true if the channel owning the plugin is a return channel, in which
    //    case you may want to initialize your FX's 100% wet (no dry signal)
    char         device_chain_id[CLAP_CUSTOM_ID_SIZE];
    char         device_chain_name[CLAP_NAME_SIZE];
