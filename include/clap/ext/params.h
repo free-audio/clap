@@ -268,7 +268,9 @@ enum {
    // - some parameters were added or removed.
    // - some parameters had critical changes:
    //   - is_per_note (flag)
+   //   - is_per_key (flag)
    //   - is_per_channel (flag)
+   //   - is_per_port (flag)
    //   - is_readonly (flag)
    //   - is_bypass (flag)
    //   - is_stepped (flag)
