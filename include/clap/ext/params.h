@@ -107,7 +107,7 @@ enum {
    //
    // The host can send live user changes for this parameter regardless of this flag.
    //
-   // If this parameters affect the internal processing structure of the plugin, ie: max delay, fft
+   // If this parameter affects the internal processing structure of the plugin, ie: max delay, fft
    // size, ... and the plugins needs to re-allocate its working buffers, then it should call
    // host->request_restart(), and perform the change once the plugin is re-activated.
    CLAP_PARAM_IS_AUTOMATABLE = 1 << 5,
@@ -231,7 +231,7 @@ typedef struct clap_plugin_params {
    // This method must not be called concurrently to clap_plugin->process().
    //
    // Note: if the plugin is processing, then the process() call will already achieve the
-   // parameter update (bi-directionnal), so a call to flush isn't required, also be aware
+   // parameter update (bi-directional), so a call to flush isn't required, also be aware
    // that the plugin may use the sample offset in process(), while this information would be
    // lost within flush().
    //
@@ -268,7 +268,9 @@ enum {
    // - some parameters were added or removed.
    // - some parameters had critical changes:
    //   - is_per_note (flag)
+   //   - is_per_key (flag)
    //   - is_per_channel (flag)
+   //   - is_per_port (flag)
    //   - is_readonly (flag)
    //   - is_bypass (flag)
    //   - is_stepped (flag)
