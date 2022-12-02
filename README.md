@@ -105,7 +105,7 @@ and use to get a basic plugin experience:
 
 ## Third-party extensions
 
-- [cockos.reaper_extension](https://github.com/justinfrankel/reaper-sdk/blob/main/reaper-plugins/reaper_plugin.h#L138), access the [REAPER](http://reaper.fm) API
+- [`cockos.reaper_extension`](https://github.com/justinfrankel/reaper-sdk/blob/main/reaper-plugins/reaper_plugin.h#L138), access the [REAPER](http://reaper.fm) API
 
 # Adapters
 
