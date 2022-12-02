@@ -103,6 +103,10 @@ and use to get a basic plugin experience:
 - [surround](include/clap/ext/draft/surround.h), inspect surround channel mapping
 - [ambisonic](include/clap/ext/draft/ambisonic.h), inspect ambisonic channel mapping
 
+## Third-party extensions
+
+- [`cockos.reaper_extension`](https://github.com/justinfrankel/reaper-sdk/blob/main/reaper-plugins/reaper_plugin.h#L138), access the [REAPER](http://reaper.fm) API
+
 # Adapters
 
 - [clap-wrapper](https://github.com/free-audio/clap-wrapper), wrappers for using CLAP in other plugin environments
