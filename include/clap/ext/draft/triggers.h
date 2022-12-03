@@ -91,7 +91,7 @@ enum {
    // New info takes effect immediately.
    CLAP_TRIGGER_RESCAN_INFO = 1 << 0,
 
-   // Invalidates everything the host knows about triggerss.
+   // Invalidates everything the host knows about triggers.
    // It can only be used while the plugin is deactivated.
    // If the plugin is activated use clap_host->restart() and delay any change until the host calls
    // clap_plugin->deactivate().
