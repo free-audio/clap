@@ -42,13 +42,6 @@ enum {
 
    // Does this trigger support per port automations?
    CLAP_TRIGGER_IS_AUTOMATABLE_PER_PORT = 1 << 4,
-
-   // This trigger will affect the plugin output and requires to be done via
-   // process() if the plugin is active.
-   //
-   // A simple example would be a sample-and-hold, triggering it will change the output signal and must be
-   // processed.
-   CLAP_TRIGGER_REQUIRES_PROCESS = 1 << 5,
 };
 typedef uint32_t clap_trigger_info_flags;
 
