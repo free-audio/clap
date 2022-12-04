@@ -20,28 +20,17 @@ extern "C" {
 /// - trigger an envelope during voice lifetime
 
 enum {
-   // When set:
-   // - trigger events can be recorded
-   // - trigger events can be played back
-   //
-   // The host can send live user trigger events regardless of this flag.
-   //
-   // If this trigger affects the internal processing structure of the plugin, ie: max delay, fft
-   // size, ... and the plugins needs to re-allocate its working buffers, then it should call
-   // host->request_restart(), and perform the change once the plugin is re-activated.
-   CLAP_TRIGGER_IS_AUTOMATABLE = 1 << 0,
-
    // Does this trigger support per note automations?
-   CLAP_TRIGGER_IS_AUTOMATABLE_PER_NOTE_ID = 1 << 1,
+   CLAP_TRIGGER_IS_AUTOMATABLE_PER_NOTE_ID = 1 << 0,
 
    // Does this trigger support per key automations?
-   CLAP_TRIGGER_IS_AUTOMATABLE_PER_KEY = 1 << 2,
+   CLAP_TRIGGER_IS_AUTOMATABLE_PER_KEY = 1 << 1,
 
    // Does this trigger support per channel automations?
-   CLAP_TRIGGER_IS_AUTOMATABLE_PER_CHANNEL = 1 << 3,
+   CLAP_TRIGGER_IS_AUTOMATABLE_PER_CHANNEL = 1 << 2,
 
    // Does this trigger support per port automations?
-   CLAP_TRIGGER_IS_AUTOMATABLE_PER_PORT = 1 << 4,
+   CLAP_TRIGGER_IS_AUTOMATABLE_PER_PORT = 1 << 3,
 };
 typedef uint32_t clap_trigger_info_flags;
 
