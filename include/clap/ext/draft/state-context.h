@@ -20,6 +20,8 @@
 ///        clap_plugin_state_context.save(CLAP_STATE_CONTEXT_FOR_PRESET),
 ///        CLAP_STATE_CONTEXT_FOR_PRESET)
 ///
+/// Important: Pay attention to the 'Notes on using streams' as found in stream.h !
+///
 /// If the plugin implements CLAP_EXT_STATE_CONTEXT then it is mandatory to also implement
 /// CLAP_EXT_STATE.
 
