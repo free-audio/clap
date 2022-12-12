@@ -32,11 +32,11 @@ extern "C" {
 #endif
 
 typedef struct clap_plugin_audio_ports_activation {
-   // returns true if the plugin supports activation/deactivation while processing.
+   // Returns true if the plugin supports activation/deactivation while processing.
    // [main-thread]
    bool(CLAP_ABI *can_activate_while_processing)(const clap_plugin_t *plugin);
 
-   // activate the given port
+   // Activate the given port.
    // [main-thread]
    uint32_t(CLAP_ABI *set_active)(const clap_plugin_t *plugin, bool is_input, uint32_t port_index, bool is_active);
 } clap_plugin_audio_ports_activation_t;
