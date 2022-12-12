@@ -1,3 +1,14 @@
+# Changes in 1.1.4
+
+* CMake: update some targets to link against `clap` instead of `clap-core`
+* [audio-ports-activation.h](include/clap/ext/draft/audio-ports-activation.h): new draft extension which lets the host (de)activate audio ports
+* [context-menu.h](include/clap/ext/draft/context-menu.h): new draft extension which let the host and plugin exchange context menu entries and popup the menu
+* [param-indication.h](include/clap/ext/draft/param-indication.h): new draft extension which let the host inform the plugin that a parameter is currently mapped to a physical controller
+* [remote-controls.h](include/clap/ext/draft/remote-controls.h): new draft extension which replaces `quick-controls.h`
+* [resource-directory.h](include/clap/ext/draft/resource-directory.h): new draft extension which lets the plugin save resources in a directory provided by the host
+* [track-info](include/clap/ext/draft/track-info.h): refine the draft extension
+* [triggers.h](include/clap/ext/draft/triggers.h): new draft extension which exposes triggers to the host, triggers are data less events
+
 # Changes in 1.1.3
 
 * CMake: generate CMake and pkg-config package files on install
