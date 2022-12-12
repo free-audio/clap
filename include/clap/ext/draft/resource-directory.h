@@ -65,7 +65,10 @@ typedef struct clap_plugin_resource_directory {
    // @param path_size number of available bytes in path
    // Returns the number of bytes in the path, or -1 on error
    // [main-thread]
-   int32_t(CLAP_ABI* get_file_path)(const clap_plugin_t *plugin, uint32_t index, char *path, uint32_t path_size);
+   int32_t(CLAP_ABI *get_file_path)(const clap_plugin_t *plugin,
+                                    uint32_t             index,
+                                    char                *path,
+                                    uint32_t             path_size);
 } clap_plugin_resource_directory_t;
 
 typedef struct clap_host_resource_directory {

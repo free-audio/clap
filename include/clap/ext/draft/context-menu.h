@@ -19,10 +19,9 @@ enum {
 };
 
 // Describes the context menu target
-typedef struct clap_context_menu_target
-{
+typedef struct clap_context_menu_target {
    uint32_t kind;
-   clap_id id;
+   clap_id  id;
 } clap_context_menu_target_t;
 
 // Flags for the context menu accelerator
@@ -43,7 +42,7 @@ typedef struct clap_context_menu_accelerator_key {
 
 // Describes an accelerator which can consist of a key strike combo
 typedef struct clap_context_menu_accelerator {
-   uint32_t combo_size;
+   uint32_t                            combo_size;
    clap_context_menu_accelerator_key_t keys[4];
 } clap_context_menu_accelerator_t;
 
@@ -114,7 +113,7 @@ typedef struct clap_host_context_menu {
    // [main-thread]
    bool(CLAP_ABI *perform)(const clap_host_t                *host,
                            const clap_context_menu_target_t *target,
-                           clap_id action_id);
+                           clap_id                           action_id);
 
    // Returns true if the host can display a popup menu for the plugin.
    // This may depends upon the current windowing system used to display the plugin, so the

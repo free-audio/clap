@@ -59,7 +59,7 @@ typedef struct clap_plugin_triggers {
    // Returns true on success.
    // [main-thread]
    bool(CLAP_ABI *get_info)(const clap_plugin_t *plugin,
-                            uint32_t index,
+                            uint32_t             index,
                             clap_trigger_info_t *trigger_info);
 } clap_plugin_triggers_t;
 
@@ -103,7 +103,9 @@ typedef struct clap_host_triggers {
 
    // Clears references to a trigger.
    // [main-thread]
-   void(CLAP_ABI *clear)(const clap_host_t *host, clap_id trigger_id, clap_trigger_clear_flags flags);
+   void(CLAP_ABI *clear)(const clap_host_t       *host,
+                         clap_id                  trigger_id,
+                         clap_trigger_clear_flags flags);
 } clap_host_triggers_t;
 
 #ifdef __cplusplus

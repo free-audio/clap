@@ -8,7 +8,7 @@
 #   include <stdint.h>
 #endif
 
-#ifdef  __cplusplus
+#ifdef __cplusplus
 #   include <cstddef>
 #else
 #   include <stddef.h>
