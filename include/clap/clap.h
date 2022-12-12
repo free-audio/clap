@@ -52,9 +52,11 @@
 #include "ext/voice-info.h"
 
 #include "ext/draft/ambisonic.h"
+#include "ext/draft/context-menu.h"
 #include "ext/draft/cv.h"
 #include "ext/draft/file-reference.h"
 #include "ext/draft/midi-mappings.h"
+#include "ext/draft/param-indication.h"
 #include "ext/draft/preset-load.h"
 #include "ext/draft/remote-controls.h"
 #include "ext/draft/state-context.h"
@@ -62,5 +64,3 @@
 #include "ext/draft/track-info.h"
 #include "ext/draft/triggers.h"
 #include "ext/draft/tuning.h"
-#include "ext/draft/param-indication.h"
-#include "ext/draft/context-menu.h"
