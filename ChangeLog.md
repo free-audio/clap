@@ -5,14 +5,23 @@
 
 ## Draft extensions
 
+### New
+
 * [audio-ports-activation.h](include/clap/ext/draft/audio-ports-activation.h): new draft extension which lets the host (de)activate audio ports
 * [context-menu.h](include/clap/ext/draft/context-menu.h): new draft extension which let the host and plugin exchange context menu entries and popup the menu
 * [param-indication.h](include/clap/ext/draft/param-indication.h): new draft extension which let the host inform the plugin that a parameter is currently mapped to a physical controller
-* `quick-controls.h`: removed in favor of [remote-controls.h](include/clap/ext/draft/remote-controls.h)
 * [remote-controls.h](include/clap/ext/draft/remote-controls.h): new draft extension which replaces `quick-controls.h`
 * [resource-directory.h](include/clap/ext/draft/resource-directory.h): new draft extension which lets the plugin save resources in a directory provided by the host
-* [track-info](include/clap/ext/draft/track-info.h): refine the draft extension
 * [triggers.h](include/clap/ext/draft/triggers.h): new draft extension which exposes triggers to the host, triggers are data less events
+
+### Improved
+
+* [track-info](include/clap/ext/draft/track-info.h): refine the draft extension
+
+### Removed
+
+* `file-reference.h`: removed in favor of [resource-directory.h](include/clap/ext/draft/resource-directory.h)
+* `quick-controls.h`: removed in favor of [remote-controls.h](include/clap/ext/draft/remote-controls.h)
 
 # Changes in 1.1.3
 
