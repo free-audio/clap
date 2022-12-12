@@ -13,8 +13,8 @@ extern "C" {
 
 // There can be different target kind for a context menu
 enum {
-   CLAP_CONTEXT_MENU_TARGET_KIND_GLOBAL,
-   CLAP_CONTEXT_MENU_TARGET_KIND_PARAM,
+   CLAP_CONTEXT_MENU_TARGET_KIND_GLOBAL = 0,
+   CLAP_CONTEXT_MENU_TARGET_KIND_PARAM = 1,
 };
 
 // Describes the context menu target
@@ -58,12 +58,12 @@ typedef struct clap_context_menu_builder {
                              clap_id                                 action_id);
 
    // accelerator may be null
-   bool(CLAP_ABI *add_checkbox)(const struct clap_context_menu_builder *builder,
-                                const char                             *label,
-                                const clap_context_menu_accelerator_t  *accelerator,
-                                bool                                    is_enabled,
-                                bool                                    is_checked,
-                                clap_id                                 action_id);
+   bool(CLAP_ABI *add_checkmark)(const struct clap_context_menu_builder *builder,
+                                 const char                             *label,
+                                 const clap_context_menu_accelerator_t  *accelerator,
+                                 bool                                    is_enabled,
+                                 bool                                    is_checked,
+                                 clap_id                                 action_id);
 
    bool(CLAP_ABI *add_separator)(const struct clap_context_menu_builder *builder);
 
