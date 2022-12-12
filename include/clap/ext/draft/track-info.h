@@ -8,7 +8,7 @@
 // It is useful when the plugin is created, to initialize some parameters (mix, dry, wet)
 // and pick a suitable configuartion regarding audio port type and channel count.
 
-static CLAP_CONSTEXPR const char CLAP_EXT_TRACK_INFO[] = "clap.track-info.draft/0";
+static CLAP_CONSTEXPR const char CLAP_EXT_TRACK_INFO[] = "clap.track-info.draft/1";
 
 #ifdef __cplusplus
 extern "C" {
