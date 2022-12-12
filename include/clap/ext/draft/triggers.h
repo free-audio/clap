@@ -14,10 +14,8 @@ extern "C" {
 /// This extension enables the plugin to expose a set of triggers to the host.
 ///
 /// Some examples for triggers:
-/// - start recording into a plugin-internal audio/note buffer
-/// - trigger a retrospective audio/note looper
+/// - trigger an envelope which is independant of the notes
 /// - trigger a sample-and-hold unit (maybe even per-voice)
-/// - trigger an envelope during voice lifetime
 
 enum {
    // Does this trigger support per note automations?
