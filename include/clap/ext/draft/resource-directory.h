@@ -72,12 +72,12 @@ typedef struct clap_host_resource_directory {
    // Request the host to setup a resource directory with the specified sharing.
    // Returns true if the host will perform the request.
    // [main-thread]
-   bool(CLAP_ABI *request_directory)(const clap_host *host, bool is_shared);
+   bool(CLAP_ABI *request_directory)(const clap_host_t *host, bool is_shared);
 
    // Tell the host that the resource directory of the specified sharing is no longer required.
    // If is_shared = false, then the host may delete the directory content.
    // [main-thread]
-   void(CLAP_ABI *release_directory)(const clap_host *host, bool is_shared);
+   void(CLAP_ABI *release_directory)(const clap_host_t *host, bool is_shared);
 } clap_host_resource_directory_t;
 
 #ifdef __cplusplus
