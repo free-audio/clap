@@ -24,53 +24,27 @@ typedef struct clap_context_menu_target {
    clap_id  id;
 } clap_context_menu_target_t;
 
-// Flags for the context menu accelerator
-enum {
-   CLAP_CONTEXT_MENU_ACCELERATOR_MODIFIER_SHIFT = (1 << 0),
-   CLAP_CONTEXT_MENU_ACCELERATOR_MODIFIER_CONTROL = (1 << 1),
-   CLAP_CONTEXT_MENU_ACCELERATOR_MODIFIER_ALT = (1 << 2),
-
-   // Windows key or Command key
-   CLAP_CONTEXT_MENU_ACCELERATOR_MODIFIER_META1 = (1 << 3),
-};
-
-// Describes a single key strike with its modifiers
-typedef struct clap_context_menu_accelerator_key {
-   uint32_t flags;
-   uint32_t key; // ASCII key
-} clap_context_menu_accelerator_key_t;
-
-// Describes an accelerator which can consist of a key strike combo
-typedef struct clap_context_menu_accelerator {
-   uint32_t                            combo_size;
-   clap_context_menu_accelerator_key_t keys[4];
-} clap_context_menu_accelerator_t;
-
 // Context menu builder
 typedef struct clap_context_menu_builder {
    void *ctx;
 
    // Adds a clickable menu entry.
    // label: text to be displayed
-   // accelerator: shortcut which would trigger this action, this field is informational and may be null
    // is_enable: if false, then the menu entry is greyed out and not clickable
    bool(CLAP_ABI *add_entry)(const struct clap_context_menu_builder *builder,
                              const char                             *label,
-                             const clap_context_menu_accelerator_t  *accelerator,
                              bool                                    is_enabled,
                              clap_id                                 action_id);
 
    // Adds a clickable menu entry which will feature both a checkmark and a label.
    // label: text to be displayed
-   // accelerator: shortcut which would trigger this action, this field is informational and may be null
    // is_enable: if false, then the menu entry is greyed out and not clickable
    // is_checked: if true, then the menu entry will be displayed as checked
-   bool(CLAP_ABI *add_checkmark)(const struct clap_context_menu_builder *builder,
-                                 const char                             *label,
-                                 const clap_context_menu_accelerator_t  *accelerator,
-                                 bool                                    is_enabled,
-                                 bool                                    is_checked,
-                                 clap_id                                 action_id);
+   bool(CLAP_ABI *add_check_entry)(const struct clap_context_menu_builder *builder,
+                                   const char                             *label,
+                                   bool                                    is_enabled,
+                                   bool                                    is_checked,
+                                   clap_id                                 action_id);
 
    // Adds a separator line.
    bool(CLAP_ABI *add_separator)(const struct clap_context_menu_builder *builder);
