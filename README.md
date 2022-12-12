@@ -12,6 +12,7 @@
   - [Fundamental extensions](#fundamental-extensions)
   - [Support extensions](#support-extensions)
   - [Extra extensions](#extra-extensions)
+  - [Third-party extensions](#third-party-extensions)
 - [Adapters](#adapters)
 - [Resources](#resources)
   - [Examples](#examples)
@@ -120,7 +121,6 @@ and use to get a basic plugin experience:
 
 - [clap-host](https://github.com/free-audio/clap-host), very simple host
 - [clap-plugins](https://github.com/free-audio/clap-plugins), very simple plugins
-- [schwaaa's plugin](https://github.com/schwaaa/clap-plugin), basic example for prototyping CLAP audio plugins using Dear ImGui as the user interface
 
 ## Community related projects
 
