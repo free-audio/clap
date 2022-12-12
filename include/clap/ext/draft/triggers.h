@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../plugin.h"
+#include "../../events.h"
 #include "../../string-sizes.h"
 
 static CLAP_CONSTEXPR const char CLAP_EXT_TRIGGERS[] = "clap.triggers.draft/0";
@@ -31,6 +32,37 @@ enum {
    CLAP_TRIGGER_IS_AUTOMATABLE_PER_PORT = 1 << 3,
 };
 typedef uint32_t clap_trigger_info_flags;
+
+// Given that this extension is still draft, it'll use the event-registry and its own event
+// namespace until we stabilize it.
+//
+// #include <clap/ext/event-registry.h>
+//
+// uint16_t CLAP_EXT_TRIGGER_EVENT_SPACE_ID = UINT16_MAX;
+// if (host_event_registry->query(host, CLAP_EXT_TRIGGERS, &CLAP_EXT_TRIGGER_EVENT_SPACE_ID)) {
+//   /* we can use trigger events */
+// }
+//
+// /* later on */
+// clap_event_trigger ev;
+// ev.header.space_id = CLAP_EXT_TRIGGER_EVENT_SPACE_ID;
+// ev.header.type = CLAP_EVENT_TRIGGER;
+
+enum { CLAP_EVENT_TRIGGER = 0 };
+
+typedef struct clap_event_trigger {
+   clap_event_header_t header;
+
+   // target trigger
+   clap_id trigger_id; // @ref clap_trigger_info.id
+   void   *cookie;     // @ref clap_trigger_info.cookie
+
+   // target a specific note_id, port, key and channel, -1 for global
+   int32_t note_id;
+   int16_t port_index;
+   int16_t channel;
+   int16_t key;
+} clap_event_trigger_t;
 
 /* This describes a trigger */
 typedef struct clap_trigger_info {
