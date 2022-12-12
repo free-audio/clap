@@ -113,6 +113,10 @@ enum {
    CLAP_EVENT_MIDI,       // raw midi event; clap_event_midi
    CLAP_EVENT_MIDI_SYSEX, // raw midi sysex event; clap_event_midi_sysex
    CLAP_EVENT_MIDI2,      // raw midi 2 event; clap_event_midi2
+
+   // Represents a trigger.
+   // Uses clap_event_trigger.
+   CLAP_EVENT_TRIGGER,
 };
 
 // Note on, off, end and choke events.
@@ -258,6 +262,20 @@ typedef struct clap_event_midi2 {
    uint16_t port_index;
    uint32_t data[4];
 } clap_event_midi2_t;
+
+typedef struct clap_event_trigger {
+   clap_event_header_t header;
+
+   // target trigger
+   clap_id trigger_id; // @ref clap_trigger_info.id
+   void   *cookie;    // @ref clap_trigger_info.cookie
+
+   // target a specific note_id, port, key and channel, -1 for global
+   int32_t note_id;
+   int16_t port_index;
+   int16_t channel;
+   int16_t key;
+} clap_event_trigger_t;
 
 // Input event list, events must be sorted by time.
 typedef struct clap_input_events {
