@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../plugin.h"
-#include "../string-sizes.h"
+#include "../../string-sizes.h"
 
 static CLAP_CONSTEXPR const char CLAP_EXT_TRIGGERS[] = "clap.triggers.draft/0";
 
