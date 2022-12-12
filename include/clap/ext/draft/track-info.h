@@ -4,19 +4,9 @@
 #include "../../color.h"
 #include "../../string-sizes.h"
 
-// This extensions let the plugin query info about the track and device chain it's in.
+// This extensions let the plugin query info about the track it's in.
 // It is useful when the plugin is created, to initialize some parameters (mix, dry, wet)
 // and pick a suitable configuartion regarding audio port type and channel count.
-//
-// The terminology used in this extension:
-// A track is a channel.
-// A channel contains one device chain and usually a mixer at the end.
-// A device chain, contains a bunch of devices.
-// A device may contain nested channels, return channels (for send FX) and device chains.
-//
-// For example, consider a Drum Machine device, each drum pads contains a channel which contains
-// themselves device chains. Additionnaly a Drum Machine device can contain return channels for
-// send FX.
 
 static CLAP_CONSTEXPR const char CLAP_EXT_TRACK_INFO[] = "clap.track-info.draft/0";
 
