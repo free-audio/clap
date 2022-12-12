@@ -114,7 +114,7 @@ enum {
    CLAP_EVENT_MIDI_SYSEX, // raw midi sysex event; clap_event_midi_sysex
    CLAP_EVENT_MIDI2,      // raw midi 2 event; clap_event_midi2
 
-   // Represents a trigger.
+   // Represents a trigger. See triggers.h
    // Uses clap_event_trigger.
    CLAP_EVENT_TRIGGER,
 };
