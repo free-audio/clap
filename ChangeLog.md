@@ -1,6 +1,10 @@
 # Changes in 1.1.4
 
 * CMake: update some targets to link against `clap` instead of `clap-core`
+* [params.h](include/clap/ext/params.h): fix documentation typos, and missing items
+
+## Draft extensions
+
 * [audio-ports-activation.h](include/clap/ext/draft/audio-ports-activation.h): new draft extension which lets the host (de)activate audio ports
 * [context-menu.h](include/clap/ext/draft/context-menu.h): new draft extension which let the host and plugin exchange context menu entries and popup the menu
 * [param-indication.h](include/clap/ext/draft/param-indication.h): new draft extension which let the host inform the plugin that a parameter is currently mapped to a physical controller
