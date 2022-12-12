@@ -14,7 +14,7 @@ extern "C" {
 /// This extension enables the plugin to expose a set of triggers to the host.
 ///
 /// Some examples for triggers:
-/// - trigger an envelope which is independant of the notes
+/// - trigger an envelope which is independent of the notes
 /// - trigger a sample-and-hold unit (maybe even per-voice)
 
 enum {
