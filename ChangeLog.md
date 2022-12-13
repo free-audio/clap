@@ -7,7 +7,7 @@
 
 ### New
 
-* [audio-ports-activation.h](include/clap/ext/draft/audio-ports-activation.h): new draft extension which lets the host (de)activate audio ports
+* [audio-ports-activation.h](include/clap/ext/draft/audio-ports-activation.h): new draft extension which allows a host to inform a plugin whether an audio port is an active port in the host audio context, and allow the host to respond accordingly
 * [context-menu.h](include/clap/ext/draft/context-menu.h): new draft extension which let the host and plugin exchange context menu entries and popup the menu
 * [param-indication.h](include/clap/ext/draft/param-indication.h): new draft extension which let the host inform the plugin that a parameter is currently mapped to a physical controller
 * [remote-controls.h](include/clap/ext/draft/remote-controls.h): new draft extension which replaces `quick-controls.h`
