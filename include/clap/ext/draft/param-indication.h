@@ -13,7 +13,7 @@
 // The color semantic depends upon the host here and the goal is to have a consistent experience
 // across all plugins.
 
-static CLAP_CONSTEXPR const char CLAP_EXT_PARAM_INDICATION[] = "clap.param-indication.draft/2";
+static CLAP_CONSTEXPR const char CLAP_EXT_PARAM_INDICATION[] = "clap.param-indication.draft/3";
 
 #ifdef __cplusplus
 extern "C" {
@@ -28,19 +28,25 @@ enum {
 
 typedef struct clap_plugin_param_indication {
    // Sets or clears a mapping indication.
-   // If the host doesn't use an indicaton color, then color should be null.
-   // If has_mapping is false, then the color is ignored.
+   //
+   // has_mapping: does the parameter currently has a mapping?
+   // color: if set, the color to use to highlight the control in the plugin GUI
+   // label: if set, a small string to display on top of the knob which identifies the hardware controller
+   // description: if set, a string which can be used in a tooltip, which describes the current mapping
    //
    // Parameter indications should not be saved in the plugin context, and are off by default.
    // [main-thread]
    void(CLAP_ABI *set_mapping)(const clap_plugin_t *plugin,
                                clap_id              param_id,
                                bool                 has_mapping,
-                               const clap_color_t  *color);
+                               const clap_color_t  *color,
+                               const char          *label,
+                               const char          *description);
 
    // Sets or clears an automation indication.
-   // If the host doesn't use an indicaton color, then color should be null.
-   // If automation_state is CLAP_PARAM_INDICATION_AUTOMATION_NONE, then the color is ignored.
+   //
+   // automation_state: current automation state for the given parameter
+   // color: if set, the color to use to display the automation indication in the plugin GUI
    //
    // Parameter indications should not be saved in the plugin context, and are off by default.
    // [main-thread]
