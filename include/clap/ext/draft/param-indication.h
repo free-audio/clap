@@ -19,16 +19,16 @@ extern "C" {
 #endif
 
 typedef struct clap_plugin_param_indication {
-   // Sets or clears a mapping indication.
-   // If the host doesn't use mapping color, then mapping_color should be null.
-   // If is_mapped is false, then the mapping color is ignored.
+   // Sets or clears an indication.
+   // If the host doesn't use indicaton color, then indication_color should be null.
+   // If has_indication is false, then the indication_color is ignored.
    //
-   // Parameter mapping indications should not be saved in the plugin context, and are off by default.
+   // Parameter indications should not be saved in the plugin context, and are off by default.
    // [main-thread]
    void(CLAP_ABI *set)(const clap_plugin_t *plugin,
                        clap_id              param_id,
-                       bool                 is_mapped,
-                       const clap_color_t  *mapping_color);
+                       bool                 has_indication,
+                       const clap_color_t  *indication_color);
 } clap_plugin_param_indication_t;
 
 #ifdef __cplusplus
