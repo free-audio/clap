@@ -20,9 +20,17 @@ extern "C" {
 #endif
 
 enum {
+   // The host doesn't have an automation for this parameter
    CLAP_PARAM_INDICATION_AUTOMATION_NONE,
+
+   // The host is playing an automation for this parameter
    CLAP_PARAM_INDICATION_AUTOMATION_PLAYBACK,
+
+   // The host is recording an automation on this parameter
    CLAP_PARAM_INDICATION_AUTOMATION_RECORD,
+
+   // The host should play an automation for this parameter, but the user has started to ajust this
+   // parameter and is overriding the automation playback
    CLAP_PARAM_INDICATION_AUTOMATION_OVERRIDE,
 };
 
@@ -31,8 +39,9 @@ typedef struct clap_plugin_param_indication {
    //
    // has_mapping: does the parameter currently has a mapping?
    // color: if set, the color to use to highlight the control in the plugin GUI
-   // label: if set, a small string to display on top of the knob which identifies the hardware controller
-   // description: if set, a string which can be used in a tooltip, which describes the current mapping
+   // label: if set, a small string to display on top of the knob which identifies the hardware
+   // controller description: if set, a string which can be used in a tooltip, which describes the
+   // current mapping
    //
    // Parameter indications should not be saved in the plugin context, and are off by default.
    // [main-thread]
