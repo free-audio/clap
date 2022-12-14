@@ -26,9 +26,6 @@ typedef struct clap_plugin_param_indication {
                        clap_id              param_id,
                        bool                 is_mapped,
                        const clap_color_t  *mapping_color);
-
-   // Clears all parameters mapping indications
-   void(CLAP_ABI *clear)(const clap_plugin_t *plugin);
 } clap_plugin_param_indication_t;
 
 #ifdef __cplusplus
