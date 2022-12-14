@@ -3,13 +3,16 @@
 #include "../params.h"
 #include "../../color.h"
 
-// This extension lets the host tell the plugin that a parameter is currently
-// mapped to a physical controller.
+// This extension lets the host tell the plugin to display a little color based indication on the parameter.
+// This can be used to indicate:
+// - a physical controller is mapped to a parameter
+// - the parameter is current playing an automation
+// - the parameter is overriding the automation
+// - etc...
 //
-// It is common to work using a bank of 8 knobs, and to improve readability the host may assign a
-// different color to each physical knobs and indicate them on the GUI.
+// The color semantic depends upon the host here and the goal is to have a consistent experience across all plugins.
 
-static CLAP_CONSTEXPR const char CLAP_EXT_PARAM_INDICATION[] = "clap.param-indication.draft/0";
+static CLAP_CONSTEXPR const char CLAP_EXT_PARAM_INDICATION[] = "clap.param-indication.draft/1";
 
 #ifdef __cplusplus
 extern "C" {
