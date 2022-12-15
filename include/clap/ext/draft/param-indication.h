@@ -13,7 +13,7 @@
 // The color semantic depends upon the host here and the goal is to have a consistent experience
 // across all plugins.
 
-static CLAP_CONSTEXPR const char CLAP_EXT_PARAM_INDICATION[] = "clap.param-indication.draft/3";
+static CLAP_CONSTEXPR const char CLAP_EXT_PARAM_INDICATION[] = "clap.param-indication.draft/4";
 
 #ifdef __cplusplus
 extern "C" {
@@ -21,17 +21,20 @@ extern "C" {
 
 enum {
    // The host doesn't have an automation for this parameter
-   CLAP_PARAM_INDICATION_AUTOMATION_NONE,
+   CLAP_PARAM_INDICATION_AUTOMATION_NONE = 0,
+
+   // The host has an automation for this parameter, but it isn't playing it
+   CLAP_PARAM_INDICATION_AUTOMATION_PRESENT = 1,
 
    // The host is playing an automation for this parameter
-   CLAP_PARAM_INDICATION_AUTOMATION_PLAYBACK,
+   CLAP_PARAM_INDICATION_AUTOMATION_PLAYING = 2,
 
    // The host is recording an automation on this parameter
-   CLAP_PARAM_INDICATION_AUTOMATION_RECORD,
+   CLAP_PARAM_INDICATION_AUTOMATION_RECORDING = 3,
 
    // The host should play an automation for this parameter, but the user has started to ajust this
    // parameter and is overriding the automation playback
-   CLAP_PARAM_INDICATION_AUTOMATION_OVERRIDE,
+   CLAP_PARAM_INDICATION_AUTOMATION_OVERRIDING = 4,
 };
 
 typedef struct clap_plugin_param_indication {
