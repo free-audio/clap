@@ -86,6 +86,10 @@ typedef struct clap_context_menu_builder {
    bool(CLAP_ABI *add_item)(const struct clap_context_menu_builder *builder,
                             clap_context_menu_item_kind_t           item_kind,
                             const void                             *item_data);
+
+   // Returns true if the menu builder supports the given item kind
+   bool(CLAP_ABI *supports)(const struct clap_context_menu_builder *builder,
+                            clap_context_menu_item_kind_t           item_kind);
 } clap_context_menu_builder_t;
 
 typedef struct clap_plugin_context_menu {
