@@ -24,38 +24,68 @@ typedef struct clap_context_menu_target {
    clap_id  id;
 } clap_context_menu_target_t;
 
-// Context menu builder
+enum {
+   // Adds a clickable menu entry.
+   // data: const clap_context_menu_item_entry_t*
+   CLAP_CONTEXT_MENU_ITEM_ENTRY,
+
+   // Adds a clickable menu entry which will feature both a checkmark and a label.
+   // data: const clap_context_menu_item_check_entry_t*
+   CLAP_CONTEXT_MENU_ITEM_CHECK_ENTRY,
+
+   // Adds a separator line.
+   // data: NULL
+   CLAP_CONTEXT_MENU_ITEM_SEPARATOR,
+
+   // Starts a sub menu with the given label.
+   // data: const clap_context_menu_item_begin_submenu_t*
+   CLAP_CONTEXT_MENU_ITEM_BEGIN_SUBMENU,
+
+   // Ends the current sub menu.
+   // data: NULL
+   CLAP_CONTEXT_MENU_ITEM_END_SUBMENU,
+};
+typedef uint32_t clap_context_menu_item_kind_t;
+
+typedef struct clap_context_menu_entry {
+   // text to be displayed
+   const char *label;
+
+   // if false, then the menu entry is greyed out and not clickable
+   bool        is_enabled;
+   clap_id     action_id;
+} clap_context_menu_entry_t;
+
+typedef struct clap_context_menu_check_entry {
+   // text to be displayed
+   const char *label;
+
+   // if false, then the menu entry is greyed out and not clickable
+   bool        is_enabled;
+
+   // if true, then the menu entry will be displayed as checked
+   bool        id_checked;
+   clap_id     action_id;
+} clap_context_menu_check_entry_t;
+
+typedef struct clap_context_menu_submenu {
+   // text to be displayed
+   const char *label;
+
+   // if false, then the menu entry is greyed out and won't show submenu
+   bool        is_enabled;
+} clap_context_menu_submenu_t;
+
+// Context menu builder.
+// This object isn't thread-safe and must be used on the same thread as it was provided.
 typedef struct clap_context_menu_builder {
    void *ctx;
 
-   // Adds a clickable menu entry.
-   // label: text to be displayed
-   // is_enable: if false, then the menu entry is greyed out and not clickable
-   bool(CLAP_ABI *add_entry)(const struct clap_context_menu_builder *builder,
-                             const char                             *label,
-                             bool                                    is_enabled,
-                             clap_id                                 action_id);
-
-   // Adds a clickable menu entry which will feature both a checkmark and a label.
-   // label: text to be displayed
-   // is_enable: if false, then the menu entry is greyed out and not clickable
-   // is_checked: if true, then the menu entry will be displayed as checked
-   bool(CLAP_ABI *add_check_entry)(const struct clap_context_menu_builder *builder,
-                                   const char                             *label,
-                                   bool                                    is_enabled,
-                                   bool                                    is_checked,
-                                   clap_id                                 action_id);
-
-   // Adds a separator line.
-   bool(CLAP_ABI *add_separator)(const struct clap_context_menu_builder *builder);
-
-   // Starts a sub menu with the given label.
-   // Each begin_submenu() must have a corresponding end_submenu()
-   bool(CLAP_ABI *begin_submenu)(const struct clap_context_menu_builder *builder,
-                                 const char                             *label);
-
-   // Ends the current sub menu.
-   bool(CLAP_ABI *end_submenu)(const struct clap_context_menu_builder *builder);
+   // Adds an entry to the menu.
+   // entry_data type is determined by entry_kind.
+   bool(CLAP_ABI *add_item)(const struct clap_context_menu_builder *builder,
+                            clap_context_menu_item_kind_t           item_kind,
+                            const void                             *item_data);
 } clap_context_menu_builder_t;
 
 typedef struct clap_plugin_context_menu {
