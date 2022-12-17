@@ -64,7 +64,7 @@ typedef struct clap_context_menu_check_entry {
    bool        is_enabled;
 
    // if true, then the menu entry will be displayed as checked
-   bool        id_checked;
+   bool        is_checked;
    clap_id     action_id;
 } clap_context_menu_check_entry_t;
 
