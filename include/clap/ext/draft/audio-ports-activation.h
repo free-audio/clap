@@ -18,8 +18,8 @@
 /// In such case, they shall be filled with 0 (or whatever is the neutral value in your context)
 /// and the constant_mask shall be set.
 ///
-/// Audio ports are initially in the active state.
-/// Audio ports state should not be saved in the plugin state, so the host must restore the
+/// Audio ports are initially in the active state after creating the plugin instance.
+/// Audio ports state are not saved in the plugin state, so the host must restore the
 /// audio ports state after creating the plugin instance.
 ///
 /// Audio ports state is invalidated by clap_plugin_audio_ports_config.select() and
