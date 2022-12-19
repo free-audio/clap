@@ -76,6 +76,8 @@ typedef struct clap_plugin {
    void(CLAP_ABI *reset)(const struct clap_plugin *plugin);
 
    // process audio, events, ...
+   // All the pointers coming from clap_process_t and its nested attributes,
+   // are valid until process() returns.
    // [audio-thread & active_state & processing_state]
    clap_process_status(CLAP_ABI *process)(const struct clap_plugin *plugin,
                                           const clap_process_t     *process);
