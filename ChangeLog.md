@@ -1,7 +1,8 @@
 # Changes in 1.1.4
 
 * CMake: update some targets to link against `clap` instead of `clap-core`
-* [params.h](include/clap/ext/params.h): fix documentation typos, and missing items
+* [params.h](include/clap/ext/params.h): clarify parameter range change, fix documentation typos, add missing items
+* [plugin.h](include/clap/plugin.h): clarify data lifetime in `process()`
 
 ## Draft extensions
 
