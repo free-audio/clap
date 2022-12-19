@@ -73,6 +73,41 @@
 ///   - if a parameter is gone or is created with an id that may have been used before,
 ///     call clap_host_params.clear(host, param_id, CLAP_PARAM_CLEAR_ALL)
 ///   - call clap_host_params->rescan(CLAP_PARAM_RESCAN_ALL)
+///
+/// CLAP allows the plugin to change the parameter range, yet the plugin developper
+/// should be aware that doing so isn't without risk, especially if you made the
+/// promise to never change the sound. If you want to be 100% certain that the
+/// sound will not change with all host, then simply never change the range.
+///
+/// There are two approaches to automations, either you automate the plain value,
+/// or you automate the knob position. The first option will be robust to a range
+/// increase, while the second won't be.
+///
+/// If the host goes with the second approach (automating the knob position), it means
+/// that the plugin is hosted in a relaxed environment regarding sound changes (they are
+/// accepted, and not a concern as long as they are reasonable). Though, stepped parameters
+/// should be stored as plain value in the document.
+///
+/// If the host goes with the first approach, there will still be situation where the
+/// sound may innevitably change. For example, if the plugin increase the range, there
+/// is an automation playing at the max value and on top of that an LFO is applied.
+/// See the following curve:
+///                                   .
+///                                  . .
+///          .....                  .   .
+/// before: .     .     and after: .     .
+///
+/// Advices for the host:
+/// - store plain values in the document (automation)
+/// - store modulation amount in plain value delta, not in percentage
+/// - when you apply a CC mapping, remember the min/max plain values so you can adjust
+///
+/// Advice for the plugin:
+/// - think carefully about your parameter range when designing your DSP
+/// - avoid shrinking parameter ranges, they are very likely to change the sound
+/// - consider changing the parameter range as a tradeoff: what you improve vs what you break
+/// - if you plan to use adapters for other plugin formats, then you need to pay extra
+///   attention to the adapter requirements
 
 static CLAP_CONSTEXPR const char CLAP_EXT_PARAMS[] = "clap.params";
 
