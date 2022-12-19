@@ -38,7 +38,11 @@ typedef struct clap_plugin_audio_ports_activation {
    bool(CLAP_ABI *can_activate_while_processing)(const clap_plugin_t *plugin);
 
    // Activate the given port.
-   // [main-thread]
+   //
+   // It is only possible to activate on the audio-thread if can_activate_while_processing() returns
+   // true.
+   //
+   // [active ? audio-thread : main-thread]
    void(CLAP_ABI *set_active)(const clap_plugin_t *plugin,
                               bool                 is_input,
                               uint32_t             port_index,
