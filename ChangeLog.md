@@ -6,6 +6,7 @@
 * [host.h](include/clap/host.h): clarify when it is allowed to call get_extension()
 * [CMakeLists.txt](CMakeLists.txt): the target `clap-test` now includes `clap-plugin-template`
 * Remove UTF-8 BOM from a few files
+* [plugin-template.c](src/plugin-template.c): add state impl and some comments
 
 # Changes in 1.1.4
 

@@ -37,7 +37,10 @@ typedef struct {
 // clap_plugin_audio_ports //
 /////////////////////////////
 
-static uint32_t my_plug_audio_ports_count(const clap_plugin_t *plugin, bool is_input) { return 1; }
+static uint32_t my_plug_audio_ports_count(const clap_plugin_t *plugin, bool is_input) {
+   // We just declare 1 audio input and 1 audio output
+   return 1;
+}
 
 static bool my_plug_audio_ports_get(const clap_plugin_t    *plugin,
                                     uint32_t                index,
@@ -63,7 +66,10 @@ static const clap_plugin_audio_ports_t s_my_plug_audio_ports = {
 // clap_plugin_note_ports //
 ////////////////////////////
 
-static uint32_t my_plug_note_ports_count(const clap_plugin_t *plugin, bool is_input) { return 1; }
+static uint32_t my_plug_note_ports_count(const clap_plugin_t *plugin, bool is_input) {
+   // We just declare 1 note input
+   return 1;
+}
 
 static bool my_plug_note_ports_get(const clap_plugin_t   *plugin,
                                    uint32_t               index,
@@ -101,15 +107,13 @@ static const clap_plugin_latency_t s_my_plug_latency = {
 // clap_state //
 ////////////////
 
-bool my_plug_state_save(const clap_plugin_t *plugin, const clap_ostream_t *stream)
-{
+bool my_plug_state_save(const clap_plugin_t *plugin, const clap_ostream_t *stream) {
    my_plug_t *plug = plugin->plugin_data;
    // TODO: write the state into stream
    return true;
 }
 
-bool my_plug_state_load(const clap_plugin_t *plugin, const clap_istream_t *stream)
-{
+bool my_plug_state_load(const clap_plugin_t *plugin, const clap_istream_t *stream) {
    my_plug_t *plug = plugin->plugin_data;
    // TODO: read the state from stream
    return true;
