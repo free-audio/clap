@@ -3,6 +3,7 @@
 * CMake: update some targets to link against `clap` instead of `clap-core`
 * [params.h](include/clap/ext/params.h): clarify parameter range change, fix documentation typos, add missing items
 * [plugin.h](include/clap/plugin.h): clarify data lifetime in `process()`
+* [audio-ports-config.h](include/clap/ext/audio-ports-config.h): clarify `select()`: if succeed, the host should rescan the audio ports
 
 ## Draft extensions
 
