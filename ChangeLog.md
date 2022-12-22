@@ -7,6 +7,7 @@
 * [CMakeLists.txt](CMakeLists.txt): the target `clap-test` now includes `clap-plugin-template`
 * Remove UTF-8 BOM from a few files
 * [plugin-template.c](src/plugin-template.c): add state impl and some comments
+* [audio-ports-activation.h](include/clap/ext/draft/audio-ports-activation.h): improved documentation
 
 # Changes in 1.1.4
 
