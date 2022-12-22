@@ -1,3 +1,7 @@
+# Changes in 1.1.5
+
+* [plugin.h](include/clap/plugin.h): clarify plugin state after init()
+
 # Changes in 1.1.4
 
 * CMake: update some targets to link against `clap` instead of `clap-core`
