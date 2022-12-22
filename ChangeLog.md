@@ -1,6 +1,8 @@
 # Changes in 1.1.5
 
 * [plugin.h](include/clap/plugin.h): clarify plugin state after init()
+* [plugin.h](include/clap/plugin.h): clarify when it is allowed to call get_extension()
+* [host.h](include/clap/host.h): clarify when it is allowed to call get_extension()
 
 # Changes in 1.1.4
 

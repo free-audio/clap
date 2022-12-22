@@ -85,6 +85,8 @@ typedef struct clap_plugin {
 
    // Query an extension.
    // The returned pointer is owned by the plugin.
+   // It is forbidden to call it before plugin->init().
+   // You can call it within plugin->init() call, and after.
    // [thread-safe]
    const void *(CLAP_ABI *get_extension)(const struct clap_plugin *plugin, const char *id);
 

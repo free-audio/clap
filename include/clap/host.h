@@ -18,6 +18,8 @@ typedef struct clap_host {
    const char *version; // eg: "4.3"
 
    // Query an extension.
+   // It is forbidden to call it before plugin->init().
+   // You can call it within plugin->init() call, and after.
    // [thread-safe]
    const void *(CLAP_ABI *get_extension)(const struct clap_host *host, const char *extension_id);
 
