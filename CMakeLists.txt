@@ -3,11 +3,11 @@ enable_testing()
 
 # Extract the version from header file
 file(READ "include/clap/version.h" clap_version_header)
-string(REGEX MATCH "CLAP_VERSION_MAJOR_DIGIT ([0-9]+)" _ ${clap_version_header})
+string(REGEX MATCH "CLAP_VERSION_MAJOR_DIGITS ([0-9]+)" _ ${clap_version_header})
 set(CLAP_VERSION_MAJOR ${CMAKE_MATCH_1})
-string(REGEX MATCH "CLAP_VERSION_MINOR_DIGIT ([0-9]+)" _ ${clap_version_header})
+string(REGEX MATCH "CLAP_VERSION_MINOR_DIGITS ([0-9]+)" _ ${clap_version_header})
 set(CLAP_VERSION_MINOR ${CMAKE_MATCH_1})
-string(REGEX MATCH "CLAP_VERSION_REVISION_DIGIT ([0-9]+)" _ ${clap_version_header})
+string(REGEX MATCH "CLAP_VERSION_REVISION_DIGITS ([0-9]+)" _ ${clap_version_header})
 set(CLAP_VERSION_REVISION ${CMAKE_MATCH_1})
 
 message(STATUS "CLAP version: ${CLAP_VERSION_MAJOR}.${CLAP_VERSION_MINOR}.${CLAP_VERSION_REVISION}")

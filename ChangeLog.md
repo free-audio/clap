@@ -8,6 +8,8 @@
 * Remove UTF-8 BOM from a few files
 * [plugin-template.c](src/plugin-template.c): add state impl and some comments
 * [audio-ports-activation.h](include/clap/ext/draft/audio-ports-activation.h): improved documentation
+* [version.h](include/clap/version.h): create `CLAP_VERSION_NUMBER` which can be used for preprocessor version checks
+  and separate `CLAP_VERSION_MAJOR` (a uint32_t cast of the major version) from `CLAP_VERSION_MAJOR_DIGITS` (the actual digit)
 
 # Changes in 1.1.4
 

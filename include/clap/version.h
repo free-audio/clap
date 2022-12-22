@@ -20,15 +20,20 @@ typedef struct clap_version {
 }
 #endif
 
-#define CLAP_VERSION_MAJOR_DIGIT 1
-#define CLAP_VERSION_MINOR_DIGIT 1
-#define CLAP_VERSION_REVISION_DIGIT 5
-#define CLAP_VERSION_MAJOR ((uint32_t)CLAP_VERSION_MAJOR_DIGIT)
-#define CLAP_VERSION_MINOR ((uint32_t)CLAP_VERSION_MINOR_DIGIT)
-#define CLAP_VERSION_REVISION ((uint32_t)CLAP_VERSION_REVISION_DIGIT)
+#define CLAP_VERSION_MAJOR_DIGITS 1
+#define CLAP_VERSION_MINOR_DIGITS 1
+#define CLAP_VERSION_REVISION_DIGITS 5
+
+#define CLAP_VERSION_MAJOR ((uint32_t)CLAP_VERSION_MAJOR_DIGITS)
+#define CLAP_VERSION_MINOR ((uint32_t)CLAP_VERSION_MINOR_DIGITS)
+#define CLAP_VERSION_REVISION ((uint32_t)CLAP_VERSION_REVISION_DIGITS)
+
 #define CLAP_VERSION_INIT                                                                          \
    { CLAP_VERSION_MAJOR, CLAP_VERSION_MINOR, CLAP_VERSION_REVISION }
-#define CLAP_VERSION_NUMBER (CLAP_VERSION_MAJOR_DIGIT << 16) + (CLAP_VERSION_MINOR_DIGIT << 8) + CLAP_VERSION_REVISION_DIGIT
+
+// CLAP_VERSION_NUMBER can be used as a preprocessor directive comparator, for
+// instance `#if CLAP_VERSION_NUMBER >= 0x010105` will be clap versions at or after 1.1.5
+#define CLAP_VERSION_NUMBER ((CLAP_VERSION_MAJOR_DIGITS << 16) + (CLAP_VERSION_MINOR_DIGIT << 8) + CLAP_VERSION_REVISION_DIGIT)
 
 static const CLAP_CONSTEXPR clap_version_t CLAP_VERSION = CLAP_VERSION_INIT;
 
@@ -37,3 +42,12 @@ clap_version_is_compatible(const clap_version_t v) {
    // versions 0.x.y were used during development stage and aren't compatible
    return v.major >= 1;
 }
+
+
+#if defined(__cplusplus) && __cplusplus >= 201703L
+// Static assert some version constraints
+static_assert(CLAP_VERSION_MAJOR_DIGITS < 256 && CLAP_VERSION_MAJOR_DIGITS >= 1);
+static_assert(CLAP_VERSION_MINOR_DIGITS < 256 && CLAP_VERSION_REVISION >= 1);
+static_assert(CLAP_VERSION_REVISION_DIGITS < 256 && CLAP_VERSION_REVISION_DIGITS >= 0);
+#endif
+
