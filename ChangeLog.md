@@ -2,6 +2,7 @@
 
 * [plugin.h](include/clap/plugin.h): clarify plugin state after init()
 * [plugin.h](include/clap/plugin.h): clarify when it is allowed to call get_extension()
+* [plugin.h](include/clap/plugin.h): advice for plugin id and version strings
 * [host.h](include/clap/host.h): clarify when it is allowed to call get_extension()
 
 # Changes in 1.1.4

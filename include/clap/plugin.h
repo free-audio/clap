@@ -14,6 +14,14 @@ typedef struct clap_plugin_descriptor {
 
    // Mandatory fields must be set and must not be blank.
    // Otherwise the fields can be null or blank, though it is safer to make them blank.
+   //
+   // Some indications regarding id and version
+   // - id is an arbritrary string which should be unique to your plugin,
+   //   we encourage you to use a reverse URI eg: "com.u-he.diva"
+   // - version is an arbitrary string which describes a plugin,
+   //   it is useful for the host to understand and be able to compare two different
+   //   version strings, so here is a regex like expression which is likely to be
+   //   understood by most hosts: MAJOR(.MINOR(.REVISION)?)?( (Alpha|Beta) XREV)?
    const char *id;          // eg: "com.u-he.diva", mandatory
    const char *name;        // eg: "Diva", mandatory
    const char *vendor;      // eg: "u-he"
