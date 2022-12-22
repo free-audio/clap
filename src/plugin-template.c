@@ -19,11 +19,7 @@ static const clap_plugin_descriptor_t s_my_plug_desc = {
    .support_url = "https://your-domain.com/support",
    .version = "1.4.2",
    .description = "The plugin description.",
-   .features = (const char *[]){
-      CLAP_PLUGIN_FEATURE_INSTRUMENT,
-      CLAP_PLUGIN_FEATURE_STEREO,
-      NULL
-   },
+   .features = (const char *[]){CLAP_PLUGIN_FEATURE_INSTRUMENT, CLAP_PLUGIN_FEATURE_STEREO, NULL},
 };
 
 typedef struct {

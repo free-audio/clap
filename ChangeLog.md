@@ -1,3 +1,30 @@
+# Changes in 1.1.4
+
+* CMake: update some targets to link against `clap` instead of `clap-core`
+* [params.h](include/clap/ext/params.h): clarify parameter range change, fix documentation typos, add missing items
+* [plugin.h](include/clap/plugin.h): clarify data lifetime in `process()`
+* [audio-ports-config.h](include/clap/ext/audio-ports-config.h): clarify `select()`: if succeed, the host should rescan the audio ports
+
+## Draft extensions
+
+### New
+
+* [audio-ports-activation.h](include/clap/ext/draft/audio-ports-activation.h): new draft extension which allows a host to inform a plugin whether an audio port is an active port in the host audio context, and allow the host to respond accordingly
+* [context-menu.h](include/clap/ext/draft/context-menu.h): new draft extension which let the host and plugin exchange context menu entries and popup the menu
+* [param-indication.h](include/clap/ext/draft/param-indication.h): new draft extension which let the host inform the plugin that a parameter is currently mapped to a physical controller
+* [remote-controls.h](include/clap/ext/draft/remote-controls.h): new draft extension which replaces `quick-controls.h`
+* [resource-directory.h](include/clap/ext/draft/resource-directory.h): new draft extension which lets the plugin save resources in a directory provided by the host
+* [triggers.h](include/clap/ext/draft/triggers.h): new draft extension which exposes triggers to the host, triggers are data-less events
+
+### Improved
+
+* [track-info](include/clap/ext/draft/track-info.h): refine the draft extension
+
+### Removed
+
+* `file-reference.h`: removed in favor of [resource-directory.h](include/clap/ext/draft/resource-directory.h)
+* `quick-controls.h`: removed in favor of [remote-controls.h](include/clap/ext/draft/remote-controls.h)
+
 # Changes in 1.1.3
 
 * CMake: generate CMake and pkg-config package files on install

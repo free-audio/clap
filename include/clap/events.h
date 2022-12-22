@@ -50,7 +50,8 @@ enum {
    // A NOTE_ON with a velocity of 0 is valid and should not be interpreted as a NOTE_OFF.
    //
    // NOTE_CHOKE is meant to choke the voice(s), like in a drum machine when a closed hihat
-   // chokes an open hihat. This event can be sent by the host to the plugin. Here are two use cases:
+   // chokes an open hihat. This event can be sent by the host to the plugin. Here are two use
+   // cases:
    // - a plugin is inside a drum pad in Bitwig Studio's drum machine, and this pad is choked by
    //   another one
    // - the user double clicks the DAW's stop button in the transport which then stops the sound on

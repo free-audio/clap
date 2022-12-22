@@ -12,6 +12,7 @@
   - [Fundamental extensions](#fundamental-extensions)
   - [Support extensions](#support-extensions)
   - [Extra extensions](#extra-extensions)
+  - [Third-party extensions](#third-party-extensions)
 - [Adapters](#adapters)
 - [Resources](#resources)
   - [Examples](#examples)
@@ -103,6 +104,10 @@ and use to get a basic plugin experience:
 - [surround](include/clap/ext/draft/surround.h), inspect surround channel mapping
 - [ambisonic](include/clap/ext/draft/ambisonic.h), inspect ambisonic channel mapping
 
+## Third-party extensions
+
+- [`cockos.reaper_extension`](https://github.com/justinfrankel/reaper-sdk/blob/main/reaper-plugins/reaper_plugin.h#L138), access the [REAPER](http://reaper.fm) API
+
 # Adapters
 
 - [clap-wrapper](https://github.com/free-audio/clap-wrapper), wrappers for using CLAP in other plugin environments
@@ -116,7 +121,6 @@ and use to get a basic plugin experience:
 
 - [clap-host](https://github.com/free-audio/clap-host), very simple host
 - [clap-plugins](https://github.com/free-audio/clap-plugins), very simple plugins
-- [schwaaa's plugin](https://github.com/schwaaa/clap-plugin), basic example for prototyping CLAP audio plugins using Dear ImGui as the user interface
 
 ## Community related projects
 

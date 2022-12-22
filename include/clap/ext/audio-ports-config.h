@@ -59,7 +59,8 @@ typedef struct clap_plugin_audio_ports_config {
                        clap_audio_ports_config_t *config);
 
    // selects the configuration designated by id
-   // returns true if the configuration could be applied
+   // returns true if the configuration could be applied.
+   // Once applied the host should scan again the audio ports.
    // [main-thread,plugin-deactivated]
    bool(CLAP_ABI *select)(const clap_plugin_t *plugin, clap_id config_id);
 } clap_plugin_audio_ports_config_t;

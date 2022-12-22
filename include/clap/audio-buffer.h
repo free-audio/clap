@@ -28,7 +28,7 @@ typedef struct clap_audio_buffer {
    float  **data32;
    double **data64;
    uint32_t channel_count;
-   uint32_t latency;       // latency from/to the audio interface
+   uint32_t latency; // latency from/to the audio interface
    uint64_t constant_mask;
 } clap_audio_buffer_t;
 

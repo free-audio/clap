@@ -10,7 +10,7 @@ set(CLAP_VERSION_MINOR ${CMAKE_MATCH_1})
 string(REGEX MATCH "CLAP_VERSION_REVISION \\(\\(uint32_t\\)([0-9]+)\\)" _ ${clap_version_header})
 set(CLAP_VERSION_REVISION ${CMAKE_MATCH_1})
 
-message("CLAP version: ${CLAP_VERSION_MAJOR}.${CLAP_VERSION_MINOR}.${CLAP_VERSION_REVISION}")
+message(STATUS "CLAP version: ${CLAP_VERSION_MAJOR}.${CLAP_VERSION_MINOR}.${CLAP_VERSION_REVISION}")
 
 project(CLAP LANGUAGES C CXX VERSION ${CLAP_VERSION_MAJOR}.${CLAP_VERSION_MINOR}.${CLAP_VERSION_REVISION})
 
@@ -53,7 +53,7 @@ if (${CLAP_BUILD_TESTS})
 
     macro(clap_compile_cpp SUFFIX EXT STDC STDCPP)
         add_executable(clap-compile-${SUFFIX} EXCLUDE_FROM_ALL src/main.${EXT})
-        target_link_libraries(clap-compile-${SUFFIX} clap-core)
+        target_link_libraries(clap-compile-${SUFFIX} clap)
         set_target_properties(clap-compile-${SUFFIX} PROPERTIES
             C_STANDARD ${STDC}
             CXX_STANDARD ${STDCPP})
@@ -77,7 +77,7 @@ if (${CLAP_BUILD_TESTS})
     clap_compile_cpp(cpp20 cc 17 20)
 
     add_library(clap-plugin-template MODULE EXCLUDE_FROM_ALL src/plugin-template.c)
-    target_link_libraries(clap-plugin-template PRIVATE clap-core)
+    target_link_libraries(clap-plugin-template PRIVATE clap)
     set_target_properties(clap-plugin-template PROPERTIES C_STANDARD 11)
 
     if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
