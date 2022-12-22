@@ -4,6 +4,7 @@
 * [plugin.h](include/clap/plugin.h): clarify when it is allowed to call get_extension()
 * [plugin.h](include/clap/plugin.h): advice for plugin id and version strings
 * [host.h](include/clap/host.h): clarify when it is allowed to call get_extension()
+* [CMakeLists.txt](CMakeLists.txt): the target `clap-test` now includes `clap-plugin-template`
 
 # Changes in 1.1.4
 

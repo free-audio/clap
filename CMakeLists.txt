@@ -79,6 +79,7 @@ if (${CLAP_BUILD_TESTS})
     add_library(clap-plugin-template MODULE EXCLUDE_FROM_ALL src/plugin-template.c)
     target_link_libraries(clap-plugin-template PRIVATE clap)
     set_target_properties(clap-plugin-template PROPERTIES C_STANDARD 11)
+    add_dependencies(clap-tests clap-plugin-template)
 
     if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
         target_link_libraries(clap-plugin-template PRIVATE -Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/src/linux-my_plug.version)
