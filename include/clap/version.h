@@ -47,7 +47,7 @@ clap_version_is_compatible(const clap_version_t v) {
 #if defined(__cplusplus) && __cplusplus >= 201703L
 // Static assert some version constraints
 static_assert(CLAP_VERSION_MAJOR_DIGITS < 256 && CLAP_VERSION_MAJOR_DIGITS >= 1);
-static_assert(CLAP_VERSION_MINOR_DIGITS < 256 && CLAP_VERSION_REVISION >= 1);
+static_assert(CLAP_VERSION_MINOR_DIGITS < 256 && CLAP_VERSION_REVISION >= 0);
 static_assert(CLAP_VERSION_REVISION_DIGITS < 256 && CLAP_VERSION_REVISION_DIGITS >= 0);
 #endif
 
