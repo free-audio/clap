@@ -185,14 +185,13 @@ typedef uint32_t clap_param_info_flags;
 
 /* This describes a parameter */
 typedef struct clap_param_info {
-   // stable parameter identifier, it must never change.
+   // Stable parameter identifier, it must never change.
    clap_id id;
 
    clap_param_info_flags flags;
 
    // This value is optional and set by the plugin.
-   // Its purpose is to provide a fast access to the
-   // plugin parameter object by caching its pointer.
+   // Its purpose is to provide a fast access to the plugin parameter object by caching its pointer.
    // For instance:
    //
    // in clap_plugin_params.get_info():
@@ -205,20 +204,17 @@ typedef struct clap_param_info {
    //    if (!p) [[unlikely]]
    //       p = findParameter(event->param_id);
    //
-   // where findParameter() is a function the plugin implements
-   // to map parameter ids to internal objects.
+   // where findParameter() is a function the plugin implements to map parameter ids to internal
+   // objects.
    //
    // Important:
-   //  - The cookie is invalidated by a call to
-   //    clap_host_params->rescan(CLAP_PARAM_RESCAN_ALL) or when the plugin is
-   //    destroyed.
-   //  - The host will either provide the cookie as issued or nullptr
-   //    in events addressing parameters.
-   //  - The plugin must gracefully handle the case of a cookie
-   //    which is nullptr.
-   //  - Many plugins will process the parameter events more quickly if the host
-   //    can provide the cookie in a faster time than a hashmap lookup per param
-   //    per event.
+   //  - The cookie is invalidated by a call to clap_host_params->rescan(CLAP_PARAM_RESCAN_ALL) or
+   //    when the plugin is destroyed.
+   //  - The host will either provide the cookie as issued or nullptr in events addressing
+   //    parameters.
+   //  - The plugin must gracefully handle the case of a cookie which is nullptr.
+   //  - Many plugins will process the parameter events more quickly if the host can provide the
+   //    cookie in a faster time than a hashmap lookup per param per event.
    void *cookie;
 
    // the display name
@@ -228,9 +224,9 @@ typedef struct clap_param_info {
    // '/' will be used as a separator to show a tree like structure.
    char module[CLAP_PATH_SIZE];
 
-   double min_value;     // minimum plain value
-   double max_value;     // maximum plain value
-   double default_value; // default plain value
+   double min_value;     // Minimum plain value
+   double max_value;     // Maximum plain value
+   double default_value; // Default plain value
 } clap_param_info_t;
 
 typedef struct clap_plugin_params {
