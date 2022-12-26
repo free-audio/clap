@@ -245,9 +245,8 @@ typedef struct clap_plugin_params {
    bool(CLAP_ABI *get_value)(const clap_plugin_t *plugin, clap_id param_id, double *out_value);
 
    // Fills out_buffer with a null-terminated UTF-8 string that represents the parameter at the
-   // given 'value' argument. eg: "2.3 kHz". Returns true on success. Returns false if the text +
-   // null-terminator is greater than out_buffer_capacity. The host should always use this to format
-   // parameter values before displaying it to the user. [main-thread]
+   // given 'value' argument. eg: "2.3 kHz". Returns true on success. The host should always use
+   // this to format parameter values before displaying it to the user. [main-thread]
    bool(CLAP_ABI *value_to_text)(const clap_plugin_t *plugin,
                                  clap_id              param_id,
                                  double               value,
