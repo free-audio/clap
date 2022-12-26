@@ -217,11 +217,13 @@ typedef struct clap_param_info {
    //    cookie in a faster time than a hashmap lookup per param per event.
    void *cookie;
 
-   // the display name
+   // The display name. eg: "Volume". This does not need to be unique. Do not include the module
+   // text in this. The host should concatenate/format the module + name in the case where showing
+   // the name alone would be too vague.
    char name[CLAP_NAME_SIZE];
 
-   // the module path containing the param, eg:"oscillators/wt1"
-   // '/' will be used as a separator to show a tree like structure.
+   // The module path containing the param, eg: "Oscillators/Wavetable 1".
+   // '/' will be used as a separator to show a tree-like structure.
    char module[CLAP_PATH_SIZE];
 
    double min_value;     // Minimum plain value
