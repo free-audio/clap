@@ -185,14 +185,13 @@ typedef uint32_t clap_param_info_flags;
 
 /* This describes a parameter */
 typedef struct clap_param_info {
-   // stable parameter identifier, it must never change.
+   // Stable parameter identifier, it must never change.
    clap_id id;
 
    clap_param_info_flags flags;
 
    // This value is optional and set by the plugin.
-   // Its purpose is to provide a fast access to the
-   // plugin parameter object by caching its pointer.
+   // Its purpose is to provide a fast access to the plugin parameter object by caching its pointer.
    // For instance:
    //
    // in clap_plugin_params.get_info():
@@ -205,20 +204,17 @@ typedef struct clap_param_info {
    //    if (!p) [[unlikely]]
    //       p = findParameter(event->param_id);
    //
-   // where findParameter() is a function the plugin implements
-   // to map parameter ids to internal objects.
+   // where findParameter() is a function the plugin implements to map parameter ids to internal
+   // objects.
    //
    // Important:
-   //  - The cookie is invalidated by a call to
-   //    clap_host_params->rescan(CLAP_PARAM_RESCAN_ALL) or when the plugin is
-   //    destroyed.
-   //  - The host will either provide the cookie as issued or nullptr
-   //    in events addressing parameters.
-   //  - The plugin must gracefully handle the case of a cookie
-   //    which is nullptr.
-   //  - Many plugins will process the parameter events more quickly if the host
-   //    can provide the cookie in a faster time than a hashmap lookup per param
-   //    per event.
+   //  - The cookie is invalidated by a call to clap_host_params->rescan(CLAP_PARAM_RESCAN_ALL) or
+   //    when the plugin is destroyed.
+   //  - The host will either provide the cookie as issued or nullptr in events addressing
+   //    parameters.
+   //  - The plugin must gracefully handle the case of a cookie which is nullptr.
+   //  - Many plugins will process the parameter events more quickly if the host can provide the
+   //    cookie in a faster time than a hashmap lookup per param per event.
    void *cookie;
 
    // the display name
@@ -228,9 +224,9 @@ typedef struct clap_param_info {
    // '/' will be used as a separator to show a tree like structure.
    char module[CLAP_PATH_SIZE];
 
-   double min_value;     // minimum plain value
-   double max_value;     // maximum plain value
-   double default_value; // default plain value
+   double min_value;     // Minimum plain value
+   double max_value;     // Maximum plain value
+   double default_value; // Default plain value
 } clap_param_info_t;
 
 typedef struct clap_plugin_params {
@@ -238,29 +234,32 @@ typedef struct clap_plugin_params {
    // [main-thread]
    uint32_t(CLAP_ABI *count)(const clap_plugin_t *plugin);
 
-   // Copies the parameter's info to param_info and returns true on success.
+   // Copies the parameter's info to param_info. Returns true on success.
    // [main-thread]
    bool(CLAP_ABI *get_info)(const clap_plugin_t *plugin,
                             uint32_t             param_index,
                             clap_param_info_t   *param_info);
 
-   // Gets the parameter plain value.
+   // Writes the parameter's current value to out_value. Returns true on success.
    // [main-thread]
-   bool(CLAP_ABI *get_value)(const clap_plugin_t *plugin, clap_id param_id, double *value);
+   bool(CLAP_ABI *get_value)(const clap_plugin_t *plugin, clap_id param_id, double *out_value);
 
-   // Formats the display text for the given parameter value.
-   // The host should always format the parameter value to text using this function
-   // before displaying it to the user.
-   // [main-thread]
-   bool(CLAP_ABI *value_to_text)(
-      const clap_plugin_t *plugin, clap_id param_id, double value, char *display, uint32_t size);
+   // Fills out_buffer with a null-terminated UTF-8 string that represents the parameter at the
+   // given 'value' argument. eg: "2.3 kHz". Returns true on success. The host should always use
+   // this to format parameter values before displaying it to the user. [main-thread]
+   bool(CLAP_ABI *value_to_text)(const clap_plugin_t *plugin,
+                                 clap_id              param_id,
+                                 double               value,
+                                 char                *out_buffer,
+                                 uint32_t             out_buffer_capacity);
 
-   // Converts the display text to a parameter value.
+   // Converts the null-terminated UTF-8 param_value_text into a double and writes it to out_value.
+   // Returns true on success. The host can use this to convert user input into a parameter value.
    // [main-thread]
    bool(CLAP_ABI *text_to_value)(const clap_plugin_t *plugin,
                                  clap_id              param_id,
-                                 const char          *display,
-                                 double              *value);
+                                 const char          *param_value_text,
+                                 double              *out_value);
 
    // Flushes a set of parameter changes.
    // This method must not be called concurrently to clap_plugin->process().
