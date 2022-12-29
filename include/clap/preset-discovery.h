@@ -159,7 +159,13 @@ typedef struct clap_preset_provider {
    const clap_preset_provider_descriptor_t *desc;
 
    // Destroys the preset provider
-   void (CLAP_ABI *destroy)(const struct clap_preset_provider *provider);
+   void(CLAP_ABI *destroy)(const struct clap_preset_provider *provider);
+
+   // Retrives the path to a watch file.
+   // Whenever the given file is "touched", then the indexer shall invalidate all the data.
+   bool(CLAP_ABI *invalidation_watch_file)(const struct clap_preset_provider *provider,
+                                           char                              *watch_file_path,
+                                           uint32_t watch_file_path_capacity);
 
    // returns the number of locations
    uint32_t(CLAP_ABI *locations_count)(const struct clap_preset_provider *provider);
