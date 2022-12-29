@@ -1,7 +1,5 @@
 #pragma once
 
-#include "private/macros.h"
-
 // This file provides a set of standard plugin features meant to be used
 // within clap_plugin_descriptor.features.
 //
