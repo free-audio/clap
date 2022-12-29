@@ -192,9 +192,9 @@ typedef struct clap_preset_provider {
                                        clap_preset_collection_info_t     *out_info);
 
    // reads metadata from the given file and passes them to the metadata receiver
-   bool(CLAP_ABI *read_file_metadata)(const struct clap_preset_provider   *provider,
-                                      const char                          *file_path,
-                                      const clap_preset_metadata_receiver *metadata_receiver);
+   bool(CLAP_ABI *read_file_metadata)(const struct clap_preset_provider     *provider,
+                                      const char                            *file_path,
+                                      const clap_preset_metadata_receiver_t *metadata_receiver);
 } clap_preset_provider_t;
 
 typedef struct clap_preset_indexer {
@@ -224,14 +224,14 @@ typedef struct clap_preset_discovery_factory {
 
    // Create a preset provider by its id.
    // The returned pointer must be freed by calling preset_provider->destroy(preset_provider);
-   // The plugin is not allowed to use the indexer callbacks in the create method.
+   // The preset provider is not allowed to use the indexer callbacks in the create method.
    // Returns null in case of error.
    // [thread-safe]
    const clap_preset_provider_t *(CLAP_ABI *create)(
       const struct clap_preset_discovery_factory *factory,
       const clap_preset_indexer_t                *indexer,
       const char                                 *provider_id);
-} clap_plugin_factory_t;
+} clap_preset_discovery_factory_t;
 
 #ifdef __cplusplus
 }
