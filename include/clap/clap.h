@@ -65,3 +65,5 @@
 #include "ext/draft/track-info.h"
 #include "ext/draft/triggers.h"
 #include "ext/draft/tuning.h"
+
+#include "preset-discovery.h"
