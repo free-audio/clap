@@ -33,6 +33,8 @@
 #include "private/macros.h"
 #include "string-sizes.h"
 #include "version.h"
+#include "plugin-features.h"
+#include "preset-features.h"
 
 #ifdef __cplusplus
 extern "C" {
