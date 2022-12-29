@@ -158,6 +158,9 @@ typedef struct clap_preset_provider_descriptor {
 typedef struct clap_preset_provider {
    const clap_preset_provider_descriptor_t *desc;
 
+   // Destroys the preset provider
+   void (CLAP_ABI *destroy)(const struct clap_preset_provider *provider);
+
    // returns the number of locations
    uint32_t(CLAP_ABI *locations_count)(const struct clap_preset_provider *provider);
 
@@ -199,25 +202,23 @@ static const CLAP_CONSTEXPR char CLAP_PRESET_DISCOVERY_FACTORY_ID[] =
    "clap.preset-discovery-factory";
 
 // Every methods in this factory must be thread-safe.
-// It is very important to be able to scan the plugin as quickly as possible.
-//
-// The host may use clap_plugin_invalidation_factory to detect filesystem changes
-// which may change the factory's content.
+// It is encourraged to perform preset indexing in background threads, maybe even in background
+// process.
 typedef struct clap_preset_discovery_factory {
    // Get the number of preset providers available.
    // [thread-safe]
    uint32_t(CLAP_ABI *count)(const struct clap_preset_discovery_factory *factory);
 
-   // Retrieves a plugin descriptor by its index.
+   // Retrieves a preset provider descriptor by its index.
    // Returns null in case of error.
    // The descriptor must not be freed.
    // [thread-safe]
    const clap_preset_provider_descriptor_t *(CLAP_ABI *get_descriptor)(
       const struct clap_preset_discovery_factory *factory, uint32_t index);
 
-   // Create a clap_plugin by its plugin_id.
-   // The returned pointer must be freed by calling plugin->destroy(plugin);
-   // The plugin is not allowed to use the host callbacks in the create method.
+   // Create a preset provider by its id.
+   // The returned pointer must be freed by calling preset_provider->destroy(preset_provider);
+   // The plugin is not allowed to use the indexer callbacks in the create method.
    // Returns null in case of error.
    // [thread-safe]
    const clap_preset_provider_t *(CLAP_ABI *create)(
