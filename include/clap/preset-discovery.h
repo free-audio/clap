@@ -130,7 +130,7 @@ typedef struct clap_preset_location {
    // name of this location
    char name[CLAP_NAME_SIZE];
 
-   // path to a directory on the file system in which preset can be found
+   // path to a directory or a file on the file system in which preset can be found
    char path[CLAP_URI_SIZE];
 } clap_preset_location_t;
 
