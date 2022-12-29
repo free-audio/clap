@@ -1,14 +1,12 @@
 #pragma once
 
 // This file provides a set of standard preset features meant to be used
-// within clap_plugin_descriptor.features.
+// within preset discovery.
 //
 // For practical reasons we'll avoid spaces and use `-` instead to facilitate
 // scripts that generate the feature array.
 //
 // Non-standard features should be formated as follow: "$namespace:$feature"
-
-#include "plugin-features.h"
 
 #define CLAP_PRESET_FEATURE_KICK "kick"
 #define CLAP_PRESET_FEATURE_TOM "tom"
