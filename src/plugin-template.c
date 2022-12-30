@@ -132,10 +132,11 @@ static bool my_plug_init(const struct clap_plugin *plugin) {
    my_plug_t *plug = plugin->plugin_data;
 
    // Fetch host's extensions here
-   plug->host_log = plug->host->get_extension(plug->host, CLAP_EXT_LOG);
-   plug->host_thread_check = plug->host->get_extension(plug->host, CLAP_EXT_THREAD_CHECK);
-   plug->host_latency = plug->host->get_extension(plug->host, CLAP_EXT_LATENCY);
-   plug->host_state = plug->host->get_extension(plug->host, CLAP_EXT_STATE);
+   // Make sure to check that the interface functions are not null pointers
+   plug->host_log = (const clap_host_log_t *)plug->host->get_extension(plug->host, CLAP_EXT_LOG);
+   plug->host_thread_check = (const clap_host_thread_check_t *)plug->host->get_extension(plug->host, CLAP_EXT_THREAD_CHECK);
+   plug->host_latency = (const clap_host_latency_t *)plug->host->get_extension(plug->host, CLAP_EXT_LATENCY);
+   plug->host_state = (const clap_host_state_t *)plug->host->get_extension(plug->host, CLAP_EXT_STATE);
    return true;
 }
 

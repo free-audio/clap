@@ -97,7 +97,7 @@
 ///          .....                  .   .
 /// before: .     .     and after: .     .
 ///
-/// Advices for the host:
+/// Advice for the host:
 /// - store plain values in the document (automation)
 /// - store modulation amount in plain value delta, not in percentage
 /// - when you apply a CC mapping, remember the min/max plain values so you can adjust

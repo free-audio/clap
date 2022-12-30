@@ -8,10 +8,10 @@
 * Remove UTF-8 BOM from a few files
 * [plugin-template.c](src/plugin-template.c): add state impl and some comments
 * [audio-ports-activation.h](include/clap/ext/draft/audio-ports-activation.h): improved documentation
-* [version.h](include/clap/version.h): Add a CLAP_VERSION_GE(maj,min,rev), _EQ and _LT macro. Remove the
-  uint32_t cast from CLAP_VERSION_MAJOR, _MINOR, and _REVISION macro, and introduce it to the CLAP_VERSION_INIT
-  macro. If you rely on these macros being a uint32_t or parse this header using external software, this
-  may be a breaking change.
+* [version.h](include/clap/version.h):
+  * Add a CLAP_VERSION_GE(maj,min,rev), _EQ and _LT macro.
+  * Remove the uint32_t cast from CLAP_VERSION_MAJOR, _MINOR, and _REVISION macro, and introduce it to the CLAP_VERSION_INIT macro.
+  * If you rely on these macros being a uint32_t or parse this header using external software, this may be a breaking change.
 
 # Changes in 1.1.4
 
