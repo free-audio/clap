@@ -3,11 +3,11 @@ enable_testing()
 
 # Extract the version from header file
 file(READ "include/clap/version.h" clap_version_header)
-string(REGEX MATCH "CLAP_VERSION_MAJOR \\(\\(uint32_t\\)([0-9]+)\\)" _ ${clap_version_header})
+string(REGEX MATCH "CLAP_VERSION_MAJOR ([0-9]+)" _ ${clap_version_header})
 set(CLAP_VERSION_MAJOR ${CMAKE_MATCH_1})
-string(REGEX MATCH "CLAP_VERSION_MINOR \\(\\(uint32_t\\)([0-9]+)\\)" _ ${clap_version_header})
+string(REGEX MATCH "CLAP_VERSION_MINOR ([0-9]+)" _ ${clap_version_header})
 set(CLAP_VERSION_MINOR ${CMAKE_MATCH_1})
-string(REGEX MATCH "CLAP_VERSION_REVISION \\(\\(uint32_t\\)([0-9]+)\\)" _ ${clap_version_header})
+string(REGEX MATCH "CLAP_VERSION_REVISION ([0-9]+)" _ ${clap_version_header})
 set(CLAP_VERSION_REVISION ${CMAKE_MATCH_1})
 
 message(STATUS "CLAP version: ${CLAP_VERSION_MAJOR}.${CLAP_VERSION_MINOR}.${CLAP_VERSION_REVISION}")
@@ -79,6 +79,7 @@ if (${CLAP_BUILD_TESTS})
     add_library(clap-plugin-template MODULE EXCLUDE_FROM_ALL src/plugin-template.c)
     target_link_libraries(clap-plugin-template PRIVATE clap)
     set_target_properties(clap-plugin-template PROPERTIES C_STANDARD 11)
+    add_dependencies(clap-tests clap-plugin-template)
 
     if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
         target_link_libraries(clap-plugin-template PRIVATE -Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/src/linux-my_plug.version)

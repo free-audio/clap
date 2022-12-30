@@ -25,9 +25,10 @@ static const clap_plugin_descriptor_t s_my_plug_desc = {
 typedef struct {
    clap_plugin_t                   plugin;
    const clap_host_t              *host;
-   const clap_host_latency_t      *hostLatency;
-   const clap_host_log_t          *hostLog;
-   const clap_host_thread_check_t *hostThreadCheck;
+   const clap_host_latency_t      *host_latency;
+   const clap_host_log_t          *host_log;
+   const clap_host_thread_check_t *host_thread_check;
+   const clap_host_state_t        *host_state;
 
    uint32_t latency;
 } my_plug_t;
@@ -36,7 +37,10 @@ typedef struct {
 // clap_plugin_audio_ports //
 /////////////////////////////
 
-static uint32_t my_plug_audio_ports_count(const clap_plugin_t *plugin, bool is_input) { return 1; }
+static uint32_t my_plug_audio_ports_count(const clap_plugin_t *plugin, bool is_input) {
+   // We just declare 1 audio input and 1 audio output
+   return 1;
+}
 
 static bool my_plug_audio_ports_get(const clap_plugin_t    *plugin,
                                     uint32_t                index,
@@ -62,7 +66,10 @@ static const clap_plugin_audio_ports_t s_my_plug_audio_ports = {
 // clap_plugin_note_ports //
 ////////////////////////////
 
-static uint32_t my_plug_note_ports_count(const clap_plugin_t *plugin, bool is_input) { return 1; }
+static uint32_t my_plug_note_ports_count(const clap_plugin_t *plugin, bool is_input) {
+   // We just declare 1 note input
+   return 1;
+}
 
 static bool my_plug_note_ports_get(const clap_plugin_t   *plugin,
                                    uint32_t               index,
@@ -96,6 +103,27 @@ static const clap_plugin_latency_t s_my_plug_latency = {
    .get = my_plug_latency_get,
 };
 
+////////////////
+// clap_state //
+////////////////
+
+bool my_plug_state_save(const clap_plugin_t *plugin, const clap_ostream_t *stream) {
+   my_plug_t *plug = plugin->plugin_data;
+   // TODO: write the state into stream
+   return true;
+}
+
+bool my_plug_state_load(const clap_plugin_t *plugin, const clap_istream_t *stream) {
+   my_plug_t *plug = plugin->plugin_data;
+   // TODO: read the state from stream
+   return true;
+}
+
+static const clap_plugin_state_t s_my_plug_state = {
+   .save = my_plug_state_save,
+   .load = my_plug_state_load,
+};
+
 /////////////////
 // clap_plugin //
 /////////////////
@@ -104,9 +132,11 @@ static bool my_plug_init(const struct clap_plugin *plugin) {
    my_plug_t *plug = plugin->plugin_data;
 
    // Fetch host's extensions here
-   plug->hostLog = plug->host->get_extension(plug->host, CLAP_EXT_LOG);
-   plug->hostThreadCheck = plug->host->get_extension(plug->host, CLAP_EXT_THREAD_CHECK);
-   plug->hostLatency = plug->host->get_extension(plug->host, CLAP_EXT_LATENCY);
+   // Make sure to check that the interface functions are not null pointers
+   plug->host_log = (const clap_host_log_t *)plug->host->get_extension(plug->host, CLAP_EXT_LOG);
+   plug->host_thread_check = (const clap_host_thread_check_t *)plug->host->get_extension(plug->host, CLAP_EXT_THREAD_CHECK);
+   plug->host_latency = (const clap_host_latency_t *)plug->host->get_extension(plug->host, CLAP_EXT_LATENCY);
+   plug->host_state = (const clap_host_state_t *)plug->host->get_extension(plug->host, CLAP_EXT_STATE);
    return true;
 }
 
@@ -249,8 +279,9 @@ static const void *my_plug_get_extension(const struct clap_plugin *plugin, const
       return &s_my_plug_audio_ports;
    if (!strcmp(id, CLAP_EXT_NOTE_PORTS))
       return &s_my_plug_note_ports;
+   if (!strcmp(id, CLAP_EXT_STATE))
+      return &s_my_plug_state;
    // TODO: add support to CLAP_EXT_PARAMS
-   // TODO: add support to CLAP_EXT_STATE
    return NULL;
 }
 
@@ -340,6 +371,7 @@ static const void *entry_get_factory(const char *factory_id) {
    return NULL;
 }
 
+// This symbol will be resolved by the host
 CLAP_EXPORT const clap_plugin_entry_t clap_entry = {
    .clap_version = CLAP_VERSION_INIT,
    .init = entry_init,

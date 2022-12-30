@@ -7,9 +7,9 @@
 /// This extension provides a way for the host to activate and de-activate audio ports.
 /// Deactivating a port provides the following benefits:
 /// - the plugin knows ahead of time that a given input is not present and can choose
-///   an optimized computation path
+///   an optimized computation path,
 /// - the plugin knows that an output is not consumed by the host, and doesn't need to
-///   compute it
+///   compute it.
 ///
 /// Audio ports can only be activated or deactivated when the plugin is deactivated, unless
 /// can_activate_while_processing() returns true.
@@ -39,8 +39,8 @@ typedef struct clap_plugin_audio_ports_activation {
 
    // Activate the given port.
    //
-   // It is only possible to activate on the audio-thread if can_activate_while_processing() returns
-   // true.
+   // It is only possible to activate and de-activate on the audio-thread if
+   // can_activate_while_processing() returns true.
    //
    // [active ? audio-thread : main-thread]
    void(CLAP_ABI *set_active)(const clap_plugin_t *plugin,

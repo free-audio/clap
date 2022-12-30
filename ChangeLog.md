@@ -1,3 +1,18 @@
+# Changes in 1.1.5
+
+* [plugin.h](include/clap/plugin.h): clarify plugin state after init()
+* [plugin.h](include/clap/plugin.h): clarify when it is allowed to call get_extension()
+* [plugin.h](include/clap/plugin.h): advice for plugin id and version strings
+* [host.h](include/clap/host.h): clarify when it is allowed to call get_extension()
+* [CMakeLists.txt](CMakeLists.txt): the target `clap-test` now includes `clap-plugin-template`
+* Remove UTF-8 BOM from a few files
+* [plugin-template.c](src/plugin-template.c): add state impl and some comments
+* [audio-ports-activation.h](include/clap/ext/draft/audio-ports-activation.h): improved documentation
+* [version.h](include/clap/version.h):
+  * Add a CLAP_VERSION_GE(maj,min,rev), _EQ and _LT macro.
+  * Remove the uint32_t cast from CLAP_VERSION_MAJOR, _MINOR, and _REVISION macro, and introduce it to the CLAP_VERSION_INIT macro.
+  * If you rely on these macros being a uint32_t or parse this header using external software, this may be a breaking change.
+
 # Changes in 1.1.4
 
 * CMake: update some targets to link against `clap` instead of `clap-core`
