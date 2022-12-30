@@ -136,8 +136,10 @@ typedef struct clap_preset_location {
    // name of this location
    char name[CLAP_NAME_SIZE];
 
-   // path to a directory or a file on the file system in which preset can be found
-   char path[CLAP_URI_SIZE];
+   // URI
+   // - file:/// for pointing to a file or directory; directories are scanned recursively
+   // - plugin://<clap-plugin-id> for presets which are bundled inside the plugin itself
+   char uri[CLAP_URI_SIZE];
 } clap_preset_location_t;
 
 // A collection, represent a collection of presets; it is will most often used to identify presets
