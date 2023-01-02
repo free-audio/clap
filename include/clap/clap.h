@@ -26,11 +26,13 @@
 #pragma once
 
 #include "entry.h"
-#include "plugin-factory.h"
-#include "plugin-invalidation.h"
-#include "plugin-features.h"
+
+#include "factory/plugin-factory.h"
+#include "factory/draft/plugin-invalidation.h"
+#include "factory/draft/preset-discovery.h"
 
 #include "plugin.h"
+#include "plugin-features.h"
 #include "host.h"
 
 #include "ext/audio-ports-config.h"
@@ -65,5 +67,3 @@
 #include "ext/draft/track-info.h"
 #include "ext/draft/triggers.h"
 #include "ext/draft/tuning.h"
-
-#include "preset-discovery.h"

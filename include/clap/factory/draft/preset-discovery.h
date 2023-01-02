@@ -29,19 +29,19 @@
 
 #pragma once
 
-#include "private/std.h"
-#include "private/macros.h"
-#include "string-sizes.h"
-#include "version.h"
+#include "../../private/std.h"
+#include "../../private/macros.h"
+#include "../../string-sizes.h"
+#include "../../version.h"
+
+// Use it to retrieve const clap_preset_discovery_factory_t* from
+// clap_plugin_entry.get_factory()
+static const CLAP_CONSTEXPR char CLAP_PRESET_DISCOVERY_FACTORY_ID[] =
+   "clap.preset-discovery-factory/draft-0";
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-// Use it to retrieve const struct clap_preset_discovery_factory* from
-// clap_plugin_entry.get_factory()
-static const CLAP_CONSTEXPR char CLAP_PRESET_DISCOVERY_FACTORY_ID[] =
-   "clap.preset-discovery-factory/draft-0";
 
 /** Receiver that receives the metadata for a single preset file.
  * The host would define the various callbacks in this interface and the preset parser function

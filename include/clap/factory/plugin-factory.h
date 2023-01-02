@@ -1,7 +1,9 @@
 #pragma once
 
-#include "plugin.h"
+#include "../plugin.h"
 
+// Use it to retrieve const clap_plugin_factory_t* from
+// clap_plugin_entry.get_factory()
 static const CLAP_CONSTEXPR char CLAP_PLUGIN_FACTORY_ID[] = "clap.plugin-factory";
 
 #ifdef __cplusplus
