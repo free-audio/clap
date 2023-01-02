@@ -139,6 +139,7 @@ typedef struct clap_preset_location {
 
    // URI
    // - file:/// for pointing to a file or directory; directories are scanned recursively
+   //   eg: file:///home/abique/.u-he/Diva/presets/
    // - plugin://<clap-plugin-id> for presets which are bundled inside the plugin itself
    char uri[CLAP_URI_SIZE];
 } clap_preset_location_t;
