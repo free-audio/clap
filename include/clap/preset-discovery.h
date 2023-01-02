@@ -32,10 +32,15 @@
 #include "private/std.h"
 #include "private/macros.h"
 #include "string-sizes.h"
+#include "version.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+// Use it to retrieve const struct clap_preset_discovery_factory*
+static const CLAP_CONSTEXPR char CLAP_PRESET_DISCOVERY_FACTORY_ID[] =
+   "clap.preset-discovery-factory";
 
 /** Receiver that receives the metadata for a single preset file.
  * The host would define the various callbacks in this interface and the preset parser function
@@ -213,9 +218,6 @@ typedef struct clap_preset_indexer {
    const char    *vendor;
    const char    *version;
 } clap_preset_indexer_t;
-
-static const CLAP_CONSTEXPR char CLAP_PRESET_DISCOVERY_FACTORY_ID[] =
-   "clap.preset-discovery-factory";
 
 // Every methods in this factory must be thread-safe.
 // It is encourraged to perform preset indexing in background threads, maybe even in background
