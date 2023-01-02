@@ -195,12 +195,15 @@ typedef struct clap_preset_provider {
    uint32_t(CLAP_ABI *file_extensions_count)(const struct clap_preset_provider *provider);
 
    // stores the file extensions at index into out_extension.
-   // the `.' isn't included in the string.
-   // extension_capacity indicates the number of bytes available to store the extension
+   // `.' isn't included in the string.
+   // If out_extension is empty then every file should be matched.
+   // capacity:
+   //  - in: the number of bytes available to store the extension
+   //  - out: the number of bytes required to store the extension (not including '\0')
    bool(CLAP_ABI *get_file_extension)(const struct clap_preset_provider *provider,
                                       uint32_t                           index,
                                       char                              *out_extension,
-                                      uint32_t                           extension_capacity);
+                                      uint32_t                          *capacity);
 
    // gets information about a given collection.
    bool(CLAP_ABI *get_collection_info)(const struct clap_preset_provider *provider,
