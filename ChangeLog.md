@@ -1,3 +1,8 @@
+# Changes in 1.1.6
+
+* [version.h](include/clap/version.h) `CLAP_VERSION_LT` was backwards (comparing current with arg
+  vs arg with current). Correct and enhance tests.
+
 # Changes in 1.1.5
 
 * [plugin.h](include/clap/plugin.h): clarify plugin state after init()

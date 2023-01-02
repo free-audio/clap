@@ -22,14 +22,14 @@ typedef struct clap_version {
 
 #define CLAP_VERSION_MAJOR 1
 #define CLAP_VERSION_MINOR 1
-#define CLAP_VERSION_REVISION 5
+#define CLAP_VERSION_REVISION 6
 
 #define CLAP_VERSION_INIT                                                                          \
    { (uint32_t)CLAP_VERSION_MAJOR, (uint32_t)CLAP_VERSION_MINOR, (uint32_t)CLAP_VERSION_REVISION }
 
-#define CLAP_VERSION_LT(maj,min,rev) (((maj) < CLAP_VERSION_MAJOR) || \
-                    ((maj) == CLAP_VERSION_MAJOR && (min) < CLAP_VERSION_MINOR ) || \
-                    ((maj) == CLAP_VERSION_MAJOR && (min) == CLAP_VERSION_MINOR && (rev) < CLAP_VERSION_REVISION))
+#define CLAP_VERSION_LT(maj,min,rev) ((CLAP_VERSION_MAJOR < (maj)) || \
+                    ((maj) == CLAP_VERSION_MAJOR && CLAP_VERSION_MINOR < (min)) || \
+                    ((maj) == CLAP_VERSION_MAJOR && (min) == CLAP_VERSION_MINOR && CLAP_VERSION_REVISION < (rev)))
 #define CLAP_VERSION_EQ(maj,min,rev) (((maj) == CLAP_VERSION_MAJOR) && ((min) == CLAP_VERSION_MINOR) && ((rev) == CLAP_VERSION_REVISION))
 #define CLAP_VERSION_GE(maj,min,rev) (!CLAP_VERSION_LT(maj,min,rev))
 
