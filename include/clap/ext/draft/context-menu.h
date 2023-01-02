@@ -46,7 +46,7 @@ enum {
    CLAP_CONTEXT_MENU_ITEM_END_SUBMENU,
 
    // Adds a title entry
-   // data: const char *title
+   // data: const clap_context_menu_title_entry_t *
    CLAP_CONTEXT_MENU_ITEM_TITLE,
 };
 typedef uint32_t clap_context_menu_item_kind_t;
@@ -71,6 +71,14 @@ typedef struct clap_context_menu_check_entry {
    bool        is_checked;
    clap_id     action_id;
 } clap_context_menu_check_entry_t;
+
+typedef struct clap_context_menu_title_entry {
+   // text to be displayed
+   const char *title;
+
+   // if false, then the menu entry is greyed out
+   bool        is_enabled;
+} clap_context_menu_title_entry_t;
 
 typedef struct clap_context_menu_submenu {
    // text to be displayed
