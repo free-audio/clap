@@ -3,6 +3,7 @@
 ## Draft extensions
 
 * [preset-discovery.h](include/clap/preset-discovery.h): new extension which allows the host to index the plugin's preset which are stored on disk.
+* [context-menu.h](include/clap/ext/dra/../draft/context-menu.h): add "title" menu entry
 
 # Changes in 1.1.6
 

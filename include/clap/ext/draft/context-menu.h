@@ -44,6 +44,10 @@ enum {
    // Ends the current sub menu.
    // data: NULL
    CLAP_CONTEXT_MENU_ITEM_END_SUBMENU,
+
+   // Adds a title entry
+   // data: const char *title
+   CLAP_CONTEXT_MENU_ITEM_TITLE,
 };
 typedef uint32_t clap_context_menu_item_kind_t;
 
