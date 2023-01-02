@@ -14,7 +14,9 @@ extern "C" {
 ///
 /// main-thread:
 ///    This is the thread in which most of the interaction between the plugin and host happens.
-///    It is usually the thread on which the GUI receives its events.
+///    This will be the same OS thread throughout the lifetime of the plug-in.
+///    On macOS and Windows, this must be the thread on which gui and timer events are received
+///    (i.e., the main thread of the program).
 ///    It isn't a realtime thread, yet this thread needs to respond fast enough to user interaction,
 ///    so it is recommended to run long and expensive tasks such as preset indexing or asset loading
 ///    in dedicated background threads.
