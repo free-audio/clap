@@ -1,3 +1,9 @@
+# Changes in 1.1.7
+
+## Draft extensions
+
+* [preset-discovery.h](include/clap/preset-discovery.h): new extension which allows the host to index the plugin's preset which are stored on disk.
+
 # Changes in 1.1.6
 
 * [version.h](include/clap/version.h) `CLAP_VERSION_LT` was backwards (comparing current with arg
