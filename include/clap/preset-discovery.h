@@ -38,7 +38,8 @@
 extern "C" {
 #endif
 
-// Use it to retrieve const struct clap_preset_discovery_factory*
+// Use it to retrieve const struct clap_preset_discovery_factory* from
+// clap_plugin_entry.get_factory()
 static const CLAP_CONSTEXPR char CLAP_PRESET_DISCOVERY_FACTORY_ID[] =
    "clap.preset-discovery-factory";
 
