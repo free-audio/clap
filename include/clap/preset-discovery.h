@@ -32,9 +32,6 @@
 #include "private/std.h"
 #include "private/macros.h"
 #include "string-sizes.h"
-#include "version.h"
-#include "plugin-features.h"
-#include "preset-features.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -107,8 +104,12 @@ typedef const struct clap_preset_metadata_receiver {
     * Adds a feature to the preset.
     * See plugin-features.h and preset-features.h
     *
-    * The feature string is arbitrary, it is the indexer's job to remap it to its internal
-    * categorization and tagging system.
+    * The feature string is arbitrary, it is the indexer's job to understand it and remap it to its
+    * internal categorization and tagging system.
+    *
+    * Examples:
+    * kick, drum, tom, snare, clap, cymbal, bass, lead, metalic, hardsync, crossmod, acid,
+    * distorted, drone, pad, dirty, etc...
     */
    void(CLAP_ABI *add_feature)(const struct clap_preset_metadata_receiver *receiver,
                                const char                                 *feature);
