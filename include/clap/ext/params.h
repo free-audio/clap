@@ -46,7 +46,7 @@
 ///   (latency, audio ports, new parameters, ...) be sure to wait for the host
 ///   to deactivate the plugin to apply those changes.
 ///   If there are no breaking changes, the plugin can apply them them right away.
-///   The plugin is resonsible for updating both its audio processor and its gui.
+///   The plugin is responsible for updating both its audio processor and its gui.
 ///
 /// II. Turning a knob on the DAW interface
 /// - the host will send an automation event to the plugin via a process() or flush()
@@ -63,8 +63,8 @@
 /// - the plugin is responsible for updating its GUI
 ///
 /// V. Turning a knob via plugin's internal MIDI mapping
-/// - the plugin sends a CLAP_EVENT_PARAM_SET output event, set should_record to false
-/// - the plugin is responsible to update its GUI
+/// - the plugin sends a CLAP_EVENT_PARAM_VALUE output event, set should_record to false
+/// - the plugin is responsible for updating its GUI
 ///
 /// VI. Adding or removing parameters
 /// - if the plugin is activated call clap_host->restart()
