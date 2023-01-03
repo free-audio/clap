@@ -19,7 +19,7 @@ enum {
    CLAP_DESCRIPTION_SIZE = 1024,
 
    // String capacity for describing a filesystem file path, an web URL, ...
-   CLAP_URI_SIZE = 8096,
+   CLAP_URI_SIZE = 8192,
 };
 
 #ifdef __cplusplus
