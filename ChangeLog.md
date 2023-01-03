@@ -1,10 +1,13 @@
 # Changes in 1.1.7
 
-* Add a [factory](incl/../include/clap/factory) folder for better organization.
+* Add a [factory](incl/../include/clap/factory) folder for better organization and move our factories there
+* [params.h](include/clap/ext/params.h): fix typos
+* [string-sizes.h](include/clap/string-sizes.h): add sizes for URI (8192 bytes) and descriptions (1024 bytes)
 
 ## Draft extensions
 
-* [context-menu.h](include/clap/ext/dra/../draft/context-menu.h): add "title" menu entry
+* [context-menu.h](include/clap/ext/draft/context-menu.h): add "title" menu entry
+* [preset-load.h](include/clap/ext/draft/preset-load.h): load from URI instead of path, making the extension more powerful
 
 ## Draft factories
 
