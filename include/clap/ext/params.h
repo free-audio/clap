@@ -46,7 +46,7 @@
 ///   (latency, audio ports, new parameters, ...) be sure to wait for the host
 ///   to deactivate the plugin to apply those changes.
 ///   If there are no breaking changes, the plugin can apply them them right away.
-///   The plugin is resonsible for updating both its audio processor and its gui.
+///   The plugin is responsible for updating both its audio processor and its gui.
 ///
 /// II. Turning a knob on the DAW interface
 /// - the host will send an automation event to the plugin via a process() or flush()
