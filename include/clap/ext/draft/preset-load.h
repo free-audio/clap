@@ -9,19 +9,13 @@ extern "C" {
 #endif
 
 typedef struct clap_plugin_preset_load {
-   // Loads a preset in the plugin native preset file format from a path.
-   // [main-thread]
-   bool(CLAP_ABI *from_file)(const clap_plugin_t *plugin, const char *path);
-
-   // Loads a preset in the plugin native preset file format from a path which points to a preset
-   // container file.
-   // preset_id must be a valid string, which is specific to the plugin itself and identifies the
-   // desired preset within the given preset container.
+   // Loads a preset in the plugin native preset file format from a URI. eg:
+   // - "file:///home/abique/.u-he/Diva/Presets/Diva/HS Bass Nine.h2p"
+   // - "file:///home/abique/my-sound-bank/<preset-id>"
+   // - "plugin://<plugin-id>/<preset-id>"
    //
    // [main-thread]
-   bool(CLAP_ABI *from_container_file)(const clap_plugin_t *plugin,
-                                       const char          *path,
-                                       const char          *preset_id);
+   bool(CLAP_ABI *from_uri)(const clap_plugin_t *plugin, const char *uri);
 } clap_plugin_preset_load_t;
 
 #ifdef __cplusplus
