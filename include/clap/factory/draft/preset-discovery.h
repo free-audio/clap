@@ -170,10 +170,10 @@ typedef struct clap_preset_discovery_filetype {
    // If empty or NULL then every file should be matched.
    const char *file_extension;
 
-   // This icon will be associated with the filetype.
+   // This icon is optional and will be associated with the filetype.
    // It comes in multiple variations but the plugin can use 4 times the same image.
    // small shall have less details than the large one.
-   // light and dark variation, so the host can pick the one that works better with its background.
+   // light and dark variation, so the host can pick the one which works best for its background.
    const char *icon_uri_small_light;
    const char *icon_uri_small_dark;
    const char *icon_uri_large_light;
