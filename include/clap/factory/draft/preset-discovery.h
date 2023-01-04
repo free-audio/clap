@@ -160,7 +160,7 @@ typedef const struct clap_preset_discovery_metadata_receiver {
    void(CLAP_ABI *add_feature)(const struct clap_preset_discovery_metadata_receiver *receiver,
                                const char                                           *feature);
 
-} * clap_preset_discovery_metadata_receiver_t;
+} clap_preset_discovery_metadata_receiver_t;
 
 typedef struct clap_preset_discovery_filetype {
    const char *name;
