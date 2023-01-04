@@ -25,6 +25,13 @@
    categorization system. The reason for this is to reduce the work for a plug-in developer to add
    Preset Discovery support for their existing preset file format and not have to be concerned with
    all the different hosts and how they want to receive the metadata.
+
+   VERY IMPORTANT:
+   - the whole indexing process has to be **fast**
+      - clap_preset_provider->get_metadata() has to be fast and avoid unnecessary operations
+   - the whole indexing process must not be interactive
+      - don't show dialogs, windows, ...
+      - don't ask for user input
 */
 
 #pragma once
