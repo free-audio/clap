@@ -124,6 +124,12 @@ typedef const struct clap_preset_discovery_metadata_receiver {
    // If unset, they are then inherited from the location.
    void(CLAP_ABI *set_flags)(const struct clap_preset_discovery_metadata_receiver, uint32_t flags);
 
+   // Sets the preset name.
+   // The preset name can be infered from the file name, but it is mandatory to set it for
+   // container's preset.
+   void(CLAP_ABI *set_name)(const struct clap_preset_discovery_metadata_receiver *receiver,
+                            const char                                           *name);
+
    // Adds a creator name for the preset.
    void(CLAP_ABI *add_creator)(const struct clap_preset_discovery_metadata_receiver *receiver,
                                const char                                           *creator);
