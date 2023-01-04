@@ -59,7 +59,7 @@ enum clap_preset_discovery_flags {
    // This location/collection is meant for storing factory presets, most likely read-only
    CLAP_PRESET_DISCOVERY_IS_FACTORY_CONTENT = 1 << 0,
 
-   // This location/collection is meant for storing user created presets
+   // This location/collection is meant for storing user created presets.
    CLAP_PRESET_DISCOVERY_IS_USER_CONTENT = 1 << 1,
 
    // This location/collection is meant for demo presets, those are preset which may trigger
@@ -70,6 +70,10 @@ enum clap_preset_discovery_flags {
 
    // This preset is a user's favorite
    CLAP_PRESET_DISCOVERY_IS_FAVORITE = 1 << 3,
+
+   // Marks this preset as a bank preset, meaning that it can be assigned to the plug-in as a
+   // preset but will update the banks in the plug-in.
+   CLAP_PRESET_DISCOVERY_IS_BANK_PRESET = 1 << 4,
 };
 
 // Receiver that receives the metadata for a single preset file.
@@ -106,11 +110,6 @@ typedef const struct clap_preset_discovery_metadata_receiver {
       const struct clap_preset_discovery_metadata_receiver *receiver,
       const char                                           *path,
       const char                                           *preset_id);
-
-   // Marks this preset as a bank preset, meaning that it can be assigned to the plug-in as a
-   // preset but will update the banks in the plug-in.
-   void(CLAP_ABI *mark_as_bank_preset)(
-      const struct clap_preset_discovery_metadata_receiver *receiver);
 
    // Sets plug-in id that this preset can be used with.
    void(CLAP_ABI *set_plugin_id)(const struct clap_preset_discovery_metadata_receiver *receiver,
