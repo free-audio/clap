@@ -170,6 +170,10 @@ typedef struct clap_preset_discovery_filetype {
    // If empty or NULL then every file should be matched.
    const char *file_extension;
 
+   // This icon will be associated with the filetype.
+   // It comes in multiple variations but the plugin can use 4 times the same image.
+   // small shall have less details than the large one.
+   // light and dark variation, so the host can pick the one that works better with its background.
    const char *icon_uri_small_light;
    const char *icon_uri_small_dark;
    const char *icon_uri_large_light;
@@ -199,6 +203,7 @@ typedef struct clap_preset_discovery_collection {
    const char *name;         // name of this collection
    const char *description;  // reasonably short description of the collection
    const char *homepage_url; // url to the pack's homepage
+
    const char *image_uri;    // may be an image on disk or from an http server
 } clap_preset_discovery_collection_t;
 
