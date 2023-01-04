@@ -209,9 +209,9 @@ typedef struct clap_preset_provider {
                                        clap_preset_collection_info_t     *out_info);
 
    // reads metadata from the given file and passes them to the metadata receiver
-   bool(CLAP_ABI *read_file_metadata)(const struct clap_preset_provider     *provider,
-                                      const char                            *file_path,
-                                      const clap_preset_metadata_receiver_t *metadata_receiver);
+   bool(CLAP_ABI *get_metadata)(const struct clap_preset_provider     *provider,
+                                const char                            *uri,
+                                const clap_preset_metadata_receiver_t *metadata_receiver);
 } clap_preset_provider_t;
 
 typedef struct clap_preset_indexer {
