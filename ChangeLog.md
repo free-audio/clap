@@ -2,7 +2,6 @@
 
 * Add a [factory](incl/../include/clap/factory) folder for better organization and move our factories there
 * [params.h](include/clap/ext/params.h): fix typos
-* [string-sizes.h](include/clap/string-sizes.h): add sizes for URI (8192 bytes) and descriptions (1024 bytes)
 * CMake: disable C17 targets for CMake < 3.21
 
 ## Draft extensions
