@@ -12,14 +12,12 @@
    The API works as follow to index presets and presets metadata:
    1. clap_plugin_entry.get_factory(CLAP_PRESET_DISCOVERY_FACTORY_ID)
    2. clap_preset_discovery_factory_t.create(...)
-   3. clap_preset_discovery_provider.register_filetypes()
-        `-> clap_preset_discovery_indexer.register_filetype()
-      clap_preset_discovery_provider.register_locations()
-        `-> clap_preset_discovery_indexer.register_location()
-      clap_preset_discovery_provider.register_collections()
-        `-> clap_preset_discovery_indexer.register_collection()
+   3. clap_preset_discovery_provider.declare_content() (only necessary the first time, declarations can be cached)
+        `-> clap_preset_discovery_indexer.declare_filetype()
+        `-> clap_preset_discovery_indexer.declare_location()
+        `-> clap_preset_discovery_indexer.declare_collection()
    4. crawl the given locations and monitor file system changes
-   5. read metadata for each preset files
+        `-> clap_preset_discovery_indexer.get_metadata() for each presets files
 
    Then to load a preset, use ext/draft/preset-load.h
 
@@ -222,14 +220,8 @@ typedef struct clap_preset_discovery_provider {
    // Destroys the preset provider
    void(CLAP_ABI *destroy)(const struct clap_preset_discovery_provider *provider);
 
-   // Asks the preset provider to register its locations
-   void(CLAP_ABI *register_locations)(const struct clap_preset_discovery_provider *provider);
-
-   // Asks the preset provider to register its filetypes
-   void(CLAP_ABI *register_filetypes)(const struct clap_preset_discovery_provider *provider);
-
-   // Asks the preset provider to register its collections
-   void(CLAP_ABI *register_collections)(const struct clap_preset_discovery_provider *provider);
+   // Asks the preset provider to declare all its locations, filetypes and collections
+   void(CLAP_ABI *declare_content)(const struct clap_preset_discovery_provider *provider);
 
    // Retrives the path to a watch file.
    // Whenever the given file is "touched", then the indexer shall invalidate all the data.
@@ -249,16 +241,19 @@ typedef struct clap_preset_discovery_indexer {
    const char    *vendor;
    const char    *version;
 
-   // Registers a preset filetype
-   void(CLAP_ABI *register_filetype)(const struct clap_preset_discovery_indexer *indexer,
+   // Registers a preset filetype.
+   // Don't callback into the provider during this call.
+   void(CLAP_ABI *declare_filetype)(const struct clap_preset_discovery_indexer *indexer,
                                      const clap_preset_discovery_filetype_t     *filetype);
 
-   // Registers a preset location
-   void(CLAP_ABI *register_location)(const struct clap_preset_discovery_indexer *indexer,
+   // Registers a preset location.
+   // Don't callback into the provider during this call.
+   void(CLAP_ABI *declare_location)(const struct clap_preset_discovery_indexer *indexer,
                                      const clap_preset_discovery_location_t     *location);
 
-   // Registers a preset collection
-   void(CLAP_ABI *register_collection)(const struct clap_preset_discovery_indexer *indexer,
+   // Registers a preset collection.
+   // Don't callback into the provider during this call.
+   void(CLAP_ABI *declare_collection)(const struct clap_preset_discovery_indexer *indexer,
                                        const clap_preset_discovery_collection_t   *collection);
 } clap_preset_indexer_t;
 
