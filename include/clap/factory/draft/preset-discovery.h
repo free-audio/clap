@@ -42,9 +42,7 @@
 
 #include "../../private/std.h"
 #include "../../private/macros.h"
-#include "../../string-sizes.h"
 #include "../../version.h"
-#include "../../color.h"
 
 // Use it to retrieve const clap_preset_discovery_factory_t* from
 // clap_plugin_entry.get_factory()
@@ -113,10 +111,9 @@ typedef struct clap_preset_discovery_metadata_receiver {
 
    // Adds a plug-in id that this preset can be used with.
    // plugin_abi: 0 for CLAP
-   void(CLAP_ABI *add_plugin_id)(
-      const struct clap_preset_discovery_metadata_receiver *receiver,
-      uint32_t                                              plugin_abi,
-      const char                                           *plugin_id);
+   void(CLAP_ABI *add_plugin_id)(const struct clap_preset_discovery_metadata_receiver *receiver,
+                                 uint32_t                                              plugin_abi,
+                                 const char                                           *plugin_id);
 
    // Sets the collection to which the preset belongs to.
    void(CLAP_ABI *set_collection_id)(const struct clap_preset_discovery_metadata_receiver *receiver,
@@ -140,10 +137,6 @@ typedef struct clap_preset_discovery_metadata_receiver {
    // Sets a description of the preset.
    void(CLAP_ABI *set_description)(const struct clap_preset_discovery_metadata_receiver *receiver,
                                    const char *description);
-
-   // Sets a color tag associated to the preset.
-   void(CLAP_ABI *set_color_tag)(const struct clap_preset_discovery_metadata_receiver *receiver,
-                                 const clap_color_t                                   *color);
 
    // Sets the creation time and last modification time of the preset.
    // If one of the time isn't known, then set it to 0.
@@ -182,10 +175,8 @@ typedef struct clap_preset_discovery_filetype {
 
 // Defines a place in which to search for presets
 typedef struct clap_preset_discovery_location {
-   uint32_t flags; // see enum clap_preset_discovery_flags
-
-   // name of this location
-   const char *name;
+   uint32_t    flags; // see enum clap_preset_discovery_flags
+   const char *name;  // name of this location
 
    // URI
    // - file:/// for pointing to a file or directory; directories are scanned recursively
@@ -197,8 +188,7 @@ typedef struct clap_preset_discovery_location {
 // A collection, represent a collection of presets; it is will most often used to identify presets
 // which belongs to the same "sound pack".
 typedef struct clap_preset_discovery_collection {
-   uint64_t flags; // see enum clap_preset_discovery_flags
-
+   uint64_t    flags;        // see enum clap_preset_discovery_flags
    const char *id;           // collection identifier
    const char *name;         // name of this collection
    const char *description;  // reasonably short description of the collection
@@ -241,9 +231,10 @@ typedef struct clap_preset_discovery_provider {
 
 typedef struct clap_preset_discovery_indexer {
    clap_version_t clap_version; // initialized to CLAP_VERSION
-   const char    *name;
-   const char    *vendor;
-   const char    *version;
+   const char    *name;         // eg: "Bitwig Studio"
+   const char    *vendor;       // eg: "Bitwig GmbH"
+   const char    *url;          // eg: "https://bitwig.com"
+   const char    *version;      // eg: "4.3", see plugin.h for advice on how to format the version
 
    // Declares a preset filetype.
    // Don't callback into the provider during this call.
