@@ -100,14 +100,14 @@ typedef struct clap_preset_discovery_metadata_receiver {
    // The path defines a human friendly path to the preset in the container file. It
    // should be unique within the container file.
    //
-   // The preset_id is a machine friendly string used to load the preset inside the container via a
-   // the preset-load plug-in extension. The preset_id can also just be the path if that's what the
+   // The load_uri is a machine friendly string used to load the preset inside the container via a
+   // the preset-load plug-in extension. The load_uri can also just be the path if that's what the
    // extension wants but it could also be some other unique id like a database primary key or a
    // binary offset. It's use is entirely up to the plug-in.
    void(CLAP_ABI *begin_contained_preset)(
       const struct clap_preset_discovery_metadata_receiver *receiver,
       const char                                           *path,
-      const char                                           *preset_id);
+      const char                                           *load_uri);
 
    // Adds a plug-in id that this preset can be used with.
    // plugin_abi: 0 for CLAP
