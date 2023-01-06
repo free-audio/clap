@@ -229,6 +229,7 @@ typedef struct clap_preset_discovery_provider {
                                          const char                                  *extension_id);
 } clap_preset_discovery_provider_t;
 
+// This interface isn't thread-safe
 typedef struct clap_preset_discovery_indexer {
    clap_version_t clap_version; // initialized to CLAP_VERSION
    const char    *name;         // eg: "Bitwig Studio"
