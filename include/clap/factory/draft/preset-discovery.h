@@ -12,11 +12,12 @@
    The API works as follow to index presets and presets metadata:
    1. clap_plugin_entry.get_factory(CLAP_PRESET_DISCOVERY_FACTORY_ID)
    2. clap_preset_discovery_factory_t.create(...)
-   3. clap_preset_discovery_provider.declare_content() (only necessary the first time, declarations
+   3. clap_preset_discovery_provider.init() (only necessary the first time, declarations
    can be cached)
         `-> clap_preset_discovery_indexer.declare_filetype()
         `-> clap_preset_discovery_indexer.declare_location()
-        `-> clap_preset_discovery_indexer.declare_collection()
+        `-> clap_preset_discovery_indexer.declare_collection() (optional)
+        `-> clap_preset_discorery_indexer.set_invalidation_watch_file() (optional)
    4. crawl the given locations and monitor file system changes
         `-> clap_preset_discovery_indexer.get_metadata() for each presets files
 
@@ -225,12 +226,6 @@ typedef struct clap_preset_discovery_provider {
    // It should declare all its locations, filetypes and collections.
    void(CLAP_ABI *init)(const struct clap_preset_discovery_provider *provider);
 
-   // Retrives the path to a watch file.
-   // Whenever the given file is "touched", then the indexer shall invalidate all the data.
-   bool(CLAP_ABI *invalidation_watch_file)(const struct clap_preset_discovery_provider *provider,
-                                           char    *watch_file_path,
-                                           uint32_t watch_file_path_capacity);
-
    // reads metadata from the given file and passes them to the metadata receiver
    bool(CLAP_ABI *get_metadata)(const struct clap_preset_discovery_provider     *provider,
                                 const char                                      *uri,
@@ -264,6 +259,12 @@ typedef struct clap_preset_discovery_indexer {
    // Don't callback into the provider during this call.
    void(CLAP_ABI *declare_collection)(const struct clap_preset_discovery_indexer *indexer,
                                       const clap_preset_discovery_collection_t   *collection);
+
+   // Sets the path to a watch file.
+   // Whenever the given file is "touched" (its modification time is updated),
+   // then the indexer shall invalidate all the data.
+   void(CLAP_ABI *set_invalidation_watch_file)(const struct clap_preset_discovery_indexer *indexer,
+                                               const char                                 *path);
 
    // Query an extension.
    // The returned pointer is owned by the indexer.
