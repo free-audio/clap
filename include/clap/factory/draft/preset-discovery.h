@@ -146,6 +146,8 @@ typedef struct clap_preset_discovery_metadata_receiver {
 
    // Sets the creation time and last modification time of the preset.
    // If one of the time isn't known, then set it to 0.
+   // If this function is not called, then the indexer may look at the file's creation and
+   // modification time.
    void(CLAP_ABI *set_timestamps)(const struct clap_preset_discovery_metadata_receiver *receiver,
                                   uint64_t creation_time,
                                   uint64_t modification_time);
@@ -161,6 +163,11 @@ typedef struct clap_preset_discovery_metadata_receiver {
    // distorted, drone, pad, dirty, etc...
    void(CLAP_ABI *add_feature)(const struct clap_preset_discovery_metadata_receiver *receiver,
                                const char                                           *feature);
+
+   // Adds extra information to the metadata.
+   void(CLAP_ABI *add_extra_info)(const struct clap_preset_discovery_metadata_receiver *receiver,
+                                  const char                                           *key,
+                                  const char                                           *value);
 } clap_preset_discovery_metadata_receiver_t;
 
 typedef struct clap_preset_discovery_filetype {
@@ -170,15 +177,6 @@ typedef struct clap_preset_discovery_filetype {
    // `.' isn't included in the string.
    // If empty or NULL then every file should be matched.
    const char *file_extension;
-
-   // This icon is optional and will be associated with the filetype.
-   // It comes in multiple variations but the plugin can use 4 times the same image.
-   // small shall have less details than the large one.
-   // light and dark variation, so the host can pick the one which works best for its background.
-   const char *icon_uri_small_light;
-   const char *icon_uri_small_dark;
-   const char *icon_uri_large_light;
-   const char *icon_uri_large_dark;
 } clap_preset_discovery_filetype_t;
 
 // Defines a place in which to search for presets
@@ -223,8 +221,9 @@ typedef struct clap_preset_discovery_provider {
    // Destroys the preset provider
    void(CLAP_ABI *destroy)(const struct clap_preset_discovery_provider *provider);
 
-   // Asks the preset provider to declare all its locations, filetypes and collections
-   void(CLAP_ABI *declare_content)(const struct clap_preset_discovery_provider *provider);
+   // Initialize the preset provider.
+   // It should declare all its locations, filetypes and collections.
+   void(CLAP_ABI *init)(const struct clap_preset_discovery_provider *provider);
 
    // Retrives the path to a watch file.
    // Whenever the given file is "touched", then the indexer shall invalidate all the data.
@@ -236,6 +235,13 @@ typedef struct clap_preset_discovery_provider {
    bool(CLAP_ABI *get_metadata)(const struct clap_preset_discovery_provider     *provider,
                                 const char                                      *uri,
                                 const clap_preset_discovery_metadata_receiver_t *metadata_receiver);
+
+   // Query an extension.
+   // The returned pointer is owned by the provider.
+   // It is forbidden to call it before provider->init().
+   // You can call it within provider->init() call, and after.
+   const void *(CLAP_ABI *get_extension)(const struct clap_preset_discovery_provider *provider,
+                                         const char                                  *extension_id);
 } clap_preset_discovery_provider_t;
 
 typedef struct clap_preset_discovery_indexer {
@@ -258,6 +264,13 @@ typedef struct clap_preset_discovery_indexer {
    // Don't callback into the provider during this call.
    void(CLAP_ABI *declare_collection)(const struct clap_preset_discovery_indexer *indexer,
                                       const clap_preset_discovery_collection_t   *collection);
+
+   // Query an extension.
+   // The returned pointer is owned by the indexer.
+   // It is forbidden to call it before provider->init().
+   // You can call it within provider->init() call, and after.
+   const void *(CLAP_ABI *get_extension)(const struct clap_preset_discovery_provider *provider,
+                                         const char                                  *extension_id);
 } clap_preset_indexer_t;
 
 // Every methods in this factory must be thread-safe.
