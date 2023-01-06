@@ -279,6 +279,9 @@ typedef struct clap_preset_discovery_indexer {
 // Every methods in this factory must be thread-safe.
 // It is encourraged to perform preset indexing in background threads, maybe even in background
 // process.
+//
+// The host may use clap_plugin_invalidation_factory to detect filesystem changes
+// which may change the factory's content.
 typedef struct clap_preset_discovery_factory {
    // Get the number of preset providers available.
    // [thread-safe]
