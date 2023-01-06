@@ -274,7 +274,7 @@ typedef struct clap_preset_discovery_indexer {
    // You can call it within provider->init() call, and after.
    const void *(CLAP_ABI *get_extension)(const struct clap_preset_discovery_indexer *indexer,
                                          const char                                 *extension_id);
-} clap_preset_indexer_t;
+} clap_preset_discovery_indexer_t;
 
 // Every methods in this factory must be thread-safe.
 // It is encourraged to perform preset indexing in background threads, maybe even in background
@@ -301,7 +301,7 @@ typedef struct clap_preset_discovery_factory {
    // [thread-safe]
    const clap_preset_discovery_provider_t *(CLAP_ABI *create)(
       const struct clap_preset_discovery_factory *factory,
-      const clap_preset_indexer_t                *indexer,
+      const clap_preset_discovery_indexer_t      *indexer,
       const char                                 *provider_id);
 } clap_preset_discovery_factory_t;
 
