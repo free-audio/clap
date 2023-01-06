@@ -254,6 +254,16 @@ typedef struct clap_preset_discovery_indexer {
    // Sets the path to a watch file.
    // Whenever the given file is "touched" (its modification time is updated),
    // then the indexer shall invalidate all the data.
+   //
+   // This file shouldn't be touched when a new preset is added, the host shall detect the new
+   // preset using the OS features (file system monitoring).
+   //
+   // The invalidation file is useful if:
+   // - the set of filetypes changes
+   // - the set of locations changes
+   // - the set of collections changes
+   // - the metadata extraction code changes is located outside of the DSO containing this
+   //   preset provider
    void(CLAP_ABI *set_invalidation_watch_file)(const struct clap_preset_discovery_indexer *indexer,
                                                const char                                 *path);
 
