@@ -12,7 +12,8 @@
    The API works as follow to index presets and presets metadata:
    1. clap_plugin_entry.get_factory(CLAP_PRESET_DISCOVERY_FACTORY_ID)
    2. clap_preset_discovery_factory_t.create(...)
-   3. clap_preset_discovery_provider.declare_content() (only necessary the first time, declarations can be cached)
+   3. clap_preset_discovery_provider.declare_content() (only necessary the first time, declarations
+   can be cached)
         `-> clap_preset_discovery_indexer.declare_filetype()
         `-> clap_preset_discovery_indexer.declare_location()
         `-> clap_preset_discovery_indexer.declare_collection()
@@ -79,7 +80,7 @@ enum clap_preset_discovery_flags {
 // would then call them.
 //
 // This interface isn't thread-safe.
-typedef const struct clap_preset_discovery_metadata_receiver {
+typedef struct clap_preset_discovery_metadata_receiver {
    // If there is an error reading metadata from a file this should be called with an error
    // message.
    // os_error: the operating system error, if applicable. If not applicable set it to a non-error
@@ -109,17 +110,21 @@ typedef const struct clap_preset_discovery_metadata_receiver {
       const char                                           *path,
       const char                                           *preset_id);
 
-   // Sets plug-in id that this preset can be used with.
-   void(CLAP_ABI *set_plugin_id)(const struct clap_preset_discovery_metadata_receiver *receiver,
-                                 const char                                           *plugin_id);
+   // Adds a plug-in id that this preset can be used with.
+   // plugin_api: 0 for CLAP
+   void(CLAP_ABI *clap_add_plugin_id)(
+      const struct clap_preset_discovery_metadata_receiver *receiver,
+      uint32_t                                              plugin_api,
+      const char                                           *plugin_id);
 
    // Sets the collection to which the preset belongs to.
-   void(CLAP_ABI *set_collection_id)(const struct clap_preset_discovery_metadata_receiver,
+   void(CLAP_ABI *set_collection_id)(const struct clap_preset_discovery_metadata_receiver *receiver,
                                      const char *collection_id);
 
    // Sets the flags, see clap_preset_discovery_flags.
    // If unset, they are then inherited from the location.
-   void(CLAP_ABI *set_flags)(const struct clap_preset_discovery_metadata_receiver, uint32_t flags);
+   void(CLAP_ABI *set_flags)(const struct clap_preset_discovery_metadata_receiver *receiver,
+                             uint32_t                                              flags);
 
    // Sets the preset name.
    // The preset name can be infered from the file name, but it is mandatory to set it for
@@ -156,7 +161,6 @@ typedef const struct clap_preset_discovery_metadata_receiver {
    // distorted, drone, pad, dirty, etc...
    void(CLAP_ABI *add_feature)(const struct clap_preset_discovery_metadata_receiver *receiver,
                                const char                                           *feature);
-
 } clap_preset_discovery_metadata_receiver_t;
 
 typedef struct clap_preset_discovery_filetype {
@@ -200,7 +204,6 @@ typedef struct clap_preset_discovery_collection {
    const char *name;         // name of this collection
    const char *description;  // reasonably short description of the collection
    const char *homepage_url; // url to the pack's homepage
-
    const char *image_uri;    // may be an image on disk or from an http server
 } clap_preset_discovery_collection_t;
 
@@ -241,20 +244,20 @@ typedef struct clap_preset_discovery_indexer {
    const char    *vendor;
    const char    *version;
 
-   // Registers a preset filetype.
+   // Declares a preset filetype.
    // Don't callback into the provider during this call.
    void(CLAP_ABI *declare_filetype)(const struct clap_preset_discovery_indexer *indexer,
-                                     const clap_preset_discovery_filetype_t     *filetype);
+                                    const clap_preset_discovery_filetype_t     *filetype);
 
-   // Registers a preset location.
+   // Declares a preset location.
    // Don't callback into the provider during this call.
    void(CLAP_ABI *declare_location)(const struct clap_preset_discovery_indexer *indexer,
-                                     const clap_preset_discovery_location_t     *location);
+                                    const clap_preset_discovery_location_t     *location);
 
-   // Registers a preset collection.
+   // Declares a preset collection.
    // Don't callback into the provider during this call.
    void(CLAP_ABI *declare_collection)(const struct clap_preset_discovery_indexer *indexer,
-                                       const clap_preset_discovery_collection_t   *collection);
+                                      const clap_preset_discovery_collection_t   *collection);
 } clap_preset_indexer_t;
 
 // Every methods in this factory must be thread-safe.

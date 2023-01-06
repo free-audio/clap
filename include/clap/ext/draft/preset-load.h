@@ -15,8 +15,21 @@ typedef struct clap_plugin_preset_load {
    // - "plugin://<plugin-id>/<preset-id>"
    //
    // [main-thread]
-   bool(CLAP_ABI *from_uri)(const clap_plugin_t *plugin, const char *uri);
+   bool(CLAP_ABI *load)(const clap_plugin_t *plugin, const char *uri);
 } clap_plugin_preset_load_t;
+
+typedef struct clap_host_preset_load {
+   // Called if clap_plugin_preset_load.load() failed.
+   //
+   // [main-thread]
+   void(CLAP_ABI *on_error)(const clap_plugin_t *plugin, const char *uri, const char *msg);
+
+   // Informs the host that the following preset has been loaded.
+   // This contributes to keep in sync the host preset browser and plugin preset browser.
+   //
+   // [main-thread]
+   void(CLAP_ABI *loaded)(const clap_plugin_t *plugin, const char *uri);
+} clap_host_preset_load_t;
 
 #ifdef __cplusplus
 }
