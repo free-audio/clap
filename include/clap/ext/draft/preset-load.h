@@ -14,6 +14,8 @@ typedef struct clap_plugin_preset_load {
    // - "file:///home/abique/my-sound-bank/<preset-id>"
    // - "plugin://<plugin-id>/<preset-id>"
    //
+   // The preset discovery provider defines the uri to be passed to this function.
+   //
    // [main-thread]
    bool(CLAP_ABI *load)(const clap_plugin_t *plugin, const char *uri);
 } clap_plugin_preset_load_t;
