@@ -113,7 +113,7 @@ typedef struct clap_preset_discovery_metadata_receiver {
 
    // Adds a plug-in id that this preset can be used with.
    // plugin_abi: 0 for CLAP
-   void(CLAP_ABI *clap_add_plugin_id)(
+   void(CLAP_ABI *add_plugin_id)(
       const struct clap_preset_discovery_metadata_receiver *receiver,
       uint32_t                                              plugin_abi,
       const char                                           *plugin_id);
