@@ -26,16 +26,16 @@ typedef struct clap_host_preset_load {
    // value, eg: 0 on unix and Windows.
    //
    // [main-thread]
-   void(CLAP_ABI *on_error)(const clap_plugin_t *plugin,
-                            const char          *uri,
-                            int32_t              os_error,
-                            const char          *msg);
+   void(CLAP_ABI *on_error)(const clap_host_t *host,
+                            const char        *uri,
+                            int32_t            os_error,
+                            const char        *msg);
 
    // Informs the host that the following preset has been loaded.
    // This contributes to keep in sync the host preset browser and plugin preset browser.
    //
    // [main-thread]
-   void(CLAP_ABI *loaded)(const clap_plugin_t *plugin, const char *uri);
+   void(CLAP_ABI *loaded)(const clap_host_t *host, const char *uri);
 } clap_host_preset_load_t;
 
 #ifdef __cplusplus

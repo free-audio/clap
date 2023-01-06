@@ -272,8 +272,8 @@ typedef struct clap_preset_discovery_indexer {
    // The returned pointer is owned by the indexer.
    // It is forbidden to call it before provider->init().
    // You can call it within provider->init() call, and after.
-   const void *(CLAP_ABI *get_extension)(const struct clap_preset_discovery_provider *provider,
-                                         const char                                  *extension_id);
+   const void *(CLAP_ABI *get_extension)(const struct clap_preset_discovery_indexer *indexer,
+                                         const char                                 *extension_id);
 } clap_preset_indexer_t;
 
 // Every methods in this factory must be thread-safe.
