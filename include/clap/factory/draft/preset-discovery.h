@@ -198,11 +198,10 @@ typedef struct clap_preset_discovery_collection {
 
 // Describes a preset provider
 typedef struct clap_preset_discovery_provider_descriptor {
-   clap_version_t     clap_version; // initialized to CLAP_VERSION
-   const char        *id;
-   const char        *name;
-   const char        *vendor;
-   const char *const *plugin_ids; // null terminated array of plugin ids
+   clap_version_t clap_version; // initialized to CLAP_VERSION
+   const char    *id;           // see plugin.h for advice on how to choose a good identifier
+   const char    *name;         // eg: "Diva's preset provider"
+   const char    *vendor;       // eg: u-he
 } clap_preset_discovery_provider_descriptor_t;
 
 // This interface isn't thread-safe.
