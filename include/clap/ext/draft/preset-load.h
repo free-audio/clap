@@ -20,9 +20,14 @@ typedef struct clap_plugin_preset_load {
 
 typedef struct clap_host_preset_load {
    // Called if clap_plugin_preset_load.load() failed.
+   // os_error: the operating system error, if applicable. If not applicable set it to a non-error
+   // value, eg: 0 on unix and Windows.
    //
    // [main-thread]
-   void(CLAP_ABI *on_error)(const clap_plugin_t *plugin, const char *uri, const char *msg);
+   void(CLAP_ABI *on_error)(const clap_plugin_t *plugin,
+                            const char          *uri,
+                            int32_t              os_error,
+                            const char          *msg);
 
    // Informs the host that the following preset has been loaded.
    // This contributes to keep in sync the host preset browser and plugin preset browser.

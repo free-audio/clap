@@ -84,7 +84,7 @@ typedef struct clap_preset_discovery_metadata_receiver {
    // If there is an error reading metadata from a file this should be called with an error
    // message.
    // os_error: the operating system error, if applicable. If not applicable set it to a non-error
-   // value: 0 on unix and Windows.
+   // value, eg: 0 on unix and Windows.
    void(CLAP_ABI *on_error)(const struct clap_preset_discovery_metadata_receiver *receiver,
                             int32_t                                               os_error,
                             const char                                           *error_message);
