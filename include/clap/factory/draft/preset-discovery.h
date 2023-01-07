@@ -80,6 +80,8 @@ enum clap_preset_discovery_flags {
 //
 // This interface isn't thread-safe.
 typedef struct clap_preset_discovery_metadata_receiver {
+   void *receiver_data; // reserved pointer for the metadata receiver
+
    // If there is an error reading metadata from a file this should be called with an error
    // message.
    // os_error: the operating system error, if applicable. If not applicable set it to a non-error
@@ -208,6 +210,8 @@ typedef struct clap_preset_discovery_provider_descriptor {
 typedef struct clap_preset_discovery_provider {
    const clap_preset_discovery_provider_descriptor_t *desc;
 
+   void *provider_data; // reserved pointer for the provider
+
    // Destroys the preset provider
    void(CLAP_ABI *destroy)(const struct clap_preset_discovery_provider *provider);
 
@@ -235,6 +239,8 @@ typedef struct clap_preset_discovery_indexer {
    const char    *vendor;       // eg: "Bitwig GmbH"
    const char    *url;          // eg: "https://bitwig.com"
    const char    *version;      // eg: "4.3", see plugin.h for advice on how to format the version
+
+   void *indexer_data; // reserved pointer for the indexer
 
    // Declares a preset filetype.
    // Don't callback into the provider during this call.
