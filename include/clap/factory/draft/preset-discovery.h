@@ -148,7 +148,6 @@ typedef struct clap_preset_discovery_metadata_receiver {
                                   uint64_t modification_time);
 
    // Adds a feature to the preset.
-   // See plugin-features.h and preset-features.h
    //
    // The feature string is arbitrary, it is the indexer's job to understand it and remap it to its
    // internal categorization and tagging system.
