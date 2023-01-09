@@ -17,7 +17,7 @@ typedef struct clap_plugin_preset_load {
    // The preset discovery provider defines the uri to be passed to this function.
    //
    // [main-thread]
-   bool(CLAP_ABI *load)(const clap_plugin_t *plugin, const char *uri);
+   bool(CLAP_ABI *from_uri)(const clap_plugin_t *plugin, const char *uri);
 } clap_plugin_preset_load_t;
 
 typedef struct clap_host_preset_load {
