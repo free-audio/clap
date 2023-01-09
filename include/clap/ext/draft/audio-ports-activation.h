@@ -26,7 +26,7 @@
 /// clap_host_audio_ports.rescan(CLAP_AUDIO_PORTS_RESCAN_LIST).
 
 static CLAP_CONSTEXPR const char CLAP_EXT_AUDIO_PORTS_ACTIVATION[] =
-   "clap.audio-ports-activation/draft-0";
+   "clap.audio-ports-activation/draft-1";
 
 #ifdef __cplusplus
 extern "C" {
@@ -42,8 +42,9 @@ typedef struct clap_plugin_audio_ports_activation {
    // It is only possible to activate and de-activate on the audio-thread if
    // can_activate_while_processing() returns true.
    //
+   // returns false if failed, or invalid parameters
    // [active ? audio-thread : main-thread]
-   void(CLAP_ABI *set_active)(const clap_plugin_t *plugin,
+   bool(CLAP_ABI *set_active)(const clap_plugin_t *plugin,
                               bool                 is_input,
                               uint32_t             port_index,
                               bool                 is_active);

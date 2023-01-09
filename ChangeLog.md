@@ -9,6 +9,7 @@
 * [context-menu.h](include/clap/ext/draft/context-menu.h): add "title" menu entry
 * [preset-load.h](include/clap/ext/draft/preset-load.h): load from URI instead of path, making the extension more powerful
 * [remote-controls.h](include/clap/ext/draft/remote-controls.h): distinguish between device pages and preset pages
+* [audio-ports-activation.h](include/clap/ext/draft/audio-ports-activation.h): `set_active()` now returns bool instead of void, this helps catching problems earlier especially with invalid arguments
 
 ## Draft factories
 
