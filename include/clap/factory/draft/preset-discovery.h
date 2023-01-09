@@ -217,7 +217,8 @@ typedef struct clap_preset_discovery_provider {
 
    // Initialize the preset provider.
    // It should declare all its locations, filetypes and collections.
-   void(CLAP_ABI *init)(const struct clap_preset_discovery_provider *provider);
+   // Returns false if initialization failed.
+   bool(CLAP_ABI *init)(const struct clap_preset_discovery_provider *provider);
 
    // reads metadata from the given file and passes them to the metadata receiver
    bool(CLAP_ABI *get_metadata)(const struct clap_preset_discovery_provider     *provider,
@@ -244,17 +245,20 @@ typedef struct clap_preset_discovery_indexer {
 
    // Declares a preset filetype.
    // Don't callback into the provider during this call.
-   void(CLAP_ABI *declare_filetype)(const struct clap_preset_discovery_indexer *indexer,
+   // Returns false if the filetype is invalid.
+   bool(CLAP_ABI *declare_filetype)(const struct clap_preset_discovery_indexer *indexer,
                                     const clap_preset_discovery_filetype_t     *filetype);
 
    // Declares a preset location.
    // Don't callback into the provider during this call.
-   void(CLAP_ABI *declare_location)(const struct clap_preset_discovery_indexer *indexer,
+   // Returns false if the location is invalid.
+   bool(CLAP_ABI *declare_location)(const struct clap_preset_discovery_indexer *indexer,
                                     const clap_preset_discovery_location_t     *location);
 
    // Declares a preset collection.
    // Don't callback into the provider during this call.
-   void(CLAP_ABI *declare_collection)(const struct clap_preset_discovery_indexer *indexer,
+   // Returns false if the collection is invalid.
+   bool(CLAP_ABI *declare_collection)(const struct clap_preset_discovery_indexer *indexer,
                                       const clap_preset_discovery_collection_t   *collection);
 
    // Sets the path to a watch file.
@@ -270,7 +274,9 @@ typedef struct clap_preset_discovery_indexer {
    // - the set of collections changes
    // - the metadata extraction code changes is located outside of the DSO containing this
    //   preset provider
-   void(CLAP_ABI *set_invalidation_watch_file)(const struct clap_preset_discovery_indexer *indexer,
+   //
+   // Returns false, if the path isn't valid or if the watch file isn't supported by the indexer.
+   bool(CLAP_ABI *set_invalidation_watch_file)(const struct clap_preset_discovery_indexer *indexer,
                                                const char                                 *path);
 
    // Query an extension.
@@ -302,6 +308,7 @@ typedef struct clap_preset_discovery_factory {
    // Create a preset provider by its id.
    // The returned pointer must be freed by calling preset_provider->destroy(preset_provider);
    // The preset provider is not allowed to use the indexer callbacks in the create method.
+   // It is forbidden to call back into the indexer before the indexer calls provider->init().
    // Returns null in case of error.
    // [thread-safe]
    const clap_preset_discovery_provider_t *(CLAP_ABI *create)(
