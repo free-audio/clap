@@ -1,6 +1,6 @@
 # Changes in 1.1.7
 
-* Add a [factory](incl/../include/clap/factory) folder for better organization and move our factories there
+* Add a [factory](include/clap/factory) folder for better organization and move our factories there
 * [params.h](include/clap/ext/params.h): fix typos
 * CMake: disable C17 targets for CMake < 3.21
 
