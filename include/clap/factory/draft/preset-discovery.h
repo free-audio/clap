@@ -213,13 +213,13 @@ typedef struct clap_preset_discovery_provider {
 
    void *provider_data; // reserved pointer for the provider
 
-   // Destroys the preset provider
-   void(CLAP_ABI *destroy)(const struct clap_preset_discovery_provider *provider);
-
    // Initialize the preset provider.
    // It should declare all its locations, filetypes and collections.
    // Returns false if initialization failed.
    bool(CLAP_ABI *init)(const struct clap_preset_discovery_provider *provider);
+
+   // Destroys the preset provider
+   void(CLAP_ABI *destroy)(const struct clap_preset_discovery_provider *provider);
 
    // reads metadata from the given file and passes them to the metadata receiver
    bool(CLAP_ABI *get_metadata)(const struct clap_preset_discovery_provider     *provider,
