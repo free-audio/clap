@@ -17,7 +17,7 @@
         `-> clap_preset_discovery_indexer.declare_filetype()
         `-> clap_preset_discovery_indexer.declare_location()
         `-> clap_preset_discovery_indexer.declare_collection() (optional)
-        `-> clap_preset_discorery_indexer.set_invalidation_watch_file() (optional)
+        `-> clap_preset_discovery_indexer.set_invalidation_watch_file() (optional)
    4. crawl the given locations and monitor file system changes
         `-> clap_preset_discovery_indexer.get_metadata() for each presets files
 
@@ -141,7 +141,7 @@ typedef struct clap_preset_discovery_metadata_receiver {
                                    const char *description);
 
    // Sets the creation time and last modification time of the preset.
-   // The timestamps are in seconds since EPOCH.
+   // The timestamps are in seconds since UNIX EPOCH, see C's time_t time(time_t *).
    // If one of the time isn't known, then set it to 0.
    // If this function is not called, then the indexer may look at the file's creation and
    // modification time.
