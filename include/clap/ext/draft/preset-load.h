@@ -11,9 +11,9 @@ extern "C" {
 typedef struct clap_plugin_preset_load {
    // Loads a preset in the plugin native preset file format from a URI. eg:
    // - "file:///home/abique/.u-he/Diva/Presets/Diva/HS Bass Nine.h2p", load_key: null
-   // - "plugin://<plugin-id>", load_key: <preset-id>
+   // - "plugin://<plugin-id>", load_key: <XXX>
    //
-   // The preset discovery provider defines the uri to be passed to this function.
+   // The preset discovery provider defines the uri and load_key to be passed to this function.
    //
    // [main-thread]
    bool(CLAP_ABI *from_uri)(const clap_plugin_t *plugin, const char *uri, const char *load_key);
@@ -32,9 +32,11 @@ typedef struct clap_host_preset_load {
 
    // Informs the host that the following preset has been loaded.
    // This contributes to keep in sync the host preset browser and plugin preset browser.
+   // If the preset was loaded from a container file, then the subpath must be set, otherwise it
+   // must be null.
    //
    // [main-thread]
-   void(CLAP_ABI *loaded)(const clap_host_t *host, const char *uri);
+   void(CLAP_ABI *loaded)(const clap_host_t *host, const char *uri, const char *subpath);
 } clap_host_preset_load_t;
 
 #ifdef __cplusplus

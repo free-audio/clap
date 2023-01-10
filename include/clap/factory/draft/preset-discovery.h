@@ -99,7 +99,7 @@ typedef struct clap_preset_discovery_metadata_receiver {
    // otherwise they must be null.
    //
    // The subpath defines a human friendly path to the preset in the container file.
-   // It should be unique within the container file.
+   // It must be unique within the container file.
    //
    // The load_key is a machine friendly string used to load the preset inside the container via a
    // the preset-load plug-in extension. The load_key can also just be the subpath if that's what the
