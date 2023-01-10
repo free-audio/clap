@@ -10,14 +10,13 @@ extern "C" {
 
 typedef struct clap_plugin_preset_load {
    // Loads a preset in the plugin native preset file format from a URI. eg:
-   // - "file:///home/abique/.u-he/Diva/Presets/Diva/HS Bass Nine.h2p"
-   // - "file:///home/abique/my-sound-bank/<preset-id>"
-   // - "plugin://<plugin-id>/<preset-id>"
+   // - "file:///home/abique/.u-he/Diva/Presets/Diva/HS Bass Nine.h2p", load_key: null
+   // - "plugin://<plugin-id>", load_key: <preset-id>
    //
    // The preset discovery provider defines the uri to be passed to this function.
    //
    // [main-thread]
-   bool(CLAP_ABI *from_uri)(const clap_plugin_t *plugin, const char *uri);
+   bool(CLAP_ABI *from_uri)(const clap_plugin_t *plugin, const char *uri, const char *load_key);
 } clap_plugin_preset_load_t;
 
 typedef struct clap_host_preset_load {

@@ -90,26 +90,27 @@ typedef struct clap_preset_discovery_metadata_receiver {
                             int32_t                                               os_error,
                             const char                                           *error_message);
 
-   // Marks this file as a container file meaning that it can contain other presets.
-   void(CLAP_ABI *mark_as_container_file)(
-      const struct clap_preset_discovery_metadata_receiver *receiver);
-
-   // If the file being parsed is a preset container file (mark_as_container_file has been called)
-   // then this must be called for every preset in the file and before any preset metadata is
-   // sent with the calls below. If the file is not a container file then this should not be
-   // called at all.
+   // This must be called for every preset in the file and before any preset metadata is
+   // sent with the calls below.
    //
-   // The path defines a human friendly path to the preset in the container file. It
-   // should be unique within the container file.
+   // The name is the preset's name, it is mandatory.
    //
-   // The load_uri is a machine friendly string used to load the preset inside the container via a
-   // the preset-load plug-in extension. The load_uri can also just be the path if that's what the
-   // extension wants but it could also be some other unique id like a database primary key or a
+   // If the preset file is a preset container then subpath and load_key are mandatory.
+   // Otherwise subpath and load_key must be null.
+   //
+   // The subpath defines a human friendly path to the preset in the container file.
+   // It should be unique within the container file.
+   //
+   // The load_key is a machine friendly string used to load the preset inside the container via a
+   // the preset-load plug-in extension. The load_key can also just be the subpath if that's what the
+   // plugin wants but it could also be some other unique id like a database primary key or a
    // binary offset. It's use is entirely up to the plug-in.
-   void(CLAP_ABI *begin_contained_preset)(
-      const struct clap_preset_discovery_metadata_receiver *receiver,
-      const char                                           *path,
-      const char                                           *load_uri);
+   //
+   // If the function returns false, the the provider must stop calling back into the receiver.
+   bool(CLAP_ABI *begin_preset)(const struct clap_preset_discovery_metadata_receiver *receiver,
+                                const char                                           *name,
+                                const char                                           *subpath,
+                                const char                                           *load_key);
 
    // Adds a plug-in id that this preset can be used with.
    // plugin_abi: 0 for CLAP
@@ -125,12 +126,6 @@ typedef struct clap_preset_discovery_metadata_receiver {
    // If unset, they are then inherited from the location.
    void(CLAP_ABI *set_flags)(const struct clap_preset_discovery_metadata_receiver *receiver,
                              uint32_t                                              flags);
-
-   // Sets the preset name.
-   // The preset name can be infered from the file name, but it is mandatory to set it for
-   // container's preset.
-   void(CLAP_ABI *set_name)(const struct clap_preset_discovery_metadata_receiver *receiver,
-                            const char                                           *name);
 
    // Adds a creator name for the preset.
    void(CLAP_ABI *add_creator)(const struct clap_preset_discovery_metadata_receiver *receiver,
