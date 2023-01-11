@@ -72,6 +72,13 @@ typedef struct clap_plugin_audio_ports_config {
 
 typedef struct clap_plugin_audio_ports_config_info {
   // get info about about an audio port.
+
+  // gets the clap_id of the currently selected config
+  // clap_id might now match the index, can be used to call
+  // clap_plugin_audio_ports_config::select()
+  // [main-thread]
+  clap_id(CLAP_ABI* current_config)(const clap_plugin_t* plugin);
+   
   // [main-thread]
   bool(CLAP_ABI* get)(const clap_plugin_t* plugin,
     clap_id                 config_id,
