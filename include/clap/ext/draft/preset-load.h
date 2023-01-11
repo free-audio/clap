@@ -32,11 +32,11 @@ typedef struct clap_host_preset_load {
 
    // Informs the host that the following preset has been loaded.
    // This contributes to keep in sync the host preset browser and plugin preset browser.
-   // If the preset was loaded from a container file, then the subpath must be set, otherwise it
+   // If the preset was loaded from a container file, then the load_key must be set, otherwise it
    // must be null.
    //
    // [main-thread]
-   void(CLAP_ABI *loaded)(const clap_host_t *host, const char *uri, const char *subpath);
+   void(CLAP_ABI *loaded)(const clap_host_t *host, const char *uri, const char *load_key);
 } clap_host_preset_load_t;
 
 #ifdef __cplusplus
