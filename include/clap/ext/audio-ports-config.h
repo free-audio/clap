@@ -2,6 +2,7 @@
 
 #include "../string-sizes.h"
 #include "../plugin.h"
+#include "audio-ports.h"
 
 /// @page Audio Ports Config
 ///
@@ -20,8 +21,12 @@
 ///
 /// Plugins with very complex configuration possibilities should let the user configure the ports
 /// from the plugin GUI, and call @ref clap_host_audio_ports.rescan(CLAP_AUDIO_PORTS_RESCAN_ALL).
+/// 
+/// To inquire the exact bus layout, the plugin implements the clap_plugin_audio_ports_config_info_t
+/// extension where all busses can be retrieved in the same way as in the audio-port extension.
 
 static CLAP_CONSTEXPR const char CLAP_EXT_AUDIO_PORTS_CONFIG[] = "clap.audio-ports-config";
+static CLAP_CONSTEXPR const char CLAP_EXT_AUDIO_PORTS_CONFIG_INFO[] = "clap.audio-ports-config-info";
 
 #ifdef __cplusplus
 extern "C" {
@@ -64,6 +69,16 @@ typedef struct clap_plugin_audio_ports_config {
    // [main-thread,plugin-deactivated]
    bool(CLAP_ABI *select)(const clap_plugin_t *plugin, clap_id config_id);
 } clap_plugin_audio_ports_config_t;
+
+typedef struct clap_plugin_audio_ports_config_info {
+  // get info about about an audio port.
+  // [main-thread]
+  bool(CLAP_ABI* get)(const clap_plugin_t* plugin,
+    clap_id                 config_id,
+    uint32_t                port_index,
+    bool                    is_input,
+    clap_audio_port_info_t* info);
+} clap_plugin_audio_ports_config_info_t;
 
 typedef struct clap_host_audio_ports_config {
    // Rescan the full list of configs.
