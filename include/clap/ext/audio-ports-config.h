@@ -21,12 +21,13 @@
 ///
 /// Plugins with very complex configuration possibilities should let the user configure the ports
 /// from the plugin GUI, and call @ref clap_host_audio_ports.rescan(CLAP_AUDIO_PORTS_RESCAN_ALL).
-/// 
+///
 /// To inquire the exact bus layout, the plugin implements the clap_plugin_audio_ports_config_info_t
 /// extension where all busses can be retrieved in the same way as in the audio-port extension.
 
 static CLAP_CONSTEXPR const char CLAP_EXT_AUDIO_PORTS_CONFIG[] = "clap.audio-ports-config";
-static CLAP_CONSTEXPR const char CLAP_EXT_AUDIO_PORTS_CONFIG_INFO[] = "clap.audio-ports-config-info";
+static CLAP_CONSTEXPR const char CLAP_EXT_AUDIO_PORTS_CONFIG_INFO[] =
+   "clap.audio-ports-config-info/draft-0";
 
 #ifdef __cplusplus
 extern "C" {
@@ -70,21 +71,23 @@ typedef struct clap_plugin_audio_ports_config {
    bool(CLAP_ABI *select)(const clap_plugin_t *plugin, clap_id config_id);
 } clap_plugin_audio_ports_config_t;
 
+// Extended config info
 typedef struct clap_plugin_audio_ports_config_info {
-  // get info about about an audio port.
 
-  // gets the clap_id of the currently selected config
-  // clap_id might now match the index, can be used to call
-  // clap_plugin_audio_ports_config::select()
-  // [main-thread]
-  clap_id(CLAP_ABI* current_config)(const clap_plugin_t* plugin);
-   
-  // [main-thread]
-  bool(CLAP_ABI* get)(const clap_plugin_t* plugin,
-    clap_id                 config_id,
-    uint32_t                port_index,
-    bool                    is_input,
-    clap_audio_port_info_t* info);
+   // Gets the id of the currently selected config, or CLAP_INVALID_ID if the current port
+   // layout isn't part of the config list.
+   //
+   // [main-thread]
+   clap_id(CLAP_ABI *current_config)(const clap_plugin_t *plugin);
+
+   // Get info about about an audio port, for a given config_id.
+   // This is analogous to clap_plugin_audio_ports.get().
+   // [main-thread]
+   bool(CLAP_ABI *get)(const clap_plugin_t    *plugin,
+                       clap_id                 config_id,
+                       uint32_t                port_index,
+                       bool                    is_input,
+                       clap_audio_port_info_t *info);
 } clap_plugin_audio_ports_config_info_t;
 
 typedef struct clap_host_audio_ports_config {
