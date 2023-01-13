@@ -10,6 +10,9 @@
 * [preset-load.h](include/clap/ext/draft/preset-load.h): load from URI instead of path, making the extension more powerful
 * [remote-controls.h](include/clap/ext/draft/remote-controls.h): distinguish between device pages and preset pages
 * [audio-ports-activation.h](include/clap/ext/draft/audio-ports-activation.h): `set_active()` now returns bool instead of void, this helps catching problems earlier especially with invalid arguments
+* [audio-ports-config.h](include/clap/ext/audio-ports-config.h): add new draft extension: `clap_plugin_audio_ports_config_info` which lets the host query detailed port information in a given configuration.
+* [surround.h](include/clap/ext/draft/surround.h): add `config_id` parameter when fetching port info
+* [ambisonic.h](include/clap/ext/draft/ambisonic.h): add `config_id` parameter when fetching port info
 
 ## Draft factories
 
