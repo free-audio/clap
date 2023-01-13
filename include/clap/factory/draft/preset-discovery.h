@@ -16,7 +16,7 @@
    can be cached)
         `-> clap_preset_discovery_indexer.declare_filetype()
         `-> clap_preset_discovery_indexer.declare_location()
-        `-> clap_preset_discovery_indexer.declare_collection() (optional)
+        `-> clap_preset_discovery_indexer.declare_soundpack() (optional)
         `-> clap_preset_discovery_indexer.set_invalidation_watch_file() (optional)
    4. crawl the given locations and monitor file system changes
         `-> clap_preset_discovery_indexer.get_metadata() for each presets files
@@ -54,13 +54,13 @@ extern "C" {
 #endif
 
 enum clap_preset_discovery_flags {
-   // This location/collection is meant for storing factory presets, most likely read-only
+   // This is for factory or sound-pack presets.
    CLAP_PRESET_DISCOVERY_IS_FACTORY_CONTENT = 1 << 0,
 
-   // This location/collection is meant for storing user created presets.
+   // This is for user presets.
    CLAP_PRESET_DISCOVERY_IS_USER_CONTENT = 1 << 1,
 
-   // This location/collection is meant for demo presets, those are preset which may trigger
+   // This location is meant for demo presets, those are preset which may trigger
    // some limitation in the plugin because they require additionnal features which the user
    // needs to purchase or the content itself needs to be bought and is only available in
    // demo mode.
@@ -118,9 +118,9 @@ typedef struct clap_preset_discovery_metadata_receiver {
                                  uint32_t                                              plugin_abi,
                                  const char                                           *plugin_id);
 
-   // Sets the collection to which the preset belongs to.
-   void(CLAP_ABI *set_collection_id)(const struct clap_preset_discovery_metadata_receiver *receiver,
-                                     const char *collection_id);
+   // Sets the sound pack to which the preset belongs to.
+   void(CLAP_ABI *set_soundpack_id)(const struct clap_preset_discovery_metadata_receiver *receiver,
+                                    const char *soundpack_id);
 
    // Sets the flags, see clap_preset_discovery_flags.
    // If unset, they are then inherited from the location.
@@ -183,20 +183,19 @@ typedef struct clap_preset_discovery_location {
    const char *uri;
 } clap_preset_discovery_location_t;
 
-// A collection, represent a collection of presets; it is will most often used to identify presets
-// which belongs to the same "sound pack".
-typedef struct clap_preset_discovery_collection {
+// Describes an installed sound pack.
+typedef struct clap_preset_discovery_soundpack {
    uint64_t    flags;        // see enum clap_preset_discovery_flags
-   const char *id;           // collection identifier
-   const char *name;         // name of this collection
-   const char *description;  // reasonably short description of the collection
+   const char *id;           // sound pack identifier
+   const char *name;         // name of this sound pack
+   const char *description;  // reasonably short description of the sound pack
    const char *homepage_url; // url to the pack's homepage
-   const char *vendor;       // collection's vendor
+   const char *vendor;       // sound pack's vendor
    const char *image_uri;    // may be an image on disk or from an http server
 
    // release date, in numbe of seconds since UNIX EPOCH, 0 if unavailable
    uint64_t release_timestamp;
-} clap_preset_discovery_collection_t;
+} clap_preset_discovery_soundpack_t;
 
 // Describes a preset provider
 typedef struct clap_preset_discovery_provider_descriptor {
@@ -213,7 +212,7 @@ typedef struct clap_preset_discovery_provider {
    void *provider_data; // reserved pointer for the provider
 
    // Initialize the preset provider.
-   // It should declare all its locations, filetypes and collections.
+   // It should declare all its locations, filetypes and sound packs.
    // Returns false if initialization failed.
    bool(CLAP_ABI *init)(const struct clap_preset_discovery_provider *provider);
 
@@ -255,11 +254,11 @@ typedef struct clap_preset_discovery_indexer {
    bool(CLAP_ABI *declare_location)(const struct clap_preset_discovery_indexer *indexer,
                                     const clap_preset_discovery_location_t     *location);
 
-   // Declares a preset collection.
+   // Declares a sound pack.
    // Don't callback into the provider during this call.
-   // Returns false if the collection is invalid.
-   bool(CLAP_ABI *declare_collection)(const struct clap_preset_discovery_indexer *indexer,
-                                      const clap_preset_discovery_collection_t   *collection);
+   // Returns false if the sound pack is invalid.
+   bool(CLAP_ABI *declare_soundpack)(const struct clap_preset_discovery_indexer *indexer,
+                                     const clap_preset_discovery_soundpack_t    *soundpack);
 
    // Sets the path to a watch file.
    // Whenever the given file is "touched" (its modification time is updated),
@@ -271,7 +270,7 @@ typedef struct clap_preset_discovery_indexer {
    // The invalidation file is useful if:
    // - the set of filetypes changes
    // - the set of locations changes
-   // - the set of collections changes
+   // - the set of sound packs changes
    // - the metadata extraction code changes is located outside of the DSO containing this
    //   preset provider
    //
