@@ -102,8 +102,8 @@ typedef struct clap_preset_discovery_metadata_receiver {
    // It must be unique within the container file.
    //
    // The load_key is a machine friendly string used to load the preset inside the container via a
-   // the preset-load plug-in extension. The load_key can also just be the subpath if that's what the
-   // plugin wants but it could also be some other unique id like a database primary key or a
+   // the preset-load plug-in extension. The load_key can also just be the subpath if that's what
+   // the plugin wants but it could also be some other unique id like a database primary key or a
    // binary offset. It's use is entirely up to the plug-in.
    //
    // If the function returns false, the the provider must stop calling back into the receiver.
@@ -193,6 +193,9 @@ typedef struct clap_preset_discovery_collection {
    const char *homepage_url; // url to the pack's homepage
    const char *vendor;       // collection's vendor
    const char *image_uri;    // may be an image on disk or from an http server
+
+   // release date, in numbe of seconds since UNIX EPOCH, 0 if unavailable
+   uint64_t release_timestamp;
 } clap_preset_discovery_collection_t;
 
 // Describes a preset provider
