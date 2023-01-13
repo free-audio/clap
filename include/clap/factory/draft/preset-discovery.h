@@ -191,6 +191,7 @@ typedef struct clap_preset_discovery_collection {
    const char *name;         // name of this collection
    const char *description;  // reasonably short description of the collection
    const char *homepage_url; // url to the pack's homepage
+   const char *vendor;       // collection's vendor
    const char *image_uri;    // may be an image on disk or from an http server
 } clap_preset_discovery_collection_t;
 
