@@ -77,7 +77,8 @@ typedef struct clap_plugin_id {
    const char *abi;
 
    // The plugin ID, for example "com.u-he.Diva".
-   // If the ABI rely upon binary plugin ids, then they shall be hex encoded (lower case).
+   // If the ABI has a standard way to format the plugin id into a string then use it,
+   // otherwise it shall be hex encoded (lower case).
    const char *id;
 } clap_plugin_id_t;
 
