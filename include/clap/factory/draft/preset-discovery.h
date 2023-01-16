@@ -74,11 +74,11 @@ enum clap_preset_discovery_flags {
 typedef struct clap_plugin_id {
    // The plugin ABI name, in lowercase.
    // eg: "clap"
-   char *abi;
+   const char *abi;
 
    // The plugin ID, for example "com.u-he.Diva".
    // If the ABI rely upon binary plugin ids, then they shall be hex encoded (lower case).
-   char *id;
+   const char *id;
 } clap_plugin_id_t;
 
 // Receiver that receives the metadata for a single preset file.
