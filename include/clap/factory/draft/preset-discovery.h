@@ -68,11 +68,18 @@ enum clap_preset_discovery_flags {
 
    // This preset is a user's favorite
    CLAP_PRESET_DISCOVERY_IS_FAVORITE = 1 << 3,
-
-   // Marks this preset as a bank preset, meaning that it can be assigned to the plug-in as a
-   // preset but will update the banks in the plug-in.
-   CLAP_PRESET_DISCOVERY_IS_BANK_PRESET = 1 << 4,
 };
+
+// Pair of plugin ABI and plugin identifier
+typedef struct clap_plugin_id {
+   // The plugin ABI name, in lowercase.
+   // eg: "clap"
+   char *abi;
+
+   // The plugin ID, for example "com.u-he.Diva".
+   // If the ABI rely upon binary plugin ids, then they shall be hex encoded (lower case).
+   char *id;
+} clap_plugin_id_t;
 
 // Receiver that receives the metadata for a single preset file.
 // The host would define the various callbacks in this interface and the preset parser function
@@ -115,8 +122,7 @@ typedef struct clap_preset_discovery_metadata_receiver {
    // Adds a plug-in id that this preset can be used with.
    // plugin_abi: 0 for CLAP
    void(CLAP_ABI *add_plugin_id)(const struct clap_preset_discovery_metadata_receiver *receiver,
-                                 uint32_t                                              plugin_abi,
-                                 const char                                           *plugin_id);
+                                 const clap_plugin_id_t                               *plugin_id);
 
    // Sets the sound pack to which the preset belongs to.
    void(CLAP_ABI *set_soundpack_id)(const struct clap_preset_discovery_metadata_receiver *receiver,
