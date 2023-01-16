@@ -100,13 +100,8 @@ typedef struct clap_preset_discovery_metadata_receiver {
    // This must be called for every preset in the file and before any preset metadata is
    // sent with the calls below.
    //
-   // name is mandatory, it is the preset's name.
-   //
-   // If the preset file is a preset container then subpath and load_key are mandatory,
+   // If the preset file is a preset container then name and load_key are mandatory,
    // otherwise they must be null.
-   //
-   // The subpath defines a human friendly path to the preset in the container file.
-   // It must be unique within the container file.
    //
    // The load_key is a machine friendly string used to load the preset inside the container via a
    // the preset-load plug-in extension. The load_key can also just be the subpath if that's what
@@ -116,7 +111,6 @@ typedef struct clap_preset_discovery_metadata_receiver {
    // If the function returns false, the the provider must stop calling back into the receiver.
    bool(CLAP_ABI *begin_preset)(const struct clap_preset_discovery_metadata_receiver *receiver,
                                 const char                                           *name,
-                                const char                                           *subpath,
                                 const char                                           *load_key);
 
    // Adds a plug-in id that this preset can be used with.
@@ -154,6 +148,10 @@ typedef struct clap_preset_discovery_metadata_receiver {
    //
    // The feature string is arbitrary, it is the indexer's job to understand it and remap it to its
    // internal categorization and tagging system.
+   //
+   // However, the strings from plugin-features.h should be understood by the indexer and one of the
+   // plugin category could be provided to determine if the preset will result into an audio-effect,
+   // instrument, ...
    //
    // Examples:
    // kick, drum, tom, snare, clap, cymbal, bass, lead, metalic, hardsync, crossmod, acid,
