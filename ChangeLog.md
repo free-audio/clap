@@ -3,6 +3,7 @@
 * Add a [factory](include/clap/factory) folder for better organization and move our factories there
 * [params.h](include/clap/ext/params.h): fix typos
 * CMake: disable C17 targets for CMake < 3.21
+* [plugin-features.h](include/clap/plugin-features.h): adds `note-detector` category for plugins which converts audio to notes
 
 ## Draft extensions
 
