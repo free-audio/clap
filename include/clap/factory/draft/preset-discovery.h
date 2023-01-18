@@ -204,8 +204,6 @@ typedef struct clap_preset_discovery_soundpack {
    const char *homepage_url; // url to the pack's homepage
    const char *vendor;       // sound pack's vendor
    const char *image_uri;    // may be an image on disk or from an http server
-   const char *location_uri; // location on disk, optional. The indexer may assume that all files
-                             // under this location belong to the soundpack.
    clap_timestamp_t release_timestamp;
 } clap_preset_discovery_soundpack_t;
 
