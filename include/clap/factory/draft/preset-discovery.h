@@ -197,7 +197,7 @@ typedef struct clap_preset_discovery_soundpack {
    const char *vendor;       // sound pack's vendor
    const char *image_uri;    // may be an image on disk or from an http server
 
-   // release date, in numbe of seconds since UNIX EPOCH, 0 if unavailable
+   // release date, in number of seconds since UNIX EPOCH, 0 if unavailable
    uint64_t release_timestamp;
 } clap_preset_discovery_soundpack_t;
 
