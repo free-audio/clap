@@ -70,6 +70,16 @@ enum clap_preset_discovery_flags {
    CLAP_PRESET_DISCOVERY_IS_FAVORITE = 1 << 3,
 };
 
+// TODO: move clap_timestamp_t, CLAP_TIMESTAMP_UNKNOWN and clap_plugin_id_t to parent files once we
+// settle with preset discovery
+
+// This type defines a timestamp: the number of seconds since UNIX EPOCH.
+// See C's time_t time(time_t *).
+typedef uint64_t clap_timestamp_t;
+
+// Value for unknown timestamp.
+static const clap_timestamp_t CLAP_TIMESTAMP_UNKNOWN = 0;
+
 // Pair of plugin ABI and plugin identifier
 typedef struct clap_plugin_id {
    // The plugin ABI name, in lowercase.
@@ -136,13 +146,11 @@ typedef struct clap_preset_discovery_metadata_receiver {
                                    const char *description);
 
    // Sets the creation time and last modification time of the preset.
-   // The timestamps are in seconds since UNIX EPOCH, see C's time_t time(time_t *).
-   // If one of the time isn't known, then set it to 0.
    // If this function is not called, then the indexer may look at the file's creation and
    // modification time.
    void(CLAP_ABI *set_timestamps)(const struct clap_preset_discovery_metadata_receiver *receiver,
-                                  uint64_t creation_time,
-                                  uint64_t modification_time);
+                                  clap_timestamp_t creation_time,
+                                  clap_timestamp_t modification_time);
 
    // Adds a feature to the preset.
    //
@@ -196,9 +204,9 @@ typedef struct clap_preset_discovery_soundpack {
    const char *homepage_url; // url to the pack's homepage
    const char *vendor;       // sound pack's vendor
    const char *image_uri;    // may be an image on disk or from an http server
-
-   // release date, in number of seconds since UNIX EPOCH, 0 if unavailable
-   uint64_t release_timestamp;
+   const char *location_uri; // location on disk, optional. The indexer may assume that all files
+                             // under this location belong to the soundpack.
+   clap_timestamp_t release_timestamp;
 } clap_preset_discovery_soundpack_t;
 
 // Describes a preset provider
