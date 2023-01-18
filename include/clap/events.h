@@ -83,14 +83,14 @@ enum {
    //    Plugin->Host NoteEnd(port:0, channel:0, key:16, time:ignored)
    //
    // These four events use clap_event_note.
-   CLAP_EVENT_NOTE_ON,
-   CLAP_EVENT_NOTE_OFF,
-   CLAP_EVENT_NOTE_CHOKE,
-   CLAP_EVENT_NOTE_END,
+   CLAP_EVENT_NOTE_ON = 0,
+   CLAP_EVENT_NOTE_OFF = 1,
+   CLAP_EVENT_NOTE_CHOKE = 2,
+   CLAP_EVENT_NOTE_END = 3,
 
    // Represents a note expression.
    // Uses clap_event_note_expression.
-   CLAP_EVENT_NOTE_EXPRESSION,
+   CLAP_EVENT_NOTE_EXPRESSION = 4,
 
    // PARAM_VALUE sets the parameter's value; uses clap_event_param_value.
    // PARAM_MOD sets the parameter's modulation amount; uses clap_event_param_mod.
@@ -100,20 +100,20 @@ enum {
    // In case of a concurrent global value/modulation versus a polyphonic one,
    // the voice should only use the polyphonic one and the polyphonic modulation
    // amount will already include the monophonic signal.
-   CLAP_EVENT_PARAM_VALUE,
-   CLAP_EVENT_PARAM_MOD,
+   CLAP_EVENT_PARAM_VALUE = 5,
+   CLAP_EVENT_PARAM_MOD = 6,
 
    // Indicates that the user started or finished adjusting a knob.
    // This is not mandatory to wrap parameter changes with gesture events, but this improves
    // the user experience a lot when recording automation or overriding automation playback.
    // Uses clap_event_param_gesture.
-   CLAP_EVENT_PARAM_GESTURE_BEGIN,
-   CLAP_EVENT_PARAM_GESTURE_END,
+   CLAP_EVENT_PARAM_GESTURE_BEGIN = 7,
+   CLAP_EVENT_PARAM_GESTURE_END = 8,
 
-   CLAP_EVENT_TRANSPORT,  // update the transport info; clap_event_transport
-   CLAP_EVENT_MIDI,       // raw midi event; clap_event_midi
-   CLAP_EVENT_MIDI_SYSEX, // raw midi sysex event; clap_event_midi_sysex
-   CLAP_EVENT_MIDI2,      // raw midi 2 event; clap_event_midi2
+   CLAP_EVENT_TRANSPORT = 9,   // update the transport info; clap_event_transport
+   CLAP_EVENT_MIDI = 10,       // raw midi event; clap_event_midi
+   CLAP_EVENT_MIDI_SYSEX = 11, // raw midi sysex event; clap_event_midi_sysex
+   CLAP_EVENT_MIDI2 = 12,      // raw midi 2 event; clap_event_midi2
 };
 
 // Note on, off, end and choke events.
@@ -132,19 +132,19 @@ typedef struct clap_event_note {
 
 enum {
    // with 0 < x <= 4, plain = 20 * log(x)
-   CLAP_NOTE_EXPRESSION_VOLUME,
+   CLAP_NOTE_EXPRESSION_VOLUME = 0,
 
    // pan, 0 left, 0.5 center, 1 right
-   CLAP_NOTE_EXPRESSION_PAN,
+   CLAP_NOTE_EXPRESSION_PAN = 1,
 
    // relative tuning in semitone, from -120 to +120
-   CLAP_NOTE_EXPRESSION_TUNING,
+   CLAP_NOTE_EXPRESSION_TUNING = 2,
 
    // 0..1
-   CLAP_NOTE_EXPRESSION_VIBRATO,
-   CLAP_NOTE_EXPRESSION_EXPRESSION,
-   CLAP_NOTE_EXPRESSION_BRIGHTNESS,
-   CLAP_NOTE_EXPRESSION_PRESSURE,
+   CLAP_NOTE_EXPRESSION_VIBRATO = 3,
+   CLAP_NOTE_EXPRESSION_EXPRESSION = 4,
+   CLAP_NOTE_EXPRESSION_BRIGHTNESS = 5,
+   CLAP_NOTE_EXPRESSION_PRESSURE = 6,
 };
 typedef int32_t clap_note_expression;
 
