@@ -146,6 +146,7 @@ typedef struct clap_preset_discovery_metadata_receiver {
                                    const char *description);
 
    // Sets the creation time and last modification time of the preset.
+   // If one of the times isn't known, set it to CLAP_TIMESTAMP_UNKNOWN.
    // If this function is not called, then the indexer may look at the file's creation and
    // modification time.
    void(CLAP_ABI *set_timestamps)(const struct clap_preset_discovery_metadata_receiver *receiver,
