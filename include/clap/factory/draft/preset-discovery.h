@@ -188,13 +188,15 @@ typedef struct clap_preset_discovery_location {
    uint32_t    flags; // see enum clap_preset_discovery_flags
    const char *name;  // name of this location
 
-   // URI
+   // URI:
    // - file:/// for pointing to a file or directory; directories are scanned recursively
-   //   eg: file:///home/abique/.u-he/Diva/presets/ (on Linux)
+   //   eg: file:///home/abique/.u-he/Diva/Presets/Diva (on Linux)
    //   eg: file:///C:/Users/abique/Documents/u-he/Diva.data/presets/ (on Windows)
-   // - plugin://<resource-id> for presets which are bundled inside the plugin itself
-   //   the resource-id string is defined by the plugin and should unique to avoid clashing
-   //   with other providers
+   //
+   // - plugin://<resource-id> for presets which are bundled inside the plugin itself.
+   //   The resource-id string is defined by the plugin and should unique to avoid clashing
+   //   with other providers, because when preset_load.from_uri() will be called, the
+   //   provider's origin won't be known.
    const char *uri;
 } clap_preset_discovery_location_t;
 
