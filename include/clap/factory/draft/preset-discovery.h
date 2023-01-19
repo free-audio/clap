@@ -21,12 +21,8 @@
    4. crawl the given locations and monitor file system changes
         `-> clap_preset_discovery_indexer.get_metadata() for each presets files
 
-   Then to load a preset, use ext/draft/preset-load.h
-   If the plugin do not implement preset-load (or similar extension for other plugin ABI),
-   then call the state loading mechanism with the following content:
-      preset-discovery-load\0<uri>\0<load-key>
-   If the method above didn't work and the preset to be loaded is a single preset file (not a preset
-   container), then try to load the state by passing the file's content.
+   Then to load a preset, use ext/draft/preset-load.h.
+   TODO: create a dedicated repo for other plugin abi preset-load extension.
 
    The design of this API deliberately does not define a fixed set tags or categories. It is the
    plug-in host's job to try to intelligently map the raw list of features that are found for a
