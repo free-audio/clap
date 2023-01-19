@@ -273,24 +273,6 @@ typedef struct clap_preset_discovery_indexer {
    bool(CLAP_ABI *declare_soundpack)(const struct clap_preset_discovery_indexer *indexer,
                                      const clap_preset_discovery_soundpack_t    *soundpack);
 
-   // Sets the path to a watch file.
-   // Whenever the given file is "touched" (its modification time is updated),
-   // then the indexer shall invalidate all the data.
-   //
-   // This file shouldn't be touched when a new preset is added, the host shall detect the new
-   // preset using the OS features (file system monitoring).
-   //
-   // The invalidation file is useful if:
-   // - the set of filetypes changes
-   // - the set of locations changes
-   // - the set of sound packs changes
-   // - the metadata extraction code changes is located outside of the DSO containing this
-   //   preset provider
-   //
-   // Returns false, if the path isn't valid or if the watch file isn't supported by the indexer.
-   bool(CLAP_ABI *set_invalidation_watch_file)(const struct clap_preset_discovery_indexer *indexer,
-                                               const char                                 *path);
-
    // Query an extension.
    // The returned pointer is owned by the indexer.
    // It is forbidden to call it before provider->init().
