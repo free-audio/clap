@@ -24,7 +24,7 @@
    Then to load a preset, use ext/draft/preset-load.h
    If the plugin do not implement preset-load (or similar extension for other plugin ABI),
    then call the state loading mechanism with the following content:
-      preset-discovery-load\0<uri>\0<load-id>
+      preset-discovery-load\0<uri>\0<load-key>
    If the method above didn't work and the preset to be loaded is a single preset file (not a preset
    container), then try to load the state by passing the file's content.
 
