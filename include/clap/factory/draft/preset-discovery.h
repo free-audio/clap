@@ -22,6 +22,11 @@
         `-> clap_preset_discovery_indexer.get_metadata() for each presets files
 
    Then to load a preset, use ext/draft/preset-load.h
+   If the plugin do not implement preset-load (or similar extension for other plugin ABI),
+   then it should call the state loading mechanism with the following content:
+      preset-discovery-load\0<uri>\0<load-id>
+   If the method above didn't work and the preset to be loaded is a single preset file (not a preset
+   container), then try to load the state by passing the file's content.
 
    The design of this API deliberately does not define a fixed set tags or categories. It is the
    plug-in host's job to try to intelligently map the raw list of features that are found for a
@@ -199,13 +204,13 @@ typedef struct clap_preset_discovery_location {
 
 // Describes an installed sound pack.
 typedef struct clap_preset_discovery_soundpack {
-   uint64_t    flags;        // see enum clap_preset_discovery_flags
-   const char *id;           // sound pack identifier
-   const char *name;         // name of this sound pack
-   const char *description;  // reasonably short description of the sound pack
-   const char *homepage_url; // url to the pack's homepage
-   const char *vendor;       // sound pack's vendor
-   const char *image_uri;    // may be an image on disk or from an http server
+   uint64_t         flags;             // see enum clap_preset_discovery_flags
+   const char      *id;                // sound pack identifier
+   const char      *name;              // name of this sound pack
+   const char      *description;       // reasonably short description of the sound pack
+   const char      *homepage_url;      // url to the pack's homepage
+   const char      *vendor;            // sound pack's vendor
+   const char      *image_uri;         // may be an image on disk or from an http server
    clap_timestamp_t release_timestamp; // release date, CLAP_TIMESTAMP_UNKNOWN if unavailable
 } clap_preset_discovery_soundpack_t;
 
