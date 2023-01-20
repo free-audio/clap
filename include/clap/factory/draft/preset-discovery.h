@@ -194,7 +194,7 @@ typedef struct clap_preset_discovery_location {
    //   eg: file:///C:/Users/abique/Documents/u-he/Diva.data/presets/ (on Windows)
    //
    // - plugin://<resource-id> for presets which are bundled inside the plugin itself.
-   //   The resource-id string is defined by the plugin and should unique to avoid clashing
+   //   The resource-id string is defined by the plugin and should be unique to avoid clashing
    //   with other providers, because when preset_load.from_uri() will be called, the
    //   provider's origin won't be known.
    const char *uri;
