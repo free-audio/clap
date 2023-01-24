@@ -194,7 +194,7 @@ typedef struct clap_preset_discovery_location {
    //   eg: file:///C:/Users/abique/Documents/u-he/Diva.data/Presets/ (on Windows)
    //
    // - plugin:// for presets which are bundled within the plugin DSO.
-   //   The path component may be empty.
+   //   In that case, the uri must be exactly `plugin://` and nothing more.
    const char *uri;
 } clap_preset_discovery_location_t;
 
