@@ -48,7 +48,7 @@
 // Use it to retrieve const clap_preset_discovery_factory_t* from
 // clap_plugin_entry.get_factory()
 static const CLAP_CONSTEXPR char CLAP_PRESET_DISCOVERY_FACTORY_ID[] =
-   "clap.preset-discovery-factory/draft-0";
+   "clap.preset-discovery-factory/draft-1";
 
 #ifdef __cplusplus
 extern "C" {
