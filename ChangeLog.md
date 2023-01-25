@@ -1,3 +1,24 @@
+# Changes in 1.1.7
+
+* Add a [factory](include/clap/factory) folder for better organization and move our factories there
+* [params.h](include/clap/ext/params.h): fix typos
+* CMake: disable C17 targets for CMake < 3.21
+* [plugin-features.h](include/clap/plugin-features.h): adds `note-detector` category for plugins which converts audio to notes
+
+## Draft extensions
+
+* [context-menu.h](include/clap/ext/draft/context-menu.h): add "title" menu entry
+* [preset-load.h](include/clap/ext/draft/preset-load.h): load from URI instead of path, making the extension more powerful
+* [remote-controls.h](include/clap/ext/draft/remote-controls.h): distinguish between device pages and preset pages
+* [audio-ports-activation.h](include/clap/ext/draft/audio-ports-activation.h): `set_active()` now returns bool instead of void, this helps catching problems earlier especially with invalid arguments
+* [audio-ports-config.h](include/clap/ext/audio-ports-config.h): add new draft extension: `clap_plugin_audio_ports_config_info` which lets the host query detailed port information in a given configuration.
+* [surround.h](include/clap/ext/draft/surround.h): add `config_id` parameter when fetching port info
+* [ambisonic.h](include/clap/ext/draft/ambisonic.h): add `config_id` parameter when fetching port info
+
+## Draft factories
+
+* [preset-discovery.h](include/clap/factory/draft/preset-discovery.h): new factory which allows the host to index the plugin presets which are stored on disk.
+
 # Changes in 1.1.6
 
 * [version.h](include/clap/version.h) `CLAP_VERSION_LT` was backwards (comparing current with arg

@@ -31,7 +31,7 @@
 // Pressing that button once gets you to the first page of the section.
 // Press it again to cycle through the section's pages.
 
-static CLAP_CONSTEXPR const char CLAP_EXT_REMOTE_CONTROLS[] = "clap.remote-controls.draft/1";
+static CLAP_CONSTEXPR const char CLAP_EXT_REMOTE_CONTROLS[] = "clap.remote-controls.draft/2";
 
 #ifdef __cplusplus
 extern "C" {
@@ -44,6 +44,10 @@ typedef struct clap_remote_controls_page {
    clap_id page_id;
    char    page_name[CLAP_NAME_SIZE];
    clap_id param_ids[CLAP_REMOTE_CONTROLS_COUNT];
+
+   // This is used to separate device pages versus preset pages.
+   // If true, then this page is specific to this preset.
+   bool is_for_preset;
 } clap_remote_controls_page_t;
 
 typedef struct clap_plugin_remote_controls {

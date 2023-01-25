@@ -1,7 +1,5 @@
 #pragma once
 
-#include "private/macros.h"
-
 // This file provides a set of standard plugin features meant to be used
 // within clap_plugin_descriptor.features.
 //
@@ -22,6 +20,9 @@
 
 // Add this feature if your plugin is a note effect or a note generator/sequencer
 #define CLAP_PLUGIN_FEATURE_NOTE_EFFECT "note-effect"
+
+// Add this feature if your plugin converts audio to notes
+#define CLAP_PLUGIN_FEATURE_NOTE_DETECTOR "note-detector"
 
 // Add this feature if your plugin is an analyzer
 #define CLAP_PLUGIN_FEATURE_ANALYZER "analyzer"

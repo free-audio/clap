@@ -37,7 +37,7 @@ The entry point is declared in [entry.h](include/clap/entry.h).
 
 ## Extensions
 
-Most features comes from extensions, which are in fact C interfaces.
+Most features come from extensions, which are in fact C interfaces.
 ```C
 // host extension
 const clap_host_log *log = host->extension(host, CLAP_EXT_LOG);

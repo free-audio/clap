@@ -53,7 +53,7 @@ typedef struct clap_plugin_entry {
    // No more calls into the DSO must be made after calling deinit().
    void(CLAP_ABI *deinit)(void);
 
-   // Get the pointer to a factory. See plugin-factory.h for an example.
+   // Get the pointer to a factory. See factory/plugin-factory.h for an example.
    //
    // Returns null if the factory is not provided.
    // The returned pointer must *not* be freed by the caller.

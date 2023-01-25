@@ -18,6 +18,7 @@ typedef struct clap_host {
    const char *version; // eg: "4.3", see plugin.h for advice on how to format the version
 
    // Query an extension.
+   // The returned pointer is owned by the host.
    // It is forbidden to call it before plugin->init().
    // You can call it within plugin->init() call, and after.
    // [thread-safe]
