@@ -97,15 +97,29 @@
 ///          .....                  .   .
 /// before: .     .     and after: .     .
 ///
+/// Persisting parameter values:
+///
+/// Plugins are responsible for persisting their parameter's values between
+/// sessions by implementing the state extension. Otherwise parameter value will
+/// not be recalled when reloading a project. Hosts should _not_ try to save and
+/// restore parameter values for plugins that don't implement the state
+/// extension.
+///
 /// Advice for the host:
+///
 /// - store plain values in the document (automation)
 /// - store modulation amount in plain value delta, not in percentage
 /// - when you apply a CC mapping, remember the min/max plain values so you can adjust
+/// - do not implement a parameter saving fall back for plugins that don't
+///   implement the state extension
 ///
 /// Advice for the plugin:
+///
 /// - think carefully about your parameter range when designing your DSP
 /// - avoid shrinking parameter ranges, they are very likely to change the sound
 /// - consider changing the parameter range as a tradeoff: what you improve vs what you break
+/// - make sure to implement saving and loading the parameter values using the
+///   state extension
 /// - if you plan to use adapters for other plugin formats, then you need to pay extra
 ///   attention to the adapter requirements
 
