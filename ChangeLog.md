@@ -1,3 +1,8 @@
+# Changes in 1.1.8
+
+* [params.h](include/clap/ext/params.h): document how persisting parameter values between sessions should be implemented
+* [state.h](include/clap/ext/state.h): add basic documentation regarding what state should be saved and how plugins should interact with buffers
+
 # Changes in 1.1.7
 
 * Add a [factory](include/clap/factory) folder for better organization and move our factories there
