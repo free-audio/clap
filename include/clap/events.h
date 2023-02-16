@@ -54,8 +54,8 @@ enum {
    // cases:
    // - a plugin is inside a drum pad in Bitwig Studio's drum machine, and this pad is choked by
    //   another one
-   // - the user double clicks the DAW's stop button in the transport which then stops the sound on
-   //   every tracks
+   // - the user double-clicks the DAW's stop button in the transport which then stops the sound on
+   //   every track
    //
    // NOTE_END is sent by the plugin to the host. The port, channel, key and note_id are those given
    // by the host in the NOTE_ON event. In other words, this event is matched against the
@@ -221,7 +221,7 @@ typedef struct clap_event_transport {
    clap_sectime  song_pos_seconds; // position in seconds
 
    double tempo;     // in bpm
-   double tempo_inc; // tempo increment for each samples and until the next
+   double tempo_inc; // tempo increment for each sample and until the next
                      // time info event
 
    clap_beattime loop_start_beats;

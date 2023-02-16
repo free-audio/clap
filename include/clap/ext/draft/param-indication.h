@@ -32,7 +32,7 @@ enum {
    // The host is recording an automation on this parameter
    CLAP_PARAM_INDICATION_AUTOMATION_RECORDING = 3,
 
-   // The host should play an automation for this parameter, but the user has started to ajust this
+   // The host should play an automation for this parameter, but the user has started to adjust this
    // parameter and is overriding the automation playback
    CLAP_PARAM_INDICATION_AUTOMATION_OVERRIDING = 4,
 };

@@ -21,7 +21,7 @@
 ///
 /// When the plugin changes a parameter value, it must inform the host.
 /// It will send @ref CLAP_EVENT_PARAM_VALUE event during process() or flush().
-/// If the user is adjusting the value, don't forget to mark the begining and end
+/// If the user is adjusting the value, don't forget to mark the beginning and end
 /// of the gesture by sending CLAP_EVENT_PARAM_GESTURE_BEGIN and CLAP_EVENT_PARAM_GESTURE_END
 /// events.
 ///
@@ -74,7 +74,7 @@
 ///     call clap_host_params.clear(host, param_id, CLAP_PARAM_CLEAR_ALL)
 ///   - call clap_host_params->rescan(CLAP_PARAM_RESCAN_ALL)
 ///
-/// CLAP allows the plugin to change the parameter range, yet the plugin developper
+/// CLAP allows the plugin to change the parameter range, yet the plugin developer
 /// should be aware that doing so isn't without risk, especially if you made the
 /// promise to never change the sound. If you want to be 100% certain that the
 /// sound will not change with all host, then simply never change the range.
@@ -89,7 +89,7 @@
 /// should be stored as plain value in the document.
 ///
 /// If the host goes with the first approach, there will still be situation where the
-/// sound may innevitably change. For example, if the plugin increase the range, there
+/// sound may inevitably change. For example, if the plugin increase the range, there
 /// is an automation playing at the max value and on top of that an LFO is applied.
 /// See the following curve:
 ///                                   .
@@ -134,7 +134,7 @@ enum {
    // if so the double value is converted to integer using a cast (equivalent to trunc).
    CLAP_PARAM_IS_STEPPED = 1 << 0,
 
-   // Useful for for periodic parameters like a phase
+   // Useful for periodic parameters like a phase
    CLAP_PARAM_IS_PERIODIC = 1 << 1,
 
    // The parameter should not be shown to the user, because it is currently not used.
@@ -205,7 +205,7 @@ typedef struct clap_param_info {
    clap_param_info_flags flags;
 
    // This value is optional and set by the plugin.
-   // Its purpose is to provide a fast access to the plugin parameter object by caching its pointer.
+   // Its purpose is to provide fast access to the plugin parameter object by caching its pointer.
    // For instance:
    //
    // in clap_plugin_params.get_info():

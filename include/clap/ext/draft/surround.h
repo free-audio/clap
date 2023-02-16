@@ -54,7 +54,7 @@ enum {
 };
 
 typedef struct clap_plugin_surround {
-   // Stores into the channel_map array, the surround identifer of each channels.
+   // Stores into the channel_map array, the surround identifier of each channel.
    // Returns the number of elements stored in channel_map.
    //
    // config_id: the configuration id, see clap_plugin_audio_ports_config.
@@ -78,7 +78,7 @@ typedef struct clap_host_surround {
    // [main-thread]
    void(CLAP_ABI *changed)(const clap_host_t *host);
 
-   // Ask the host what is the prefered/project surround channel map.
+   // Ask the host what is the preferred/project surround channel map.
    // [main-thread]
    void(CLAP_ABI *get_preferred_channel_map)(const clap_host_t *host,
                                              uint8_t           *channel_map,

@@ -6,7 +6,7 @@
 // For practical reasons we'll avoid spaces and use `-` instead to facilitate
 // scripts that generate the feature array.
 //
-// Non-standard features should be formated as follow: "$namespace:$feature"
+// Non-standard features should be formatted as follow: "$namespace:$feature"
 
 /////////////////////
 // Plugin category //

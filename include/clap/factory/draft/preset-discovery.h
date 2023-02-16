@@ -62,7 +62,7 @@ enum clap_preset_discovery_flags {
    CLAP_PRESET_DISCOVERY_IS_USER_CONTENT = 1 << 1,
 
    // This location is meant for demo presets, those are preset which may trigger
-   // some limitation in the plugin because they require additionnal features which the user
+   // some limitation in the plugin because they require additional features which the user
    // needs to purchase or the content itself needs to be bought and is only available in
    // demo mode.
    CLAP_PRESET_DISCOVERY_IS_DEMO_CONTENT = 1 << 2,
@@ -282,7 +282,7 @@ typedef struct clap_preset_discovery_indexer {
 } clap_preset_discovery_indexer_t;
 
 // Every methods in this factory must be thread-safe.
-// It is encourraged to perform preset indexing in background threads, maybe even in background
+// It is encouraged to perform preset indexing in background threads, maybe even in background
 // process.
 //
 // The host may use clap_plugin_invalidation_factory to detect filesystem changes
