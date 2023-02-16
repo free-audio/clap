@@ -50,7 +50,7 @@ typedef struct clap_plugin_resource_directory {
    // [main-thread]
    void(CLAP_ABI *set_directory)(const clap_plugin_t *plugin, const char *path, bool is_shared);
 
-   // Asks the plugin to put its resources into the resources directory.
+   // Asks the plugin to put its resources into the resource directory.
    // It is not necessary to collect files which belongs to the plugin's
    // factory content unless the param all is true.
    // [main-thread]
@@ -60,7 +60,7 @@ typedef struct clap_plugin_resource_directory {
    // [main-thread]
    uint32_t(CLAP_ABI *get_files_count)(const clap_plugin_t *plugin);
 
-   // Retrieves relative file path to the resources directory.
+   // Retrieves relative file path to the resource directory.
    // @param path writable memory to store the path
    // @param path_size number of available bytes in path
    // Returns the number of bytes in the path, or -1 on error

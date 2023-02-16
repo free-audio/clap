@@ -120,7 +120,7 @@ enum {
    // if so the double value is converted to integer using a cast (equivalent to trunc).
    CLAP_PARAM_IS_STEPPED = 1 << 0,
 
-   // Useful for for periodic parameters like a phase
+   // Useful for periodic parameters like a phase
    CLAP_PARAM_IS_PERIODIC = 1 << 1,
 
    // The parameter should not be shown to the user, because it is currently not used.
@@ -191,7 +191,7 @@ typedef struct clap_param_info {
    clap_param_info_flags flags;
 
    // This value is optional and set by the plugin.
-   // Its purpose is to provide a fast access to the plugin parameter object by caching its pointer.
+   // Its purpose is to provide fast access to the plugin parameter object by caching its pointer.
    // For instance:
    //
    // in clap_plugin_params.get_info():
