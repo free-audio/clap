@@ -16,7 +16,7 @@ typedef struct clap_plugin_descriptor {
    // Otherwise the fields can be null or blank, though it is safer to make them blank.
    //
    // Some indications regarding id and version
-   // - id is an arbritrary string which should be unique to your plugin,
+   // - id is an arbritray string which should be unique to your plugin,
    //   we encourage you to use a reverse URI eg: "com.u-he.diva"
    // - version is an arbitrary string which describes a plugin,
    //   it is useful for the host to understand and be able to compare two different
@@ -77,7 +77,7 @@ typedef struct clap_plugin {
    void(CLAP_ABI *stop_processing)(const struct clap_plugin *plugin);
 
    // - Clears all buffers, performs a full reset of the processing state (filters, oscillators,
-   //   enveloppes, lfo, ...) and kills all voices.
+   //   envelopes, lfo, ...) and kills all voices.
    // - The parameter's value remain unchanged.
    // - clap_process.steady_time may jump backward.
    //

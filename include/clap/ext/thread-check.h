@@ -29,7 +29,7 @@ extern "C" {
 ///    thread pool and the plugin.process() call may be scheduled on different OS threads over time.
 ///    The most important thing is that there can't be two audio-threads at the same time. All the
 ///    functions marked with [audio-thread] **ARE NOT CONCURRENT**. The host may mark any OS thread,
-///    including the main-thread as the audio-thread, as long as it can guarentee that only one OS
+///    including the main-thread as the audio-thread, as long as it can guarantee that only one OS
 ///    thread is the audio-thread at a time. The audio-thread can be seen as a concurrency guard for
 ///    all functions marked with [audio-thread].
 

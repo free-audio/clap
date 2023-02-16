@@ -99,7 +99,7 @@ typedef struct clap_plugin_gui {
    bool(CLAP_ABI *is_api_supported)(const clap_plugin_t *plugin, const char *api, bool is_floating);
 
    // Returns true if the plugin has a preferred api.
-   // The host has no obligation to honor the plugin preferrence, this is just a hint.
+   // The host has no obligation to honor the plugin preference, this is just a hint.
    // The const char **api variable should be explicitly assigned as a pointer to
    // one of the CLAP_WINDOW_API_ constants defined above, not strcopied.
    // [main-thread]
@@ -113,7 +113,7 @@ typedef struct clap_plugin_gui {
    // can set its window to stays above the parent window, see set_transient().
    // api may be null or blank for floating window.
    //
-   // If is_floating is false, then the plugin has to embbed its window into the parent window, see
+   // If is_floating is false, then the plugin has to embed its window into the parent window, see
    // set_parent().
    //
    // After this call, the GUI may not be visible yet; don't forget to call show().
@@ -161,7 +161,7 @@ typedef struct clap_plugin_gui {
    // [main-thread]
    bool(CLAP_ABI *set_size)(const clap_plugin_t *plugin, uint32_t width, uint32_t height);
 
-   // Embbeds the plugin window into the given window.
+   // Embeds the plugin window into the given window.
    // [main-thread & !floating]
    bool(CLAP_ABI *set_parent)(const clap_plugin_t *plugin, const clap_window_t *window);
 

@@ -39,9 +39,9 @@ typedef struct clap_host_tuning {
    // The plugin may query the tuning at a rate that makes sense for *low* frequency modulations.
    //
    // If the tuning_id is not found or equals to CLAP_INVALID_ID,
-   // then the function shall gracefuly return a sensible value.
+   // then the function shall gracefully return a sensible value.
    //
-   // sample_offset is the sample offset from the begining of the current process block.
+   // sample_offset is the sample offset from the beginning of the current process block.
    //
    // should_play(...) should be checked before calling this function.
    //

@@ -24,7 +24,7 @@ extern "C" {
 ///   -> suitable for read-write content
 ///
 /// Keeping the shared directory clean:
-/// - to avoid clashes in the shared directory, plugins are encourraged to organize their files in
+/// - to avoid clashes in the shared directory, plugins are encouraged to organize their files in
 ///   sub-folders, for example create one subdirectory using the vendor name
 /// - don't use symbolic links or hard links which points outside of the directory
 ///
@@ -35,7 +35,7 @@ extern "C" {
 ///   are removed from the project
 ///
 /// Note for the host
-/// - try to use the filesytem's copy-on-write feature when possible for reducing exclusive folder
+/// - try to use the filesystem's copy-on-write feature when possible for reducing exclusive folder
 ///   space usage on duplication
 /// - host can "garbage collect" the files in the shared folder using:
 ///     clap_plugin_resource_directory.get_files_count()
