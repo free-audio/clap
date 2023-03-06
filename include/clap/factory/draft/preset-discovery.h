@@ -184,7 +184,7 @@ typedef struct clap_preset_discovery_metadata_receiver {
 
 typedef struct clap_preset_discovery_filetype {
    const char *name;
-   const char *description;
+   const char *description; // optional
 
    // `.' isn't included in the string.
    // If empty or NULL then every file should be matched.
@@ -204,10 +204,10 @@ typedef struct clap_preset_discovery_soundpack {
    uint32_t         flags;             // see enum clap_preset_discovery_flags
    const char      *id;                // sound pack identifier
    const char      *name;              // name of this sound pack
-   const char      *description;       // reasonably short description of the sound pack
-   const char      *homepage_url;      // url to the pack's homepage
-   const char      *vendor;            // sound pack's vendor
-   const char      *image_uri;         // may be an image on disk or from an http server
+   const char      *description;       // optional, reasonably short description of the sound pack
+   const char      *homepage_url;      // optional, url to the pack's homepage
+   const char      *vendor;            // optional, sound pack's vendor
+   const char      *image_uri;         // optional, may be an image on disk or from an http server
    clap_timestamp_t release_timestamp; // release date, CLAP_TIMESTAMP_UNKNOWN if unavailable
 } clap_preset_discovery_soundpack_t;
 
@@ -216,7 +216,7 @@ typedef struct clap_preset_discovery_provider_descriptor {
    clap_version_t clap_version; // initialized to CLAP_VERSION
    const char    *id;           // see plugin.h for advice on how to choose a good identifier
    const char    *name;         // eg: "Diva's preset provider"
-   const char    *vendor;       // eg: u-he
+   const char    *vendor;       // optional, eg: u-he
 } clap_preset_discovery_provider_descriptor_t;
 
 // This interface isn't thread-safe.
@@ -250,9 +250,9 @@ typedef struct clap_preset_discovery_provider {
 typedef struct clap_preset_discovery_indexer {
    clap_version_t clap_version; // initialized to CLAP_VERSION
    const char    *name;         // eg: "Bitwig Studio"
-   const char    *vendor;       // eg: "Bitwig GmbH"
-   const char    *url;          // eg: "https://bitwig.com"
-   const char    *version;      // eg: "4.3", see plugin.h for advice on how to format the version
+   const char    *vendor;       // optional, eg: "Bitwig GmbH"
+   const char    *url;          // optional, eg: "https://bitwig.com"
+   const char    *version;      // optional, eg: "4.3", see plugin.h for advice on how to format the version
 
    void *indexer_data; // reserved pointer for the indexer
 
