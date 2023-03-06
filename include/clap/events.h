@@ -260,7 +260,7 @@ typedef struct clap_event_midi2 {
    uint32_t data[4];
 } clap_event_midi2_t;
 
-// Input event list, events must be sorted by time.
+// Input event list. The host will deliver these sorted in sample order.
 typedef struct clap_input_events {
    void *ctx; // reserved pointer for the list
 
@@ -271,7 +271,7 @@ typedef struct clap_input_events {
    const clap_event_header_t *(CLAP_ABI *get)(const struct clap_input_events *list, uint32_t index);
 } clap_input_events_t;
 
-// Output event list, events must be sorted by time.
+// Output event list. The plugin must insert events in sample sorted order when inserting events
 typedef struct clap_output_events {
    void *ctx; // reserved pointer for the list
 
