@@ -8,6 +8,10 @@
 
 * [extensible-audio-ports.h](include/clap/ext/draft/extensible-audio-ports.h): new extension which lets the host add ports to a plugin
 * [configurable-audio-ports.h](include/clap/ext/draft/configurable-audio-ports.h): new exetension which lets the host **push** an audio ports configuration request, this leads to a simpler workflow for surround host and plugins
+* [surround.h](include/clap/ext/draft/surround.h):
+  * remove `get_preferred_channel_map()` in favor of the push approach via [configurable-audio-ports.h](include/clap/ext/draft/configurable-audio-ports.h)
+  * remove `config_id` argument from `get_info()`
+* [ambisonic.h](include/clap/ext/draft/ambisonic.h): remove `config_id` argument from `get_info()`
 * [preset-load.h](include/clap/ext/draft/preset-load.h): use a location_kind + location approach instead of URI
 
 ## Draft factories
