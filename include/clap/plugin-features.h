@@ -48,6 +48,8 @@
 #define CLAP_PLUGIN_FEATURE_DISTORTION "distortion"
 #define CLAP_PLUGIN_FEATURE_TRANSIENT_SHAPER "transient-shaper"
 #define CLAP_PLUGIN_FEATURE_COMPRESSOR "compressor"
+#define CLAP_PLUGIN_FEATURE_EXPANDER "expander"
+#define CLAP_PLUGIN_FEATURE_GATE "gate"
 #define CLAP_PLUGIN_FEATURE_LIMITER "limiter"
 
 #define CLAP_PLUGIN_FEATURE_FLANGER "flanger"
