@@ -16,7 +16,10 @@ typedef struct clap_plugin_preset_load {
    // The preset discovery provider defines the uri and load_key to be passed to this function.
    //
    // [main-thread]
-   bool(CLAP_ABI *from_uri)(const clap_plugin_t *plugin, const char *uri, const char *load_key);
+   bool(CLAP_ABI *from_location)(const clap_plugin_t *plugin,
+                                 uint32_t             location_kind,
+                                 const char          *location,
+                                 const char          *load_key);
 } clap_plugin_preset_load_t;
 
 typedef struct clap_host_preset_load {
@@ -36,7 +39,10 @@ typedef struct clap_host_preset_load {
    // must be null.
    //
    // [main-thread]
-   void(CLAP_ABI *loaded)(const clap_host_t *host, const char *uri, const char *load_key);
+   void(CLAP_ABI *loaded)(const clap_host_t *host,
+                          uint32_t           location_kind,
+                          const char        *location,
+                          const char        *load_key);
 } clap_host_preset_load_t;
 
 #ifdef __cplusplus

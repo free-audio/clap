@@ -48,11 +48,19 @@
 // Use it to retrieve const clap_preset_discovery_factory_t* from
 // clap_plugin_entry.get_factory()
 static const CLAP_CONSTEXPR char CLAP_PRESET_DISCOVERY_FACTORY_ID[] =
-   "clap.preset-discovery-factory/draft-1";
+   "clap.preset-discovery-factory/draft-2";
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+enum clap_preset_discovery_location_kind {
+   // The preset are located in a file on the OS filesystem
+   CLAP_PRESET_DISCOVERY_LOCATION_FILE = 0,
+
+   // The preset is bundled within the plugin DSO itself
+   CLAP_PRESET_DISCOVERY_LOCATION_PLUGIN = 1,
+};
 
 enum clap_preset_discovery_flags {
    // This is for factory or sound-pack presets.
@@ -185,22 +193,15 @@ typedef struct clap_preset_discovery_filetype {
 
 // Defines a place in which to search for presets
 typedef struct clap_preset_discovery_location {
-   uint32_t    flags; // see enum clap_preset_discovery_flags
-   const char *name;  // name of this location
-
-   // URI:
-   // - file:/// for pointing to a file or directory; directories are scanned recursively
-   //   eg: file:///home/abique/.u-he/Diva/Presets/Diva (on Linux)
-   //   eg: file:///C:/Users/abique/Documents/u-he/Diva.data/Presets/ (on Windows)
-   //
-   // - plugin:// for presets which are bundled within the plugin DSO.
-   //   In that case, the uri must be exactly `plugin://` and nothing more.
-   const char *uri;
+   uint32_t    flags;    // see enum clap_preset_discovery_flags
+   const char *name;     // name of this location
+   uint32_t    kind;     // See clap_preset_discovery_location_kind
+   const char *location; // Actual location in which to crawl presets
 } clap_preset_discovery_location_t;
 
 // Describes an installed sound pack.
 typedef struct clap_preset_discovery_soundpack {
-   uint64_t         flags;             // see enum clap_preset_discovery_flags
+   uint32_t         flags;             // see enum clap_preset_discovery_flags
    const char      *id;                // sound pack identifier
    const char      *name;              // name of this sound pack
    const char      *description;       // reasonably short description of the sound pack
