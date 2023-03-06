@@ -2,6 +2,7 @@
 
 * [params.h](include/clap/ext/params.h): document how persisting parameter values between sessions should be implemented
 * [state.h](include/clap/ext/state.h): add basic documentation regarding what state should be saved and how plugins should interact with buffers
+* various documentation fixes (essentially typos)
 
 # Changes in 1.1.7
 
