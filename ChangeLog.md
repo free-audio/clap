@@ -6,6 +6,8 @@
 
 ## Draft extensions
 
+* [extensible-audio-ports.h](include/clap/ext/draft/extensible-audio-ports.h): new extension which lets the host add ports to a plugin
+* [configurable-audio-ports.h](include/clap/ext/draft/configurable-audio-ports.h): new exetension which lets the host **push** an audio ports configuration request, this leads to a simpler workflow for surround host and plugins
 * [preset-load.h](include/clap/ext/draft/preset-load.h): use a location_kind + location approach instead of URI
 
 ## Draft factories
