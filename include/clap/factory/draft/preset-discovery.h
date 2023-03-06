@@ -207,7 +207,7 @@ typedef struct clap_preset_discovery_soundpack {
    const char      *description;       // optional, reasonably short description of the sound pack
    const char      *homepage_url;      // optional, url to the pack's homepage
    const char      *vendor;            // optional, sound pack's vendor
-   const char      *image_uri;         // optional, may be an image on disk or from an http server
+   const char      *image_path;        // optional, an image on disk
    clap_timestamp_t release_timestamp; // release date, CLAP_TIMESTAMP_UNKNOWN if unavailable
 } clap_preset_discovery_soundpack_t;
 
@@ -235,7 +235,8 @@ typedef struct clap_preset_discovery_provider {
 
    // reads metadata from the given file and passes them to the metadata receiver
    bool(CLAP_ABI *get_metadata)(const struct clap_preset_discovery_provider     *provider,
-                                const char                                      *uri,
+                                uint32_t                                         location_kind,
+                                const char                                      *location,
                                 const clap_preset_discovery_metadata_receiver_t *metadata_receiver);
 
    // Query an extension.
