@@ -6,8 +6,8 @@
 
 /// @page Audio Ports Config
 ///
-/// This extension provides a way for the plugin to describe possible port configurations, for
-/// example mono, stereo, surround, ... and a way for the host to select a configuration.
+/// This extension let the plugin provide port configurations presets.
+/// For example mono, stereo, surround, ambisonic, ...
 ///
 /// After the plugin initialization, the host may scan the list of configurations and eventually
 /// select one that fits the plugin context. The host can only select a configuration if the plugin
