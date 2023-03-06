@@ -15,6 +15,10 @@ typedef struct clap_audio_port_configuration_request {
    bool     is_input;
    uint32_t channel_count;
 
+   // If true and if the plugin can't apply the requested port configuration,
+   // then it is allowed to pick the closest possible port configuration.
+   bool is_best_effort;
+
    // cast port_details according to port_type:
    // - CLAP_PORT_MONO: (discard)
    // - CLAP_PORT_STEREO: (discard)
