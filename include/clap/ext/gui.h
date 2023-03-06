@@ -117,6 +117,8 @@ typedef struct clap_plugin_gui {
    // set_parent().
    //
    // After this call, the GUI may not be visible yet; don't forget to call show().
+   //
+   // Returns true if the GUI is successfuly created.
    // [main-thread]
    bool(CLAP_ABI *create)(const clap_plugin_t *plugin, const char *api, bool is_floating);
 
@@ -137,6 +139,8 @@ typedef struct clap_plugin_gui {
 
    // Get the current size of the plugin UI.
    // clap_plugin_gui->create() must have been called prior to asking the size.
+   //
+   // Returns true if the plugin could get the size.
    // [main-thread]
    bool(CLAP_ABI *get_size)(const clap_plugin_t *plugin, uint32_t *width, uint32_t *height);
 
@@ -154,31 +158,45 @@ typedef struct clap_plugin_gui {
    // This method does not change the size.
    //
    // Only for embedded windows.
+   //
+   // Returns true if the plugin could adjust the given size.
    // [main-thread]
    bool(CLAP_ABI *adjust_size)(const clap_plugin_t *plugin, uint32_t *width, uint32_t *height);
 
    // Sets the window size. Only for embedded windows.
+   //
+   // Returns true if the plugin could resize its window to the given size.
    // [main-thread]
    bool(CLAP_ABI *set_size)(const clap_plugin_t *plugin, uint32_t width, uint32_t height);
 
    // Embeds the plugin window into the given window.
+   //
+   // Returns true on success.
    // [main-thread & !floating]
    bool(CLAP_ABI *set_parent)(const clap_plugin_t *plugin, const clap_window_t *window);
 
    // Set the plugin floating window to stay above the given window.
+   //
+   // Returns true on success.
    // [main-thread & floating]
    bool(CLAP_ABI *set_transient)(const clap_plugin_t *plugin, const clap_window_t *window);
 
    // Suggests a window title. Only for floating windows.
+   //
+   // Returns true on success.
    // [main-thread & floating]
    void(CLAP_ABI *suggest_title)(const clap_plugin_t *plugin, const char *title);
 
    // Show the window.
+   //
+   // Returns true on success.
    // [main-thread]
    bool(CLAP_ABI *show)(const clap_plugin_t *plugin);
 
    // Hide the window, this method does not free the resources, it just hides
    // the window content. Yet it may be a good idea to stop painting timers.
+   //
+   // Returns true on success.
    // [main-thread]
    bool(CLAP_ABI *hide)(const clap_plugin_t *plugin);
 } clap_plugin_gui_t;
