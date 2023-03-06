@@ -4,6 +4,14 @@
 * [state.h](include/clap/ext/state.h): add basic documentation regarding what state should be saved and how plugins should interact with buffers
 * various documentation fixes (essentially typos)
 
+## Draft extensions
+
+* [preset-load.h](include/clap/ext/draft/preset-load.h): use a location_kind + location approach instead of URI
+
+## Draft factories
+
+* [preset-discovery.h](include/clap/factory/draft/preset-discovery.h): use a location_kind + location approach instead of URI
+
 # Changes in 1.1.7
 
 * Add a [factory](include/clap/factory) folder for better organization and move our factories there
