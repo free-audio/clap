@@ -28,6 +28,7 @@ typedef struct clap_host_preset_load {
    void(CLAP_ABI *on_error)(const clap_host_t *host,
                             uint32_t           location_kind,
                             const char        *location,
+                            const char        *load_key,
                             int32_t            os_error,
                             const char        *msg);
 
