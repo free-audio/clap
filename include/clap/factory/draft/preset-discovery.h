@@ -55,10 +55,13 @@ extern "C" {
 #endif
 
 enum clap_preset_discovery_location_kind {
-   // The preset are located in a file on the OS filesystem
+   // The preset are located in a file on the OS filesystem.
+   // The location is then a path which works with the OS file system functions (open, stat, ...)
+   // So both '/' and '\' shall work on Windows as a separator.
    CLAP_PRESET_DISCOVERY_LOCATION_FILE = 0,
 
-   // The preset is bundled within the plugin DSO itself
+   // The preset is bundled within the plugin DSO itself.
+   // Thes location is arbitrary.
    CLAP_PRESET_DISCOVERY_LOCATION_PLUGIN = 1,
 };
 
@@ -196,7 +199,11 @@ typedef struct clap_preset_discovery_location {
    uint32_t    flags;    // see enum clap_preset_discovery_flags
    const char *name;     // name of this location
    uint32_t    kind;     // See clap_preset_discovery_location_kind
-   const char *location; // Actual location in which to crawl presets
+
+   // Actual location in which to crawl presets.
+   // For FILE kind, the location can be either a path to a directory or a file.
+   // For PLUGIN kind, the location is arbitrary.
+   const char *location;
 } clap_preset_discovery_location_t;
 
 // Describes an installed sound pack.
