@@ -119,8 +119,8 @@ typedef struct clap_preset_discovery_metadata_receiver {
    // This must be called for every preset in the file and before any preset metadata is
    // sent with the calls below.
    //
-   // If the preset file is a preset container then name and load_key are mandatory,
-   // otherwise they must be null.
+   // If the preset file is a preset container then name and load_key are mandatory, otherwise
+   // they are optional.
    //
    // The load_key is a machine friendly string used to load the preset inside the container via a
    // the preset-load plug-in extension. The load_key can also just be the subpath if that's what
