@@ -61,7 +61,8 @@ enum clap_preset_discovery_location_kind {
    CLAP_PRESET_DISCOVERY_LOCATION_FILE = 0,
 
    // The preset is bundled within the plugin DSO itself.
-   // Thes location is arbitrary.
+   // The location must then be null, as the preset are within the plugin itsel and then the plugin
+   // will act as a preset container.
    CLAP_PRESET_DISCOVERY_LOCATION_PLUGIN = 1,
 };
 
@@ -196,13 +197,13 @@ typedef struct clap_preset_discovery_filetype {
 
 // Defines a place in which to search for presets
 typedef struct clap_preset_discovery_location {
-   uint32_t    flags;    // see enum clap_preset_discovery_flags
-   const char *name;     // name of this location
-   uint32_t    kind;     // See clap_preset_discovery_location_kind
+   uint32_t    flags; // see enum clap_preset_discovery_flags
+   const char *name;  // name of this location
+   uint32_t    kind;  // See clap_preset_discovery_location_kind
 
    // Actual location in which to crawl presets.
    // For FILE kind, the location can be either a path to a directory or a file.
-   // For PLUGIN kind, the location is arbitrary.
+   // For PLUGIN kind, the location must be null.
    const char *location;
 } clap_preset_discovery_location_t;
 
@@ -260,7 +261,7 @@ typedef struct clap_preset_discovery_indexer {
    const char    *name;         // eg: "Bitwig Studio"
    const char    *vendor;       // optional, eg: "Bitwig GmbH"
    const char    *url;          // optional, eg: "https://bitwig.com"
-   const char    *version;      // optional, eg: "4.3", see plugin.h for advice on how to format the version
+   const char *version; // optional, eg: "4.3", see plugin.h for advice on how to format the version
 
    void *indexer_data; // reserved pointer for the indexer
 
