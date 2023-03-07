@@ -132,6 +132,8 @@ typedef struct clap_plugin_gui {
    // If the plugin prefers to work out the scaling factor itself by querying the OS directly,
    // then ignore the call.
    //
+   // scale = 2 means 200% scaling.
+   //
    // Returns true if the scaling could be applied
    // Returns false if the call was ignored, or the scaling could not be applied.
    // [main-thread]
