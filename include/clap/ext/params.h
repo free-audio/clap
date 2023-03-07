@@ -55,8 +55,9 @@
 /// - the plugin is responsible for sending the parameter value to its audio processor
 /// - call clap_host_params->request_flush() or clap_host->request_process().
 /// - when the host calls either clap_plugin->process() or clap_plugin_params->flush(),
-///   send an automation event and don't forget to set begin_adjust,
-///   end_adjust and should_record flags
+///   send an automation event and don't forget to wrap the parameter change(s)
+///   with CLAP_EVENT_PARAM_GESTURE_BEGIN and CLAP_EVENT_PARAM_GESTURE_END to define the
+///   beginning and end of the gesture.
 ///
 /// IV. Turning a knob via automation
 /// - host sends an automation point during clap_plugin->process() or clap_plugin_params->flush().
