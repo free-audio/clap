@@ -6,14 +6,15 @@
 extern "C" {
 #endif
 
-// This extension lets the host add and remove audio ports
+// This extension lets the host add and remove audio ports to the plugin.
 static CLAP_CONSTEXPR const char CLAP_EXT_EXTENSIBLE_AUDIO_PORTS[] =
    "clap.extensible-audio-ports.draft0";
 
 typedef struct clap_plugin_extensible_audio_ports {
    // Asks the plugin to add a new port (at the end of the list), with the following settings.
+   // port_type: see clap_audio_port_info.port_type for interpretation.
+   // port_details: see clap_audio_port_configuration_request.port_details for interpretation.
    // Returns true on success.
-   // port_type and port_details are analogous to what you'll find in audio-ports.h
    // [main-thread && !is_active]
    bool(CLAP_ABI *add_port)(const clap_plugin_t *plugin,
                             bool                 is_input,
