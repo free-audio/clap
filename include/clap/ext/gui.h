@@ -185,7 +185,6 @@ typedef struct clap_plugin_gui {
 
    // Suggests a window title. Only for floating windows.
    //
-   // Returns true on success.
    // [main-thread & floating]
    void(CLAP_ABI *suggest_title)(const clap_plugin_t *plugin, const char *title);
 
