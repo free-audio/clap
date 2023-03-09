@@ -16,7 +16,10 @@
 
 ## Draft factories
 
-* [preset-discovery.h](include/clap/factory/draft/preset-discovery.h): use a location_kind + location approach instead of URI
+* [preset-discovery.h](include/clap/factory/draft/preset-discovery.h): 
+  * use a location_kind + location approach instead of URI
+  * document which descriptor fields are optional
+  * allow optional preset names in the metadata for non-container presets
 
 # Changes in 1.1.7
 
