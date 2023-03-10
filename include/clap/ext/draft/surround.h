@@ -24,7 +24,7 @@
 // 3. host calls clap_plugin_surround->get_channel_map()
 // 4. host activates the plugin and can start processing audio
 
-static CLAP_CONSTEXPR const char CLAP_EXT_SURROUND[] = "clap.surround.draft/1";
+static CLAP_CONSTEXPR const char CLAP_EXT_SURROUND[] = "clap.surround.draft/2";
 
 static CLAP_CONSTEXPR const char CLAP_PORT_SURROUND[] = "surround";
 
@@ -55,9 +55,13 @@ enum {
 
 typedef struct clap_plugin_surround {
    // Stores into the channel_map array, the surround identifer of each channels.
-   // Returns the number of elements stored in channel_map
+   // Returns the number of elements stored in channel_map.
+   //
+   // config_id: the configuration id, see clap_plugin_audio_ports_config.
+   // If config_id is CLAP_INVALID_ID, then this function queries the current port info.
    // [main-thread]
    uint32_t(CLAP_ABI *get_channel_map)(const clap_plugin_t *plugin,
+                                       clap_id              config_id,
                                        bool                 is_input,
                                        uint32_t             port_index,
                                        uint8_t             *channel_map,

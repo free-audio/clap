@@ -1,3 +1,44 @@
+# Changes in 1.1.7
+
+* Add a [factory](include/clap/factory) folder for better organization and move our factories there
+* [params.h](include/clap/ext/params.h): fix typos
+* CMake: disable C17 targets for CMake < 3.21
+* [plugin-features.h](include/clap/plugin-features.h): adds `note-detector` category for plugins which converts audio to notes
+
+## Draft extensions
+
+* [context-menu.h](include/clap/ext/draft/context-menu.h): add "title" menu entry
+* [preset-load.h](include/clap/ext/draft/preset-load.h): load from URI instead of path, making the extension more powerful
+* [remote-controls.h](include/clap/ext/draft/remote-controls.h): distinguish between device pages and preset pages
+* [audio-ports-activation.h](include/clap/ext/draft/audio-ports-activation.h): `set_active()` now returns bool instead of void, this helps catching problems earlier especially with invalid arguments
+* [audio-ports-config.h](include/clap/ext/audio-ports-config.h): add new draft extension: `clap_plugin_audio_ports_config_info` which lets the host query detailed port information in a given configuration.
+* [surround.h](include/clap/ext/draft/surround.h): add `config_id` parameter when fetching port info
+* [ambisonic.h](include/clap/ext/draft/ambisonic.h): add `config_id` parameter when fetching port info
+
+## Draft factories
+
+* [preset-discovery.h](include/clap/factory/draft/preset-discovery.h): new factory which allows the host to index the plugin presets which are stored on disk.
+
+# Changes in 1.1.6
+
+* [version.h](include/clap/version.h) `CLAP_VERSION_LT` was backwards (comparing current with arg
+  vs arg with current). Correct and enhance tests.
+
+# Changes in 1.1.5
+
+* [plugin.h](include/clap/plugin.h): clarify plugin state after init()
+* [plugin.h](include/clap/plugin.h): clarify when it is allowed to call get_extension()
+* [plugin.h](include/clap/plugin.h): advice for plugin id and version strings
+* [host.h](include/clap/host.h): clarify when it is allowed to call get_extension()
+* [CMakeLists.txt](CMakeLists.txt): the target `clap-test` now includes `clap-plugin-template`
+* Remove UTF-8 BOM from a few files
+* [plugin-template.c](src/plugin-template.c): add state impl and some comments
+* [audio-ports-activation.h](include/clap/ext/draft/audio-ports-activation.h): improved documentation
+* [version.h](include/clap/version.h):
+  * Add a CLAP_VERSION_GE(maj,min,rev), _EQ and _LT macro.
+  * Remove the uint32_t cast from CLAP_VERSION_MAJOR, _MINOR, and _REVISION macro, and introduce it to the CLAP_VERSION_INIT macro.
+  * If you rely on these macros being a uint32_t or parse this header using external software, this may be a breaking change.
+
 # Changes in 1.1.4
 
 * CMake: update some targets to link against `clap` instead of `clap-core`

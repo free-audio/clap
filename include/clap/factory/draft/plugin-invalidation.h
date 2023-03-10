@@ -1,7 +1,12 @@
 #pragma once
 
-#include "private/std.h"
-#include "private/macros.h"
+#include "../../private/std.h"
+#include "../../private/macros.h"
+
+// Use it to retrieve const clap_plugin_invalidation_factory_t* from
+// clap_plugin_entry.get_factory()
+static const CLAP_CONSTEXPR char CLAP_PLUGIN_INVALIDATION_FACTORY_ID[] =
+   "clap.plugin-invalidation-factory/draft0";
 
 #ifdef __cplusplus
 extern "C" {
@@ -17,9 +22,6 @@ typedef struct clap_plugin_invalidation_source {
    // should the directory be scanned recursively?
    bool recursive_scan;
 } clap_plugin_invalidation_source_t;
-
-static const CLAP_CONSTEXPR char CLAP_PLUGIN_INVALIDATION_FACTORY_ID[] =
-   "clap.plugin-invalidation-factory/draft0";
 
 // Used to figure out when a plugin needs to be scanned again.
 // Imagine a situation with a single entry point: my-plugin.clap which then scans itself
