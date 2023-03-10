@@ -7,7 +7,7 @@
 ## Draft extensions
 
 * [extensible-audio-ports.h](include/clap/ext/draft/extensible-audio-ports.h): new extension which lets the host add ports to a plugin
-* [configurable-audio-ports.h](include/clap/ext/draft/configurable-audio-ports.h): new extension which lets the host **push** an audio ports configuration request, this leads to a simpler workflow for surround host and plugins
+* [configurable-audio-ports.h](include/clap/ext/draft/configurable-audio-ports.h): new extension allowing the host to **push** an audio ports configuration request, resulting in a simpler workflow for surround host and plugins
 * [surround.h](include/clap/ext/draft/surround.h):
   * remove `get_preferred_channel_map()` in favor of the push approach via [configurable-audio-ports.h](include/clap/ext/draft/configurable-audio-ports.h)
   * remove `config_id` argument from `get_info()`
@@ -16,7 +16,7 @@
 
 ## Draft factories
 
-* [preset-discovery.h](include/clap/factory/draft/preset-discovery.h): 
+* [preset-discovery.h](include/clap/factory/draft/preset-discovery.h):
   * use a location_kind + location approach instead of URI
   * document which descriptor fields are optional
   * allow optional preset names in the metadata for non-container presets
