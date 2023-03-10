@@ -10,7 +10,7 @@ extern "C" {
 
 /// @page thread-check
 ///
-/// CLAP defines two symbolic threads:
+/// CLAP defines three symbolic threads:
 ///
 /// main-thread:
 ///    This is the thread in which most of the interaction between the plugin and host happens.
@@ -32,6 +32,12 @@ extern "C" {
 ///    including the main-thread as the audio-thread, as long as it can guarantee that only one OS
 ///    thread is the audio-thread at a time. The audio-thread can be seen as a concurrency guard for
 ///    all functions marked with [audio-thread].
+///
+/// state-thread:
+///    This thread is used for saving and loading plugin state. For plug-ins that don't support
+///    CLAP_EXT_STATE_CONTEXT, as well as plugins that return false from `supports_async_state`,
+///    this thread is always the same as the main-thread.
+///    For plugins
 
 // This interface is useful to do runtime checks and make
 // sure that the functions are called on the correct threads.
