@@ -14,8 +14,6 @@
 /// As opposed to the state extension, incremental change event objects must not contain the
 /// whole plugin state but rather only the necessary data for undoing/redoing a single action
 /// on top of the current plugin state.
-///
-/// Important: Pay attention to the 'Notes on using streams' as found in stream.h !
 
 static const char CLAP_EXT_UNDO_REDO[] = "clap.undo-redo.draft/0";
 
