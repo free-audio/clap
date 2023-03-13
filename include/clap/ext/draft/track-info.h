@@ -4,9 +4,9 @@
 #include "../../color.h"
 #include "../../string-sizes.h"
 
-// This extensions let the plugin query info about the track it's in.
+// This extension let the plugin query info about the track it's in.
 // It is useful when the plugin is created, to initialize some parameters (mix, dry, wet)
-// and pick a suitable configuartion regarding audio port type and channel count.
+// and pick a suitable configuration regarding audio port type and channel count.
 
 static CLAP_CONSTEXPR const char CLAP_EXT_TRACK_INFO[] = "clap.track-info.draft/1";
 
@@ -38,7 +38,7 @@ typedef struct clap_track_info {
    // track color, available if flags contain CLAP_TRACK_INFO_HAS_TRACK_COLOR
    clap_color_t color;
 
-   // availabe if flags contain CLAP_TRACK_INFO_HAS_AUDIO_CHANNEL
+   // available if flags contain CLAP_TRACK_INFO_HAS_AUDIO_CHANNEL
    // see audio-ports.h, struct clap_audio_port_info to learn how to use channel count and port type
    int32_t     audio_channel_count;
    const char *audio_port_type;

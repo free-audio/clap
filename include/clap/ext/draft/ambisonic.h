@@ -4,7 +4,7 @@
 
 // This extension can be used to specify the channel mapping used by the plugin.
 
-static CLAP_CONSTEXPR const char CLAP_EXT_AMBISONIC[] = "clap.ambisonic.draft/1";
+static CLAP_CONSTEXPR const char CLAP_EXT_AMBISONIC[] = "clap.ambisonic.draft/2";
 
 static CLAP_CONSTEXPR const char CLAP_PORT_AMBISONIC[] = "ambisonic";
 
@@ -40,7 +40,6 @@ typedef struct clap_plugin_ambisonic {
    // If config_id is CLAP_INVALID_ID, then this function queries the current port info.
    // [main-thread]
    bool(CLAP_ABI *get_info)(const clap_plugin_t   *plugin,
-                            clap_id                config_id,
                             bool                   is_input,
                             uint32_t               port_index,
                             clap_ambisonic_info_t *info);

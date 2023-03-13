@@ -48,11 +48,23 @@
 // Use it to retrieve const clap_preset_discovery_factory_t* from
 // clap_plugin_entry.get_factory()
 static const CLAP_CONSTEXPR char CLAP_PRESET_DISCOVERY_FACTORY_ID[] =
-   "clap.preset-discovery-factory/draft-1";
+   "clap.preset-discovery-factory/draft-2";
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+enum clap_preset_discovery_location_kind {
+   // The preset are located in a file on the OS filesystem.
+   // The location is then a path which works with the OS file system functions (open, stat, ...)
+   // So both '/' and '\' shall work on Windows as a separator.
+   CLAP_PRESET_DISCOVERY_LOCATION_FILE = 0,
+
+   // The preset is bundled within the plugin DSO itself.
+   // The location must then be null, as the preset are within the plugin itsel and then the plugin
+   // will act as a preset container.
+   CLAP_PRESET_DISCOVERY_LOCATION_PLUGIN = 1,
+};
 
 enum clap_preset_discovery_flags {
    // This is for factory or sound-pack presets.
@@ -62,7 +74,7 @@ enum clap_preset_discovery_flags {
    CLAP_PRESET_DISCOVERY_IS_USER_CONTENT = 1 << 1,
 
    // This location is meant for demo presets, those are preset which may trigger
-   // some limitation in the plugin because they require additionnal features which the user
+   // some limitation in the plugin because they require additional features which the user
    // needs to purchase or the content itself needs to be bought and is only available in
    // demo mode.
    CLAP_PRESET_DISCOVERY_IS_DEMO_CONTENT = 1 << 2,
@@ -111,8 +123,8 @@ typedef struct clap_preset_discovery_metadata_receiver {
    // This must be called for every preset in the file and before any preset metadata is
    // sent with the calls below.
    //
-   // If the preset file is a preset container then name and load_key are mandatory,
-   // otherwise they must be null.
+   // If the preset file is a preset container then name and load_key are mandatory, otherwise
+   // they are optional.
    //
    // The load_key is a machine friendly string used to load the preset inside the container via a
    // the preset-load plug-in extension. The load_key can also just be the subpath if that's what
@@ -176,7 +188,7 @@ typedef struct clap_preset_discovery_metadata_receiver {
 
 typedef struct clap_preset_discovery_filetype {
    const char *name;
-   const char *description;
+   const char *description; // optional
 
    // `.' isn't included in the string.
    // If empty or NULL then every file should be matched.
@@ -187,26 +199,23 @@ typedef struct clap_preset_discovery_filetype {
 typedef struct clap_preset_discovery_location {
    uint32_t    flags; // see enum clap_preset_discovery_flags
    const char *name;  // name of this location
+   uint32_t    kind;  // See clap_preset_discovery_location_kind
 
-   // URI:
-   // - file:/// for pointing to a file or directory; directories are scanned recursively
-   //   eg: file:///home/abique/.u-he/Diva/Presets/Diva (on Linux)
-   //   eg: file:///C:/Users/abique/Documents/u-he/Diva.data/Presets/ (on Windows)
-   //
-   // - plugin:// for presets which are bundled within the plugin DSO.
-   //   In that case, the uri must be exactly `plugin://` and nothing more.
-   const char *uri;
+   // Actual location in which to crawl presets.
+   // For FILE kind, the location can be either a path to a directory or a file.
+   // For PLUGIN kind, the location must be null.
+   const char *location;
 } clap_preset_discovery_location_t;
 
 // Describes an installed sound pack.
 typedef struct clap_preset_discovery_soundpack {
-   uint64_t         flags;             // see enum clap_preset_discovery_flags
+   uint32_t         flags;             // see enum clap_preset_discovery_flags
    const char      *id;                // sound pack identifier
    const char      *name;              // name of this sound pack
-   const char      *description;       // reasonably short description of the sound pack
-   const char      *homepage_url;      // url to the pack's homepage
-   const char      *vendor;            // sound pack's vendor
-   const char      *image_uri;         // may be an image on disk or from an http server
+   const char      *description;       // optional, reasonably short description of the sound pack
+   const char      *homepage_url;      // optional, url to the pack's homepage
+   const char      *vendor;            // optional, sound pack's vendor
+   const char      *image_path;        // optional, an image on disk
    clap_timestamp_t release_timestamp; // release date, CLAP_TIMESTAMP_UNKNOWN if unavailable
 } clap_preset_discovery_soundpack_t;
 
@@ -215,7 +224,7 @@ typedef struct clap_preset_discovery_provider_descriptor {
    clap_version_t clap_version; // initialized to CLAP_VERSION
    const char    *id;           // see plugin.h for advice on how to choose a good identifier
    const char    *name;         // eg: "Diva's preset provider"
-   const char    *vendor;       // eg: u-he
+   const char    *vendor;       // optional, eg: u-he
 } clap_preset_discovery_provider_descriptor_t;
 
 // This interface isn't thread-safe.
@@ -234,7 +243,8 @@ typedef struct clap_preset_discovery_provider {
 
    // reads metadata from the given file and passes them to the metadata receiver
    bool(CLAP_ABI *get_metadata)(const struct clap_preset_discovery_provider     *provider,
-                                const char                                      *uri,
+                                uint32_t                                         location_kind,
+                                const char                                      *location,
                                 const clap_preset_discovery_metadata_receiver_t *metadata_receiver);
 
    // Query an extension.
@@ -249,9 +259,9 @@ typedef struct clap_preset_discovery_provider {
 typedef struct clap_preset_discovery_indexer {
    clap_version_t clap_version; // initialized to CLAP_VERSION
    const char    *name;         // eg: "Bitwig Studio"
-   const char    *vendor;       // eg: "Bitwig GmbH"
-   const char    *url;          // eg: "https://bitwig.com"
-   const char    *version;      // eg: "4.3", see plugin.h for advice on how to format the version
+   const char    *vendor;       // optional, eg: "Bitwig GmbH"
+   const char    *url;          // optional, eg: "https://bitwig.com"
+   const char *version; // optional, eg: "4.3", see plugin.h for advice on how to format the version
 
    void *indexer_data; // reserved pointer for the indexer
 
@@ -282,7 +292,7 @@ typedef struct clap_preset_discovery_indexer {
 } clap_preset_discovery_indexer_t;
 
 // Every methods in this factory must be thread-safe.
-// It is encourraged to perform preset indexing in background threads, maybe even in background
+// It is encouraged to perform preset indexing in background threads, maybe even in background
 // process.
 //
 // The host may use clap_plugin_invalidation_factory to detect filesystem changes

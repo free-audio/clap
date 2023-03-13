@@ -1,3 +1,26 @@
+# Changes in 1.1.8
+
+* [params.h](include/clap/ext/params.h): document how persisting parameter values between sessions should be implemented
+* [state.h](include/clap/ext/state.h): add basic documentation regarding what state should be saved and how plugins should interact with buffers
+* various documentation fixes (essentially typos)
+
+## Draft extensions
+
+* [extensible-audio-ports.h](include/clap/ext/draft/extensible-audio-ports.h): new extension which lets the host add ports to a plugin
+* [configurable-audio-ports.h](include/clap/ext/draft/configurable-audio-ports.h): new extension allowing the host to **push** an audio ports configuration request, resulting in a simpler workflow for surround host and plugins
+* [surround.h](include/clap/ext/draft/surround.h):
+  * remove `get_preferred_channel_map()` in favor of the push approach via [configurable-audio-ports.h](include/clap/ext/draft/configurable-audio-ports.h)
+  * remove `config_id` argument from `get_info()`
+* [ambisonic.h](include/clap/ext/draft/ambisonic.h): remove `config_id` argument from `get_info()`
+* [preset-load.h](include/clap/ext/draft/preset-load.h): use a location_kind + location approach instead of URI
+
+## Draft factories
+
+* [preset-discovery.h](include/clap/factory/draft/preset-discovery.h):
+  * use a location_kind + location approach instead of URI
+  * document which descriptor fields are optional
+  * allow optional preset names in the metadata for non-container presets
+
 # Changes in 1.1.7
 
 * Add a [factory](include/clap/factory) folder for better organization and move our factories there

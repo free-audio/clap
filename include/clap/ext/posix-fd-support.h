@@ -24,7 +24,7 @@ typedef struct clap_plugin_posix_fd_support {
    // This callback is "level-triggered".
    // It means that a writable fd will continuously produce "on_fd()" events;
    // don't forget using modify_fd() to remove the write notification once you're
-   // done writting.
+   // done writing.
    //
    // [main-thread]
    void(CLAP_ABI *on_fd)(const clap_plugin_t *plugin, int fd, clap_posix_fd_flags_t flags);

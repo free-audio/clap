@@ -10,7 +10,7 @@ extern "C" {
 typedef struct clap_version {
    // This is the major ABI and API design
    // Version 0.X.Y correspond to the development stage, API and ABI are not stable
-   // Version 1.X.Y correspont to the release stage, API and ABI are stable
+   // Version 1.X.Y correspond to the release stage, API and ABI are stable
    uint32_t major;
    uint32_t minor;
    uint32_t revision;
@@ -22,7 +22,7 @@ typedef struct clap_version {
 
 #define CLAP_VERSION_MAJOR 1
 #define CLAP_VERSION_MINOR 1
-#define CLAP_VERSION_REVISION 7
+#define CLAP_VERSION_REVISION 8
 
 #define CLAP_VERSION_INIT                                                                          \
    { (uint32_t)CLAP_VERSION_MAJOR, (uint32_t)CLAP_VERSION_MINOR, (uint32_t)CLAP_VERSION_REVISION }

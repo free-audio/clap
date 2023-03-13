@@ -24,7 +24,7 @@ extern "C" {
 ///   -> suitable for read-write content
 ///
 /// Keeping the shared directory clean:
-/// - to avoid clashes in the shared directory, plugins are encourraged to organize their files in
+/// - to avoid clashes in the shared directory, plugins are encouraged to organize their files in
 ///   sub-folders, for example create one subdirectory using the vendor name
 /// - don't use symbolic links or hard links which points outside of the directory
 ///
@@ -35,7 +35,7 @@ extern "C" {
 ///   are removed from the project
 ///
 /// Note for the host
-/// - try to use the filesytem's copy-on-write feature when possible for reducing exclusive folder
+/// - try to use the filesystem's copy-on-write feature when possible for reducing exclusive folder
 ///   space usage on duplication
 /// - host can "garbage collect" the files in the shared folder using:
 ///     clap_plugin_resource_directory.get_files_count()
@@ -50,7 +50,7 @@ typedef struct clap_plugin_resource_directory {
    // [main-thread]
    void(CLAP_ABI *set_directory)(const clap_plugin_t *plugin, const char *path, bool is_shared);
 
-   // Asks the plugin to put its resources into the resources directory.
+   // Asks the plugin to put its resources into the resource directory.
    // It is not necessary to collect files which belongs to the plugin's
    // factory content unless the param all is true.
    // [main-thread]
@@ -60,7 +60,7 @@ typedef struct clap_plugin_resource_directory {
    // [main-thread]
    uint32_t(CLAP_ABI *get_files_count)(const clap_plugin_t *plugin);
 
-   // Retrieves relative file path to the resources directory.
+   // Retrieves relative file path to the resource directory.
    // @param path writable memory to store the path
    // @param path_size number of available bytes in path
    // Returns the number of bytes in the path, or -1 on error

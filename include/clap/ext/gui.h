@@ -99,7 +99,7 @@ typedef struct clap_plugin_gui {
    bool(CLAP_ABI *is_api_supported)(const clap_plugin_t *plugin, const char *api, bool is_floating);
 
    // Returns true if the plugin has a preferred api.
-   // The host has no obligation to honor the plugin preferrence, this is just a hint.
+   // The host has no obligation to honor the plugin preference, this is just a hint.
    // The const char **api variable should be explicitly assigned as a pointer to
    // one of the CLAP_WINDOW_API_ constants defined above, not strcopied.
    // [main-thread]
@@ -113,10 +113,12 @@ typedef struct clap_plugin_gui {
    // can set its window to stays above the parent window, see set_transient().
    // api may be null or blank for floating window.
    //
-   // If is_floating is false, then the plugin has to embbed its window into the parent window, see
+   // If is_floating is false, then the plugin has to embed its window into the parent window, see
    // set_parent().
    //
    // After this call, the GUI may not be visible yet; don't forget to call show().
+   //
+   // Returns true if the GUI is successfuly created.
    // [main-thread]
    bool(CLAP_ABI *create)(const clap_plugin_t *plugin, const char *api, bool is_floating);
 
@@ -130,6 +132,8 @@ typedef struct clap_plugin_gui {
    // If the plugin prefers to work out the scaling factor itself by querying the OS directly,
    // then ignore the call.
    //
+   // scale = 2 means 200% scaling.
+   //
    // Returns true if the scaling could be applied
    // Returns false if the call was ignored, or the scaling could not be applied.
    // [main-thread]
@@ -137,6 +141,8 @@ typedef struct clap_plugin_gui {
 
    // Get the current size of the plugin UI.
    // clap_plugin_gui->create() must have been called prior to asking the size.
+   //
+   // Returns true if the plugin could get the size.
    // [main-thread]
    bool(CLAP_ABI *get_size)(const clap_plugin_t *plugin, uint32_t *width, uint32_t *height);
 
@@ -154,31 +160,44 @@ typedef struct clap_plugin_gui {
    // This method does not change the size.
    //
    // Only for embedded windows.
+   //
+   // Returns true if the plugin could adjust the given size.
    // [main-thread]
    bool(CLAP_ABI *adjust_size)(const clap_plugin_t *plugin, uint32_t *width, uint32_t *height);
 
    // Sets the window size. Only for embedded windows.
+   //
+   // Returns true if the plugin could resize its window to the given size.
    // [main-thread]
    bool(CLAP_ABI *set_size)(const clap_plugin_t *plugin, uint32_t width, uint32_t height);
 
-   // Embbeds the plugin window into the given window.
+   // Embeds the plugin window into the given window.
+   //
+   // Returns true on success.
    // [main-thread & !floating]
    bool(CLAP_ABI *set_parent)(const clap_plugin_t *plugin, const clap_window_t *window);
 
    // Set the plugin floating window to stay above the given window.
+   //
+   // Returns true on success.
    // [main-thread & floating]
    bool(CLAP_ABI *set_transient)(const clap_plugin_t *plugin, const clap_window_t *window);
 
    // Suggests a window title. Only for floating windows.
+   //
    // [main-thread & floating]
    void(CLAP_ABI *suggest_title)(const clap_plugin_t *plugin, const char *title);
 
    // Show the window.
+   //
+   // Returns true on success.
    // [main-thread]
    bool(CLAP_ABI *show)(const clap_plugin_t *plugin);
 
    // Hide the window, this method does not free the resources, it just hides
    // the window content. Yet it may be a good idea to stop painting timers.
+   //
+   // Returns true on success.
    // [main-thread]
    bool(CLAP_ABI *hide)(const clap_plugin_t *plugin);
 } clap_plugin_gui_t;

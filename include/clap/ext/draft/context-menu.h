@@ -136,7 +136,7 @@ typedef struct clap_host_context_menu {
                            clap_id                           action_id);
 
    // Returns true if the host can display a popup menu for the plugin.
-   // This may depends upon the current windowing system used to display the plugin, so the
+   // This may depend upon the current windowing system used to display the plugin, so the
    // return value is invalidated after creating the plugin window.
    // [main-thread]
    bool(CLAP_ABI *can_popup)(const clap_host_t *host);

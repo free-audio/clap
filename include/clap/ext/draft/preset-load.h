@@ -2,21 +2,21 @@
 
 #include "../../plugin.h"
 
-static const char CLAP_EXT_PRESET_LOAD[] = "clap.preset-load.draft/1";
+static const char CLAP_EXT_PRESET_LOAD[] = "clap.preset-load.draft/2";
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 typedef struct clap_plugin_preset_load {
-   // Loads a preset in the plugin native preset file format from a URI. eg:
-   // - "file:///home/abique/.u-he/Diva/Presets/Diva/HS Bass Nine.h2p", load_key: null
-   // - "plugin://<plugin-id>", load_key: <XXX>
-   //
-   // The preset discovery provider defines the uri and load_key to be passed to this function.
+   // Loads a preset in the plugin native preset file format from a location.
+   // The preset discovery provider defines the location and load_key to be passed to this function.
    //
    // [main-thread]
-   bool(CLAP_ABI *from_uri)(const clap_plugin_t *plugin, const char *uri, const char *load_key);
+   bool(CLAP_ABI *from_location)(const clap_plugin_t *plugin,
+                                 uint32_t             location_kind,
+                                 const char          *location,
+                                 const char          *load_key);
 } clap_plugin_preset_load_t;
 
 typedef struct clap_host_preset_load {
@@ -26,7 +26,9 @@ typedef struct clap_host_preset_load {
    //
    // [main-thread]
    void(CLAP_ABI *on_error)(const clap_host_t *host,
-                            const char        *uri,
+                            uint32_t           location_kind,
+                            const char        *location,
+                            const char        *load_key,
                             int32_t            os_error,
                             const char        *msg);
 
@@ -36,7 +38,10 @@ typedef struct clap_host_preset_load {
    // must be null.
    //
    // [main-thread]
-   void(CLAP_ABI *loaded)(const clap_host_t *host, const char *uri, const char *load_key);
+   void(CLAP_ABI *loaded)(const clap_host_t *host,
+                          uint32_t           location_kind,
+                          const char        *location,
+                          const char        *load_key);
 } clap_host_preset_load_t;
 
 #ifdef __cplusplus

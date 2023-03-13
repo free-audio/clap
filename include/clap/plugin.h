@@ -77,7 +77,7 @@ typedef struct clap_plugin {
    void(CLAP_ABI *stop_processing)(const struct clap_plugin *plugin);
 
    // - Clears all buffers, performs a full reset of the processing state (filters, oscillators,
-   //   enveloppes, lfo, ...) and kills all voices.
+   //   envelopes, lfo, ...) and kills all voices.
    // - The parameter's value remain unchanged.
    // - clap_process.steady_time may jump backward.
    //

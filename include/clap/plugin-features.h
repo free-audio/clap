@@ -6,7 +6,7 @@
 // For practical reasons we'll avoid spaces and use `-` instead to facilitate
 // scripts that generate the feature array.
 //
-// Non-standard features should be formated as follow: "$namespace:$feature"
+// Non-standard features should be formatted as follow: "$namespace:$feature"
 
 /////////////////////
 // Plugin category //
@@ -48,6 +48,8 @@
 #define CLAP_PLUGIN_FEATURE_DISTORTION "distortion"
 #define CLAP_PLUGIN_FEATURE_TRANSIENT_SHAPER "transient-shaper"
 #define CLAP_PLUGIN_FEATURE_COMPRESSOR "compressor"
+#define CLAP_PLUGIN_FEATURE_EXPANDER "expander"
+#define CLAP_PLUGIN_FEATURE_GATE "gate"
 #define CLAP_PLUGIN_FEATURE_LIMITER "limiter"
 
 #define CLAP_PLUGIN_FEATURE_FLANGER "flanger"

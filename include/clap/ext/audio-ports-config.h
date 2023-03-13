@@ -6,8 +6,8 @@
 
 /// @page Audio Ports Config
 ///
-/// This extension provides a way for the plugin to describe possible port configurations, for
-/// example mono, stereo, surround, ... and a way for the host to select a configuration.
+/// This extension let the plugin provide port configurations presets.
+/// For example mono, stereo, surround, ambisonic, ...
 ///
 /// After the plugin initialization, the host may scan the list of configurations and eventually
 /// select one that fits the plugin context. The host can only select a configuration if the plugin
@@ -80,7 +80,7 @@ typedef struct clap_plugin_audio_ports_config_info {
    // [main-thread]
    clap_id(CLAP_ABI *current_config)(const clap_plugin_t *plugin);
 
-   // Get info about about an audio port, for a given config_id.
+   // Get info about an audio port, for a given config_id.
    // This is analogous to clap_plugin_audio_ports.get().
    // [main-thread]
    bool(CLAP_ABI *get)(const clap_plugin_t    *plugin,

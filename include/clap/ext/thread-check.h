@@ -14,7 +14,9 @@ extern "C" {
 ///
 /// main-thread:
 ///    This is the thread in which most of the interaction between the plugin and host happens.
-///    It is usually the thread on which the GUI receives its events.
+///    This will be the same OS thread throughout the lifetime of the plug-in.
+///    On macOS and Windows, this must be the thread on which gui and timer events are received
+///    (i.e., the main thread of the program).
 ///    It isn't a realtime thread, yet this thread needs to respond fast enough to user interaction,
 ///    so it is recommended to run long and expensive tasks such as preset indexing or asset loading
 ///    in dedicated background threads.
@@ -29,7 +31,7 @@ extern "C" {
 ///    thread pool and the plugin.process() call may be scheduled on different OS threads over time.
 ///    The most important thing is that there can't be two audio-threads at the same time. All the
 ///    functions marked with [audio-thread] **ARE NOT CONCURRENT**. The host may mark any OS thread,
-///    including the main-thread as the audio-thread, as long as it can guarentee that only one OS
+///    including the main-thread as the audio-thread, as long as it can guarantee that only one OS
 ///    thread is the audio-thread at a time. The audio-thread can be seen as a concurrency guard for
 ///    all functions marked with [audio-thread].
 

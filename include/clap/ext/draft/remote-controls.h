@@ -67,7 +67,7 @@ typedef struct clap_host_remote_controls {
    // [main-thread]
    void(CLAP_ABI *changed)(const clap_host_t *host);
 
-   // Suggest a page to the host because it correspond to what the user is currently editing in the
+   // Suggest a page to the host because it corresponds to what the user is currently editing in the
    // plugin's GUI.
    // [main-thread]
    void(CLAP_ABI *suggest_page)(const clap_host_t *host, clap_id page_id);

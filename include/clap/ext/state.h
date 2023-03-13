@@ -3,6 +3,14 @@
 #include "../plugin.h"
 #include "../stream.h"
 
+/// @page State
+/// @brief state management
+///
+/// Plugins can implement this extension to save and restore both parameter
+/// values and non-parameter state. This is used to persist a plugin's state
+/// between project reloads, when duplicating and copying plugin instances, and
+/// for host-side preset management.
+
 static CLAP_CONSTEXPR const char CLAP_EXT_STATE[] = "clap.state";
 
 #ifdef __cplusplus

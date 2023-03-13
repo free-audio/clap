@@ -67,3 +67,5 @@
 #include "ext/draft/track-info.h"
 #include "ext/draft/triggers.h"
 #include "ext/draft/tuning.h"
+#include "ext/draft/configurable-audio-ports.h"
+#include "ext/draft/extensible-audio-ports.h"
