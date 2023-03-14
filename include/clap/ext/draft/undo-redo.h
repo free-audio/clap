@@ -41,10 +41,16 @@ enum
    // The host must put the event object onto its undo stack.
    CLAP_UNDO_REDO_OBJECT_CHANGE = 0,
    // The pulled event object represents an undo action.
-   // The host must put the event object onto its redo stack.
+   // The host must remove the topmost object from its undo stack and put the pulled
+   // event object onto its redo stack.
+   // The host should reassign the clap_change_event_description from the removed object
+   // to the pulled object as it is complementary to it.
    CLAP_UNDO_REDO_OBJECT_UNDO = 1,
    // The pulled event object represents a redo action.
-   // The host must put the event object onto its undo stack.
+   // The host must remove the topmost object from its redo stack and put the pulled
+   // event object onto its undo stack.
+   // The host should reassign the clap_change_event_description from the removed object
+   // to the pulled object as it is complementary to it.
    CLAP_UNDO_REDO_OBJECT_REDO = 2,
    // The pulled event object represents an internal state change of the plugin
    // which is already undone again by the time the host pulls it.
