@@ -151,7 +151,7 @@ typedef struct clap_plugin_gui {
    bool(CLAP_ABI *can_resize)(const clap_plugin_t *plugin);
 
    // Returns true if the plugin can provide hints on how to resize the window.
-   // [main-thread]
+   // [main-thread & !floating]
    bool(CLAP_ABI *get_resize_hints)(const clap_plugin_t *plugin, clap_gui_resize_hints_t *hints);
 
    // If the plugin gui is resizable, then the plugin will calculate the closest
@@ -201,7 +201,7 @@ typedef struct clap_plugin_gui {
 
 typedef struct clap_host_gui {
    // The host should call get_resize_hints() again.
-   // [thread-safe]
+   // [thread-safe & !floating]
    void(CLAP_ABI *resize_hints_changed)(const clap_host_t *host);
 
    /* Request the host to resize the client area to width, height.
