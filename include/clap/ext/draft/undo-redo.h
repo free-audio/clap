@@ -27,7 +27,10 @@
 ///    has_pending_event_object returns false.
 ///
 /// Only if the host undo/redo stacks are in sync, the host can perform an undo/redo on the plugin
-/// via apply_event_object.
+/// like this:
+/// 1. The host calls begin_apply_event_objects.
+/// 2. The host calls apply_event_object for each event it wants to apply.
+/// 3. The host calls end_apply_event_objects.
 
 static const char CLAP_EXT_UNDO_REDO[] = "clap.undo-redo.draft/0";
 
@@ -104,6 +107,16 @@ typedef struct clap_plugin_undo_redo{
                                                   const clap_ostream_t *stream,
                                                   clap_change_event_description_t* description);
 
+   // Begin applying undo/redo event objects.
+   // If for_redo is set to false, the plugin will consider the applied events as undo objects,
+   // otherwise as redo objects.
+   // The plugin must block internal plugin state changes until the host calls
+   // end_apply_event_objects.
+   // The host must not call this function if there are still event objects pending.
+   // [main-thread && !event_objects_pending]
+   void(CLAP_ABI *begin_apply_event_objects)(const clap_plugin_t *plugin,
+                                             bool for_redo);
+
    // Performs an undo/redo action by applying an event object from apply_object_stream.
    // In exchange, the plugin returns the complementary redo/undo event object via
    // exchange_object_stream (the 'complementary object').
@@ -111,23 +124,29 @@ typedef struct clap_plugin_undo_redo{
    //   - Calling clap_plugin_state::load (see state.h) before apply_event_object must return
    //     the same result as calling clap_plugin_state::load after applying the complementary
    //     object via apply_event_object
-   // If is_redo is false,
+   // If begin_apply_event_objects was called with for_redo set to false,
    //   - the host must remove the applied object from its undo stack
-   //   - the host must add the complementary object onto its redo stack.
+   //   - the host must add the received complementary object onto its redo stack.
    // otherwise
    //   - the host must remove the applied object from its redo stack
-   //   - the host must add the complementary object onto its undo stack.
+   //   - the host must add the received complementary object onto its undo stack.
    // The host probably wants to re-associate the stored clap_change_event_description from the
-   // applied object to the complementary object.
+   // applied object to the received complementary object.
    // The plugin must not call mark_event_objects_pending after applying the event object as the
    // host and plugin undo/redo stacks should already be synced via the exchange object.
-   // The host must not call this function if there are still event objects pending.
-   // Returns true if the change event object was correctly applied.
-   // [main-thread && !event_objects_pending]
+   // Returns true if the event objects were transferred correctly.
+   // [main-thread]
    bool(CLAP_ABI *apply_event_object)(const clap_plugin_t *plugin,
-                                      bool is_redo,
                                       const clap_istream_t *apply_object_stream,
                                       const clap_ostream_t *exchange_object_stream);
+
+   // End applying event objects
+   // This allows the plugin to internally update the state in one go after receiving a sequence
+   // of event objects via apply_event_object.
+   // The plugin must not call mark_event_objects_pending after applying the event objects as the
+   // host and plugin undo/redo stacks should already be in sync via the exchange objects.
+   // [main-thread]
+   void(CLAP_ABI *end_apply_event_objects)(const clap_plugin_t *plugin);
 } clap_plugin_undo_redo_t;
 
 typedef struct clap_host_undo_redo {
@@ -137,6 +156,8 @@ typedef struct clap_host_undo_redo {
    // until has_pending_event_object returns false.
    // The plugin does not need to re-send mark_event_objects_pending until the host has
    // pulled all pending event objects from the plugin.
+   // This function should never be called while the host is still applying event objects as the
+   // plugin is forbidden to change its internal state until end_apply_event_objects arrives.
    // [main-thread]
    void(CLAP_ABI *mark_event_objects_pending)(const clap_host_t *host);
 } clap_host_undo_redo_t;
