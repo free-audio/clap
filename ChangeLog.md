@@ -1,3 +1,7 @@
+# Changes in 1.1.9
+
+* [entry.h](include/clap/entry.h): clarify what the `plugin_path` is on macOS
+
 # Changes in 1.1.8
 
 * [params.h](include/clap/ext/params.h): document how persisting parameter values between sessions should be implemented
