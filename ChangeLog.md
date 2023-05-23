@@ -1,3 +1,9 @@
+# Changes in 1.1.10
+
+* [surround.h](include/clap/ext/draft/surround.h): simplify the design
+* [ambisonic.h](include/clap/ext/draft/ambisonic.h): simplify the design
+* [configurable-audio-ports.h](include/clap/ext/draft/configurable-audio-ports.h): simplify the design
+
 # Changes in 1.1.9
 
 * [entry.h](include/clap/entry.h): clarify what the `plugin_path` is on macOS
