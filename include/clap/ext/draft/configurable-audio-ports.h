@@ -32,7 +32,7 @@ typedef struct clap_audio_port_configuration_request {
 
 typedef struct clap_plugin_configurable_audio_ports {
    // If is_dry_run is true, then checks if the configuration can be applied.
-   // If is_dry_run is true, then applies the configuration.
+   // If is_dry_run is false, then applies the configuration.
    // Returns true if applied.
    // [main-thread && !active]
    bool(CLAP_ABI *apply_configuration)(const clap_plugin_t                                *plugin,
