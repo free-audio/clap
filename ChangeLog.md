@@ -3,6 +3,8 @@
 * [surround.h](include/clap/ext/draft/surround.h): simplify the design
 * [ambisonic.h](include/clap/ext/draft/ambisonic.h): simplify the design
 * [configurable-audio-ports.h](include/clap/ext/draft/configurable-audio-ports.h): simplify the design
+* [gui.h](include/clap/ext/gui.h): documentation clarifications
+* [entry.h](include/clap/entry.h): documentation clarifications
 
 # Changes in 1.1.9
 
