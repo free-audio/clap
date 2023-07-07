@@ -6,6 +6,10 @@
 * [gui.h](include/clap/ext/gui.h): documentation clarifications
 * [entry.h](include/clap/entry.h): documentation clarifications
 
+## Draft Extensions
+
+* [incremental-state.h](include/clap/ext/draft/incremental-state.h): incremental state
+
 # Changes in 1.1.9
 
 * [entry.h](include/clap/entry.h): clarify what the `plugin_path` is on macOS
