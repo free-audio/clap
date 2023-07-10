@@ -25,12 +25,10 @@
 #   endif
 #endif
 
-#if defined(__cplusplus)
-#   if MSVC
-#      define CLAP_CPLUSPLUS _MSVC_LANG
-#   else
-#      define CLAP_CPLUSPLUS __cplusplus
-#   endif
+#if defined(_MSVC_LANG)
+#   define CLAP_CPLUSPLUS _MSVC_LANG
+#elif defined(__cplusplus)
+#   define CLAP_CPLUSPLUS __cplusplus
 #endif
 
 #if defined(CLAP_CPLUSPLUS) && CLAP_CPLUSPLUS >= 201103L
