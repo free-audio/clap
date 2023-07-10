@@ -60,6 +60,10 @@ if (${CLAP_BUILD_TESTS})
         add_test(NAME test-clap-compile-${SUFFIX} COMMAND clap-compile-${SUFFIX})
         add_dependencies(clap-tests clap-compile-${SUFFIX})
 
+        if (${EXT} STREQUAL "cc")
+            target_compile_definitions(clap-compile-${SUFFIX} PRIVATE CLAP_COMPILE_TEST_CXX_VERSION=${STDCPP})
+        endif()
+
         if (${CMAKE_C_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_C_COMPILER_ID} STREQUAL "Clang")
             target_compile_options(clap-compile-${SUFFIX} PRIVATE -Wall -Wextra -pedantic)
         endif()
