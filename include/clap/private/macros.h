@@ -25,20 +25,28 @@
 #   endif
 #endif
 
-#if defined(__cplusplus) && __cplusplus >= 201103L
+#if defined(__cplusplus)
+#   if MSVC
+#      define CLAP_CPLUSPLUS _MSVC_LANG
+#   else
+#      define CLAP_CPLUSPLUS __cplusplus
+#   endif
+#endif
+
+#if defined(CLAP_CPLUSPLUS) && CLAP_CPLUSPLUS >= 201103L
 #   define CLAP_HAS_CXX11
 #   define CLAP_CONSTEXPR constexpr
 #else
 #   define CLAP_CONSTEXPR
 #endif
 
-#if defined(__cplusplus) && __cplusplus >= 201703L
+#if defined(CLAP_CPLUSPLUS) && CLAP_CPLUSPLUS >= 201703L
 #   define CLAP_HAS_CXX17
 #   define CLAP_NODISCARD [[nodiscard]]
 #else
 #   define CLAP_NODISCARD
 #endif
 
-#if defined(__cplusplus) && __cplusplus >= 202002L
+#if defined(CLAP_CPLUSPLUS) && CLAP_CPLUSPLUS >= 202002L
 #   define CLAP_HAS_CXX20
 #endif
