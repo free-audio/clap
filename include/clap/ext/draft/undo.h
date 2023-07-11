@@ -43,8 +43,8 @@ typedef struct clap_plugin_undo {
 typedef struct clap_host_undo {
    // Marks the begining and end of a change which will lead to the creation of an undo step.
    // [main-thread]
-   void (*begin_changes)(clap_host_t *host, const clap_undo_change_info_t *info);
-   void (*end_changes)(clap_host_t *host, const clap_undo_change_info_t *info);
+   void (*begin_change)(clap_host_t *host, const clap_undo_change_info_t *info);
+   void (*end_change)(clap_host_t *host, const clap_undo_change_info_t *info);
 
    // Marks the beginning and end of processing an undo change.
    // [main-thread]
