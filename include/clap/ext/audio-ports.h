@@ -49,7 +49,7 @@ typedef struct clap_audio_port_info {
    uint32_t channel_count;
 
    // If null or empty then it is unspecified (arbitrary audio).
-   // This filed can be compared against:
+   // This field can be compared against:
    // - CLAP_PORT_MONO
    // - CLAP_PORT_STEREO
    // - CLAP_PORT_SURROUND (defined in the surround extension)
