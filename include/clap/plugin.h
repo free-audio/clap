@@ -16,7 +16,7 @@ typedef struct clap_plugin_descriptor {
    // Otherwise the fields can be null or blank, though it is safer to make them blank.
    //
    // Some indications regarding id and version
-   // - id is an arbritrary string which should be unique to your plugin,
+   // - id is an arbitrary string which should be unique to your plugin,
    //   we encourage you to use a reverse URI eg: "com.u-he.diva"
    // - version is an arbitrary string which describes a plugin,
    //   it is useful for the host to understand and be able to compare two different
