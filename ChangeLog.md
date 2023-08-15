@@ -5,6 +5,7 @@
 * [configurable-audio-ports.h](include/clap/ext/draft/configurable-audio-ports.h): simplify the design
 * [gui.h](include/clap/ext/gui.h): documentation clarifications
 * [entry.h](include/clap/entry.h): documentation clarifications
+* [audio-ports-activation.h](include/clap/ext/draft/audio-ports-activation.h): specify the sample size to be used when activating the audio port.
 
 ## Draft extensions
 
