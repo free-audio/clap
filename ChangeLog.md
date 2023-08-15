@@ -6,6 +6,10 @@
 * [gui.h](include/clap/ext/gui.h): documentation clarifications
 * [entry.h](include/clap/entry.h): documentation clarifications
 
+## Draft extensions
+
+* [undo.h](include/clap/ext/draft/undo.h): undo support
+
 # Changes in 1.1.9
 
 * [entry.h](include/clap/entry.h): clarify what the `plugin_path` is on macOS
