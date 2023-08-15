@@ -118,7 +118,7 @@ typedef struct clap_plugin_gui {
    //
    // After this call, the GUI may not be visible yet; don't forget to call show().
    //
-   // Returns true if the GUI is successfuly created.
+   // Returns true if the GUI is successfully created.
    // [main-thread]
    bool(CLAP_ABI *create)(const clap_plugin_t *plugin, const char *api, bool is_floating);
 

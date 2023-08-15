@@ -70,3 +70,4 @@
 #include "ext/draft/configurable-audio-ports.h"
 #include "ext/draft/extensible-audio-ports.h"
 #include "ext/draft/incremental-state.h"
+#include "ext/draft/undo.h"

@@ -44,7 +44,7 @@ extern "C" {
 
 typedef struct clap_plugin_resource_directory {
    // Sets the directory in which the plugin can save its resources.
-   // The directory remains valid until it is overriden or the plugin is destroyed.
+   // The directory remains valid until it is overridden or the plugin is destroyed.
    // If path is null or blank, it clears the directory location.
    // path must be absolute.
    // [main-thread]
