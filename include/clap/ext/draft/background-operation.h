@@ -9,7 +9,7 @@ static const char CLAP_EXT_BACKGROUND_OPERATION[] = "clap.background_operation.d
 This extension let the host execute some operations on a background thread.
 
 Some operations can be CPU intensive and require a considerable amount of time, and being forced to
-run them on the main thread prevent parallelisation.
+run them on the main thread prevents parallelisation.
 
 For example, loading a state or activating a plugin can require a bit of processing.
 When loading a large project, with a thousand of plugin instances, it is desirable to be able
