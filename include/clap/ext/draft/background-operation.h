@@ -19,6 +19,8 @@ improve the loading time.
 Concurrency isn't a trivial thing, and this extension should only be implemented if the plugin has
 expensive tasks to perform during load state or activate.
 
+Implementing this extension implies that plugin->activate() can be called from a [bgop-thread].
+
 Here is how this extension works:
 
 1. Check which operation can be performed in background
