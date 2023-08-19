@@ -32,14 +32,16 @@ Here is how this extension works:
         const bool can_start = plugin_bgop->about_to_start(plugin);
 
    Once about_to_start() is called, no more call can be made on the main thread.
-   If the background thread couldn't be created then it is allowed to jump to the step 6. immediately.
+   If the background thread couldn't be created then it is allowed to jump to the step 6.
+   immediately.
 
 3. Inform the plugin that we've setup the background thread and are about to start (on the
    background thread)
 
         plugin_bgop->started(plugin);
 
-4. Perform the background operations
+4. Perform the background operations, the host call any method from supported extensions which are
+   marked as [main-thread] on the [bgop-thread].
 
         plugin_state->load(...)
         ...
