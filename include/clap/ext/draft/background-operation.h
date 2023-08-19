@@ -12,7 +12,7 @@ Some operations can be CPU intensive and require a considerable amount of time, 
 run them on the main thread prevents parallelisation.
 
 For example, loading a state or activating a plugin can require a bit of processing.
-When loading a large project, with a thousand of plugin instances, it is desirable to be able
+When loading a large project, with a thousand plugin instances, it is desirable to be able
 to load the plugin state and activate the plugin in a background thread. This can significantly
 improve the loading time.
 
