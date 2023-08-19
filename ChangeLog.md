@@ -12,6 +12,7 @@
 
 * [undo.h](include/clap/ext/draft/undo.h): undo support
 * [incremental-state.h](include/clap/ext/draft/incremental-state.h): incremental state
+* [background-thread.h](include/clap/ext/draft/background-operation.h): run some operations in background
 
 # Changes in 1.1.8
 
