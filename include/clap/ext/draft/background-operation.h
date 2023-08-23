@@ -68,6 +68,7 @@ Here is how this extension works:
 extern "C" {
 #endif
 
+// Implementing this extension implies that plugin->activate() can be called from a [bgop-thread].
 typedef struct clap_plugin_background_operation {
    // Returns true if an extension can be used in [bgop-thread].
    // [main-thread]
