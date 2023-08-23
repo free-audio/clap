@@ -16,6 +16,13 @@ When loading a large project, with a thousand plugin instances, it is desirable 
 to load the plugin state and activate the plugin in a background thread. This can significantly
 improve the loading time.
 
+This design choose to use a clear transition from the main-thread to the background thread,
+because it is then clear what to expect and how the inter-action will hapen. The other approach
+would be to just let the host call a set of functions at anytime from a random thread which
+would force the plugin into a highly defensive implementation regarding multi-threading where it'd
+become unclear what will happen when and on which threads, and it creates a thousand of possible
+scenarios.
+
 Concurrency isn't a trivial thing, and this extension should only be implemented if the plugin has
 expensive tasks to perform during load state or activate.
 
