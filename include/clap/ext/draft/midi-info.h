@@ -5,9 +5,9 @@
 // This extension lets a plugin expose it's MIDI implementation.
 // The primary goal is to allow a host to create a MIDI-CI Property Exchange "ChCtrlList" resource for the plugin,
 // so keyboard controllers can assign their knobs to suitable controllers.
+// Also, hosts can use it to indicate to users which controls actually work.
 
 //TODO : clap_midiinfo could contain more (optional) info (min/max, stepcount, paramPath etc.)
-//TODO : for completeness this should work per-input port. Is that worth it?
 
 static CLAP_CONSTEXPR const char CLAP_EXT_MIDIINFO[] = "clap.midi-info.draft/0";
 
@@ -57,26 +57,31 @@ typedef struct clap_plugin_midiinfo {
    // channel is 0..15
    // [main-thread]
    uint32_t(CLAP_ABI *count)(const clap_plugin_t *plugin,
-                             uint32_t             channel);
+                             int16_t              port_index,
+                             uint16_t             channel);
 
    // Fills midiinfo. Returns true on success.
    // Important: the most important controls (from a performing musician's point of view) should be listed first,
    // so the host can make sure these appear on a controller keyboard.
    // [main-thread]
    bool(CLAP_ABI *get_info)(const clap_plugin_t *plugin,
-                            uint32_t             channel,
+                            int16_t              port_index,
+                            uint16_t             channel,
                             uint32_t             index,
                             clap_param_info_t   *midiinfo);
 
    //if false all channels are the same, so the host doesn't have to scan them all.
-   bool(CLAP_ABI *multitimbral)(const clap_plugin_t *plugin);
+   bool(CLAP_ABI *is_multitimbral)(const clap_plugin_t *plugin,
+                                   int16_t              port_index);
 } clap_plugin_midiinfo_t;
 
 typedef struct clap_host_midiinfo {
    // Rescan the full list of structs.
    // This can happen if an instrument switches to a different patch, for example.
+   // port_index = -1 means 'all ports'
    // [main-thread]
-   void(CLAP_ABI *rescan)(const clap_host_t *host);
+   void(CLAP_ABI *changed)(const clap_host_t *host,
+                          int16_t             port_index);
 } clap_host_midiinfo_t;
 
 #ifdef __cplusplus
