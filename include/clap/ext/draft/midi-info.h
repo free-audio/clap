@@ -41,14 +41,14 @@ enum {
 /* This describes a MIDI control/message */
 typedef struct clap_midiinfo {
    //CLAP_MIDIINFO_STATUS, describes what kind of control this struct is about.
-   status: uint32_t;        
+   uint32_t status;
 
    //controller number, nrpn number etc.
    //zero if not applicable the status value
-   number: uint32_t;
+   uint32_t number;
 
    //Display name
-   //If name is empty the host can assume the standard MIDI name
+   //If name is empty the host can assume default MIDI controller names (cc7 is Volume etc.)
    char name[CLAP_NAME_SIZE];
 } clap_midiinfo_t;
 
