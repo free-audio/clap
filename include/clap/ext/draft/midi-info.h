@@ -2,12 +2,13 @@
 
 #include "../../plugin.h"
 
-// This extension lets a plugin expose it's MIDI implementation.
+// This extension lets a plugin expose its MIDI implementation.
 // The primary goal is to allow a host to create a MIDI-CI Property Exchange "ChCtrlList" resource for the plugin,
-// so keyboard controllers can assign their knobs to suitable controllers.
-// Also, hosts can use it to indicate to users which controls actually work.
+// which is presented to a keyboard / controller.
+// A keyboard can then assign its knobs to suitable controllers, decide between sending poly or channel afertouch etc.
+// Also, hosts can use this extension to indicate to users which controls actually work.
 
-//TODO : clap_midiinfo could contain more (optional) info (min/max, stepcount, paramPath etc.)
+// TODO : clap_midiinfo could/should contain more (optional) info (min/max, stepcount, paramPath etc.)
 
 static CLAP_CONSTEXPR const char CLAP_EXT_MIDIINFO[] = "clap.midi-info.draft/0";
 
@@ -16,7 +17,7 @@ extern "C" {
 #endif
 
 enum {
-   //MIDI 2.0 message status
+   // MIDI 2.0 message status
    CLAP_MIDIINFO_STATUS_REGISTERED_PER_NOTE_CONTROLLER = 0x00,
    CLAP_MIDIINFO_STATUS_ASSIGNABLE_PER_NOTE_CONTROLLER = 0x10,
    CLAP_MIDIINFO_STATUS_RPN = 0x20,
@@ -27,8 +28,8 @@ enum {
    CLAP_MIDIINFO_STATUS_CHANNEL_AFTERTOUCH = 0xD0,
    CLAP_MIDIINFO_STATUS_PITCHBEND = 0xE0,
 
-   //CLAP note expressions.
-   //A host may map MIDI messages to note expressions, so it needs to know which note expressions are supported.
+   // CLAP note expressions.
+   // A host may map MIDI messages to note expressions, so it needs to know which note expressions are supported.
    CLAP_MIDIINFO_STATUS_NOTE_EXPRESSION_VOLUME = 0x100,
    CLAP_MIDIINFO_STATUS_NOTE_EXPRESSION_PAN = 0x101,
    CLAP_MIDIINFO_STATUS_NOTE_EXPRESSION_TUNING = 0x102,
@@ -40,15 +41,21 @@ enum {
 
 /* This describes a MIDI control/message */
 typedef struct clap_midiinfo {
-   //CLAP_MIDIINFO_STATUS, describes what kind of control this struct is about.
+   // CLAP_MIDIINFO_STATUS, describes what kind of control this struct is about.
    uint32_t status;
 
-   //controller number, nrpn number etc.
-   //zero if not applicable the status value
+   // controller number, nrpn number etc.
+   // zero if not applicable the status value
    uint32_t number;
 
-   //Display name
-   //If name is empty the host can assume default MIDI controller names (cc7 is Volume etc.)
+   // Priority of this control (from a performing musician's point of view)
+   // 1..5, a value of 1 is the most important, descending down to 5 as the least important.
+   // Multiple controls can have the same priority. In this case the control at the lowest index
+   // (see clap_plugin_midiinfo.get_info) is more important than the next ones.
+   uint32_t priority;		
+
+   // Display name
+   // If name is empty the host can assume default MIDI controller names (cc7 is Volume etc.)
    char name[CLAP_NAME_SIZE];
 } clap_midiinfo_t;
 
@@ -61,8 +68,6 @@ typedef struct clap_plugin_midiinfo {
                              uint16_t             channel);
 
    // Fills midiinfo. Returns true on success.
-   // Important: the most important controls (from a performing musician's point of view) should be listed first,
-   // so the host can make sure these appear on a controller keyboard.
    // [main-thread]
    bool(CLAP_ABI *get_info)(const clap_plugin_t *plugin,
                             int16_t              port_index,
@@ -81,7 +86,7 @@ typedef struct clap_host_midiinfo {
    // port_index = -1 means 'all ports'
    // [main-thread]
    void(CLAP_ABI *changed)(const clap_host_t *host,
-                          int16_t             port_index);
+                           int16_t            port_index);
 } clap_host_midiinfo_t;
 
 #ifdef __cplusplus
