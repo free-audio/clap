@@ -2,7 +2,7 @@
 
 #include "../../plugin.h"
 
-// This extension lets a plugin expose its MIDI control implementation.
+// This extension lets a plugin expose its MIDI controls implementation.
 // The primary goal is to allow a host to create a MIDI-CI Property Exchange "ChCtrlList" resource for the plugin,
 // which is presented to a keyboard / controller.
 // A keyboard can then assign its knobs to suitable controllers, decide between sending poly or channel afertouch etc.
