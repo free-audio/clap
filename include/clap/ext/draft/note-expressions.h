@@ -6,7 +6,6 @@
 // If this extension isn't present all note expressions are assumed to be supported.
 
 // TODO : is the clap_supported_note_expressions bitmask future-proof? Or should it be a "count / get-info" pattern?
-// TODO : does getNumMIDIChannels still make sense in a 'real' extension? It can probably removed if we go for a "count / get-info" pattern?
 
 static CLAP_CONSTEXPR const char CLAP_EXT_NOTE_EXPRESSIONS[] = "clap.note-expressions.draft/0";
 
@@ -33,9 +32,6 @@ enum clap_supported_note_expressions
 */
 typedef struct clap_plugin_note_expressions
 {
-   // [main-thread]
-   uint32_t(CLAP_ABI* getNumMIDIChannels) (const clap_plugin* plugin, int16_t port_index); // return 1-16
-
    // [main-thread]
    uint32_t(CLAP_ABI* supportedNoteExpressions) (const clap_plugin* plugin, int16_t port_index, int16_t channel); // returns a bitmap of clap_supported_note_expressions
 } clap_plugin_note_expressions_t;
