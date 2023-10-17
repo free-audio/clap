@@ -8,11 +8,6 @@
 * [entry.h](include/clap/entry.h): documentation clarifications
 * [audio-ports-activation.h](include/clap/ext/draft/audio-ports-activation.h): specify the sample size to be used when activating the audio port.
 
-## Draft extensions
-
-* [undo.h](include/clap/ext/draft/undo.h): undo support
-* [incremental-state.h](include/clap/ext/draft/incremental-state.h): incremental state
-
 # Changes in 1.1.8
 
 * [params.h](include/clap/ext/params.h): document how persisting parameter values between sessions should be implemented
