@@ -31,6 +31,9 @@ typedef struct clap_audio_port_configuration_request {
 } clap_audio_port_configuration_request_t;
 
 typedef struct clap_plugin_configurable_audio_ports {
+   // Submit a bunch of configuration requests which will atomically be applied together,
+   // or discarded together.
+   //
    // If is_dry_run is true, then checks if the configuration can be applied.
    // If is_dry_run is false, then applies the configuration.
    // Returns true if applied.
