@@ -31,17 +31,21 @@ typedef struct clap_audio_port_configuration_request {
 } clap_audio_port_configuration_request_t;
 
 typedef struct clap_plugin_configurable_audio_ports {
+   // Returns true if the given configurations can be applied using apply_configuration().
+   // [main-thread && !active]
+   bool(CLAP_ABI *can_apply_configuration)(
+      const clap_plugin_t                                *plugin,
+      const struct clap_audio_port_configuration_request *requests,
+      uint32_t                                            request_count);
+
    // Submit a bunch of configuration requests which will atomically be applied together,
    // or discarded together.
    //
-   // If is_dry_run is true, then checks if the configuration can be applied.
-   // If is_dry_run is false, then applies the configuration.
    // Returns true if applied.
    // [main-thread && !active]
    bool(CLAP_ABI *apply_configuration)(const clap_plugin_t                                *plugin,
                                        const struct clap_audio_port_configuration_request *requests,
-                                       uint32_t request_count,
-                                       bool     is_dry_run);
+                                       uint32_t request_count);
 } clap_plugin_configurable_audio_ports_t;
 
 #ifdef __cplusplus
