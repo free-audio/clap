@@ -41,6 +41,10 @@ typedef struct clap_plugin_configurable_audio_ports {
    // Submit a bunch of configuration requests which will atomically be applied together,
    // or discarded together.
    //
+   // Once the configuration is successfully applied, it isn't necessary for the plugin to call
+   // clap_host_audio_ports->changed(); and it isn't necessary for the host to scan the
+   // audio ports.
+   //
    // Returns true if applied.
    // [main-thread && !active]
    bool(CLAP_ABI *apply_configuration)(const clap_plugin_t                                *plugin,
