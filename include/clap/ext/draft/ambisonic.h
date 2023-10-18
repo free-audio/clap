@@ -12,15 +12,15 @@ static CLAP_CONSTEXPR const char CLAP_PORT_AMBISONIC[] = "ambisonic";
 extern "C" {
 #endif
 
-enum {
+enum clap_ambisonic_ordering {
    // FuMa channel ordering
-   CLAP_AMBISONIC_FUMA = 0,
+   CLAP_AMBISONIC_ORDERING_FUMA = 0,
 
    // ACN channel ordering
-   CLAP_AMBISONIC_ACN = 1,
+   CLAP_AMBISONIC_ORDERING_ACN = 1,
 };
 
-enum {
+enum clap_ambisonic_normalization {
    CLAP_AMBISONIC_NORMALIZATION_MAXN = 0,
    CLAP_AMBISONIC_NORMALIZATION_SN3D = 1,
    CLAP_AMBISONIC_NORMALIZATION_N3D = 2,
@@ -29,8 +29,8 @@ enum {
 };
 
 typedef struct clap_ambisonic_config {
-   uint32_t ordering;
-   uint32_t normalization;
+   uint32_t ordering;      // see clap_ambisonic_ordering
+   uint32_t normalization; // see clap_ambisonic_normalization
 } clap_ambisonic_config_t;
 
 typedef struct clap_plugin_ambisonic {
