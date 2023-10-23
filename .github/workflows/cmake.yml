@@ -39,8 +39,17 @@ jobs:
 
       - name: Run CMake+Ninja+CTest to generate/build/test.
         uses: lukka/run-cmake@v10
-        id: runcmake
+        id: runcmake-ninja
         with:
           configurePreset: 'ninja'
           buildPreset: 'ninja-release'
           testPreset: 'ninja-release'
+
+      - name: Run CMake+MSVC+CTest to generate/build/test.
+        uses: lukka/run-cmake@v10
+        if: startsWith(matrix.os, 'win')
+        id: runcmake-msvc
+        with:
+          configurePreset: 'msvc'
+          buildPreset: 'msvc-release'
+          testPreset: 'msvc-release'

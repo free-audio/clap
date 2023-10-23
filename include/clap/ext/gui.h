@@ -118,7 +118,7 @@ typedef struct clap_plugin_gui {
    //
    // After this call, the GUI may not be visible yet; don't forget to call show().
    //
-   // Returns true if the GUI is successfuly created.
+   // Returns true if the GUI is successfully created.
    // [main-thread]
    bool(CLAP_ABI *create)(const clap_plugin_t *plugin, const char *api, bool is_floating);
 
@@ -147,28 +147,25 @@ typedef struct clap_plugin_gui {
    bool(CLAP_ABI *get_size)(const clap_plugin_t *plugin, uint32_t *width, uint32_t *height);
 
    // Returns true if the window is resizeable (mouse drag).
-   // Only for embedded windows.
-   // [main-thread]
+   // [main-thread & !floating]
    bool(CLAP_ABI *can_resize)(const clap_plugin_t *plugin);
 
    // Returns true if the plugin can provide hints on how to resize the window.
-   // [main-thread]
+   // [main-thread & !floating]
    bool(CLAP_ABI *get_resize_hints)(const clap_plugin_t *plugin, clap_gui_resize_hints_t *hints);
 
    // If the plugin gui is resizable, then the plugin will calculate the closest
    // usable size which fits in the given size.
    // This method does not change the size.
    //
-   // Only for embedded windows.
-   //
    // Returns true if the plugin could adjust the given size.
-   // [main-thread]
+   // [main-thread & !floating]
    bool(CLAP_ABI *adjust_size)(const clap_plugin_t *plugin, uint32_t *width, uint32_t *height);
 
-   // Sets the window size. Only for embedded windows.
+   // Sets the window size.
    //
    // Returns true if the plugin could resize its window to the given size.
-   // [main-thread]
+   // [main-thread & !floating]
    bool(CLAP_ABI *set_size)(const clap_plugin_t *plugin, uint32_t width, uint32_t height);
 
    // Embeds the plugin window into the given window.
@@ -204,7 +201,7 @@ typedef struct clap_plugin_gui {
 
 typedef struct clap_host_gui {
    // The host should call get_resize_hints() again.
-   // [thread-safe]
+   // [thread-safe & !floating]
    void(CLAP_ABI *resize_hints_changed)(const clap_host_t *host);
 
    /* Request the host to resize the client area to width, height.
@@ -215,7 +212,7 @@ typedef struct clap_host_gui {
     * acknowledged the request and will process it asynchronously. If the request then can't be
     * satisfied then the host will call set_size() to revert the operation.
     *
-    * [thread-safe] */
+    * [thread-safe & !floating] */
    bool(CLAP_ABI *request_resize)(const clap_host_t *host, uint32_t width, uint32_t height);
 
    /* Request the host to show the plugin gui.

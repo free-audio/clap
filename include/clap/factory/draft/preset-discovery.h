@@ -61,7 +61,7 @@ enum clap_preset_discovery_location_kind {
    CLAP_PRESET_DISCOVERY_LOCATION_FILE = 0,
 
    // The preset is bundled within the plugin DSO itself.
-   // The location must then be null, as the preset are within the plugin itsel and then the plugin
+   // The location must then be null, as the preset are within the plugin itself and then the plugin
    // will act as a preset container.
    CLAP_PRESET_DISCOVERY_LOCATION_PLUGIN = 1,
 };

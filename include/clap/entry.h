@@ -48,6 +48,8 @@ typedef struct clap_plugin_entry {
    //
    // If init() returns false, then the host must not call deinit() nor any other clap
    // related symbols from the DSO.
+   //
+   // plugin_path is the path to the DSO (Linux, Windows), or the bundle (macOS).
    bool(CLAP_ABI *init)(const char *plugin_path);
 
    // No more calls into the DSO must be made after calling deinit().

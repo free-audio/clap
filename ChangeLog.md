@@ -1,3 +1,13 @@
+# Changes in 1.1.9
+
+* [entry.h](include/clap/entry.h): clarify what the `plugin_path` is on macOS
+* [surround.h](include/clap/ext/draft/surround.h): simplify the design
+* [ambisonic.h](include/clap/ext/draft/ambisonic.h): simplify the design
+* [configurable-audio-ports.h](include/clap/ext/draft/configurable-audio-ports.h): simplify the design
+* [gui.h](include/clap/ext/gui.h): documentation clarifications
+* [entry.h](include/clap/entry.h): documentation clarifications
+* [audio-ports-activation.h](include/clap/ext/draft/audio-ports-activation.h): specify the sample size to be used when activating the audio port.
+
 # Changes in 1.1.8
 
 * [params.h](include/clap/ext/params.h): document how persisting parameter values between sessions should be implemented
@@ -126,7 +136,7 @@
   it is now **required** to deactivate the plugin before destroying it.
 * [params.h](include/clap/ext/params.h): improve documentation for `clap_host_params->request_flush()`.
 * [entry.h](include/clap/entry.h): improve documentation regarding `init()`, `deinit()` and CLAP search path.
-* [gui.h](inclued/clap/gui.h): fix typo `clap_gui_resize_hints.preserve_aspect_ratio`
+* [gui.h](include/clap/gui.h): fix typo `clap_gui_resize_hints.preserve_aspect_ratio`
 * [plugin-template](src/plugin-template.c): missing impl of plugin destroy.
 * various documentation improvements
 

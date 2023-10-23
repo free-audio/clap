@@ -22,8 +22,14 @@
 
 # Learn about CLAP
 
-CLAP stands for **CL**ever **A**udio **P**lugin.
-It is an audio plugin ABI which defines a standard for *Digital Audio Workstations* and audio plugins (synthesizers, audio effects, ...) to work together.
+CLAP stands for **CL**ever **A**udio **P**lugin. It is an interface that
+provides a stable ABI to define a standard for *Digital Audio Workstations* and
+audio plugins (synthesizers, audio effects, ...) to work together.
+
+The ABI, or **A**pplication **B**inary **I**nterface, serves as a means of
+communication between a host and a plugin. It provides backwards compatibility,
+that is, a plugin binary compiled with CLAP 1.x can be loaded by any other
+CLAP 1.y.
 
 To work with CLAP, include [clap/clap.h](include/clap/clap.h).
 
