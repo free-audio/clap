@@ -196,10 +196,9 @@ enum {
    // processed.
    CLAP_PARAM_REQUIRES_PROCESS = 1 << 15,
 
-   // The parameter represents a set of named options mapped to integers.
-   // It implies that the parameter is stepped.
-   //
-   // This flag may help the host decide how to present the parameter to users.
+   // Indicates that this parameter represents an enumerated value.
+   // If you set this flag, then you must set CLAP_PARAM_IS_STEPPED too.
+   // All values from min to max must have a non blank value_to_text().
    CLAP_PARAM_IS_ENUM = 1 << 16,
 };
 typedef uint32_t clap_param_info_flags;
