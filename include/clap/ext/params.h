@@ -195,6 +195,12 @@ enum {
    // A simple example would be a DC Offset, changing it will change the output signal and must be
    // processed.
    CLAP_PARAM_REQUIRES_PROCESS = 1 << 15,
+
+   // The parameter represents a set of named options mapped to integers.
+   // It implies that the parameter is stepped.
+   //
+   // This flag may help the host decide how to present the parameter to users.
+   CLAP_PARAM_IS_ENUM = 1 << 16,
 };
 typedef uint32_t clap_param_info_flags;
 
