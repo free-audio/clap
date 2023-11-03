@@ -94,7 +94,8 @@ typedef struct clap_context_menu_builder {
    void *ctx;
 
    // Adds an entry to the menu.
-   // entry_data type is determined by entry_kind.
+   // item_data type is determined by item_kind.
+   // Returns true on success.
    bool(CLAP_ABI *add_item)(const struct clap_context_menu_builder *builder,
                             clap_context_menu_item_kind_t           item_kind,
                             const void                             *item_data);
@@ -107,6 +108,7 @@ typedef struct clap_context_menu_builder {
 typedef struct clap_plugin_context_menu {
    // Insert plugin's menu items into the menu builder.
    // If target is null, assume global context.
+   // Returns true on success.
    // [main-thread]
    bool(CLAP_ABI *populate)(const clap_plugin_t               *plugin,
                             const clap_context_menu_target_t  *target,
@@ -114,6 +116,7 @@ typedef struct clap_plugin_context_menu {
 
    // Performs the given action, which was previously provided to the host via populate().
    // If target is null, assume global context.
+   // Returns true on success.
    // [main-thread]
    bool(CLAP_ABI *perform)(const clap_plugin_t              *plugin,
                            const clap_context_menu_target_t *target,
@@ -123,6 +126,7 @@ typedef struct clap_plugin_context_menu {
 typedef struct clap_host_context_menu {
    // Insert host's menu items into the menu builder.
    // If target is null, assume global context.
+   // Returns true on success.
    // [main-thread]
    bool(CLAP_ABI *populate)(const clap_host_t                 *host,
                             const clap_context_menu_target_t  *target,
@@ -130,6 +134,7 @@ typedef struct clap_host_context_menu {
 
    // Performs the given action, which was previously provided to the plugin via populate().
    // If target is null, assume global context.
+   // Returns true on success.
    // [main-thread]
    bool(CLAP_ABI *perform)(const clap_host_t                *host,
                            const clap_context_menu_target_t *target,
@@ -145,6 +150,7 @@ typedef struct clap_host_context_menu {
    // If the plugin is using embedded GUI, then x and y are relative to the plugin's window,
    // otherwise they're absolute coordinate, and screen index might be set accordingly.
    // If target is null, assume global context.
+   // Returns true on success.
    // [main-thread]
    bool(CLAP_ABI *popup)(const clap_host_t                *host,
                          const clap_context_menu_target_t *target,
