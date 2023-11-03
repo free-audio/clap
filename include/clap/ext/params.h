@@ -256,19 +256,23 @@ typedef struct clap_plugin_params {
    // [main-thread]
    uint32_t(CLAP_ABI *count)(const clap_plugin_t *plugin);
 
-   // Copies the parameter's info to param_info. Returns true on success.
+   // Copies the parameter's info to param_info.
+   // Returns true on success.
    // [main-thread]
    bool(CLAP_ABI *get_info)(const clap_plugin_t *plugin,
                             uint32_t             param_index,
                             clap_param_info_t   *param_info);
 
-   // Writes the parameter's current value to out_value. Returns true on success.
+   // Writes the parameter's current value to out_value.
+   // Returns true on success.
    // [main-thread]
    bool(CLAP_ABI *get_value)(const clap_plugin_t *plugin, clap_id param_id, double *out_value);
 
    // Fills out_buffer with a null-terminated UTF-8 string that represents the parameter at the
-   // given 'value' argument. eg: "2.3 kHz". Returns true on success. The host should always use
-   // this to format parameter values before displaying it to the user. [main-thread]
+   // given 'value' argument. eg: "2.3 kHz". The host should always use this to format parameter
+   // values before displaying it to the user.
+   // Returns true on success.
+   // [main-thread]
    bool(CLAP_ABI *value_to_text)(const clap_plugin_t *plugin,
                                  clap_id              param_id,
                                  double               value,
@@ -276,7 +280,8 @@ typedef struct clap_plugin_params {
                                  uint32_t             out_buffer_capacity);
 
    // Converts the null-terminated UTF-8 param_value_text into a double and writes it to out_value.
-   // Returns true on success. The host can use this to convert user input into a parameter value.
+   // The host can use this to convert user input into a parameter value.
+   // Returns true on success.
    // [main-thread]
    bool(CLAP_ABI *text_to_value)(const clap_plugin_t *plugin,
                                  clap_id              param_id,
