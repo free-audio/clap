@@ -131,7 +131,7 @@ typedef struct clap_preset_discovery_metadata_receiver {
    // the plugin wants but it could also be some other unique id like a database primary key or a
    // binary offset. It's use is entirely up to the plug-in.
    //
-   // If the function returns false, the the provider must stop calling back into the receiver.
+   // If the function returns false, then the provider must stop calling back into the receiver.
    bool(CLAP_ABI *begin_preset)(const struct clap_preset_discovery_metadata_receiver *receiver,
                                 const char                                           *name,
                                 const char                                           *load_key);
