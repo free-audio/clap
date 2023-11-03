@@ -1,6 +1,9 @@
 # Changes in 1.1.10
 
 * [params.h](include/clap/ext/params.h): add `CLAP_PARAM_IS_ENUM` flag.
+* various documentation improvements:
+  * clarification on the return value of many functions
+  * typos
 
 # Changes in 1.1.9
 
