@@ -56,6 +56,7 @@ typedef struct clap_plugin_remote_controls {
    uint32_t(CLAP_ABI *count)(const clap_plugin_t *plugin);
 
    // Get a page by index.
+   // Returns true on success and stores the result into page.
    // [main-thread]
    bool(CLAP_ABI *get)(const clap_plugin_t         *plugin,
                        uint32_t                     page_index,
