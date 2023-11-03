@@ -54,20 +54,21 @@ typedef struct clap_audio_ports_config {
 
 // The audio ports config scan has to be done while the plugin is deactivated.
 typedef struct clap_plugin_audio_ports_config {
-   // gets the number of available configurations
+   // Gets the number of available configurations
    // [main-thread]
    uint32_t(CLAP_ABI *count)(const clap_plugin_t *plugin);
 
-   // gets information about a configuration
+   // Gets information about a configuration
+   // Returns true on success and stores the result into config.
    // [main-thread]
    bool(CLAP_ABI *get)(const clap_plugin_t       *plugin,
                        uint32_t                   index,
                        clap_audio_ports_config_t *config);
 
-   // selects the configuration designated by id
-   // returns true if the configuration could be applied.
+   // Selects the configuration designated by id
+   // Returns true if the configuration could be applied.
    // Once applied the host should scan again the audio ports.
-   // [main-thread,plugin-deactivated]
+   // [main-thread & plugin-deactivated]
    bool(CLAP_ABI *select)(const clap_plugin_t *plugin, clap_id config_id);
 } clap_plugin_audio_ports_config_t;
 
@@ -82,6 +83,7 @@ typedef struct clap_plugin_audio_ports_config_info {
 
    // Get info about an audio port, for a given config_id.
    // This is analogous to clap_plugin_audio_ports.get().
+   // Returns true on success and stores the result into info.
    // [main-thread]
    bool(CLAP_ABI *get)(const clap_plugin_t    *plugin,
                        clap_id                 config_id,
