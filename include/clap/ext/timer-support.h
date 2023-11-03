@@ -16,7 +16,8 @@ typedef struct clap_plugin_timer_support {
 typedef struct clap_host_timer_support {
    // Registers a periodic timer.
    // The host may adjust the period if it is under a certain threshold.
-   // 30 Hz should be allowed. Returns true on success.
+   // 30 Hz should be allowed.
+   // Returns true on success.
    // [main-thread]
    bool(CLAP_ABI *register_timer)(const clap_host_t *host, uint32_t period_ms, clap_id *timer_id);
 

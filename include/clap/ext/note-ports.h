@@ -40,7 +40,7 @@ typedef struct clap_note_port_info {
 
 // The note ports scan has to be done while the plugin is deactivated.
 typedef struct clap_plugin_note_ports {
-   // Number of ports, for either input or output
+   // Number of ports, for either input or output.
    // [main-thread]
    uint32_t(CLAP_ABI *count)(const clap_plugin_t *plugin, bool is_input);
 
