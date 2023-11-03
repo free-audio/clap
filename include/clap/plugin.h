@@ -59,6 +59,7 @@ typedef struct clap_plugin {
    // call. The process's sample rate will be constant and process's frame count will included in
    // the [min, max] range, which is bounded by [1, INT32_MAX].
    // Once activated the latency and port configuration must remain constant, until deactivation.
+   // Returns true on success.
    //
    // [main-thread & !active_state]
    bool(CLAP_ABI *activate)(const struct clap_plugin *plugin,
@@ -69,6 +70,7 @@ typedef struct clap_plugin {
    void(CLAP_ABI *deactivate)(const struct clap_plugin *plugin);
 
    // Call start processing before processing.
+   // Returns true on success.
    // [audio-thread & active_state & !processing_state]
    bool(CLAP_ABI *start_processing)(const struct clap_plugin *plugin);
 
