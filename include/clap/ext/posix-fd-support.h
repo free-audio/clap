@@ -31,12 +31,15 @@ typedef struct clap_plugin_posix_fd_support {
 } clap_plugin_posix_fd_support_t;
 
 typedef struct clap_host_posix_fd_support {
+   // Returns true on success.
    // [main-thread]
    bool(CLAP_ABI *register_fd)(const clap_host_t *host, int fd, clap_posix_fd_flags_t flags);
 
+   // Returns true on success.
    // [main-thread]
    bool(CLAP_ABI *modify_fd)(const clap_host_t *host, int fd, clap_posix_fd_flags_t flags);
 
+   // Returns true on success.
    // [main-thread]
    bool(CLAP_ABI *unregister_fd)(const clap_host_t *host, int fd);
 } clap_host_posix_fd_support_t;

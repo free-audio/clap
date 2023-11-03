@@ -88,7 +88,6 @@ typedef struct clap_plugin_triggers {
    uint32_t(CLAP_ABI *count)(const clap_plugin_t *plugin);
 
    // Copies the trigger's info to trigger_info and returns true on success.
-   // Returns true on success.
    // [main-thread]
    bool(CLAP_ABI *get_info)(const clap_plugin_t *plugin,
                             uint32_t             index,

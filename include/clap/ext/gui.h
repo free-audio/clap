@@ -204,25 +204,25 @@ typedef struct clap_host_gui {
    // [thread-safe & !floating]
    void(CLAP_ABI *resize_hints_changed)(const clap_host_t *host);
 
-   /* Request the host to resize the client area to width, height.
-    * Return true if the new size is accepted, false otherwise.
-    * The host doesn't have to call set_size().
-    *
-    * Note: if not called from the main thread, then a return value simply means that the host
-    * acknowledged the request and will process it asynchronously. If the request then can't be
-    * satisfied then the host will call set_size() to revert the operation.
-    *
-    * [thread-safe & !floating] */
+   // Request the host to resize the client area to width, height.
+   // Return true if the new size is accepted, false otherwise.
+   // The host doesn't have to call set_size().
+   //
+   // Note: if not called from the main thread, then a return value simply means that the host
+   // acknowledged the request and will process it asynchronously. If the request then can't be
+   // satisfied then the host will call set_size() to revert the operation.
+   //
+   // [thread-safe & !floating]
    bool(CLAP_ABI *request_resize)(const clap_host_t *host, uint32_t width, uint32_t height);
 
-   /* Request the host to show the plugin gui.
-    * Return true on success, false otherwise.
-    * [thread-safe] */
+   // Request the host to show the plugin gui.
+   // Return true on success, false otherwise.
+   // [thread-safe]
    bool(CLAP_ABI *request_show)(const clap_host_t *host);
 
-   /* Request the host to hide the plugin gui.
-    * Return true on success, false otherwise.
-    * [thread-safe] */
+   // Request the host to hide the plugin gui.
+   // Return true on success, false otherwise.
+   // [thread-safe]
    bool(CLAP_ABI *request_hide)(const clap_host_t *host);
 
    // The floating window has been closed, or the connection to the gui has been lost.

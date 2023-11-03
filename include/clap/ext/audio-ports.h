@@ -67,11 +67,12 @@ typedef struct clap_audio_port_info {
 
 // The audio ports scan has to be done while the plugin is deactivated.
 typedef struct clap_plugin_audio_ports {
-   // number of ports, for either input or output
+   // Number of ports, for either input or output
    // [main-thread]
    uint32_t(CLAP_ABI *count)(const clap_plugin_t *plugin, bool is_input);
 
-   // get info about about an audio port.
+   // Get info about an audio port.
+   // Returns true on success and stores the result into info.
    // [main-thread]
    bool(CLAP_ABI *get)(const clap_plugin_t    *plugin,
                        uint32_t                index,
