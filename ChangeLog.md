@@ -1,3 +1,7 @@
+# Changes in 1.1.10
+
+* [params.h](include/clap/ext/params.h): add `CLAP_PARAM_IS_ENUM` flag.
+
 # Changes in 1.1.9
 
 * [entry.h](include/clap/entry.h): clarify what the `plugin_path` is on macOS
