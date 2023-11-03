@@ -242,6 +242,7 @@ typedef struct clap_preset_discovery_provider {
    void(CLAP_ABI *destroy)(const struct clap_preset_discovery_provider *provider);
 
    // reads metadata from the given file and passes them to the metadata receiver
+   // Returns true on success.
    bool(CLAP_ABI *get_metadata)(const struct clap_preset_discovery_provider     *provider,
                                 uint32_t                                         location_kind,
                                 const char                                      *location,
