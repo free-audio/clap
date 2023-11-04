@@ -60,7 +60,6 @@ typedef struct clap_plugin {
    // the [min, max] range, which is bounded by [1, INT32_MAX].
    // Once activated the latency and port configuration must remain constant, until deactivation.
    // Returns true on success.
-   //
    // [main-thread & !active_state]
    bool(CLAP_ABI *activate)(const struct clap_plugin *plugin,
                             double                    sample_rate,

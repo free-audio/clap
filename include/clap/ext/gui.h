@@ -211,7 +211,6 @@ typedef struct clap_host_gui {
    // Note: if not called from the main thread, then a return value simply means that the host
    // acknowledged the request and will process it asynchronously. If the request then can't be
    // satisfied then the host will call set_size() to revert the operation.
-   //
    // [thread-safe & !floating]
    bool(CLAP_ABI *request_resize)(const clap_host_t *host, uint32_t width, uint32_t height);
 
