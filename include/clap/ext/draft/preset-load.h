@@ -12,7 +12,6 @@ typedef struct clap_plugin_preset_load {
    // Loads a preset in the plugin native preset file format from a location.
    // The preset discovery provider defines the location and load_key to be passed to this function.
    // Returns true on success.
-   //
    // [main-thread]
    bool(CLAP_ABI *from_location)(const clap_plugin_t *plugin,
                                  uint32_t             location_kind,
