@@ -26,8 +26,8 @@ typedef struct clap_plugin_midi_mappings {
    // [main-thread]
    uint32_t(CLAP_ABI *count)(const clap_plugin_t *plugin);
 
-   // [main-thread]
    // Returns true on success and stores the result into mapping.
+   // [main-thread]
    bool(CLAP_ABI *get)(const clap_plugin_t *plugin, uint32_t index, clap_midi_mapping_t *mapping);
 } clap_plugin_midi_mappings_t;
 
