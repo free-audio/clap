@@ -62,7 +62,7 @@ typedef struct clap_plugin_surround {
 
    // Stores the surround identifier of each channel into the channel_map array.
    // Returns the number of elements stored in channel_map.
-   // channel_map_capacity should be greater or equal to the channel count of the given port.
+   // channel_map_capacity must be greater or equal to the channel count of the given port.
    // [main-thread]
    uint32_t(CLAP_ABI *get_channel_map)(const clap_plugin_t *plugin,
                                        bool                 is_input,

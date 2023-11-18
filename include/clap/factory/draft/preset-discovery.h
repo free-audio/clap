@@ -61,7 +61,7 @@ enum clap_preset_discovery_location_kind {
    CLAP_PRESET_DISCOVERY_LOCATION_FILE = 0,
 
    // The preset is bundled within the plugin DSO itself.
-   // The location must then be null, as the preset are within the plugin itsel and then the plugin
+   // The location must then be null, as the preset are within the plugin itself and then the plugin
    // will act as a preset container.
    CLAP_PRESET_DISCOVERY_LOCATION_PLUGIN = 1,
 };
@@ -131,7 +131,7 @@ typedef struct clap_preset_discovery_metadata_receiver {
    // the plugin wants but it could also be some other unique id like a database primary key or a
    // binary offset. It's use is entirely up to the plug-in.
    //
-   // If the function returns false, the the provider must stop calling back into the receiver.
+   // If the function returns false, then the provider must stop calling back into the receiver.
    bool(CLAP_ABI *begin_preset)(const struct clap_preset_discovery_metadata_receiver *receiver,
                                 const char                                           *name,
                                 const char                                           *load_key);
@@ -242,6 +242,7 @@ typedef struct clap_preset_discovery_provider {
    void(CLAP_ABI *destroy)(const struct clap_preset_discovery_provider *provider);
 
    // reads metadata from the given file and passes them to the metadata receiver
+   // Returns true on success.
    bool(CLAP_ABI *get_metadata)(const struct clap_preset_discovery_provider     *provider,
                                 uint32_t                                         location_kind,
                                 const char                                      *location,

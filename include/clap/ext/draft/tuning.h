@@ -64,6 +64,7 @@ typedef struct clap_host_tuning {
    uint32_t(CLAP_ABI *get_tuning_count)(const clap_host_t *host);
 
    // Gets info about a tuning
+   // Returns true on success and stores the result into info.
    // [main-thread]
    bool(CLAP_ABI *get_info)(const clap_host_t  *host,
                             uint32_t            tuning_index,

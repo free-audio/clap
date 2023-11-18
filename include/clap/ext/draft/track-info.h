@@ -52,6 +52,7 @@ typedef struct clap_plugin_track_info {
 
 typedef struct clap_host_track_info {
    // Get info about the track the plugin belongs to.
+   // Returns true on success and stores the result into info.
    // [main-thread]
    bool(CLAP_ABI *get)(const clap_host_t *host, clap_track_info_t *info);
 } clap_host_track_info_t;
