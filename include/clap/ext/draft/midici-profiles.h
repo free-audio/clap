@@ -13,6 +13,8 @@
 //       we can add that once we've agreed on the basic functionality.
 //TODO : for completeness it could work for outputs too. A MIDI effect plugin might want to know 
 //       the host can receive per-note articulations in note attributes for example.
+//TODO : perhaps remove the "active" parameter from clap_plugin_midici_profiles.get(). In this scenario the host decides which profiles
+//       will be used, which is cleaner and probably better reflects how profiles will be used for the host/plugin case.
 
 static CLAP_CONSTEXPR const char CLAP_EXT_MIDICI_PROFILES[] = "clap.midici-profiles.draft/0";
 
