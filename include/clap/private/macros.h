@@ -47,4 +47,7 @@
 
 #if defined(CLAP_CPLUSPLUS) && CLAP_CPLUSPLUS >= 202002L
 #   define CLAP_HAS_CXX20
+#   define CLAP_UNLIKELY [[unlikely]]
+#else
+#   define CLAP_UNLIKELY
 #endif
