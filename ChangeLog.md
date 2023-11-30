@@ -1,3 +1,7 @@
+# Changes in 1.1.11
+
+* [latency.h](include/clap/ext/latency.h): require the plugin to be activated to get the latency
+
 # Changes in 1.1.10
 
 * [params.h](include/clap/ext/params.h): add `CLAP_PARAM_IS_ENUM` flag.
