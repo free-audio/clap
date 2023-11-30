@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <assert.h>
 
-#if __STDC_VERSION__ >= 201112L && !defined(__STDC_NO_THREADS__)
+#if __STDC_VERSION__ >= 201112L && !defined(__STDC_NO_THREADS__) && !defined(_MSC_VER)
 #   define CLAP_HAS_THREAD
 #   include <threads.h>
 #endif
