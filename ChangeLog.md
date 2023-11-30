@@ -1,6 +1,7 @@
 # Changes in 1.1.11
 
 * [latency.h](include/clap/ext/latency.h): require the plugin to be activated to get the latency
+* [plugin-template.c](src/plugin-template.c): implement thread-safe entry init counter
 
 # Changes in 1.1.10
 

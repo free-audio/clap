@@ -6,6 +6,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <threads.h>
+#include <assert.h>
 
 #include <clap/clap.h>
 
@@ -357,15 +359,65 @@ static const clap_plugin_factory_t s_plugin_factory = {
 ////////////////
 
 static bool entry_init(const char *plugin_path) {
-   // called only once, and very first
+   // perform the plugin initialization
    return true;
 }
 
 static void entry_deinit(void) {
-   // called before unloading the DSO
+   // perform the plugin de-initialization
+}
+
+static mtx_t g_entry_lock;
+static once_flag g_entry_once = ONCE_FLAG_INIT;
+static int g_entry_init_counter = 0;
+
+// Initializes the necessary mutex for the entry guard
+static void entry_init_guard_init(void) {
+   mtx_init(&g_entry_lock, mtx_plain);
+}
+
+// Thread safe init counter
+static bool entry_init_guard(const char *plugin_path) {
+   call_once(&g_entry_once, entry_init_guard_init);
+
+   mtx_lock(&g_entry_lock);
+   const int cnt = ++g_entry_init_counter;
+   assert(cnt > 0);
+
+   bool succeed = true;
+   if (cnt == 1) {
+      succeed = entry_init(plugin_path);
+      if (!succeed)
+         g_entry_init_counter = 0;
+   }
+
+   mtx_unlock(&g_entry_lock);
+
+   return succeed;
+}
+
+// Thread safe deinit counter
+static void entry_deinit_guard(void) {
+   call_once(&g_entry_once, entry_init_guard_init);
+
+   mtx_lock(&g_entry_lock);
+   const int cnt = --g_entry_init_counter;
+   assert(cnt > 0);
+
+   bool succeed = true;
+   if (cnt == 0)
+      entry_deinit();
+
+   mtx_unlock(&g_entry_lock);
 }
 
 static const void *entry_get_factory(const char *factory_id) {
+   call_once(&g_entry_once, entry_init_guard_init);
+
+   assert(g_entry_init_counter > 0);
+   if (g_entry_init_counter <= 0)
+      return NULL;
+
    if (!strcmp(factory_id, CLAP_PLUGIN_FACTORY_ID))
       return &s_plugin_factory;
    return NULL;
@@ -374,7 +426,7 @@ static const void *entry_get_factory(const char *factory_id) {
 // This symbol will be resolved by the host
 CLAP_EXPORT const clap_plugin_entry_t clap_entry = {
    .clap_version = CLAP_VERSION_INIT,
-   .init = entry_init,
-   .deinit = entry_deinit,
+   .init = entry_init_guard,
+   .deinit = entry_deinit_guard,
    .get_factory = entry_get_factory,
 };
