@@ -6,8 +6,12 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <threads.h>
 #include <assert.h>
+
+#if __STDC_VERSION__ >= 201112L && !defined(__STDC_NO_THREADS__)
+#   define CLAP_HAS_THREAD
+#   include <threads.h>
+#endif
 
 #include <clap/clap.h>
 
@@ -367,20 +371,28 @@ static void entry_deinit(void) {
    // perform the plugin de-initialization
 }
 
+#ifdef CLAP_HAS_THREAD
 static mtx_t g_entry_lock;
 static once_flag g_entry_once = ONCE_FLAG_INIT;
+#endif
+
 static int g_entry_init_counter = 0;
 
+#ifdef CLAP_HAS_THREAD
 // Initializes the necessary mutex for the entry guard
 static void entry_init_guard_init(void) {
    mtx_init(&g_entry_lock, mtx_plain);
 }
+#endif
 
 // Thread safe init counter
 static bool entry_init_guard(const char *plugin_path) {
+#ifdef CLAP_HAS_THREAD
    call_once(&g_entry_once, entry_init_guard_init);
 
    mtx_lock(&g_entry_lock);
+#endif
+
    const int cnt = ++g_entry_init_counter;
    assert(cnt > 0);
 
@@ -391,16 +403,21 @@ static bool entry_init_guard(const char *plugin_path) {
          g_entry_init_counter = 0;
    }
 
+#ifdef CLAP_HAS_THREAD
    mtx_unlock(&g_entry_lock);
+#endif
 
    return succeed;
 }
 
 // Thread safe deinit counter
 static void entry_deinit_guard(void) {
+#ifdef CLAP_HAS_THREAD
    call_once(&g_entry_once, entry_init_guard_init);
 
    mtx_lock(&g_entry_lock);
+#endif
+
    const int cnt = --g_entry_init_counter;
    assert(cnt > 0);
 
@@ -408,11 +425,15 @@ static void entry_deinit_guard(void) {
    if (cnt == 0)
       entry_deinit();
 
+#ifdef CLAP_HAS_THREAD
    mtx_unlock(&g_entry_lock);
+#endif
 }
 
 static const void *entry_get_factory(const char *factory_id) {
+#ifdef CLAP_HAS_THREAD
    call_once(&g_entry_once, entry_init_guard_init);
+#endif
 
    assert(g_entry_init_counter > 0);
    if (g_entry_init_counter <= 0)
