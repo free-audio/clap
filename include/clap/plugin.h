@@ -60,21 +60,21 @@ typedef struct clap_plugin {
    // the [min, max] range, which is bounded by [1, INT32_MAX].
    // Once activated the latency and port configuration must remain constant, until deactivation.
    // Returns true on success.
-   // [main-thread & !active_state]
+   // [main-thread & !active]
    bool(CLAP_ABI *activate)(const struct clap_plugin *plugin,
                             double                    sample_rate,
                             uint32_t                  min_frames_count,
                             uint32_t                  max_frames_count);
-   // [main-thread & active_state]
+   // [main-thread & active]
    void(CLAP_ABI *deactivate)(const struct clap_plugin *plugin);
 
    // Call start processing before processing.
    // Returns true on success.
-   // [audio-thread & active_state & !processing_state]
+   // [audio-thread & active & !processing]
    bool(CLAP_ABI *start_processing)(const struct clap_plugin *plugin);
 
    // Call stop processing before sending the plugin to sleep.
-   // [audio-thread & active_state & processing_state]
+   // [audio-thread & active & processing]
    void(CLAP_ABI *stop_processing)(const struct clap_plugin *plugin);
 
    // - Clears all buffers, performs a full reset of the processing state (filters, oscillators,
@@ -82,13 +82,13 @@ typedef struct clap_plugin {
    // - The parameter's value remain unchanged.
    // - clap_process.steady_time may jump backward.
    //
-   // [audio-thread & active_state]
+   // [audio-thread & active]
    void(CLAP_ABI *reset)(const struct clap_plugin *plugin);
 
    // process audio, events, ...
    // All the pointers coming from clap_process_t and its nested attributes,
    // are valid until process() returns.
-   // [audio-thread & active_state & processing_state]
+   // [audio-thread & active & processing]
    clap_process_status(CLAP_ABI *process)(const struct clap_plugin *plugin,
                                           const clap_process_t     *process);
 
