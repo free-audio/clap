@@ -27,7 +27,7 @@
 extern "C" {
 #endif
 
-static CLAP_CONSTEXPR const char CLAP_EXT_STATE_CONTEXT[] = "clap.state-context.draft/1";
+static CLAP_CONSTEXPR const char CLAP_EXT_STATE_CONTEXT[] = "clap.state-context.draft/2";
 
 enum clap_plugin_state_context_type {
    // suitable for duplicating a plugin instance
@@ -43,7 +43,7 @@ typedef struct clap_plugin_state_context {
    //
    // Note that the result may be loaded by both clap_plugin_state.load() and
    // clap_plugin_state_context.load().
-   // [main-thread]
+   // [state-thread]
    bool(CLAP_ABI *save)(const clap_plugin_t  *plugin,
                         const clap_ostream_t *stream,
                         uint32_t              context_type);
@@ -53,10 +53,23 @@ typedef struct clap_plugin_state_context {
    //
    // Note that the state may have been saved by clap_plugin_state.save() or
    // clap_plugin_state_context.save() with a different context_type.
-   // [main-thread]
+   // [state-thread]
    bool(CLAP_ABI *load)(const clap_plugin_t  *plugin,
                         const clap_istream_t *stream,
                         uint32_t              context_type);
+
+   // Indicates whether or not the plugin can support having a state-thread
+   // that is different than the main-thread.
+   //
+   // If this returns false, state-thread will always be the same as the
+   // main-thread.
+   //
+   // If this returns true, the state-thread may be a different thread than
+   // the main-thread.
+   //
+   // This must return the same result throughout the lifetime of the plugin.
+   // [thread-safe]
+   bool (CLAP_ABI *supports_async_state)(const clap_plugin_t *plugin);
 } clap_plugin_state_context_t;
 
 #ifdef __cplusplus
