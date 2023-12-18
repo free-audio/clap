@@ -124,7 +124,7 @@ enum {
 // these values populated.
 //
 // Values in a note and voice address are either >= 0 if they
-// are specified, or -1 to indicated a wildcard. A wildcard
+// are specified, or -1 to indicate a wildcard. A wildcard
 // means a voice with any value in that part of the tuple
 // matches the message.
 //
@@ -133,7 +133,7 @@ enum {
 // all channel 0 key 60 voices, independent of port or note id.
 //
 // Especially in the case of note-on note-off pairs, and in the
-// absence of voice stacking or polyphonic modulation,  a host may
+// absence of voice stacking or polyphonic modulation, a host may
 // choose to issue a note id only at note on. So you may see a
 // message stream like
 //
