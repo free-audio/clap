@@ -117,9 +117,37 @@ enum {
 };
 
 // Note on, off, end and choke events.
+//
+// Clap addresses notes and voices using the 4-value tuple
+// (port, channel, key, note_id). note on/off/end/choke
+// events and parameter modulation messages are delivered with
+// these values populated.
+//
+// Values in a note and voice address are either >= 0 if they
+// are specified, or -1 to indicated a wildcard. A wildcard
+// means a voice with any value in that part of the tuple
+// matches the message.
+//
+// For instance, a (PCKN) of (0, 3, -1, -1) will match all voices
+// on channel 3 of port 0. And a PCKN of (-1, 0, 60, -1) will match
+// all channel 0 key 60 voices, independent of port or note id.
+//
+// Especially in the case of note-on note-off pairs, and in the
+// absence of voice stacking or polyphonic modulation,  a host may
+// choose to issue a note id only at note on. So you may see a
+// message stream like
+//
+// CLAP_EVENT_NOTE_ON  [0,0,60,184]
+// CLAP_EVENT_NOTE_OFF [0,0,60,-1]
+//
+// and the host will expect the first voice to be released.
+// Well constructed plugins will search for voices and notes using
+// the entire tuple.
+//
 // In the case of note choke or end events:
 // - the velocity is ignored.
-// - key and channel are used to match active notes, a value of -1 matches all.
+// - key and channel are used to match active notes
+// - note_id is optionally provided by the host
 typedef struct clap_event_note {
    clap_event_header_t header;
 
@@ -153,7 +181,8 @@ typedef struct clap_event_note_expression {
 
    clap_note_expression expression_id;
 
-   // target a specific note_id, port, key and channel, -1 for global
+   // target a specific note_id, port, key and channel, with
+   // -1 meaning wildcard, per the wildcard discussion above
    int32_t note_id;
    int16_t port_index;
    int16_t channel;
@@ -169,7 +198,8 @@ typedef struct clap_event_param_value {
    clap_id param_id; // @ref clap_param_info.id
    void   *cookie;   // @ref clap_param_info.cookie
 
-   // target a specific note_id, port, key and channel, -1 for global
+   // target a specific note_id, port, key and channel, with
+   // -1 meaning wildcard, per the wildcard discussion above
    int32_t note_id;
    int16_t port_index;
    int16_t channel;
@@ -185,7 +215,8 @@ typedef struct clap_event_param_mod {
    clap_id param_id; // @ref clap_param_info.id
    void   *cookie;   // @ref clap_param_info.cookie
 
-   // target a specific note_id, port, key and channel, -1 for global
+   // target a specific note_id, port, key and channel, with
+   // -1 meaning wildcard, per the wildcard discussion above
    int32_t note_id;
    int16_t port_index;
    int16_t channel;
