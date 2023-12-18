@@ -12,7 +12,7 @@
 /// The plugin is responsible for keeping its audio processor and its GUI in sync.
 ///
 /// The host can at any time read parameters' value on the [main-thread] using
-/// @ref clap_plugin_params.value().
+/// @ref clap_plugin_params.get_value().
 ///
 /// There are two options to communicate parameter value changes, and they are not concurrent.
 /// - send automation points during clap_plugin.process()
