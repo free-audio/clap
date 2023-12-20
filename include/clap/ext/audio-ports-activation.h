@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../plugin.h"
+#include "../plugin.h"
 
 /// @page Audio Ports Activation
 ///

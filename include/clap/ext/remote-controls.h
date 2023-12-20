@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../plugin.h"
-#include "../../string-sizes.h"
+#include "../plugin.h"
+#include "../string-sizes.h"
 
 // This extension let the plugin provide a structured way of mapping parameters to an hardware
 // controller.

@@ -41,9 +41,9 @@
 
 #pragma once
 
-#include "../../private/std.h"
-#include "../../private/macros.h"
-#include "../../version.h"
+#include "../private/std.h"
+#include "../private/macros.h"
+#include "../version.h"
 
 // Use it to retrieve const clap_preset_discovery_factory_t* from
 // clap_plugin_entry.get_factory()

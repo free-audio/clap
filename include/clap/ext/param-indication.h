@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../params.h"
-#include "../../color.h"
+#include "params.h"
+#include "../color.h"
 
 // This extension lets the host tell the plugin to display a little color based indication on the
 // parameter. This can be used to indicate:

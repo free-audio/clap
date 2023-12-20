@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../plugin.h"
+#include "../plugin.h"
 
 // This extension can be used to specify the channel mapping used by the plugin.
 //

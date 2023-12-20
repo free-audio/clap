@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../plugin.h"
+#include "../plugin.h"
 
 static const char CLAP_EXT_PRESET_LOAD[] = "clap.preset-load.draft/2";
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../plugin.h"
+#include "../plugin.h"
 
 // This extension lets the host and plugin exchange menu items and let the plugin ask the host to
 // show its context menu.

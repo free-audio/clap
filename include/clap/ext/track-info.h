@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../plugin.h"
-#include "../../color.h"
-#include "../../string-sizes.h"
+#include "../plugin.h"
+#include "../color.h"
+#include "../string-sizes.h"
 
 // This extension let the plugin query info about the track it's in.
 // It is useful when the plugin is created, to initialize some parameters (mix, dry, wet)
