@@ -119,7 +119,7 @@ enum {
 // Note on, off, end and choke events.
 //
 // Clap addresses notes and voices using the 4-value tuple
-// (port, channel, key, note_id). note on/off/end/choke
+// (port, channel, key, note_id). Note on/off/end/choke
 // events and parameter modulation messages are delivered with
 // these values populated.
 //
