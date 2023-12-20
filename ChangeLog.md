@@ -12,12 +12,12 @@
 * `CLAP_EXT_SURROUND`
 * `CLAP_EXT_TRACK_INFO`
 
-Note: we kept the last draft extension ID in order to not break plugin already using it.
+Note: we kept the last draft extension ID in order to not break plugins already using it.
 
 ## Stabilize factory
 * `CLAP_PRESET_DISCOVERY_FACTORY_ID`
 
-Note: we kept the last draft factory ID in order to not break plugin already using it.
+Note: we kept the last draft factory ID in order to not break plugins already using it.
 
 ## Documentation
 
