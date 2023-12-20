@@ -26,6 +26,10 @@ Note: we kept the last draft factory ID in order to not break plugin already usi
 * [params.h](include/clap/ext/params.h): Fix incorrect function name reference
 * [latency.h](include/clap/ext/latency.h): Precise that the latency can only be fetched when the plugin is activated
 
+## Conventions
+
+* [extension-id](conventions/extension-id.md): introduce some rules about extension ID naming.
+
 ## Plugin Template
 
 * [plugin-template.c](src/plugin-template.c): Add exemple code for safer clap entry initialization
