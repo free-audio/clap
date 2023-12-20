@@ -1,3 +1,28 @@
+# Changes in 1.2.0
+
+## Stabilize extensions
+
+* `CLAP_EXT_AUDIO_PORTS_ACTIVATION`
+* `CLAP_EXT_CONFIGURABLE_AUDIO_PORTS`
+* `CLAP_EXT_CONTEXT_MENU`
+* `CLAP_EXT_PARAM_INDICATION`
+* `CLAP_EXT_PRESET_LOAD`
+* `CLAP_EXT_REMOTE_CONTROLS`
+* `CLAP_EXT_STATE_CONTEXT`
+* `CLAP_EXT_SURROUND`
+* `CLAP_EXT_TRACK_INFO`
+
+Note: we kept the last draft extension ID in order to not break plugin already using it.
+
+## Stabilize factory
+* `CLAP_PRESET_DISCOVERY_FACTORY_ID`
+
+Note: we kept the last draft factory ID in order to not break plugin already using it.
+
+## Documentation
+
+* [events.h](include/clap/events.h): Clarify how "Port Channel Key NoteID" matching works
+
 # Changes in 1.1.11
 
 * [latency.h](include/clap/ext/latency.h): require the plugin to be activated to get the latency
