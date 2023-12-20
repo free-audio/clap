@@ -17,7 +17,7 @@ An extension is considered a draft extension if it is in the [draft](../include/
 
 When the extension is migrating from draft to stable, its extension ID must not change.
 
-All extensions must go first though a draft phase.
+All extensions must go though the draft phase first.
 
 ## For factory ID
 

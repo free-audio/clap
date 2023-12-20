@@ -24,7 +24,7 @@ Note: we kept the last draft factory ID in order to not break plugins already us
 * [events.h](include/clap/events.h): Clarify how "Port Channel Key NoteID" matching works
 * [plugin.h](include/clap/plugin.h): Style cleanup
 * [params.h](include/clap/ext/params.h): Fix incorrect function name reference
-* [latency.h](include/clap/ext/latency.h): Precise that the latency can only be fetched when the plugin is activated
+* [latency.h](include/clap/ext/latency.h): Clarify that the latency can only be fetched when the plugin is activated
 
 ## Conventions
 
@@ -32,7 +32,7 @@ Note: we kept the last draft factory ID in order to not break plugins already us
 
 ## Plugin Template
 
-* [plugin-template.c](src/plugin-template.c): Add exemple code for safer clap entry initialization
+* [plugin-template.c](src/plugin-template.c): Add example code for safer clap entry initialization
 
 # Changes in 1.1.11
 
