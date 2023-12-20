@@ -15,7 +15,6 @@ extern "C" {
 enum {
    CLAP_CONTEXT_MENU_TARGET_KIND_GLOBAL = 0,
    CLAP_CONTEXT_MENU_TARGET_KIND_PARAM = 1,
-   // TODO: kind trigger once the trigger ext is marked as stable
 };
 
 // Describes the context menu target
