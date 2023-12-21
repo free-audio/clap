@@ -46,6 +46,9 @@ typedef struct clap_plugin {
    // Must be called after creating the plugin.
    // If init returns false, the host must destroy the plugin instance.
    // If init returns true, then the plugin is initialized and in the deactivated state.
+   // Unlike in `plugin-factory::create_plugin`, in init you have complete access to the host 
+   // and host extensions, so clap related setup activities should be done here rather than in
+   // create_plugin.
    // [main-thread]
    bool(CLAP_ABI *init)(const struct clap_plugin *plugin);
 
