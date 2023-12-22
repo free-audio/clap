@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-// This interface provides helps the host to convert a plugin state and its automation
+// This interface provides a mechanism for the host to convert a plugin state and its automation
 // points to a new plugin.
 //
 // This is useful to convert from one plugin ABI to another one.
