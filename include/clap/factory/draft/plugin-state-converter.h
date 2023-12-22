@@ -20,11 +20,17 @@ typedef struct clap_plugin_state_converter {
    const clap_plugin_id_t *dst_plugin_id;
 
    // Converts the input state to a state usable by the destination plugin.
+   //
+   // error_buffer is a place holder of error_buffer_size bytes for storing a null-terminated
+   // error message in case of failure, which can be displayed to the user.
+   //
    // Returns true on success.
    // [thread-safe]
    bool (*convert_state)(const struct clap_plugin_state_converter *converter,
                          const clap_istream_t                     *src,
-                         const clap_ostream_t                     *dst);
+                         const clap_ostream_t                     *dst,
+                         char                                     *error_buffer,
+                         size_t                                    error_buffer_size);
 
    // Converts a normalized value.
    // Returns true on success.
