@@ -20,12 +20,14 @@ typedef struct clap_plugin_state_converter {
    const clap_plugin_id_t *dst_plugin_id;
 
    // Converts the input state to a state usable by the destination plugin.
+   // Returns true on success.
    // [thread-safe]
    bool (*convert_state)(const struct clap_plugin_state_converter *converter,
                          const clap_istream_t                     *src,
                          const clap_ostream_t                     *dst);
 
    // Converts a normalized value.
+   // Returns true on success.
    // [thread-safe]
    bool (*convert_normalized_value)(const struct clap_plugin_state_converter *converter,
                                     clap_id                                   src_param_id,
@@ -34,6 +36,7 @@ typedef struct clap_plugin_state_converter {
                                     double                                   *dst_normalized_value);
 
    // Converts a plain value.
+   // Returns true on success.
    // [thread-safe]
    bool (*convert_plain_value)(const struct clap_plugin_state_converter *converter,
                                clap_id                                   src_param_id,
@@ -56,7 +59,7 @@ typedef struct clap_plugin_state_converter_factory {
    // [thread-safe]
    const clap_plugin_state_converter_t *(*get)(
       const struct clap_plugin_state_converter_factory *factory, uint32_t index);
-} clap_clap_converter_factory_t;
+} clap_plugin_state_converter_factory_t;
 
 #ifdef __cplusplus
 }
