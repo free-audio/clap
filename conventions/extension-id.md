@@ -21,7 +21,7 @@ All extensions must go though the draft phase first.
 
 ## For factory ID
 
-Everything about the extension id simetrically applies to factory id.
+Everything about the extension id symmetrically applies to factory id.
 
 ## History
 
