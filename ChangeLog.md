@@ -19,6 +19,10 @@ Note: we kept the last draft extension ID in order to not break plugins already 
 
 Note: we kept the last draft factory ID in order to not break plugins already using it.
 
+## Plugin State Converter
+
+* Introduction of a new factory which provides a plugin state convertion mechanism.
+
 ## Documentation
 
 * [events.h](include/clap/events.h): Clarify how "Port Channel Key NoteID" matching works
