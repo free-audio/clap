@@ -35,6 +35,7 @@
 #include "plugin.h"
 #include "plugin-features.h"
 #include "host.h"
+#include "plugin-id.h"
 
 #include "ext/audio-ports-activation.h"
 #include "ext/audio-ports-config.h"
