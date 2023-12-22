@@ -5,7 +5,7 @@
 The extension shall be named in the form: `clap.$NAME/$REV`.
 Where:
 - `$NAME` is the name of the exension.
-- `$REV` is the revision of the extension. This is an integer that is incremented for each iteration.
+- `$REV` is the revision of the extension. This is an integer that is incremented for each iteration. It should start at 1.
 
 For extensions made by third-parties and not officially published by the CLAP project, please use the following form: `$REVERSE_URI.$NAME/$REV`.
 Where:
