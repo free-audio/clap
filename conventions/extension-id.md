@@ -25,6 +25,6 @@ Everything about the extension id symmetrically applies to factory id.
 
 ## History
 
-Before this document was written, existing extension didn't honor those rules.
-Some stable extension include the string `draft` in their ID.
-We decided to keep those in order to maintain the binary compatibility.
+Before this document was written, existing extensions didn't honor these rules.
+Some stable extensions include the string `draft` in their ID.
+We decided to keep those in order to maintain binary compatibility.
