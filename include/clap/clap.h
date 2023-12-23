@@ -31,6 +31,7 @@
 #include "factory/preset-discovery.h"
 
 #include "factory/draft/plugin-invalidation.h"
+#include "factory/draft/plugin-state-converter.h"
 
 #include "plugin.h"
 #include "plugin-features.h"
