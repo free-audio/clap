@@ -69,7 +69,7 @@ typedef struct clap_plugin_state_converter {
 } clap_plugin_state_converter_t;
 
 // Factory identifier
-static CLAP_CONSTEXPR const char CLAP_CLAP_CONVERTER_FACTORY_ID[] =
+static CLAP_CONSTEXPR const char CLAP_PLUGIN_STATE_CONVERTER_FACTORY_ID[] =
    "clap.plugin-state-converter-factory/1";
 
 // List all the plugin state converters available in the current DSO.
