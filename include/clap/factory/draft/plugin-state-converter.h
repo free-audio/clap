@@ -3,10 +3,23 @@
 #include "../../id.h"
 #include "../../plugin-id.h"
 #include "../../stream.h"
+#include "../../version.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+typedef struct clap_plugin_state_converter_descriptor {
+   clap_version_t clap_version;
+
+   clap_plugin_id_t src_plugin_id;
+   clap_plugin_id_t dst_plugin_id;
+
+   const char *name;
+   const char *vendor;
+   const char *version;
+   const char *description;
+} clap_plugin_state_converter_descriptor_t;
 
 // This interface provides a mechanism for the host to convert a plugin state and its automation
 // points to a new plugin.
@@ -16,8 +29,12 @@ extern "C" {
 // This can also be used to convert the state of a plugin that isn't maintained anymore into
 // another plugin that would be similar.
 typedef struct clap_plugin_state_converter {
-   const clap_plugin_id_t *src_plugin_id;
-   const clap_plugin_id_t *dst_plugin_id;
+   const clap_plugin_state_converter_descriptor_t *desc;
+
+   void *converter_data;
+
+   // Destroy the converter.
+   void (*destroy)(struct clap_plugin_state_converter *converter);
 
    // Converts the input state to a state usable by the destination plugin.
    //
@@ -26,29 +43,29 @@ typedef struct clap_plugin_state_converter {
    //
    // Returns true on success.
    // [thread-safe]
-   bool (*convert_state)(const struct clap_plugin_state_converter *converter,
-                         const clap_istream_t                     *src,
-                         const clap_ostream_t                     *dst,
-                         char                                     *error_buffer,
-                         size_t                                    error_buffer_size);
+   bool (*convert_state)(struct clap_plugin_state_converter *converter,
+                         const clap_istream_t               *src,
+                         const clap_ostream_t               *dst,
+                         char                               *error_buffer,
+                         size_t                              error_buffer_size);
 
    // Converts a normalized value.
    // Returns true on success.
    // [thread-safe]
-   bool (*convert_normalized_value)(const struct clap_plugin_state_converter *converter,
-                                    clap_id                                   src_param_id,
-                                    double                                    src_normalized_value,
-                                    clap_id                                  *dst_param_id,
-                                    double                                   *dst_normalized_value);
+   bool (*convert_normalized_value)(struct clap_plugin_state_converter *converter,
+                                    clap_id                             src_param_id,
+                                    double                              src_normalized_value,
+                                    clap_id                            *dst_param_id,
+                                    double                             *dst_normalized_value);
 
    // Converts a plain value.
    // Returns true on success.
    // [thread-safe]
-   bool (*convert_plain_value)(const struct clap_plugin_state_converter *converter,
-                               clap_id                                   src_param_id,
-                               double                                    src_plain_value,
-                               clap_id                                  *dst_param_id,
-                               double                                   *dst_plain_value);
+   bool (*convert_plain_value)(struct clap_plugin_state_converter *converter,
+                               clap_id                             src_param_id,
+                               double                              src_plain_value,
+                               clap_id                            *dst_param_id,
+                               double                             *dst_plain_value);
 } clap_plugin_state_converter_t;
 
 // Factory identifier
@@ -61,9 +78,18 @@ typedef struct clap_plugin_state_converter_factory {
    // [thread-safe]
    uint32_t (*count)(const struct clap_plugin_state_converter_factory *factory);
 
-   // Get the converter at the given index.
+   // Retrieves a plugin state converter descriptor by its index.
+   // Returns null in case of error.
+   // The descriptor must not be freed.
    // [thread-safe]
-   const clap_plugin_state_converter_t *(*get)(
+   const clap_plugin_state_converter_descriptor_t *(*get_descriptor)(
+      const struct clap_plugin_state_converter_factory *factory, uint32_t index);
+
+   // Create a plugin state converter by its index.
+   // The returned pointer must be freed by calling converter->destroy(converter);
+   // Returns null in case of error.
+   // [thread-safe]
+   clap_plugin_state_converter_t *(*create)(
       const struct clap_plugin_state_converter_factory *factory, uint32_t index);
 } clap_plugin_state_converter_factory_t;
 
