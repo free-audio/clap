@@ -30,7 +30,7 @@
 extern "C" {
 #endif
 
-static CLAP_CONSTEXPR const char CLAP_EXT_STATE_CONTEXT[] = "clap.state-context.draft/2";
+static CLAP_CONSTEXPR const char CLAP_EXT_STATE_CONTEXT[] = "clap.state-context/2";
 
 enum clap_plugin_state_context_type {
    // suitable for loading a state as a preset
