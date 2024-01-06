@@ -38,6 +38,10 @@ Note: we kept the last draft factory ID in order to not break plugins already us
 
 * [plugin-template.c](src/plugin-template.c): implement thread-safe plugin entry init counter
 
+## Organization
+
+* `clap.h` no longer includes headers from `ext/draft` or `factory/draft`. Draft extension and factory headers must now be explicitly included, either individually or via the `draft.h` header.
+
 # Changes in 1.1.10
 
 * [params.h](include/clap/ext/params.h): add `CLAP_PARAM_IS_ENUM` flag.

@@ -30,9 +30,6 @@
 #include "factory/plugin-factory.h"
 #include "factory/preset-discovery.h"
 
-#include "factory/draft/plugin-invalidation.h"
-#include "factory/draft/plugin-state-converter.h"
-
 #include "plugin.h"
 #include "plugin-features.h"
 #include "host.h"
@@ -64,11 +61,3 @@
 #include "ext/timer-support.h"
 #include "ext/track-info.h"
 #include "ext/voice-info.h"
-
-#include "ext/draft/ambisonic.h"
-#include "ext/draft/cv.h"
-#include "ext/draft/midi-mappings.h"
-#include "ext/draft/resource-directory.h"
-#include "ext/draft/triggers.h"
-#include "ext/draft/tuning.h"
-#include "ext/draft/extensible-audio-ports.h"
