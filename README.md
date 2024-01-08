@@ -32,6 +32,7 @@ that is, a plugin binary compiled with CLAP 1.x can be loaded by any other
 CLAP 1.y.
 
 To work with CLAP, include [clap/clap.h](include/clap/clap.h).
+To also include the draft extensions, include [clap/all.h](include/clap/all.h).
 
 The two most important objects are `clap_host` and `clap_plugin`.
 

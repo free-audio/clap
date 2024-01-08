@@ -14,8 +14,10 @@ Where:
 ## Draft
 
 An extension is considered a draft extension if it is in the [draft](../include/clap/ext/draft/) folder.
+Make sure to also include it in [all.h](../include/clap/all.h).
 
 When the extension is migrating from draft to stable, its extension ID must not change.
+Move its inclusion from [all.h](../include/clap/all.h) into [clap.h](../include/clap/clap.h).
 
 All extensions must go though the draft phase first.
 
