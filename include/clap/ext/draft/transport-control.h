@@ -6,7 +6,7 @@
 // The host has no obligation to execute these requests, so the interface may be
 // partially working.
 
-static CLAP_CONSTEXPR const char CLAP_EXT_TRANSPORT_CONTROL[] = "clap.transport-control.draft/0";
+static CLAP_CONSTEXPR const char CLAP_EXT_TRANSPORT_CONTROL[] = "clap.transport-control/1";
 
 #ifdef __cplusplus
 extern "C" {

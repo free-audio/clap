@@ -13,6 +13,7 @@
 * `CLAP_EXT_TRACK_INFO`
 
 Note: we kept the last draft extension ID in order to not break plugins already using it.
+Note: remaining draft extension ID as been updated to follow the new convention.
 
 ## Removed draft extensions
 
