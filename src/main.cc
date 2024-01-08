@@ -1,4 +1,5 @@
 #include <clap/clap.h>
+#include <clap/draft.h>
 
 // The purpose of this file is to check that all headers compile
 
