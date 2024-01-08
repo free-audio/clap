@@ -10,6 +10,10 @@
 /// values and non-parameter state. This is used to persist a plugin's state
 /// between project reloads, when duplicating and copying plugin instances, and
 /// for host-side preset management.
+///
+/// If you need to know if the save/load operation is meant for duplicating a plugin
+/// instance, for saving/loading a plugin preset or while saving/loading the project
+/// then have a look at clap_plugin_state_context_t.
 
 static CLAP_CONSTEXPR const char CLAP_EXT_STATE[] = "clap.state";
 

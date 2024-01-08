@@ -11,7 +11,7 @@
   - [Extensions](#extensions)
   - [Fundamental extensions](#fundamental-extensions)
   - [Support extensions](#support-extensions)
-  - [Extra extensions](#extra-extensions)
+  - [Deeper Host integration](#deeper-host-integration)
   - [Third-party extensions](#third-party-extensions)
 - [Adapters](#adapters)
 - [Resources](#resources)
@@ -81,34 +81,45 @@ You can create your own extensions and share them. Make sure that the extension 
 
 This is a list of the extensions that you most likely want to implement
 and use to get a basic plugin experience:
-- [log](include/clap/ext/log.h), lets the host aggregate plugin logs
-- [thread-check](include/clap/ext/thread-check.h), check which thread you are currently on, useful for correctness validation
-- [audio-ports](include/clap/ext/audio-ports.h), define the audio ports
-- [note-ports](include/clap/ext/note-ports.h), define the note ports
-- [params](include/clap/ext/params.h), parameters management
-- [latency](include/clap/ext/latency.h), report the plugin latency
-- [render](include/clap/ext/render.h), renders realtime or offline
-- [tail](include/clap/ext/tail.h), processing tail length
 - [state](include/clap/ext/state.h), save and load the plugin state
+  - [state-context](include/clap/ext/state-context.h), same as state but with additional context info (preset, duplicate, project)
+  - [resource-directory](include/clap/ext/draft/resource-directory.h), host provided folder for the plugin to save extra resource like multi-samples, ... (draft)
+- [params](include/clap/ext/params.h), parameters management
+- [note-ports](include/clap/ext/note-ports.h), define the note ports
+- [audio-ports](include/clap/ext/audio-ports.h), define the audio ports
+  - [surround](include/clap/ext/surround.h), inspect surround channel mapping
+  - [ambisonic](include/clap/ext/draft/ambisonic.h), inspect ambisonic channel mapping (draft)
+  - [cv](include/clap/ext/draft/cv.h), inspect CV channel mapping (draft)
+  - [configurable-audio-ports](include/clap/ext/configurable-audio-ports.h), request the plugin to apply a given configuration
+  - [audio-ports-config](include/clap/ext/audio-ports-config.h), simple list of pre-defined audio ports configurations
+  - [audio-ports-activation](include/clap/ext/audio-ports-activation.h), activate and deactivate a given audio port
+  - [extensible-audio-ports](include/clap/ext/draft/extensible-audio-ports.h), let the host add audio ports to the plugin, this is useful for dynamic number of audio inputs (draft)
+- [render](include/clap/ext/render.h), renders realtime or offline
+- [latency](include/clap/ext/latency.h), report the plugin latency
+- [tail](include/clap/ext/tail.h), processing tail length
 - [gui](include/clap/ext/gui.h), generic gui controller
+- [voice-info](include/clap/ext/voice-info.h), let the host know how many voices the plugin has, this is important for polyphonic modulations
+- [track-info](include/clap/ext/track-info.h), give some info to the plugin about the track it belongs to
+- [tuning](include/clap/ext/draft/tuning.h), host provided microtuning (draft)
+- [triggers](include/clap/ext/draft/triggers.h), plugin's triggers, similar to parameters but stateless
 
 ## Support extensions
 
+- [thread-check](include/clap/ext/thread-check.h), check which thread you are currently on, useful for correctness validation
 - [thread-pool](include/clap/ext/thread-pool.h), use the host thread pool
+- [log](include/clap/ext/log.h), lets the host aggregate plugin logs
 - [timer-support](include/clap/ext/timer-support.h), lets the plugin register timer handlers
 - [posix-fd-support](include/clap/ext/posix-fd-support.h), lets the plugin register I/O handlers
 
-## Extra extensions
+## Deeper Host integration
 
+- [remote-controls](include/clap/ext/remote-controls.h), bank of controls that can be mapped on a controlles with 8 knobs
+- [preset-discovery](include/clap/factory/preset-discovery.h), let the host index the plugin's preset in their native file format
+- [preset-load](include/clap/ext/preset-load.h), let the host ask the plugin to load a preset
+- [param-indication](include/clap/ext/param-indication.h), let the plugin know when a physical control is mapped to a parameter and if there is automation data
 - [note-name](include/clap/ext/note-name.h), give a name to notes, useful for drum machines
-- [tuning](include/clap/ext/draft/tuning.h), host provided microtuning
-- [track-info](include/clap/ext/draft/track-info.h)
-- [quick-controls](include/clap/ext/draft/quick-controls.h), bank of controls that can be mapped on a controlles with 8 knobs
-- [file-reference](include/clap/ext/draft/file-reference.h), let the host know about the plugin's file reference, and perform "Collect & Save"
-- [check-for-update](include/clap/ext/draft/check-for-update.h), check if there is a new version of a plugin
-- [audio-ports-config](include/clap/ext/audio-ports-config.h), simple list of possible configurations
-- [surround](include/clap/ext/draft/surround.h), inspect surround channel mapping
-- [ambisonic](include/clap/ext/draft/ambisonic.h), inspect ambisonic channel mapping
+- [transport-control](include/clap/ext/draft/transport-control.h), let the plugin control the host's transport (draft)
+- [context-menu](include/clap/ext/context-menu.h), exchange context menu entries between host and plugin, let the plugin ask the host to popup its own context menu
 
 ## Third-party extensions
 
