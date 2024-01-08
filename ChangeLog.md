@@ -14,6 +14,10 @@
 
 Note: we kept the last draft extension ID in order to not break plugins already using it.
 
+## Removed draft extension
+
+* `CLAP_EXT_CHECK_FOR_UPDATE` was removed because it wasn't used and it's design needed more thought.
+
 ## Stabilize factory
 * `CLAP_PRESET_DISCOVERY_FACTORY_ID`
 

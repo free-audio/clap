@@ -105,7 +105,6 @@ and use to get a basic plugin experience:
 - [track-info](include/clap/ext/draft/track-info.h)
 - [quick-controls](include/clap/ext/draft/quick-controls.h), bank of controls that can be mapped on a controlles with 8 knobs
 - [file-reference](include/clap/ext/draft/file-reference.h), let the host know about the plugin's file reference, and perform "Collect & Save"
-- [check-for-update](include/clap/ext/draft/check-for-update.h), check if there is a new version of a plugin
 - [audio-ports-config](include/clap/ext/audio-ports-config.h), simple list of possible configurations
 - [surround](include/clap/ext/draft/surround.h), inspect surround channel mapping
 - [ambisonic](include/clap/ext/draft/ambisonic.h), inspect ambisonic channel mapping
