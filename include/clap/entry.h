@@ -31,42 +31,33 @@ extern "C" {
 // Each directory should be recursively searched for files and/or bundles as appropriate in your OS
 // ending with the extension `.clap`.
 //
-// As detailed in the respective functions' documentations below, the host is forbidden from calling
-// either init() or deinit() multiple times, without calling the other first. This is to enforce
-// a "normal" initialization pattern, where one can't construct or destroy an object multiple times.
+// init and deinit in most cases are called once, in a matched pair, when the dso is loaded / unloaded.
+// In some rare situations it may be called multiple times in a process, so the functions must be defensive,
+// mutex locking and counting calls if undertaking non trivial non idempotent actions.
 //
-// However, there are a few cases where the host may not be able to reliably prevent this from
-// happening, such as when multiple, separate hosts co-exist within the same address space (e.g.
-// Meta-Plugins, plugins that can host other plugins inside them). It may also happen when a VST
-// compatibility layer is used to wrap a CLAP plugin, for instance.
+// Rationale:
 //
-// In those cases, the init() and deinit() pair of functions can happen to be called multiple times,
-// either in a row or even simultaneously, from different threads, by multiple non-synchronized
-// hosts, or by a single host that is presented multiple interfaces to a same DSO. This can happen
-// even though this is forbidden behavior from the host by this specification, and despite a
-// compliant host's best efforts.
+//    The intent of the init() and deinit() functions is to provide a "normal" initialization patterh
+//    which occurs when the shared object is loaded or unloaded. As such, hosts will call each once and
+//    in matched pairs. In clap specifications prior to 1.1.11, this single-call was documented as a
+//    requirement.
 //
-// Despite those issues, hosts *must* ensure that each successful call to init() is only followed by
-// a single call to deinit() at most. As long as a single successful init() call did not have its
-// matching deinit() called, the DSO *must* remain in a fully operational state, as if deinit() had
-// not yet been called.
+//    We realized, though, that this is not a requirement hosts can meet. If hosts load a plugin
+//    which itself wraps another CLAP for instance, while also loading that same clap in its memory
+//    space, both the host and the wrapper will call init() and deinit() and have no means to communicate
+//    the state.
 //
-// Therefore, init() and deinit() functions *should* be implemented in a way that allows for init()
-// to be called any number of times in a row (possibly simultaneously, from multiple threads), and
-// for deinit() to be called at most that same number of times (also simultaneously, from multiple,
-// possibly different threads from the init() called). As of CLAP 1.11, this *must* be the case for
-// all plugin implementations.
+//    With clap 1.1.11 and beyond we are changing the spec to indicate that a host should make an
+//    absolute best effort to call init() and deinit() once, and always in matched pairs (for every
+//    init() which returns true, one deinit() should be called).
 //
-// This is already trivially the case if there is no (de)initialization work in the entry at all,
-// or if the initialization work is thread safe and idempotent, and there is no de-initialization
-// work to be done. Those implementations already are and remain valid, and require no additional
-// consideration.
+//    This takes the de-facto burden on plugin writers to deal with multiple calls into a hard requirement.
 //
-// If that is not the case, then using a global, refcount-like locked initialization counter can be
-// used to keep track of init() and deinit() calls. Then the initialization work can be done only
-// when the counter goes from 0 to 1 in init(), and de-initialization can be done when the counter
-// goes to 0 in deinit(). Any subsequent calls to init() and deinit() can just increase or decrease
-// the counter, respectively.
+//    Most init() / deinit() pairs we have seen are the relatively trivial {return true;} and {}. But
+//    if your init() function does non-trivial one time work, the plugin author must maintain a counter
+//    and must manage a mutex lock. The most obvious implementation will maintain a static counter and a
+//    global mutex, increment the counter on each init, decrement it on each deinit, and only undertake
+//    the init or deinit action when the counter is zero.
 typedef struct clap_plugin_entry {
    clap_version_t clap_version; // initialized to CLAP_VERSION
 
