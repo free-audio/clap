@@ -14,9 +14,10 @@
 
 Note: we kept the last draft extension ID in order to not break plugins already using it.
 
-## Removed draft extension
+## Removed draft extensions
 
-* `CLAP_EXT_CHECK_FOR_UPDATE` was removed because it wasn't used and it's design needed more thought.
+* `CLAP_EXT_CHECK_FOR_UPDATE` wasn't used and it's design needed more thought.
+* `CLAP_EXT_MIDI_MAPPING` wasn't used. MIDI2 seems to do it better, and the interface wasn't satisfying.
 
 ## Stabilize factory
 * `CLAP_PRESET_DISCOVERY_FACTORY_ID`
