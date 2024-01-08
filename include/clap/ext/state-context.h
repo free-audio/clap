@@ -21,10 +21,12 @@
 ///        clap_plugin_state_context.save(CLAP_STATE_CONTEXT_FOR_PRESET),
 ///        CLAP_STATE_CONTEXT_FOR_PRESET)
 ///
-/// If in doubt, choose CLAP_STATE_CONTEXT_FOR_PRESET as option.
-/// 
+/// If in doubt, fallback to clap_plugin_state.
+///
 /// If the plugin implements CLAP_EXT_STATE_CONTEXT then it is mandatory to also implement
 /// CLAP_EXT_STATE.
+///
+/// It is unspecified which context is equivalent to clap_plugin_state.{save,load}()
 
 #ifdef __cplusplus
 extern "C" {
@@ -33,15 +35,14 @@ extern "C" {
 static CLAP_CONSTEXPR const char CLAP_EXT_STATE_CONTEXT[] = "clap.state-context/2";
 
 enum clap_plugin_state_context_type {
-   // suitable for loading a state as a preset
+   // suitable for storing and loading a state as a preset
    CLAP_STATE_CONTEXT_FOR_PRESET = 1,
 
   // suitable for duplicating a plugin instance
    CLAP_STATE_CONTEXT_FOR_DUPLICATE = 2,
 
-   // suitable for loading a state during loading a project/song
+   // suitable for storing and loading a state within a project/song
    CLAP_STATE_CONTEXT_FOR_PROJECT = 3,
-
 };
 
 typedef struct clap_plugin_state_context {
