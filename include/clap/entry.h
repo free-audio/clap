@@ -108,7 +108,7 @@ typedef struct clap_plugin_entry {
    //
    // As stated above, even though hosts are forbidden to do so directly, multiple calls before any
    // new init() call may still happen. Implementations *should* take this into account, and *must*
-   // do so as of CLAP 1.11.
+   // do so as of CLAP 1.2.0.
    //
    // Just like init(), this function may be called on any thread, including a different one from
    // the one init() was called from, or from the one a later init() call can be made.
