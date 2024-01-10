@@ -73,7 +73,7 @@ typedef struct clap_plugin_entry {
    //
    // As stated above, even though hosts are forbidden to do so directly, multiple calls before any
    // deinit() call may still happen. Implementations *should* take this into account, and *must*
-   // do so as of CLAP 1.11.
+   // do so as of CLAP 1.2.0.
    //
    // It should be as fast as possible, in order to perform a very quick scan of the plugin
    // descriptors.
