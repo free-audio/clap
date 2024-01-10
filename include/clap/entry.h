@@ -39,7 +39,7 @@ extern "C" {
 //
 //    The intent of the init() and deinit() functions is to provide a "normal" initialization patterh
 //    which occurs when the shared object is loaded or unloaded. As such, hosts will call each once and
-//    in matched pairs. In clap specifications prior to 1.1.11, this single-call was documented as a
+//    in matched pairs. In CLAP specifications prior to 1.2.0, this single-call was documented as a
 //    requirement.
 //
 //    We realized, though, that this is not a requirement hosts can meet. If hosts load a plugin
