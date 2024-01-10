@@ -35,6 +35,7 @@
 #include "host.h"
 #include "plugin-id.h"
 
+#include "ext/ambisonic.h"
 #include "ext/audio-ports-activation.h"
 #include "ext/audio-ports-config.h"
 #include "ext/audio-ports.h"

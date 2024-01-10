@@ -7,7 +7,9 @@
 // This extension let the plugin query info about the track it's in.
 // It is useful when the plugin is created, to initialize some parameters (mix, dry, wet)
 // and pick a suitable configuration regarding audio port type and channel count.
-
+//
+// This extension ID contains `draft', yet it is stable.
+// See conventions/extension-id.md for more info.
 static CLAP_CONSTEXPR const char CLAP_EXT_TRACK_INFO[] = "clap.track-info.draft/1";
 
 #ifdef __cplusplus
