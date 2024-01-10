@@ -47,7 +47,7 @@ extern "C" {
 //    space, both the host and the wrapper will call init() and deinit() and have no means to communicate
 //    the state.
 //
-//    With clap 1.1.11 and beyond we are changing the spec to indicate that a host should make an
+//    With CLAP 1.2.0 and beyond we are changing the spec to indicate that a host should make an
 //    absolute best effort to call init() and deinit() once, and always in matched pairs (for every
 //    init() which returns true, one deinit() should be called).
 //
