@@ -3,8 +3,10 @@
 #include "../plugin.h"
 
 // This extension can be used to specify the channel mapping used by the plugin.
-
-static CLAP_CONSTEXPR const char CLAP_EXT_AMBISONIC[] = "clap.ambisonic/3";
+//
+// This extension ID contains `draft', yet it is stable.
+// See conventions/extension-id.md for more info.
+static CLAP_CONSTEXPR const char CLAP_EXT_AMBISONIC[] = "clap.ambisonic.draft/3";
 
 static CLAP_CONSTEXPR const char CLAP_PORT_AMBISONIC[] = "ambisonic";
 

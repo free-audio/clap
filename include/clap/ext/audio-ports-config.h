@@ -26,6 +26,9 @@
 /// extension where all busses can be retrieved in the same way as in the audio-port extension.
 
 static CLAP_CONSTEXPR const char CLAP_EXT_AUDIO_PORTS_CONFIG[] = "clap.audio-ports-config";
+
+// This extension ID contains `draft', yet it is stable.
+// See conventions/extension-id.md for more info.
 static CLAP_CONSTEXPR const char CLAP_EXT_AUDIO_PORTS_CONFIG_INFO[] =
    "clap.audio-ports-config-info/draft-0";
 

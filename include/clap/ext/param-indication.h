@@ -13,6 +13,8 @@
 // The color semantic depends upon the host here and the goal is to have a consistent experience
 // across all plugins.
 
+// This extension ID contains `draft', yet it is stable.
+// See conventions/extension-id.md for more info.
 static CLAP_CONSTEXPR const char CLAP_EXT_PARAM_INDICATION[] = "clap.param-indication.draft/4";
 
 #ifdef __cplusplus

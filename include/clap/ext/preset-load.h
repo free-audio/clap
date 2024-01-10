@@ -2,6 +2,8 @@
 
 #include "../plugin.h"
 
+// This extension ID contains `draft', yet it is stable.
+// See conventions/extension-id.md for more info.
 static const char CLAP_EXT_PRESET_LOAD[] = "clap.preset-load.draft/2";
 
 #ifdef __cplusplus
