@@ -25,9 +25,12 @@
 /// Audio ports state is invalidated by clap_plugin_audio_ports_config.select() and
 /// clap_host_audio_ports.rescan(CLAP_AUDIO_PORTS_RESCAN_LIST).
 
-// This extension ID contains `draft', yet it is stable.
-// See conventions/extension-id.md for more info.
 static CLAP_CONSTEXPR const char CLAP_EXT_AUDIO_PORTS_ACTIVATION[] =
+   "clap.audio-ports-activation/2";
+
+// The latest draft is 100% compatible.
+// This compat ID may be removed in 2026.
+static CLAP_CONSTEXPR const char CLAP_EXT_AUDIO_PORTS_ACTIVATION_COMPAT[] =
    "clap.audio-ports-activation/draft-2";
 
 #ifdef __cplusplus

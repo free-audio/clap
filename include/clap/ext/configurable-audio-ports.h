@@ -9,9 +9,12 @@ extern "C" {
 // This extension lets the host configure the plugin's input and output audio ports.
 // This is a "push" approach to audio ports configuration.
 
-// This extension ID contains `draft', yet it is stable.
-// See conventions/extension-id.md for more info.
 static CLAP_CONSTEXPR const char CLAP_EXT_CONFIGURABLE_AUDIO_PORTS[] =
+   "clap.configurable-audio-ports/1";
+
+// The latest draft is 100% compatible.
+// This compat ID may be removed in 2026.
+static CLAP_CONSTEXPR const char CLAP_EXT_CONFIGURABLE_AUDIO_PORTS_COMPAT[] =
    "clap.configurable-audio-ports.draft1";
 
 typedef struct clap_audio_port_configuration_request {

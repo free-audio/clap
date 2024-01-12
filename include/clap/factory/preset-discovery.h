@@ -49,6 +49,10 @@
 // Use it to retrieve const clap_preset_discovery_factory_t* from
 // clap_plugin_entry.get_factory()
 static const CLAP_CONSTEXPR char CLAP_PRESET_DISCOVERY_FACTORY_ID[] =
+   "clap.preset-discovery-factory";
+
+// The latest draft is 100% compatible
+static const CLAP_CONSTEXPR char CLAP_PRESET_DISCOVERY_FACTORY_ID_COMPAT[] =
    "clap.preset-discovery-factory/draft-2";
 
 #ifdef __cplusplus

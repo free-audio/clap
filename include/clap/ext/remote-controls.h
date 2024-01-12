@@ -31,9 +31,10 @@
 // Pressing that button once gets you to the first page of the section.
 // Press it again to cycle through the section's pages.
 
-// This extension ID contains `draft', yet it is stable.
-// See conventions/extension-id.md for more info.
-static CLAP_CONSTEXPR const char CLAP_EXT_REMOTE_CONTROLS[] = "clap.remote-controls.draft/2";
+static CLAP_CONSTEXPR const char CLAP_EXT_REMOTE_CONTROLS[] = "clap.remote-controls/2";
+
+// The latest draft is 100% compatible
+static CLAP_CONSTEXPR const char CLAP_EXT_REMOTE_CONTROLS_COMPAT[] = "clap.remote-controls.draft/2";
 
 #ifdef __cplusplus
 extern "C" {
