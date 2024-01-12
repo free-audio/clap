@@ -51,7 +51,8 @@
 static const CLAP_CONSTEXPR char CLAP_PRESET_DISCOVERY_FACTORY_ID[] =
    "clap.preset-discovery-factory/2";
 
-// The latest draft is 100% compatible
+// The latest draft is 100% compatible.
+// This compat ID may be removed in 2026.
 static const CLAP_CONSTEXPR char CLAP_PRESET_DISCOVERY_FACTORY_ID_COMPAT[] =
    "clap.preset-discovery-factory/draft-2";
 
