@@ -1,5 +1,9 @@
 # Changes in 1.2.0
 
+## New conventions
+
+* [extension-id](conventions/extension-id.md): introduce some rules about extension ID naming.
+
 ## Stabilize extensions
 
 * `CLAP_EXT_AMBISONIC`
@@ -13,8 +17,17 @@
 * `CLAP_EXT_SURROUND`
 * `CLAP_EXT_TRACK_INFO`
 
-Note: we kept the last draft extension ID in order to not break plugins already using it.
-Note: remaining draft extension ID as been updated to follow the new convention.
+### Notes regarding extension ID change after draft stabilization
+
+We changed the extension ID in the process of stabilization which leads to a **break**.
+
+To mitigate this transition, we provide a compatibily extension ID which can be used to match and use the draft extension as they are 100% compatible.
+
+For example, `CLAP_EXT_CONTEXT_MENU` for the stable ID and `CLAP_EXT_CONTEXT_MENU_COMPAT` for the draft ID.
+
+As you can see in [extension-id](conventions/extension-id.md), we introduce some rules, so this kind of breaks won't happen again.
+
+We may decide to remove `CLAP_EXT_CONTEXT_MENU_COMPAT` in the future once their usage becomes anecdotic.
 
 ## Removed draft extensions
 
@@ -37,10 +50,6 @@ Note: we kept the last draft factory ID in order to not break plugins already us
 * [plugin.h](include/clap/plugin.h): Style cleanup
 * [params.h](include/clap/ext/params.h): Fix incorrect function name reference
 * [latency.h](include/clap/ext/latency.h): Require the plugin to be activated to get the latency and clarify that the latency can only be fetched when the plugin is activated
-
-## Conventions
-
-* [extension-id](conventions/extension-id.md): introduce some rules about extension ID naming.
 
 ## Plugin Template
 
