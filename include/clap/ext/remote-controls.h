@@ -34,6 +34,7 @@
 static CLAP_CONSTEXPR const char CLAP_EXT_REMOTE_CONTROLS[] = "clap.remote-controls/2";
 
 // The latest draft is 100% compatible
+// This compat ID may be removed in 2026.
 static CLAP_CONSTEXPR const char CLAP_EXT_REMOTE_CONTROLS_COMPAT[] = "clap.remote-controls.draft/2";
 
 #ifdef __cplusplus
