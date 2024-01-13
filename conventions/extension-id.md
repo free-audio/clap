@@ -27,6 +27,6 @@ Everything about the extension id symmetrically applies to factory id.
 
 ## History
 
-Before this document was written, existing extensions didn't honor these rules.
+Before version 1.2.0 when this document was written, existing extensions didn't honor these rules.
 We wanted to stabilize some draft extensions without breaking compatibility, yet their extension IDs contained the string `draft`.
 While these strings weren't user-facing, we still wanted to remove them, so we updated the extension IDs according to this document and introduced IDs with `_COMPAT` suffixes to provide backward compatibility with the draft versions.
