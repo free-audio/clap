@@ -21,13 +21,13 @@
 
 We changed the extension ID in the process of stabilization which leads to a **break**.
 
-To mitigate this transition, we provide a compatibily extension ID which can be used to match and use the draft extension as they are 100% compatible.
+To mitigate this transition, we've provided compatibility extension IDs which can be used to match and use the latest draft extensions as they are 100% compatible.
 
 For example, `CLAP_EXT_CONTEXT_MENU` for the stable ID and `CLAP_EXT_CONTEXT_MENU_COMPAT` for the draft ID.
 
-As you can see in [extension-id](conventions/extension-id.md), we introduce some rules, so this kind of breaks won't happen again.
+As you can see in [extension-id](conventions/extension-id.md), we introduced some rules, so this kind of break won't happen again.
 
-We may decide to remove `CLAP_EXT_CONTEXT_MENU_COMPAT` in the future once their usage becomes anecdotic.
+We may decide to remove the `*_COMPAT` IDs in the future once their usage becomes antiquated.
 
 ## Removed draft extensions
 
