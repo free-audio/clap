@@ -47,6 +47,8 @@ Note: we kept the last draft factory ID in order to not break plugins already us
 ## Documentation
 
 * [events.h](include/clap/events.h): Clarify how "Port Channel Key NoteID" matching works
+* [events.h](include/clap/events.h): Clarify how `clap_event_note` fields map to MIDI, Host, etc...
+* [events.h](include/clap/events.h): Expand clap note expression documentation
 * [plugin.h](include/clap/plugin.h): Style cleanup
 * [params.h](include/clap/ext/params.h): Fix incorrect function name reference
 * [latency.h](include/clap/ext/latency.h): Require the plugin to be activated to get the latency and clarify that the latency can only be fetched when the plugin is activated

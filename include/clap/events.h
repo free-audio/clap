@@ -151,13 +151,28 @@ enum {
 typedef struct clap_event_note {
    clap_event_header_t header;
 
-   int32_t note_id; // -1 if unspecified, otherwise >=0
-   int16_t port_index;
-   int16_t channel;  // 0..15
-   int16_t key;      // 0..127
+   int32_t note_id; // host provided note id >= 0, or -1 if unspecified or wildcard
+   int16_t port_index; // port index from ext/note-ports; -1 for wildcard
+   int16_t channel;  // 0..15, same as MIDI1 Channel Number, -1 for wildcard
+   int16_t key;      // 0..127, same as MIDI1 Key Number (60==Middle C), -1 for wildcard
    double  velocity; // 0..1
 } clap_event_note_t;
 
+// Note Expressions are well named modifications of a voice targeted to
+// voices using the same wildcard rules described above. Note Expressions are delivered
+// as sample accurate events and should be applied at the sample when received.
+//
+// Note expressions are a statement of value, not cumulative. A PAN event of 0 followed by 1
+// followed by 0.5 would pan hard left, hard right, and center. They are intended as
+// an offset from the non-note-expression voice default. A voice which had a volume of
+// -20db absent note expressions which received a +4db note expression would move the
+// voice to -16db.
+//
+// A plugin which receives a note expression at the same sample as a NOTE_ON event
+// should apply that expression to all generated samples. A plugin which receives
+// a note expression after a NOTE_ON event should initiate the voice with default
+// values and then apply the note expression when received. A plugin may make a choice
+// to smooth note expression streams.
 enum {
    // with 0 < x <= 4, plain = 20 * log(x)
    CLAP_NOTE_EXPRESSION_VOLUME = 0,
@@ -165,7 +180,7 @@ enum {
    // pan, 0 left, 0.5 center, 1 right
    CLAP_NOTE_EXPRESSION_PAN = 1,
 
-   // relative tuning in semitone, from -120 to +120
+   // relative tuning in semitone, from -120 to +120, in equal temperament
    CLAP_NOTE_EXPRESSION_TUNING = 2,
 
    // 0..1
