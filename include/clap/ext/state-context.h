@@ -40,12 +40,13 @@ static CLAP_CONSTEXPR const char CLAP_EXT_STATE_CONTEXT_COMPAT[] = "clap.state-c
 
 enum clap_plugin_state_context_type {
    // suitable for storing and loading a state as a preset
-   CLAP_STATE_CONTEXT_FOR_PRESET = 1,
+   CLAP_STATE_CONTEXT_FOR_PRESET = 2,
 
   // suitable for duplicating a plugin instance
-   CLAP_STATE_CONTEXT_FOR_DUPLICATE = 2,
+   CLAP_STATE_CONTEXT_FOR_DUPLICATE = 1,
 
    // suitable for storing and loading a state within a project/song
+   // Available since CLAP 1.2.0.
    CLAP_STATE_CONTEXT_FOR_PROJECT = 3,
 };
 
