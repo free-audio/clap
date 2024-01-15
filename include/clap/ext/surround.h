@@ -24,9 +24,11 @@
 // 3. host calls clap_plugin_surround->get_channel_map()
 // 4. host activates the plugin and can start processing audio
 
-// This extension ID contains `draft', yet it is stable.
-// See conventions/extension-id.md for more info.
-static CLAP_CONSTEXPR const char CLAP_EXT_SURROUND[] = "clap.surround.draft/4";
+static CLAP_CONSTEXPR const char CLAP_EXT_SURROUND[] = "clap.surround/4";
+
+// The latest draft is 100% compatible.
+// This compat ID may be removed in 2026.
+static CLAP_CONSTEXPR const char CLAP_EXT_SURROUND_COMPAT[] = "clap.surround.draft/4";
 
 static CLAP_CONSTEXPR const char CLAP_PORT_SURROUND[] = "surround";
 

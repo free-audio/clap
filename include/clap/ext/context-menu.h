@@ -5,9 +5,11 @@
 // This extension lets the host and plugin exchange menu items and let the plugin ask the host to
 // show its context menu.
 
-// This extension ID contains `draft', yet it is stable.
-// See conventions/extension-id.md for more info.
-static CLAP_CONSTEXPR const char CLAP_EXT_CONTEXT_MENU[] = "clap.context-menu.draft/0";
+static CLAP_CONSTEXPR const char CLAP_EXT_CONTEXT_MENU[] = "clap.context-menu/1";
+
+// The latest draft is 100% compatible.
+// This compat ID may be removed in 2026.
+static CLAP_CONSTEXPR const char CLAP_EXT_CONTEXT_MENU_COMPAT[] = "clap.context-menu.draft/0";
 
 #ifdef __cplusplus
 extern "C" {
