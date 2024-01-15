@@ -180,9 +180,9 @@ enum {
    // pan, 0 left, 0.5 center, 1 right
    CLAP_NOTE_EXPRESSION_PAN = 1,
 
-   // relative tuning in semitones, from -120 to +120. Semitones are in
-   // equal temperament and are doubles; The resulting note would be
-   // retuned by `100 * evt->value` cents
+   // Relative tuning in semitones, from -120 to +120. Semitones are in
+   // equal temperament and are doubles; the resulting note would be
+   // retuned by `100 * evt->value` cents.
    CLAP_NOTE_EXPRESSION_TUNING = 2,
 
    // 0..1
