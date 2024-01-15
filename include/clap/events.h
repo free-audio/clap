@@ -151,8 +151,8 @@ enum {
 typedef struct clap_event_note {
    clap_event_header_t header;
 
-   int32_t note_id; // host provided note id, -1 if unspecified or wildcard
-   int16_t port_index; // Port index from ext/note-ports; -1 for wildcard
+   int32_t note_id; // host provided note id >= 0, or -1 if unspecified or wildcard
+   int16_t port_index; // port index from ext/note-ports; -1 for wildcard
    int16_t channel;  // 0..15, same as MIDI1 Channel Number, -1 for wildcard
    int16_t key;      // 0..127, same as MIDI1 Key Number (60==Middle C), -1 for wildcard
    double  velocity; // 0..1
