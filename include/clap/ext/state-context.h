@@ -32,21 +32,16 @@
 extern "C" {
 #endif
 
-static CLAP_CONSTEXPR const char CLAP_EXT_STATE_CONTEXT[] = "clap.state-context/1";
-
-// The latest draft is 100% compatible.
-// This compat ID may be removed in 2026.
-static CLAP_CONSTEXPR const char CLAP_EXT_STATE_CONTEXT_COMPAT[] = "clap.state-context.draft/1";
+static CLAP_CONSTEXPR const char CLAP_EXT_STATE_CONTEXT[] = "clap.state-context/2";
 
 enum clap_plugin_state_context_type {
    // suitable for storing and loading a state as a preset
-   CLAP_STATE_CONTEXT_FOR_PRESET = 2,
+   CLAP_STATE_CONTEXT_FOR_PRESET = 1,
 
   // suitable for duplicating a plugin instance
-   CLAP_STATE_CONTEXT_FOR_DUPLICATE = 1,
+   CLAP_STATE_CONTEXT_FOR_DUPLICATE = 2,
 
    // suitable for storing and loading a state within a project/song
-   // Available since CLAP 1.2.0.
    CLAP_STATE_CONTEXT_FOR_PROJECT = 3,
 };
 
