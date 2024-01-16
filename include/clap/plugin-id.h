@@ -11,8 +11,10 @@ typedef struct clap_plugin_id {
    // eg:
    //     T binary_id;
    //     const uint8_t * data = (const uint8_t *)&binary_id;
-   //     char *buffer = malloc(2 * sizeof(binary_id) + 1);
+   //     const size_t buffer_size = 2 * sizeof(binary_id) + 1;
+   //     char *buffer = malloc(buffer_size);
    //     hex_encode(data, sizeof (binary_id), buffer);
+   //     buffer[buffer_size - 1] = '\0';
    //
    // Note: if the binary id is sensible to the CPU endianness, the encoded id will be too.
    // As a result, the id should be decoded immediately by the consumer.
