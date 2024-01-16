@@ -13,7 +13,7 @@
 ///
 /// If you need to know if the save/load operation is meant for duplicating a plugin
 /// instance, for saving/loading a plugin preset or while saving/loading the project
-/// then have a look at clap_plugin_state_context_t.
+/// then consider implementing CLAP_EXT_STATE_CONTEXT in addition to CLAP_EXT_STATE.
 
 static CLAP_CONSTEXPR const char CLAP_EXT_STATE[] = "clap.state";
 
