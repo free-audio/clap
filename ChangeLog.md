@@ -66,6 +66,11 @@ Note: we kept the last draft factory ID in order to not break plugins already us
 
 * `clap.h` no longer includes headers from `ext/draft` or `factory/draft`. Draft extension and factory headers must now be explicitly included, either individually or via the `draft.h` header.
 
+## Other changes
+
+* [voice-info.h](include/clap/ext/voice-info.h): Make the voice info id `CLAP_CONSTEXPR` like all other ids
+* [preset-load.h](include/clap/ext/preset-load.h): Make the preset load id and compat id `CLAP_CONSTEXPR` like all other ids
+
 # Changes in 1.1.10
 
 * [params.h](include/clap/ext/params.h): add `CLAP_PARAM_IS_ENUM` flag.
