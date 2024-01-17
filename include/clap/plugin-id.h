@@ -11,7 +11,7 @@ typedef struct clap_plugin_id {
    // CLAP: use the plugin id
    //   eg: "com.u-he.diva"
    //
-   // AU: format the string like "manu:type:subt"
+   // AU: format the string like "type:subt:manu"
    //   eg: "aumu:SgXT:VmbA"
    //
    // VST2: print the id as a signed 32-bits integer
