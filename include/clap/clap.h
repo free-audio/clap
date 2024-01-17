@@ -33,7 +33,7 @@
 #include "plugin.h"
 #include "plugin-features.h"
 #include "host.h"
-#include "plugin-id.h"
+#include "universal-plugin-id.h"
 
 #include "ext/ambisonic.h"
 #include "ext/audio-ports-activation.h"

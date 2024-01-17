@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../id.h"
-#include "../../plugin-id.h"
+#include "../../universal-plugin-id.h"
 #include "../../stream.h"
 #include "../../version.h"
 
@@ -12,8 +12,8 @@ extern "C" {
 typedef struct clap_plugin_state_converter_descriptor {
    clap_version_t clap_version;
 
-   clap_plugin_id_t src_plugin_id;
-   clap_plugin_id_t dst_plugin_id;
+   clap_universal_plugin_id_t src_plugin_id;
+   clap_universal_plugin_id_t dst_plugin_id;
 
    const char *name;
    const char *vendor;

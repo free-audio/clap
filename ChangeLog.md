@@ -36,6 +36,7 @@ We may decide to remove the `*_COMPAT` IDs in the future once their usage become
 * `CLAP_EXT_CV` the interface wasn't satisfying.
 
 ## Stabilize factory
+
 * `CLAP_PRESET_DISCOVERY_FACTORY_ID`
 
 Note: we kept the last draft factory ID in order to not break plugins already using it.
@@ -43,6 +44,10 @@ Note: we kept the last draft factory ID in order to not break plugins already us
 ## Plugin State Converter
 
 * Introduction of a new factory which provides a plugin state convertion mechanism.
+
+## Refactoring
+
+* `clap_plugin_id_t` was renamed to `clap_universal_plugin_id_t` to make it clear that it can describe more than just a CLAP plugin ID.
 
 ## Documentation
 

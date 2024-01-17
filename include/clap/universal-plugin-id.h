@@ -1,9 +1,12 @@
 #pragma once
 
 // Pair of plugin ABI and plugin identifier.
-typedef struct clap_plugin_id {
+//
+// If you want to represent other formats please send us an update to the comment with the
+// name of the abi and the representation of the id.
+typedef struct clap_universal_plugin_id {
    // The plugin ABI name, in lowercase.
-   // eg: "clap", "vst3", "vst2", "au", "lv2", ...
+   // eg: "clap", "vst3", "vst2", "au", ...
    const char *abi;
 
    // The plugin ID, formatted as follow:
@@ -20,4 +23,4 @@ typedef struct clap_plugin_id {
    // VST3: print the id as a standard UUID
    //   eg: "123e4567-e89b-12d3-a456-426614174000"
    const char *id;
-} clap_plugin_id_t;
+} clap_universal_plugin_id_t;

@@ -44,7 +44,7 @@
 #include "../private/std.h"
 #include "../private/macros.h"
 #include "../version.h"
-#include "../plugin-id.h"
+#include "../universal-plugin-id.h"
 
 // Use it to retrieve const clap_preset_discovery_factory_t* from
 // clap_plugin_entry.get_factory()
@@ -133,7 +133,7 @@ typedef struct clap_preset_discovery_metadata_receiver {
 
    // Adds a plug-in id that this preset can be used with.
    void(CLAP_ABI *add_plugin_id)(const struct clap_preset_discovery_metadata_receiver *receiver,
-                                 const clap_plugin_id_t                               *plugin_id);
+                                 const clap_universal_plugin_id_t                     *plugin_id);
 
    // Sets the sound pack to which the preset belongs to.
    void(CLAP_ABI *set_soundpack_id)(const struct clap_preset_discovery_metadata_receiver *receiver,
