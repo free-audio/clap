@@ -5,11 +5,11 @@
 // If you want to represent other formats please send us an update to the comment with the
 // name of the abi and the representation of the id.
 typedef struct clap_universal_plugin_id {
-   // The plugin ABI name, in lowercase.
+   // The plugin ABI name, in lowercase and null-terminated.
    // eg: "clap", "vst3", "vst2", "au", ...
    const char *abi;
 
-   // The plugin ID, formatted as follow:
+   // The plugin ID, null-terminated and formatted as follows:
    //
    // CLAP: use the plugin id
    //   eg: "com.u-he.diva"
