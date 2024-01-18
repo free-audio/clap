@@ -43,6 +43,7 @@
 
 #include "../private/std.h"
 #include "../private/macros.h"
+#include "../timestamp.h"
 #include "../version.h"
 #include "../universal-plugin-id.h"
 
@@ -88,16 +89,6 @@ enum clap_preset_discovery_flags {
    // This preset is a user's favorite
    CLAP_PRESET_DISCOVERY_IS_FAVORITE = 1 << 3,
 };
-
-// TODO: move clap_timestamp_t, CLAP_TIMESTAMP_UNKNOWN and clap_plugin_id_t to parent files once we
-// settle with preset discovery
-
-// This type defines a timestamp: the number of seconds since UNIX EPOCH.
-// See C's time_t time(time_t *).
-typedef uint64_t clap_timestamp_t;
-
-// Value for unknown timestamp.
-static const clap_timestamp_t CLAP_TIMESTAMP_UNKNOWN = 0;
 
 // Receiver that receives the metadata for a single preset file.
 // The host would define the various callbacks in this interface and the preset parser function
