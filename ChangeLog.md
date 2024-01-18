@@ -48,6 +48,7 @@ Note: we kept the last draft factory ID in order to not break plugins already us
 ## Refactoring
 
 * `clap_plugin_id_t` was renamed to `clap_universal_plugin_id_t` to make it clear that it can describe more than just a CLAP plugin ID.
+* `clap_timestamp_t` was renamed to `clap_timestamp` to be consistent with other types, like e.g. `clap_id`. Also it was moved to a separate header as `CLAP_PRESET_DISCOVERY_FACTORY_ID` was stabilized.
 
 ## Documentation
 

@@ -43,6 +43,7 @@
 
 #include "../private/std.h"
 #include "../private/macros.h"
+#include "../timestamp.h"
 #include "../version.h"
 #include "../universal-plugin-id.h"
 
@@ -88,16 +89,6 @@ enum clap_preset_discovery_flags {
    // This preset is a user's favorite
    CLAP_PRESET_DISCOVERY_IS_FAVORITE = 1 << 3,
 };
-
-// TODO: move clap_timestamp_t, CLAP_TIMESTAMP_UNKNOWN and clap_plugin_id_t to parent files once we
-// settle with preset discovery
-
-// This type defines a timestamp: the number of seconds since UNIX EPOCH.
-// See C's time_t time(time_t *).
-typedef uint64_t clap_timestamp_t;
-
-// Value for unknown timestamp.
-static const clap_timestamp_t CLAP_TIMESTAMP_UNKNOWN = 0;
 
 // Receiver that receives the metadata for a single preset file.
 // The host would define the various callbacks in this interface and the preset parser function
@@ -157,8 +148,8 @@ typedef struct clap_preset_discovery_metadata_receiver {
    // If this function is not called, then the indexer may look at the file's creation and
    // modification time.
    void(CLAP_ABI *set_timestamps)(const struct clap_preset_discovery_metadata_receiver *receiver,
-                                  clap_timestamp_t creation_time,
-                                  clap_timestamp_t modification_time);
+                                  clap_timestamp creation_time,
+                                  clap_timestamp modification_time);
 
    // Adds a feature to the preset.
    //
@@ -204,14 +195,14 @@ typedef struct clap_preset_discovery_location {
 
 // Describes an installed sound pack.
 typedef struct clap_preset_discovery_soundpack {
-   uint32_t         flags;             // see enum clap_preset_discovery_flags
-   const char      *id;                // sound pack identifier
-   const char      *name;              // name of this sound pack
-   const char      *description;       // optional, reasonably short description of the sound pack
-   const char      *homepage_url;      // optional, url to the pack's homepage
-   const char      *vendor;            // optional, sound pack's vendor
-   const char      *image_path;        // optional, an image on disk
-   clap_timestamp_t release_timestamp; // release date, CLAP_TIMESTAMP_UNKNOWN if unavailable
+   uint32_t       flags;             // see enum clap_preset_discovery_flags
+   const char    *id;                // sound pack identifier
+   const char    *name;              // name of this sound pack
+   const char    *description;       // optional, reasonably short description of the sound pack
+   const char    *homepage_url;      // optional, url to the pack's homepage
+   const char    *vendor;            // optional, sound pack's vendor
+   const char    *image_path;        // optional, an image on disk
+   clap_timestamp release_timestamp; // release date, CLAP_TIMESTAMP_UNKNOWN if unavailable
 } clap_preset_discovery_soundpack_t;
 
 // Describes a preset provider
