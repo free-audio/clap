@@ -30,11 +30,6 @@
 #include "factory/plugin-factory.h"
 #include "factory/preset-discovery.h"
 
-#include "plugin.h"
-#include "plugin-features.h"
-#include "host.h"
-#include "universal-plugin-id.h"
-
 #include "ext/ambisonic.h"
 #include "ext/audio-ports-activation.h"
 #include "ext/audio-ports-config.h"
