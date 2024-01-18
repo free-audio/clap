@@ -2,11 +2,11 @@
 
 #include "../plugin.h"
 
-static const char CLAP_EXT_PRESET_LOAD[] = "clap.preset-load/2";
+static CLAP_CONSTEXPR const char CLAP_EXT_PRESET_LOAD[] = "clap.preset-load/2";
 
 // The latest draft is 100% compatible.
 // This compat ID may be removed in 2026.
-static const char CLAP_EXT_PRESET_LOAD_COMPAT[] = "clap.preset-load.draft/2";
+static CLAP_CONSTEXPR const char CLAP_EXT_PRESET_LOAD_COMPAT[] = "clap.preset-load.draft/2";
 
 #ifdef __cplusplus
 extern "C" {
