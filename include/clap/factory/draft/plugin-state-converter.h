@@ -15,10 +15,11 @@ typedef struct clap_plugin_state_converter_descriptor {
    clap_universal_plugin_id_t src_plugin_id;
    clap_universal_plugin_id_t dst_plugin_id;
 
-   const char *name;
-   const char *vendor;
-   const char *version;
-   const char *description;
+   const char *id;          // eg: "com.u-he.diva-converter", mandatory
+   const char *name;        // eg: "Diva Converter", mandatory
+   const char *vendor;      // eg: "u-he"
+   const char *version;     // eg: 1.1.5
+   const char *description; // eg: "Official state converter for u-he Diva."
 } clap_plugin_state_converter_descriptor_t;
 
 // This interface provides a mechanism for the host to convert a plugin state and its automation
@@ -85,12 +86,12 @@ typedef struct clap_plugin_state_converter_factory {
    const clap_plugin_state_converter_descriptor_t *(*get_descriptor)(
       const struct clap_plugin_state_converter_factory *factory, uint32_t index);
 
-   // Create a plugin state converter by its index.
+   // Create a plugin state converter by its converter_id.
    // The returned pointer must be freed by calling converter->destroy(converter);
    // Returns null in case of error.
    // [thread-safe]
    clap_plugin_state_converter_t *(*create)(
-      const struct clap_plugin_state_converter_factory *factory, uint32_t index);
+      const struct clap_plugin_state_converter_factory *factory, const char *converter_id);
 } clap_plugin_state_converter_factory_t;
 
 #ifdef __cplusplus
