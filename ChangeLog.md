@@ -65,7 +65,7 @@ Note: we kept the last draft factory ID in order to not break plugins already us
 
 ## Organization
 
-* `clap.h` no longer includes headers from `ext/draft` or `factory/draft`. Draft extension and factory headers must now be explicitly included, either individually or via the `draft.h` header.
+* `clap.h` no longer includes headers from `ext/draft` or `factory/draft`. Draft extension and factory headers must now be explicitly included, either individually or via the `all.h` header.
 
 ## Other changes
 
