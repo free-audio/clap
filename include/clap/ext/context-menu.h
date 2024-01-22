@@ -1,11 +1,15 @@
 #pragma once
 
-#include "../../plugin.h"
+#include "../plugin.h"
 
 // This extension lets the host and plugin exchange menu items and let the plugin ask the host to
 // show its context menu.
 
-static CLAP_CONSTEXPR const char CLAP_EXT_CONTEXT_MENU[] = "clap.context-menu.draft/0";
+static CLAP_CONSTEXPR const char CLAP_EXT_CONTEXT_MENU[] = "clap.context-menu/1";
+
+// The latest draft is 100% compatible.
+// This compat ID may be removed in 2026.
+static CLAP_CONSTEXPR const char CLAP_EXT_CONTEXT_MENU_COMPAT[] = "clap.context-menu.draft/0";
 
 #ifdef __cplusplus
 extern "C" {
@@ -15,7 +19,6 @@ extern "C" {
 enum {
    CLAP_CONTEXT_MENU_TARGET_KIND_GLOBAL = 0,
    CLAP_CONTEXT_MENU_TARGET_KIND_PARAM = 1,
-   // TODO: kind trigger once the trigger ext is marked as stable
 };
 
 // Describes the context menu target

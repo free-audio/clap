@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../plugin.h"
-#include "../../stream.h"
+#include "../plugin.h"
+#include "../stream.h"
 
 /// @page state-context extension
 /// @brief extended state handling
@@ -10,7 +10,8 @@
 /// on the context.
 ///
 /// Briefly, when loading a preset or duplicating a device, the plugin may want to partially load
-/// the state and initialize certain things differently.
+/// the state and initialize certain things differently, like handling limited resources or fixed
+/// connections to external hardware resources.
 ///
 /// Save and Load operations may have a different context.
 /// All three operations should be equivalent:
@@ -20,21 +21,28 @@
 ///        clap_plugin_state_context.save(CLAP_STATE_CONTEXT_FOR_PRESET),
 ///        CLAP_STATE_CONTEXT_FOR_PRESET)
 ///
+/// If in doubt, fallback to clap_plugin_state.
+///
 /// If the plugin implements CLAP_EXT_STATE_CONTEXT then it is mandatory to also implement
 /// CLAP_EXT_STATE.
+///
+/// It is unspecified which context is equivalent to clap_plugin_state.{save,load}()
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-static CLAP_CONSTEXPR const char CLAP_EXT_STATE_CONTEXT[] = "clap.state-context.draft/1";
+static CLAP_CONSTEXPR const char CLAP_EXT_STATE_CONTEXT[] = "clap.state-context/2";
 
 enum clap_plugin_state_context_type {
-   // suitable for duplicating a plugin instance
-   CLAP_STATE_CONTEXT_FOR_DUPLICATE = 1,
+   // suitable for storing and loading a state as a preset
+   CLAP_STATE_CONTEXT_FOR_PRESET = 1,
 
-   // suitable for loading a state as a preset
-   CLAP_STATE_CONTEXT_FOR_PRESET = 2,
+  // suitable for duplicating a plugin instance
+   CLAP_STATE_CONTEXT_FOR_DUPLICATE = 2,
+
+   // suitable for storing and loading a state within a project/song
+   CLAP_STATE_CONTEXT_FOR_PROJECT = 3,
 };
 
 typedef struct clap_plugin_state_context {

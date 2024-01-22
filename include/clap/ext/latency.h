@@ -8,10 +8,9 @@ static CLAP_CONSTEXPR const char CLAP_EXT_LATENCY[] = "clap.latency";
 extern "C" {
 #endif
 
-// The audio ports scan has to be done while the plugin is deactivated.
 typedef struct clap_plugin_latency {
    // Returns the plugin latency in samples.
-   // [main-thread]
+   // [main-thread & active]
    uint32_t(CLAP_ABI *get)(const clap_plugin_t *plugin);
 } clap_plugin_latency_t;
 

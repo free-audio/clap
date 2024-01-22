@@ -1,10 +1,13 @@
 #pragma once
 
-#include "../../plugin.h"
+#include "../plugin.h"
 
 // This extension can be used to specify the channel mapping used by the plugin.
+static CLAP_CONSTEXPR const char CLAP_EXT_AMBISONIC[] = "clap.ambisonic/3";
 
-static CLAP_CONSTEXPR const char CLAP_EXT_AMBISONIC[] = "clap.ambisonic.draft/3";
+// The latest draft is 100% compatible.
+// This compat ID may be removed in 2026.
+static CLAP_CONSTEXPR const char CLAP_EXT_AMBISONIC_COMPAT[] = "clap.ambisonic.draft/3";
 
 static CLAP_CONSTEXPR const char CLAP_PORT_AMBISONIC[] = "ambisonic";
 

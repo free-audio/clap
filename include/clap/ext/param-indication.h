@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../params.h"
-#include "../../color.h"
+#include "params.h"
+#include "../color.h"
 
 // This extension lets the host tell the plugin to display a little color based indication on the
 // parameter. This can be used to indicate:
@@ -13,7 +13,11 @@
 // The color semantic depends upon the host here and the goal is to have a consistent experience
 // across all plugins.
 
-static CLAP_CONSTEXPR const char CLAP_EXT_PARAM_INDICATION[] = "clap.param-indication.draft/4";
+static CLAP_CONSTEXPR const char CLAP_EXT_PARAM_INDICATION[] = "clap.param-indication/4";
+
+// The latest draft is 100% compatible.
+// This compat ID may be removed in 2026.
+static CLAP_CONSTEXPR const char CLAP_EXT_PARAM_INDICATION_COMPAT[] = "clap.param-indication.draft/4";
 
 #ifdef __cplusplus
 extern "C" {
