@@ -58,3 +58,5 @@ cmake-build*/
 
 # A place to store stuff and get it git ignored
 ignore/*
+
+.DS_Store
