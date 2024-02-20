@@ -144,6 +144,12 @@ enum {
 // Well constructed plugins will search for voices and notes using
 // the entire tuple.
 //
+// In the case of note on events:
+// - The port, channel and key must be specified with a value >= 0
+// - A note-on event with a '-1' for port, channel or key is invalid and
+//   can be rejected or ignored by a plugin or host.
+// - A host which does not support note ids should set the note id to -1.
+//
 // In the case of note choke or end events:
 // - the velocity is ignored.
 // - key and channel are used to match active notes
