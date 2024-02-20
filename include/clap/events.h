@@ -146,8 +146,8 @@ enum {
 //
 // In the case of note on events:
 // - The port, channel and key must be specified with a value >= 0
-// - A note-on event with a '-1' for Port Channel or Key is invalid and
-//   can be rejected or ignored by a plugin.
+// - A note-on event with a '-1' for port, channel or key is invalid and
+//   can be rejected or ignored by a plugin or host.
 // - A host which does not support note ids should set the note id to -1.
 //
 // In the case of note choke or end events:
