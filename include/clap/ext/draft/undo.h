@@ -77,6 +77,10 @@ typedef struct clap_host_undo {
    void(CLAP_ABI *cancel_change)(const clap_host_t *host);
 
    // Completes an undoable change.
+   // At the moment of this function call, plugin_state->save() would include the current change.
+   //
+   // TODO: discuss implicit changes like parameter changes that should not need to be reported to the host.
+   //
    // name: mandatory null terminated string describing the change, this is displayed to the user
    // detlas: optional, they are binary blobs used to perform the undo and redo. When not available
    // the host will save of the plugin and use state->load() instead.
