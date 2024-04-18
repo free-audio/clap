@@ -84,6 +84,12 @@ typedef struct clap_host_undo {
    // name: mandatory null terminated string describing the change, this is displayed to the user
    // detlas: optional, they are binary blobs used to perform the undo and redo. When not available
    // the host will save of the plugin and use state->load() instead.
+   //
+   // Note: the provided delta **must** be serialized in a forward compatible way, because they may be used
+   // for incremental state saving and crash recovery. If the plugin is updated after the host crash,
+   // then we must be able to use delta created with an older version of the plugin.
+   // Worst case plugin->apply_delta() will fail but this is a scenario we prefer to avoid.
+   //
    // [main-thread]
    void(CLAP_ABI *complete_change)(const clap_host_t *host,
                                    const char        *name,
