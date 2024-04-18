@@ -1,0 +1,104 @@
+#pragma once
+
+#include "../../plugin.h"
+
+static CLAP_CONSTEXPR const char CLAP_EXT_UNDO[] = "clap.undo/2";
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/// @page Undo
+///
+/// This extension enables the plugin to merge its undo history with the host.
+/// This leads to a single undo history shared by the host and many plugins.
+///
+/// Calling host->undo() or host->redo() is equivalent to clicking undo/redo within the host's GUI.
+///
+/// If the plugin implements this interface then its undo and redo should be entirely delegated to
+/// the host; clicking in the plugin's UI undo or redo is equivalent to clicking undo or redo in the
+/// host's UI.
+///
+/// Some changes are long running changes, for example a mouse interaction will begin editing some
+/// complex data and it may take multiple events and a long duration to complete the change.
+/// In such case the plugin will call host->begin_change() to indicate the begining of a long
+/// running change and complete the change by calling host->complete_change().
+///
+/// The host may group changes together:
+/// [---------------------------------]
+/// ^-T0      ^-T1    ^-T2            ^-T3
+/// Here a long running change C0 begin at T0.
+/// A instantaneous change C1 at T1, and another one C2 at T2.
+/// Then at T3 the long running change is completed.
+/// The host will then create a single undo step that will merge all the changes into C0.
+///
+/// This leads to another important consideration: starting a long running change without
+/// terminating is **VERY BAD**.
+///
+/// Rationale: multiple designs were considered and this one has the benefit of having a single undo
+/// history. This simplifies the host implementation, leading to less bugs and a more robust design
+/// and maybe an easier experience for the user because there's a single undo context versus one
+/// for the host and one for each plugin instance.
+
+enum clap_undo_context_flags {
+   CLAP_UNDO_IS_WITHIN_CHANGE = 1 << 0,
+
+   // This indicates that the next undo/redo operation is related to this plugin instance
+   CLAP_UNDO_NEXT_UNDO_IS_RELATED = 1 << 1,
+   CLAP_UNDO_NEXT_REDO_IS_RELATED = 1 << 2,
+};
+
+typedef struct clap_plugin_undo {
+   // Applies synchronously a delta.
+   // Returns true on success.
+   // [main-thread]
+   bool(CLAP_ABI *apply_delta)(const clap_plugin_t *plugin, const void *delta, size_t delta_size);
+
+   // Sets the undo context.
+   // flags: bitmask of clap_undo_context_flags values
+   // names: null terminated string if an redo/undo step exists, null otherwise.
+   // [main-thread]
+   void(CLAP_ABI *set_context)(const clap_plugin_t *plugin,
+                               uint64_t             flags,
+                               const char          *undo_name,
+                               const char          *redo_name);
+} clap_plugin_undo_t;
+
+typedef struct clap_host_undo {
+   // Begins a long running change.
+   // The plugin must not call this twice: there must be either a call to cancel_change() or
+   // complete_change() before calling begin_change() again.
+   // [main-thread]
+   void(CLAP_ABI *begin_change)(const clap_host_t *host);
+
+   // Cancels a long running change.
+   // cancel_change() must not be called without a preceding begin_change().
+   // [main-thread]
+   void(CLAP_ABI *cancel_change)(const clap_host_t *host);
+
+   // Completes an undoable change.
+   // name: mandatory null terminated string describing the change, this is displayed to the user
+   // detlas: optional, they are binary blobs used to perform the undo and redo. When not available
+   // the host will save of the plugin and use state->load() instead.
+   // [main-thread]
+   void(CLAP_ABI *complete_change)(const clap_host_t *host,
+                                   const char        *name,
+                                   const void        *redo_delta,
+                                   size_t             redo_delta_size,
+                                   const void        *undo_delta,
+                                   size_t             undo_delta_size);
+
+   // Asks the host to perform the next undo step.
+   // This operation may be asynchronous.
+   // [main-thread]
+   void(CLAP_ABI *undo)(const clap_host_t *host);
+
+   // Asks the host to perform the next redo step.
+   // This operation may be asynchronous.
+   // [main-thread]
+   void(CLAP_ABI *redo)(const clap_host_t *host);
+} clap_host_undo_t;
+
+#ifdef __cplusplus
+}
+#endif
