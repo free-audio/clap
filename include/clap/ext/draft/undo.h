@@ -49,16 +49,19 @@ enum clap_undo_context_flags {
 };
 
 enum clap_undo_delta_lifetime {
+   // No delta will be provided.
+   CLAP_UNDO_DELTA_LIFETIME_VOID = 0,
+
    // The delta is valid for the duration of the plugin instance.
-   CLAP_UNDO_DELTA_LIFETIME_INSTANCE,
+   CLAP_UNDO_DELTA_LIFETIME_INSTANCE = 1,
 
    // The delta is valid beyond the plugin instance, as long as the plugin is compatible with the
    // current format version.
-   CLAP_UNDO_DELTA_LIFETIME_PERSISTANT,
+   CLAP_UNDO_DELTA_LIFETIME_PERSISTANT = 2,
 
    // The plugin guarentees that the delta will be forward compatible with all future version of
    // this plugin.
-   CLAP_UNDO_DELTA_LIFETIME_FOREVER,
+   CLAP_UNDO_DELTA_LIFETIME_FOREVER = 3,
 };
 
 typedef struct clap_undo_delta_properties {
