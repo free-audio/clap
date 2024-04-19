@@ -40,6 +40,9 @@ extern "C" {
 /// and maybe an easier experience for the user because there's a single undo context versus one
 /// for the host and one for each plugin instance.
 
+// When supported, the plugin doesn't need to call host->complete_change() after a parameter set.
+static CLAP_CONSTEXPR const char CLAP_UNDO_IMPLICIT_PARAM_SET[] = "param-set";
+
 enum clap_undo_context_flags {
    // While the host is within a change, it is impossible to perform undo or redo
    CLAP_UNDO_IS_WITHIN_CHANGE = 1 << 0,
@@ -79,6 +82,17 @@ typedef struct clap_plugin_undo {
    bool(CLAP_ABI *can_use_delta_format_version)(const clap_plugin_t *plugin,
                                                 clap_id              format_version);
 
+   // Enables implicit change for this change_type.
+   // See CLAP_UNDO_IMPLICIT_PARAM_SET.
+   //
+   // An implicit change is a change that is reported and understood by the host, so it doesn't
+   // require the plugin declare it by calling host->complete_change().
+   // For example, the host could create the undo step after changing a parameter value.
+   //
+   // Returns true if supported by the plugin.
+   // [main-thread]
+   bool(CLAP_ABI *enable_implicit_change)(const clap_plugin_t *plugin, const char *change_type);
+
    // Applies synchronously a delta.
    // Returns true on success.
    //
@@ -112,9 +126,6 @@ typedef struct clap_host_undo {
 
    // Completes an undoable change.
    // At the moment of this function call, plugin_state->save() would include the current change.
-   //
-   // TODO: discuss implicit changes like parameter changes that should not need to be reported to
-   // the host.
    //
    // name: mandatory null terminated string describing the change, this is displayed to the user
    //
