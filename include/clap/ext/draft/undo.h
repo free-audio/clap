@@ -121,11 +121,11 @@ typedef struct clap_host_undo {
    // detlas: optional, they are binary blobs used to perform the undo and redo. When not available
    // the host will save the plugin state and use state->load() to perform undo and redo.
    //
-   // Note: the provided delta **must** be serialized in a persistant way, because they may
-   // be used for incremental state saving and crash recovery. The plugin can indicate a format
-   // version id for the binary blobs, which the host can use to verify the compatiblilty before
-   // applying the delta. If the plugin is not able to use the delta, a notification should be
-   // produced to the user and the crash recovery will restore the latest saved state.
+   // Note: the provided delta may be used for incremental state saving and crash recovery. The
+   // plugin can indicate a format version id and the validity lifetime for the binary blobs.
+   // The host can use to verify the compatiblilty before applying the delta.
+   // If the plugin is not able to use a delta, a notification should be produced to the user and
+   // the crash recovery will do a best effort job, at least restore the latest saved state.
    //
    // [main-thread]
    void(CLAP_ABI *complete_change)(const clap_host_t *host,
