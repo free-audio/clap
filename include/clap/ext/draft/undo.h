@@ -45,7 +45,7 @@ extern "C" {
 static CLAP_CONSTEXPR const char CLAP_UNDO_IMPLICIT_PARAM_SET[] = "param-set";
 
 enum clap_undo_context_flags {
-   // While the host is within a change, it is impossible to perform undo or redo
+   // While the host is within a change, it is impossible to perform undo or redo.
    CLAP_UNDO_IS_WITHIN_CHANGE = 1 << 0,
 };
 
