@@ -33,10 +33,11 @@ extern "C" {
 /// The host will then create a single undo step that will merge all the changes into C0.
 ///
 /// This leads to another important consideration: starting a long running change without
-/// terminating is **VERY BAD**.
+/// terminating is **VERY BAD**, because while a change is running it is impossible to call undo or
+/// redo.
 ///
 /// Rationale: multiple designs were considered and this one has the benefit of having a single undo
-/// history. This simplifies the host implementation, leading to less bugs and a more robust design
+/// history. This simplifies the host implementation, leading to less bugs, a more robust design
 /// and maybe an easier experience for the user because there's a single undo context versus one
 /// for the host and one for each plugin instance.
 
