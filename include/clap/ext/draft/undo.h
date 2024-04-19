@@ -45,11 +45,33 @@ enum clap_undo_context_flags {
    CLAP_UNDO_IS_WITHIN_CHANGE = 1 << 0,
 };
 
+enum clap_undo_delta_lifetime {
+   // The delta is valid for the duration of the plugin instance.
+   CLAP_UNDO_DELTA_LIFETIME_INSTANCE,
+
+   // The delta is valid beyond the plugin instance, as long as the plugin is compatible with the
+   // current format version.
+   CLAP_UNDO_DELTA_LIFETIME_PERSISTANT,
+
+   // The plugin guarentees that the delta will be forward compatible with all future version of
+   // this plugin.
+   CLAP_UNDO_DELTA_LIFETIME_FOREVER,
+};
+
+typedef struct clap_undo_delta_properties {
+   // This represent the delta format version that the plugin is using.
+   // Set to CLAP_INVALID_ID if irrelevant.
+   clap_id format_version;
+
+   // see clap_undo_delta_lifetime
+   uint32_t lifetime;
+} clap_undo_delta_properties_t;
+
 typedef struct clap_plugin_undo {
-   // Asks the plugin what is the current delta format version.
-   // If the binary isn't supported at all, return CLAP_INVALID_ID.
+   // Asks the plugin the delta properties.
    // [main-thread]
-   clap_id(CLAP_ABI *get_delta_format_version)(const clap_plugin_t *plugin);
+   void(CLAP_ABI *get_delta_properties)(const clap_plugin_t          *plugin,
+                                        clap_undo_delta_properties_t *properties);
 
    // Asks the plugin if it can apply a delta using the given format version.
    // Returns true if it is possible.
