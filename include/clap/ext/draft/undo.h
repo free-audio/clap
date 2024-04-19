@@ -159,7 +159,7 @@ typedef struct clap_host_undo {
    // [main-thread]
    void(CLAP_ABI *redo)(const clap_host_t *host);
 
-   // Subscribes to undo context info.
+   // Subscribes or unsubscribe to undo context info.
    // The plugin may only need the context info if it's GUI is shown and it wants to display
    // undo/redo info.
    //
