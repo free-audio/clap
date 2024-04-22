@@ -157,10 +157,12 @@ typedef struct clap_host_undo {
    // The plugin may only need the context info if it's GUI is shown and it wants to display
    // undo/redo info.
    //
+   // Initial state is unsubscribed.
+   //
    // wants_info: set to true to receive context info
    //
    // [main-thread]
-   void(CLAP_ABI *subscribe_to_context_info)(const clap_host_t *host, bool wants_info);
+   void(CLAP_ABI *set_wants_context_info)(const clap_host_t *host, bool wants_info);
 } clap_host_undo_t;
 
 #ifdef __cplusplus
