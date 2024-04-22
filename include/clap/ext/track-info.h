@@ -31,6 +31,9 @@ enum {
 
    // This plugin is on the master, initialize with appropriate settings for channel processing
    CLAP_TRACK_INFO_IS_FOR_MASTER = (1 << 5),
+
+   // The clap_track_info_t struct contains a track_index. 
+   CLAP_TRACK_INFO_HAS_TRACK_INDEX = (1 << 6),
 };
 
 typedef struct clap_track_info {
@@ -46,6 +49,9 @@ typedef struct clap_track_info {
    // see audio-ports.h, struct clap_audio_port_info to learn how to use channel count and port type
    int32_t     audio_channel_count;
    const char *audio_port_type;
+
+   // Track index within the host, available if flags contain CLAP_TRACK_INFO_HAS_TRACK_INDEX.
+   int32_t track_index;
 } clap_track_info_t;
 
 typedef struct clap_plugin_track_info {
