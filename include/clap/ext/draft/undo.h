@@ -49,29 +49,22 @@ enum clap_undo_context_flags {
    CLAP_UNDO_IS_WITHIN_CHANGE = 1 << 0,
 };
 
-enum clap_undo_delta_lifetime {
-   // No delta will be provided.
-   CLAP_UNDO_DELTA_LIFETIME_VOID = 0,
+enum clap_undo_delta_properties_flags {
+   // If not set, then all clap_undo_delta_properties's attributes becomes irrelevant.
+   // If set, then the plugin will provide deltas in host->change_made().
+   CLAP_UNDO_DELTA_PROPERTIES_HAS_DELTA = 1 << 0,
 
-   // The delta is valid for the duration of the plugin instance.
-   CLAP_UNDO_DELTA_LIFETIME_INSTANCE = 1,
-
-   // The delta is valid beyond the plugin instance, as long as the plugin is compatible with the
-   // current format version.
-   CLAP_UNDO_DELTA_LIFETIME_PERSISTANT = 2,
-
-   // The plugin guarentees that the delta will be forward compatible with all future version of
-   // this plugin.
-   CLAP_UNDO_DELTA_LIFETIME_FOREVER = 3,
+   // If set, then the delta will be re-usable in the future as long as the plugin is
+   // compatible with the given format_version.
+   CLAP_UNDO_DELTA_PROPERTIES_IS_PERSISTANT = 1 << 0,
 };
 
 typedef struct clap_undo_delta_properties {
-   // This represent the delta format version that the plugin is using.
-   // Set to CLAP_INVALID_ID if irrelevant.
-   clap_id format_version;
+   // Bitmask of clap_undo_delta_properties_flags
+   uint64_t flags;
 
-   // see clap_undo_delta_lifetime
-   uint32_t lifetime;
+   // This represent the delta format version that the plugin is using.
+   uint32_t format_version;
 } clap_undo_delta_properties_t;
 
 typedef struct clap_plugin_undo {
