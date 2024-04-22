@@ -41,9 +41,6 @@ extern "C" {
 /// and maybe an easier experience for the user because there's a single undo context versus one
 /// for the host and one for each plugin instance.
 
-// When supported, the plugin doesn't need to call host->change_made() after a parameter set.
-static CLAP_CONSTEXPR const char CLAP_UNDO_IMPLICIT_PARAM_SET[] = "param-set";
-
 enum clap_undo_context_flags {
    // While the host is within a change, it is impossible to perform undo or redo.
    CLAP_UNDO_IS_WITHIN_CHANGE = 1 << 0,
@@ -78,17 +75,6 @@ typedef struct clap_plugin_undo {
    // [main-thread]
    bool(CLAP_ABI *can_use_delta_format_version)(const clap_plugin_t *plugin,
                                                 clap_id              format_version);
-
-   // Enables implicit change for this change_type.
-   // See CLAP_UNDO_IMPLICIT_PARAM_SET.
-   //
-   // An implicit change is a change that is reported and understood by the host, so it doesn't
-   // require the plugin declare it by calling host->change_made().
-   // For example, the host could create the undo step after changing a parameter value.
-   //
-   // Returns true if supported by the plugin.
-   // [main-thread]
-   bool(CLAP_ABI *enable_implicit_change)(const clap_plugin_t *plugin, const char *change_type);
 
    // Applies synchronously a delta.
    // Returns true on success.
@@ -134,6 +120,10 @@ typedef struct clap_host_undo {
    // The host can use to verify the compatiblilty before applying the delta.
    // If the plugin is not able to use a delta, a notification should be produced to the user and
    // the crash recovery will do a best effort job, at least restore the latest saved state.
+   //
+   // Special case: for objects with shared and synchronized state, changes shouldn't be reported
+   // as the host already knows about it.
+   // For example, plugin parameters changes shouldn't produce a call to change_made().
    //
    // [main-thread]
    void(CLAP_ABI *change_made)(const clap_host_t *host,
