@@ -22,7 +22,7 @@ extern "C" {
 /// Some changes are long running changes, for example a mouse interaction will begin editing some
 /// complex data and it may take multiple events and a long duration to complete the change.
 /// In such case the plugin will call host->begin_change() to indicate the begining of a long
-/// running change and complete the change by calling host->complete_change().
+/// running change and complete the change by calling host->change_made().
 ///
 /// The host may group changes together:
 /// [---------------------------------]
@@ -41,7 +41,7 @@ extern "C" {
 /// and maybe an easier experience for the user because there's a single undo context versus one
 /// for the host and one for each plugin instance.
 
-// When supported, the plugin doesn't need to call host->complete_change() after a parameter set.
+// When supported, the plugin doesn't need to call host->change_made() after a parameter set.
 static CLAP_CONSTEXPR const char CLAP_UNDO_IMPLICIT_PARAM_SET[] = "param-set";
 
 enum clap_undo_context_flags {
@@ -90,7 +90,7 @@ typedef struct clap_plugin_undo {
    // See CLAP_UNDO_IMPLICIT_PARAM_SET.
    //
    // An implicit change is a change that is reported and understood by the host, so it doesn't
-   // require the plugin declare it by calling host->complete_change().
+   // require the plugin declare it by calling host->change_made().
    // For example, the host could create the undo step after changing a parameter value.
    //
    // Returns true if supported by the plugin.
@@ -119,7 +119,7 @@ typedef struct clap_plugin_undo {
 typedef struct clap_host_undo {
    // Begins a long running change.
    // The plugin must not call this twice: there must be either a call to cancel_change() or
-   // complete_change() before calling begin_change() again.
+   // change_made() before calling begin_change() again.
    // [main-thread]
    void(CLAP_ABI *begin_change)(const clap_host_t *host);
 
@@ -143,12 +143,12 @@ typedef struct clap_host_undo {
    // the crash recovery will do a best effort job, at least restore the latest saved state.
    //
    // [main-thread]
-   void(CLAP_ABI *complete_change)(const clap_host_t *host,
-                                   const char        *name,
-                                   const void        *redo_delta,
-                                   size_t             redo_delta_size,
-                                   const void        *undo_delta,
-                                   size_t             undo_delta_size);
+   void(CLAP_ABI *change_made)(const clap_host_t *host,
+                               const char        *name,
+                               const void        *redo_delta,
+                               size_t             redo_delta_size,
+                               const void        *undo_delta,
+                               size_t             undo_delta_size);
 
    // Asks the host to perform the next undo step.
    // This operation may be asynchronous.
