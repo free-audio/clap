@@ -53,7 +53,7 @@ enum clap_undo_delta_properties_flags {
 
    // If set, then the delta will be re-usable in the future as long as the plugin is
    // compatible with the given format_version.
-   CLAP_UNDO_DELTA_PROPERTIES_IS_PERSISTANT = 1 << 0,
+   CLAP_UNDO_DELTA_PROPERTIES_IS_PERSISTANT = 1 << 1,
 };
 
 typedef struct clap_undo_delta_properties {
