@@ -123,7 +123,7 @@ typedef struct clap_host_undo {
    //
    // Special case: for objects with shared and synchronized state, changes shouldn't be reported
    // as the host already knows about it.
-   // For example, plugin parameters changes shouldn't produce a call to change_made().
+   // For example, plugin parameter changes shouldn't produce a call to change_made().
    //
    // [main-thread]
    void(CLAP_ABI *change_made)(const clap_host_t *host,
