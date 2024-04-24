@@ -47,7 +47,7 @@ enum clap_undo_context_flags {
 };
 
 enum clap_undo_delta_properties_flags {
-   // If not set, then all clap_undo_delta_properties's attributes becomes irrelevant.
+   // If not set, then all clap_undo_delta_properties's attributes become irrelevant.
    // If set, then the plugin will provide deltas in host->change_made().
    CLAP_UNDO_DELTA_PROPERTIES_HAS_DELTA = 1 << 0,
 
