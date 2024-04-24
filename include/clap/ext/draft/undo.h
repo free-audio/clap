@@ -112,7 +112,7 @@ typedef struct clap_host_undo {
    //
    // name: mandatory null terminated string describing the change, this is displayed to the user
    //
-   // detlas: optional, they are binary blobs used to perform the undo and redo. When not available
+   // deltas: optional, they are binary blobs used to perform the undo and redo. When not available
    // the host will save the plugin state and use state->load() to perform undo and redo.
    //
    // Note: the provided delta may be used for incremental state saving and crash recovery. The
