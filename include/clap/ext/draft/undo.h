@@ -117,9 +117,9 @@ typedef struct clap_host_undo {
    //
    // Note: the provided delta may be used for incremental state saving and crash recovery. The
    // plugin can indicate a format version id and the validity lifetime for the binary blobs.
-   // The host can use to verify the compatiblilty before applying the delta.
-   // If the plugin is not able to use a delta, a notification should be produced to the user and
-   // the crash recovery will do a best effort job, at least restore the latest saved state.
+   // The host can use these to verify the compatibility before applying the delta.
+   // If the plugin is unable to use a delta, a notification should be provided to the user and
+   // the crash recovery should perform a best effort job, at least restoring the latest saved state.
    //
    // Special case: for objects with shared and synchronized state, changes shouldn't be reported
    // as the host already knows about it.
