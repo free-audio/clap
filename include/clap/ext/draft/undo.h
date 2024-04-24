@@ -60,7 +60,7 @@ typedef struct clap_undo_delta_properties {
    // Bitmask of clap_undo_delta_properties_flags
    uint64_t flags;
 
-   // This represent the delta format version that the plugin is using.
+   // This represents the delta format version that the plugin is using.
    uint32_t format_version;
 } clap_undo_delta_properties_t;
 
