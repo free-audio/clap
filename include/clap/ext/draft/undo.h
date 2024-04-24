@@ -21,7 +21,7 @@ extern "C" {
 ///
 /// Some changes are long running changes, for example a mouse interaction will begin editing some
 /// complex data and it may take multiple events and a long duration to complete the change.
-/// In such case the plugin will call host->begin_change() to indicate the begining of a long
+/// In such case the plugin will call host->begin_change() to indicate the beginning of a long
 /// running change and complete the change by calling host->change_made().
 ///
 /// The host may group changes together:
