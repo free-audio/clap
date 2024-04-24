@@ -51,9 +51,9 @@ enum clap_undo_delta_properties_flags {
    // If set, then the plugin will provide deltas in host->change_made().
    CLAP_UNDO_DELTA_PROPERTIES_HAS_DELTA = 1 << 0,
 
-   // If set, then the delta will be re-usable in the future as long as the plugin is
+   // If set, then the delta will be reusable in the future as long as the plugin is
    // compatible with the given format_version.
-   CLAP_UNDO_DELTA_PROPERTIES_IS_PERSISTANT = 1 << 1,
+   CLAP_UNDO_DELTA_PROPERTIES_IS_PERSISTENT = 1 << 1,
 };
 
 typedef struct clap_undo_delta_properties {
