@@ -144,15 +144,18 @@ typedef struct clap_host_undo {
    void(CLAP_ABI *redo)(const clap_host_t *host);
 
    // Subscribes to or unsubscribes from undo context info.
-   // The plugin may only need the context info if its GUI is shown and it wants to display
-   // undo/redo info.
+   //
+   // This method helps reducing the number of calls the host has to perform when updating
+   // the undo context info. Consider a large project with 1000+ plugins, we don't want to
+   // call 1000+ times update, while the plugin may only need the context info if its GUI
+   // is shown and it wants to display undo/redo info.
    //
    // Initial state is unsubscribed.
    //
-   // wants_info: set to true to receive context info
+   // is_subscribed: set to true to receive context info
    //
    // [main-thread]
-   void(CLAP_ABI *set_wants_context_info)(const clap_host_t *host, bool wants_info);
+   void(CLAP_ABI *set_context_info_subscription)(const clap_host_t *host, bool is_subscribed);
 } clap_host_undo_t;
 
 #ifdef __cplusplus
