@@ -36,8 +36,8 @@ typedef struct profile_t {
                             // multi-channel profiles: channel is 0..255
                             // group profiles: channel is 16 * group
                             // port profiles: channel is 0
-   uint16_t num_channels;   // single-channel profiles: num_channels is 0..255
-                            // multi-channel profiles: num_channels is 0..255
+   uint16_t num_channels;   // single-channel profiles: num_channels is q
+                            // multi-channel profiles: num_channels is 1..256
                             // group profiles: num_channels is 0
                             // port profiles: num_channels is 0
 };
