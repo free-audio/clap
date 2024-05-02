@@ -57,30 +57,18 @@ typedef struct clap_plugin_midici_profiles {
 
    // Get number of bytes for profile specific data for the specified Inquiry Target.
    // If result=0 there's no data available for this Inquiry Target.
-   // channel defines the destination:
-   //   single-channel profiles: channel is 0..255
-   //   multi-channel profiles: channel is 0..255
-   //   group profiles: channel is 16 * group
-   //   port profiles: channel is 0
    // [main-thread]
    uint32_t(CLAP_ABI *get_data_size)(const clap_plugin_t         *plugin,
                                      uint16_t                     port_index,
 		                     uint32_t                     profile_index,
-                                     byte_t                       channel,
                                      uint8_t                      inquiry_target);
 
    // Get profile specific data for the specified Inquiry Target.
    // buffer must be large enough to contain the number of bytes returned by get_data_size().
-   // channel defines the destination:
-   //   single-channel profiles: channel is 0..255
-   //   multi-channel profiles: channel is 0..255
-   //   group profiles: channel is 16 * group
-   //   port profiles: channel is 0
    // [main-thread]
    bool(CLAP_ABI *get_data)(const clap_plugin_t         *plugin,
                             uint16_t                     port_index,
 	                    uint32_t                     profile_index,
-                            byte_t                       channel,
                             uint8_t                      inquiry_target,
                             const uint8_t               *buffer);
 
