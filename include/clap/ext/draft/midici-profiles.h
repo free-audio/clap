@@ -18,6 +18,8 @@
 //   enabled group profiles: one entry per enabled group. One entry if profile isn't enabled at all.
 //   port profiles: one entry
 
+// This extension can only be used with note ports using the CLAP_NOTE_DIALECT_MIDI2 dialect.
+
 static CLAP_CONSTEXPR const char CLAP_EXT_MIDICI_PROFILES[] = "clap.midici-profiles/draft/1";
 
 #ifdef __cplusplus
