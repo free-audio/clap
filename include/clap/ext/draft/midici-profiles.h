@@ -56,6 +56,7 @@ typedef struct clap_plugin_midici_profiles {
 
    // Get profile specific data for the specified Inquiry Target.
    // Returns true if data is written to stream correctly.
+   // Returns false if there's no data available for this inquiry_target.
    // The profile_index profile must be enabled.
    // [main-thread]
    bool(CLAP_ABI *get_data)(const clap_plugin_t    *plugin,
