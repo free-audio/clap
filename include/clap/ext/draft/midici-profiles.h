@@ -13,9 +13,9 @@
 //
 // clap_plugin_midici_profiles.count()/get() return a list of profile_t structs.
 // There'll typically be multiple entries for a single supported profile_id_t:
-//   enabled single channel profiles: one entry per enabled channel. One entry if profile isn't enabled at all.
-//   enabled multi channel profiles: one entry per enabled block of channels. One entry if profile isn't enabled at all.
-//   enabled group profiles: one entry per enabled group. One entry if profile isn't enabled at all.
+//   enabled single channel profiles: one entry per enabled channel. One entry if profile isn't enabled for any channel.
+//   enabled multi channel profiles: one entry per enabled block of channels. One entry if profile isn't enabled for any channel.
+//   enabled group profiles: one entry per enabled group. One entry if profile isn't enabled for any group.
 //   port profiles: one entry
 
 // Some features of this extension can only be used with note ports using the CLAP_NOTE_DIALECT_MIDI2 dialect (groups in particular).
