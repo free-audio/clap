@@ -5,7 +5,7 @@
 
 //usage examples:
 //- the host can tell a MIDI keyboard the plugin conforms to the drawbar organ profile, so the keyboard can set up its faders for that.
-//- the host can send per-note articulations in MIDI 2.0 protocol note-on attributes if there's an active profile for this.
+//- the host can send per-note articulations in MIDI 2.0 protocol note-on attributes if there's an enabled profile for this.
 
 // background:
 // There are 4 types of profiles: single channel, multi channel, group and function block (called "port" here).
@@ -82,7 +82,7 @@ typedef struct clap_plugin_midici_profiles {
                           byte_t                 channel,
                           uint16_t               num_channels);
 
-   // Disables a profile.
+   // Disables all instances of a profile.
    // Returns true if the profile is disabled when the function returns.
    // Note for hosts: after calling this function count()/get() may have changed !!
    // Note for plugins: do not call clap_host_midici_profiles.changed.
@@ -93,7 +93,7 @@ typedef struct clap_plugin_midici_profiles {
 } clap_plugin_midici_profiles_t;
 
 typedef struct clap_host_midici_profiles {
-   // Informs the host that the available or active profiles changed.
+   // Informs the host that the available or enabled profiles changed.
    // [main-thread]
    void(CLAP_ABI *changed)(const clap_host_t *host);
 } clap_host_midici_profiles_t;
