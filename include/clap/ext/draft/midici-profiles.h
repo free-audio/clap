@@ -42,7 +42,8 @@ typedef struct profile_t {
 };
 
 typedef struct clap_plugin_midici_profiles {
-   // Returns the number of profiles supported.
+   // Returns the number of profile_id_t entries available.
+   // The comments above describe what's supposed to be in the list.
    // [main-thread]
    uint32_t(CLAP_ABI *count)(const clap_plugin_t   *plugin,
                              uint16_t               port_index);
@@ -54,7 +55,7 @@ typedef struct clap_plugin_midici_profiles {
                        uint32_t               profile_index,
                        profile_t             *profile);
 
-   // Get profile specific data for the specified Inquiry Target.
+   // Get profile specific data for the specified inquiry_target.
    // Returns true if data is written to stream correctly.
    // Returns false if there's no data available for this inquiry_target.
    // The profile_index profile must be enabled.
