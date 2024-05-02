@@ -18,10 +18,6 @@
 //   enabled group profiles: one entry per enabled group. One entry if profile isn't enabled at all.
 //   port profiles: one entry
 
-//TODO : for completeness this extension could work for outputs too. A MIDI effect plugin might want to know 
-//       the host can receive per-note articulations in note attributes for example.
-//       can we simply define CLAP_EXT_MIDICI_PROFILES_PLUG_TO_HOST[] = "clap.midici-profiles.plug-to-host/draft/1" ???
-
 static CLAP_CONSTEXPR const char CLAP_EXT_MIDICI_PROFILES[] = "clap.midici-profiles/draft/1";
 
 #ifdef __cplusplus
@@ -51,19 +47,20 @@ typedef struct clap_plugin_midici_profiles {
 
    // Get a profile by index.
    // [main-thread]
-   bool(CLAP_ABI *get)(const clap_plugin_t         *plugin,
-                       uint16_t                     port_index,
-                       uint32_t                     profile_index,
-                       profile_t                   *profile);
+   bool(CLAP_ABI *get)(const clap_plugin_t   *plugin,
+                       uint16_t               port_index,
+                       uint32_t               profile_index,
+                       profile_t             *profile);
 
    // Get profile specific data for the specified Inquiry Target.
    // Returns true if data is written to stream correctly.
+   // The profile_index profile must be enabled.
    // [main-thread]
-   bool(CLAP_ABI *get_data)(const clap_plugin_t         *plugin,
-                            uint16_t                     port_index,
-	                    uint32_t                     profile_index,
-                            uint8_t                      inquiry_target,
-                            const clap_ostream_t        *stream);
+   bool(CLAP_ABI *get_data)(const clap_plugin_t    *plugin,
+                            uint16_t                port_index,
+	                    uint32_t                profile_index,
+                            uint8_t                 inquiry_target,
+                            const clap_ostream_t   *stream);
 
    // Enables a profile, so the plugin knows the host will use it.
    // Returns true if the profile is enabled when the function returns.
@@ -76,20 +73,20 @@ typedef struct clap_plugin_midici_profiles {
    // Note for hosts: after calling this function count()/get() may have changed !!
    // Note for plugins: do not call clap_host_midici_profiles.changed.
    // [main-thread]
-   bool(CLAP_ABI *enable)(const clap_plugin_t    *plugin,
-                          uint16_t                port_index,
-                          profile_id_t            profile,
-                          byte_t                  channel,
-                          uint16_t                num_channels);
+   bool(CLAP_ABI *enable)(const clap_plugin_t   *plugin,
+                          uint16_t               port_index,
+                          profile_id_t           profile,
+                          byte_t                 channel,
+                          uint16_t               num_channels);
 
    // Disables a profile.
    // Returns true if the profile is disabled when the function returns.
    // Note for hosts: after calling this function count()/get() may have changed !!
    // Note for plugins: do not call clap_host_midici_profiles.changed.
    // [main-thread]
-   bool(CLAP_ABI *disable)(const clap_plugin_t  *plugin,
-                           uint16_t              port_index,
-                           profile_id_t          profile);
+   bool(CLAP_ABI *disable)(const clap_plugin_t   *plugin,
+                           uint16_t               port_index,
+                           profile_id_t           profile);
 } clap_plugin_midici_profiles_t;
 
 typedef struct clap_host_midici_profiles {
@@ -97,6 +94,45 @@ typedef struct clap_host_midici_profiles {
    // [main-thread]
    void(CLAP_ABI *changed)(const clap_host_t *host);
 } clap_host_midici_profiles_t;
+
+
+
+
+
+// Below are exactly the same interfaces, but for output ports.
+// A MIDI effect plugin might want to know the host can receive per-note articulations in note attributes for example.
+
+static CLAP_CONSTEXPR const char CLAP_EXT_MIDICI_PROFILES_OUTPUT[] = "clap.midici-profiles-output/draft/1";
+
+typedef struct clap_plugin_midici_profiles_output {
+   void(CLAP_ABI *changed)(const clap_plugin_t *plugin);
+} clap_plugin_midici_profiles_output_t;
+
+typedef struct clap_host_midici_profiles_output {
+   uint32_t(CLAP_ABI *count)(const clap_host_t   *host,
+                             uint16_t             port_index);
+
+   bool(CLAP_ABI *get)(const clap_host_t *host,
+                       uint16_t           port_index,
+                       uint32_t           profile_index,
+                       profile_t         *profile);
+
+   bool(CLAP_ABI *get_data)(const clap_host_t     *host,
+                            uint16_t               port_index,
+	                    uint32_t               profile_index,
+                            uint8_t                inquiry_target,
+                            const clap_ostream_t   *stream);
+
+   bool(CLAP_ABI *enable)(const clap_host_t   *host,
+                          uint16_t             port_index,
+                          profile_id_t         profile,
+                          byte_t               channel,
+                          uint16_t             num_channels);
+
+   bool(CLAP_ABI *disable)(const clap_host_t    *host,
+                           uint16_t              port_index,
+                           profile_id_t          profile);
+} clap_host_midici_profiles_output_t;
 
 #ifdef __cplusplus
 }
