@@ -2,7 +2,7 @@
 
 #include "../../plugin.h"
 
-static CLAP_CONSTEXPR const char CLAP_EXT_RESOURCE_DIRECTORY[] = "clap.resource-directory.draft/0";
+static CLAP_CONSTEXPR const char CLAP_EXT_RESOURCE_DIRECTORY[] = "clap.resource-directory/1";
 
 #ifdef __cplusplus
 extern "C" {

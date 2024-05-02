@@ -6,7 +6,7 @@
 // Use it to retrieve const clap_plugin_invalidation_factory_t* from
 // clap_plugin_entry.get_factory()
 static const CLAP_CONSTEXPR char CLAP_PLUGIN_INVALIDATION_FACTORY_ID[] =
-   "clap.plugin-invalidation-factory/draft0";
+   "clap.plugin-invalidation-factory/1";
 
 #ifdef __cplusplus
 extern "C" {

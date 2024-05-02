@@ -4,7 +4,7 @@
 #include "../../events.h"
 #include "../../string-sizes.h"
 
-static CLAP_CONSTEXPR const char CLAP_EXT_TRIGGERS[] = "clap.triggers.draft/0";
+static CLAP_CONSTEXPR const char CLAP_EXT_TRIGGERS[] = "clap.triggers/1";
 
 #ifdef __cplusplus
 extern "C" {

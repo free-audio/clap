@@ -4,7 +4,7 @@
 #include "../../events.h"
 #include "../../string-sizes.h"
 
-static CLAP_CONSTEXPR const char CLAP_EXT_TUNING[] = "clap.tuning.draft/2";
+static CLAP_CONSTEXPR const char CLAP_EXT_TUNING[] = "clap.tuning/2";
 
 #ifdef __cplusplus
 extern "C" {

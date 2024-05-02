@@ -9,7 +9,7 @@
 // - make the host's voice pool coherent with what the plugin has
 // - turn the host's voice management to mono when the plugin is mono
 
-static const char CLAP_EXT_VOICE_INFO[] = "clap.voice-info";
+static CLAP_CONSTEXPR const char CLAP_EXT_VOICE_INFO[] = "clap.voice-info";
 
 #ifdef __cplusplus
 extern "C" {

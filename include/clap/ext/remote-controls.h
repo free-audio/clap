@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../plugin.h"
-#include "../../string-sizes.h"
+#include "../plugin.h"
+#include "../string-sizes.h"
 
 // This extension let the plugin provide a structured way of mapping parameters to an hardware
 // controller.
@@ -31,7 +31,11 @@
 // Pressing that button once gets you to the first page of the section.
 // Press it again to cycle through the section's pages.
 
-static CLAP_CONSTEXPR const char CLAP_EXT_REMOTE_CONTROLS[] = "clap.remote-controls.draft/2";
+static CLAP_CONSTEXPR const char CLAP_EXT_REMOTE_CONTROLS[] = "clap.remote-controls/2";
+
+// The latest draft is 100% compatible
+// This compat ID may be removed in 2026.
+static CLAP_CONSTEXPR const char CLAP_EXT_REMOTE_CONTROLS_COMPAT[] = "clap.remote-controls.draft/2";
 
 #ifdef __cplusplus
 extern "C" {

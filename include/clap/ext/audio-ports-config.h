@@ -26,7 +26,13 @@
 /// extension where all busses can be retrieved in the same way as in the audio-port extension.
 
 static CLAP_CONSTEXPR const char CLAP_EXT_AUDIO_PORTS_CONFIG[] = "clap.audio-ports-config";
+
 static CLAP_CONSTEXPR const char CLAP_EXT_AUDIO_PORTS_CONFIG_INFO[] =
+   "clap.audio-ports-config-info/1";
+
+// The latest draft is 100% compatible.
+// This compat ID may be removed in 2026.
+static CLAP_CONSTEXPR const char CLAP_EXT_AUDIO_PORTS_CONFIG_INFO_COMPAT[] =
    "clap.audio-ports-config-info/draft-0";
 
 #ifdef __cplusplus

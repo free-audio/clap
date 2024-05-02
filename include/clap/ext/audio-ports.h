@@ -54,7 +54,6 @@ typedef struct clap_audio_port_info {
    // - CLAP_PORT_STEREO
    // - CLAP_PORT_SURROUND (defined in the surround extension)
    // - CLAP_PORT_AMBISONIC (defined in the ambisonic extension)
-   // - CLAP_PORT_CV (defined in the cv extension)
    //
    // An extension can provide its own port type and way to inspect the channels.
    const char *port_type;
