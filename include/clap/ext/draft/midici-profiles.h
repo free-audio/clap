@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../plugin.h"
+#include "../stream.h"
 
 //usage examples:
 //- the host can tell a MIDI keyboard the plugin conforms to the drawbar organ profile, so the keyboard can set up its faders for that.
@@ -55,22 +56,14 @@ typedef struct clap_plugin_midici_profiles {
                        uint32_t                     profile_index,
                        profile_t                   *profile);
 
-   // Get number of bytes for profile specific data for the specified Inquiry Target.
-   // If result=0 there's no data available for this Inquiry Target.
-   // [main-thread]
-   uint32_t(CLAP_ABI *get_data_size)(const clap_plugin_t         *plugin,
-                                     uint16_t                     port_index,
-		                     uint32_t                     profile_index,
-                                     uint8_t                      inquiry_target);
-
    // Get profile specific data for the specified Inquiry Target.
-   // buffer must be large enough to contain the number of bytes returned by get_data_size().
+   // Returns true if data is written to stream correctly.
    // [main-thread]
    bool(CLAP_ABI *get_data)(const clap_plugin_t         *plugin,
                             uint16_t                     port_index,
 	                    uint32_t                     profile_index,
                             uint8_t                      inquiry_target,
-                            const uint8_t               *buffer);
+                            const clap_ostream_t        *stream);
 
    // Enables a profile, so the plugin knows the host will use it.
    // Returns true if the profile is enabled when the function returns.
