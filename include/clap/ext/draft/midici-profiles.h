@@ -36,7 +36,6 @@ typedef struct profile_id_t {
 
 typedef struct profile_t {
    profile_id_t profile_id;
-   byte_t   enabled;        // 0 = off, 1 = on, 2 = always on
    byte_t   channel;        // single-channel profiles: channel is 0..255
                             // multi-channel profiles: channel is 0..255
                             // group profiles: channel is 16 * group
@@ -45,6 +44,7 @@ typedef struct profile_t {
                             // multi-channel profiles: num_channels is 1..256
                             // group profiles: num_channels is 0
                             // port profiles: num_channels is 0
+   byte_t   enabled;        // 0 = off, 1 = on, 2 = always on
 };
 
 typedef struct clap_plugin_midici_profiles {
