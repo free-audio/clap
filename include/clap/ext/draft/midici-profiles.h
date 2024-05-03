@@ -10,7 +10,12 @@
 // background:
 // There are 4 types of profiles: single channel, multi channel, group and function block (called "port" here).
 // The profile specifications define the type for a specific profile.
-//
+// A channel + num_channels pair allows for targeting profiles (used in profile_t, get_data() and enable()):
+//   single-channel profiles: channel is 0..255, num_channels is 1
+//   multi-channel profiles: channel is 0..255, num_channels is 1..256
+//   group profiles: channel is 16 * group, num_channels is 0
+//   port profiles: channel is 255, num_channels is 0
+
 // clap_plugin_midici_profiles.count()/get() return a list of profile_t structs.
 // There'll typically be multiple entries for a single supported profile_id_t:
 //   enabled single channel profiles: one entry per enabled channel. One entry if profile isn't enabled for any channel.
@@ -26,6 +31,12 @@ static CLAP_CONSTEXPR const char CLAP_EXT_MIDICI_PROFILES[] = "clap.midici-profi
 extern "C" {
 #endif
 
+enum {
+   CLAP_MIDICI_PROFILE_DISABLED = 0,
+   CLAP_MIDICI_PROFILE_ENABLED = 1,
+   CLAP_MIDICI_PROFILE_ALWAYSON = 2
+};
+
 typedef struct profile_id_t {
    byte_t id;
    byte_t bank;
@@ -36,15 +47,9 @@ typedef struct profile_id_t {
 
 typedef struct profile_t {
    profile_id_t profile_id;
-   byte_t   channel;        // single-channel profiles: channel is 0..255
-                            // multi-channel profiles: channel is 0..255
-                            // group profiles: channel is 16 * group
-                            // port profiles: channel is 0
-   uint16_t num_channels;   // single-channel profiles: num_channels is 1
-                            // multi-channel profiles: num_channels is 1..256
-                            // group profiles: num_channels is 0
-                            // port profiles: num_channels is 0
-   byte_t   enabled;        // 0 = off, 1 = on, 2 = always on
+   byte_t   channel;        // see description at top of file
+   uint16_t num_channels;   // see description at top of file
+   byte_t   enabled;        // CLAP_MIDICI_PROFILE_*
 };
 
 typedef struct clap_plugin_midici_profiles {
@@ -64,22 +69,20 @@ typedef struct clap_plugin_midici_profiles {
    // Get profile specific data for the specified inquiry_target.
    // Returns true if data is written to stream correctly.
    // Returns false if there's no data available for this inquiry_target.
-   // The profile_index profile must be enabled.
+   // The profile targeted by channel/num_channels must be enabled. Return false otherwise.
    // [main-thread]
    bool(CLAP_ABI *get_data)(const clap_plugin_t    *plugin,
                             uint16_t                port_index,
-	                    uint32_t                profile_index,
+                            profile_id_t            profile,
+                            byte_t                  channel,
+                            uint16_t                num_channels,
                             uint8_t                 inquiry_target,
                             const clap_ostream_t   *stream);
 
    // Enables a profile, so the plugin knows the host will use it.
    // Returns true if the profile is enabled when the function returns.
    // Can be called multiple times to enabled a profile for multiple channels or groups.
-   // channel and num-channels define the destination:
-   //   single-channel profiles: channel is 0..255, num_channels = 1
-   //   multi-channel profiles: channel is 0..255, num_channels = 1..256
-   //   group profiles: channel is 16 * group, num_channels = 0
-   //   port profiles: channel is 0, num_channels = 0
+   // channel and num-channels: see description at top of file
    // Note for hosts: after calling this function count()/get() may have changed !!
    // Note for plugins: do not call clap_host_midici_profiles.changed.
    // [main-thread]
@@ -141,7 +144,9 @@ typedef struct clap_host_midici_profiles_output {
    // [main-thread]
    int32_t(CLAP_ABI *get_data)(const clap_host_t  *host,
                                uint16_t               port_index,
-	                       uint32_t               profile_index,
+                               profile_id_t           profile,
+                               byte_t                 channel,
+                               uint16_t               num_channels,
                                uint8_t                inquiry_target,
                                const uint8_t         *buffer,
                                uint32_t               buffer_size);
