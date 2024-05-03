@@ -26,7 +26,13 @@ static CLAP_CONSTEXPR const char CLAP_EXT_MIDICI_PROFILES[] = "clap.midici-profi
 extern "C" {
 #endif
 
-typedef byte_t profile_id_t[5];
+typedef struct profile_id_t {
+   byte_t id;
+   byte_t bank;
+   byte_t number;
+   byte_t version;
+   byte_t level;
+};
 
 typedef struct profile_t {
    profile_id_t profile_id;
