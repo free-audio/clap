@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../plugin.h"
-#include "../stream.h"
+#include "../../stream.h"
 
 //usage examples:
 //- the host can tell a MIDI keyboard the plugin conforms to the drawbar organ profile, so the keyboard can set up its faders for that.
@@ -26,7 +26,7 @@ static CLAP_CONSTEXPR const char CLAP_EXT_MIDICI_PROFILES[] = "clap.midici-profi
 extern "C" {
 #endif
 
-typedef profile_id_t profile_id[5];
+typedef byte_t profile_id_t[5];
 
 typedef struct profile_t {
    profile_id_t profile_id;
@@ -109,30 +109,47 @@ typedef struct clap_host_midici_profiles {
 static CLAP_CONSTEXPR const char CLAP_EXT_MIDICI_PROFILES_OUTPUT[] = "clap.midici-profiles-output/draft/1";
 
 typedef struct clap_plugin_midici_profiles_output {
+   // see clap_host_midici_profiles.changed
+   // [main-thread]
    void(CLAP_ABI *changed)(const clap_plugin_t *plugin);
 } clap_plugin_midici_profiles_output_t;
 
 typedef struct clap_host_midici_profiles_output {
+   // see clap_plugin_midici_profiles.count
+   // [main-thread]
    uint32_t(CLAP_ABI *count)(const clap_host_t   *host,
                              uint16_t             port_index);
 
+   // see clap_plugin_midici_profiles.get
+   // [main-thread]
    bool(CLAP_ABI *get)(const clap_host_t *host,
                        uint16_t           port_index,
                        uint32_t           profile_index,
                        profile_t         *profile);
 
-   bool(CLAP_ABI *get_data)(const clap_host_t     *host,
-                            uint16_t               port_index,
-	                    uint32_t               profile_index,
-                            uint8_t                inquiry_target,
-                            const clap_ostream_t   *stream);
+   // see clap_plugin_midici_profiles.get_data
+   // here a buffer is used instead instead of a stream, which is easier for plugins
+   // Result > 0: buffer contains Result bytes of data.
+   // Result = 0: no data available for this inquiry_target.
+   // Result < 0: buffer too small, buffer_size should be -Result bytes
+   // [main-thread]
+   int32_t(CLAP_ABI *get_data)(const clap_host_t  *host,
+                               uint16_t               port_index,
+	                       uint32_t               profile_index,
+                               uint8_t                inquiry_target,
+                               const uint8_t         *buffer,
+                               uint32_t               buffer_size);
 
+   // see clap_plugin_midici_profiles.enable
+   // [main-thread]
    bool(CLAP_ABI *enable)(const clap_host_t   *host,
                           uint16_t             port_index,
                           profile_id_t         profile,
                           byte_t               channel,
                           uint16_t             num_channels);
 
+   // see clap_plugin_midici_profiles.disable
+   // [main-thread]
    bool(CLAP_ABI *disable)(const clap_host_t    *host,
                            uint16_t              port_index,
                            profile_id_t          profile);
