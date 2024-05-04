@@ -19,17 +19,19 @@
 // enumerating profiles
 // clap_plugin_midici_profiles.count()/get() return a list of profile_t structs. Both enabled and available profiles are listed.
 // All enabled profiles are listed. Multiple entries will appear if a channel or group profile is enabled on multiple channels or groups. 
-// If a profile isn't enabled a single CLAP_MIDICI_PROFILE_DISABLED entry appears in the list. In case of a channel or group profile the host can try to enable it on any channel or group,
+// If a profile isn't enabled at least one CLAP_MIDICI_PROFILE_DISABLED entry appears in the list, so the host can detect the profile is supported. In case of a channel or group profile the host can try to enable it on any channel or group,
 // and the plugin can reject this if it isn't possible.
 // In detail:
-//   enabled single channel profiles: one entry per enabled channel. One CLAP_MIDICI_PROFILE_DISABLED entry if the profile isn't enabled for any channel.
-//   enabled multi channel profiles: one entry per enabled block of channels. One CLAP_MIDICI_PROFILE_DISABLED entry if the profile isn't enabled for any channel.
-//   enabled group profiles: one entry per enabled group. One CLAP_MIDICI_PROFILE_DISABLED entry if the profile isn't enabled for any group.
+//   enabled single channel profiles: one entry per enabled channel. At least one CLAP_MIDICI_PROFILE_DISABLED entry if the profile isn't enabled for any channel.
+//   enabled multi channel profiles: one entry per enabled block of channels. At least one CLAP_MIDICI_PROFILE_DISABLED entry if the profile isn't enabled for any channel.
+//   enabled group profiles: one entry per enabled group. At least one CLAP_MIDICI_PROFILE_DISABLED entry if the profile isn't enabled for any group.
 //   port profiles: one entry.
+
+// Plugins can typically use a simple fixed list. For example: in case of a single-channel profile and 16 channels, clap_plugin_midici_profiles.count() can always return 16. get() uses the current enabled state for each channel.
 
 // A host will typically proceed in this order:
 // 1. get list using clap_plugin_midici_profiles.count()/get().
-// 2. enable/disable profiles.
+// 2. enable/disable profiles as needed.
 // 3. get profile details using clap_plugin_midici_profiles.get_details().
 
 // Plugins can use CLAP_MIDICI_PROFILE_ALWAYSON for profiles which can't be enabled/disabled by the host.
