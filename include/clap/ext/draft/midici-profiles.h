@@ -19,15 +19,16 @@
 // enumerating profiles
 // clap_plugin_midici_profiles.count()/get() return a list of profile_t structs. Both enabled and available profiles are listed.
 // All enabled profiles are listed. Multiple entries will appear if a channel or group profile is enabled on multiple channels or groups. 
-// If a profile isn't enabled at least one CLAP_MIDICI_PROFILE_DISABLED entry appears in the list, so the host can detect the profile is supported. In case of a channel or group profile the host can try to enable it on any channel or group,
-// and the plugin can reject this if it isn't possible.
+// If a profile isn't enabled at least one CLAP_MIDICI_PROFILE_DISABLED entry appears in the list, so the host can detect the profile is supported.
+// In case of a channel or group profile the host can try to enable it on any channel or group, and the plugin can reject this if it isn't possible.
 // In detail:
 //   enabled single channel profiles: one entry per enabled channel. At least one CLAP_MIDICI_PROFILE_DISABLED entry if the profile isn't enabled for any channel.
 //   enabled multi channel profiles: one entry per enabled block of channels. At least one CLAP_MIDICI_PROFILE_DISABLED entry if the profile isn't enabled for any channel.
 //   enabled group profiles: one entry per enabled group. At least one CLAP_MIDICI_PROFILE_DISABLED entry if the profile isn't enabled for any group.
 //   port profiles: one entry.
 
-// Plugins can typically use a simple fixed list. For example: in case of a single-channel profile and 16 channels, clap_plugin_midici_profiles.count() can always return 16. get() uses the current enabled state for each channel.
+// Plugins can typically use a simple fixed list. For example: in case of a single-channel profile and 16 channels, clap_plugin_midici_profiles.count() can always return 16.
+// get() uses the current enabled state for each channel.
 
 // A host will typically proceed in this order:
 // 1. get list using clap_plugin_midici_profiles.count()/get().
@@ -49,6 +50,10 @@ enum {
    CLAP_MIDICI_PROFILE_DISABLED = 0,
    CLAP_MIDICI_PROFILE_ENABLED = 1,
    CLAP_MIDICI_PROFILE_ALWAYSON = 2
+};
+
+enum {
+   CLAP_MIDICI_PROFILE_INQUIRY_TARGET_DATA = 255
 };
 
 typedef struct profile_id_t {
@@ -86,6 +91,8 @@ typedef struct clap_plugin_midici_profiles {
    // channel and num-channels: see "destination addressing" paragraph at top of file.
    // The profile targeted by channel/num_channels should generally be enabled before calling this function.
    // In some cases profile detals like available channels are needed before enabling a profile. Plugins should make sure this is handled correctly.
+   // inquiry_target is 0..127. CLAP_MIDICI_PROFILE_INQUIRY_TARGET_DATA can be used to get Profile Specific Data from the plugin.
+   // Multiple Profile Specific Data Messages can be written to stream. Each one starts with 0xF0, followed by the actual Profile Specific Data, and ends with 0xF7.
    // [main-thread]
    bool(CLAP_ABI *get_details)(const clap_plugin_t    *plugin,
                                uint16_t                port_index,
@@ -94,6 +101,19 @@ typedef struct clap_plugin_midici_profiles {
                                uint16_t                num_channels,
                                uint8_t                 inquiry_target,
                                const clap_ostream_t   *stream);
+
+   // Send Profile Specific Data to plugin.
+   // Returns true if data was accepted
+   // Multiple Profile Specific Data Messages can be passed in buffer. Each one starts with 0xF0, followed by the actual Profile Specific Data, and ends with 0xF7.
+   // A profile may specify multiple data messages. It's recommended to send the complete 'state' in a single set_data() call.
+   // [main-thread]
+   bool(CLAP_ABI *set_data)(const clap_plugin_t   *plugin,
+                            uint16_t               port_index,
+                            profile_id_t           profile,
+                            byte_t                 channel,
+                            uint16_t               num_channels,
+                            const uint8_t         *buffer,
+                            uint32_t               buffer_size);
 
    // Enables a profile, so the plugin knows the host will use it.
    // Returns true if the profile is enabled at channel/num_channels when the function returns.
@@ -122,6 +142,15 @@ typedef struct clap_host_midici_profiles {
    // Informs the host that the available or enabled profiles changed.
    // [main-thread]
    void(CLAP_ABI *changed)(const clap_host_t *host);
+
+   // Plugins calls this if host needs to read Profile Specific Data Messages again.
+   // Host calls get_details(.., port_index, profile, channel, num_channels, CLAP_MIDICI_PROFILE_INQUIRY_TARGET_DATA, ..).
+   // [main-thread]
+   void(CLAP_ABI *datachanged)(const clap_host_t   *host,
+                               uint16_t             port_index,
+                               profile_id_t         profile,
+                               byte_t               channel,
+                               uint16_t             num_channels);
 } clap_host_midici_profiles_t;
 
 #ifdef __cplusplus
