@@ -1,3 +1,13 @@
+# Changes in 1.2.1
+
+## New draft extensions
+
+* [undo.h](include/clap/ext/draft/undo.h): shared undo stack for the host and plugin.
+
+## Documentation
+
+* [events.h](include/clap/events.h): clarification for note on events.
+
 # Changes in 1.2.0
 
 ## New conventions
