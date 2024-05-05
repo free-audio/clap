@@ -111,7 +111,7 @@ typedef struct clap_plugin_midici_profiles {
    // [main-thread]
    bool(CLAP_ABI *set_data)(const clap_plugin_t      *plugin,
                             uint16_t                  port_index,
-                            const struct profile_id_t profile,
+                            const profile_id_t        profile,
                             uint8_t                   channel,
                             uint16_t                  num_channels,
                             const uint8_t            *buffer,
@@ -126,7 +126,7 @@ typedef struct clap_plugin_midici_profiles {
    // [main-thread]
    bool(CLAP_ABI *enable)(const clap_plugin_t      *plugin,
                           uint16_t                  port_index,
-                          const struct profile_id_t profile,
+                          const profile_id_t        profile,
                           uint8_t                   channel,
                           uint16_t                  num_channels);
 
@@ -137,7 +137,7 @@ typedef struct clap_plugin_midici_profiles {
    // [main-thread]
    bool(CLAP_ABI *disable)(const clap_plugin_t      *plugin,
                            uint16_t                  port_index,
-                           const struct profile_id_t profile,
+                           const profile_id_t        profile,
                            uint8_t                   channel,
                            uint16_t                  num_channels);
 } clap_plugin_midici_profiles_t;
@@ -152,7 +152,7 @@ typedef struct clap_host_midici_profiles {
    // [main-thread]
    void(CLAP_ABI *datachanged)(const clap_host_t        *host,
                                uint16_t                  port_index,
-                               const struct profile_id_t profile,
+                               const profile_id_t        profile,
                                uint8_t                   channel,
                                uint16_t                 num_channels);
 } clap_host_midici_profiles_t;
