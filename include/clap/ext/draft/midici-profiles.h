@@ -65,7 +65,7 @@ typedef struct profile_id_t {
 };
 
 typedef struct profile_t {
-   profile_id_t profile_id;
+   profile_id_t id;
    uint8_t      channel;        // see "destination addressing" paragraph at top of file.
    uint16_t     num_channels;   // see "destination addressing" paragraph at top of file.
    uint8_t      enabled;        // CLAP_MIDICI_PROFILE_*
@@ -80,10 +80,10 @@ typedef struct clap_plugin_midici_profiles {
 
    // Get a profile_t by index.
    // [main-thread]
-   bool(CLAP_ABI *get)(const clap_plugin_t   *plugin,
-                       uint16_t               port_index,
-                       uint32_t               profile_index,
-                       profile_t             *profile);
+   bool(CLAP_ABI *get)(const clap_plugin_t    *plugin,
+                       uint16_t                port_index,
+                       uint32_t                profile_index,
+                       const struct profile_t *profile);
 
    // Get profile details from profile at channel/num_channels for the specified inquiry_target.
    // Returns true if data is written to stream correctly.
@@ -150,10 +150,10 @@ typedef struct clap_host_midici_profiles {
    // Plugins calls this if host needs to read Profile Specific Data Messages again.
    // Host calls get_details(.., port_index, profile, channel, num_channels, CLAP_MIDICI_PROFILE_INQUIRY_TARGET_DATA, ..).
    // [main-thread]
-   void(CLAP_ABI *datachanged)(const clap_host_t       *host,
-                               uint16_t                 port_index,
-                               const structprofile_id_t profile,
-                               uint8_t                  channel,
+   void(CLAP_ABI *datachanged)(const clap_host_t        *host,
+                               uint16_t                  port_index,
+                               const struct profile_id_t profile,
+                               uint8_t                   channel,
                                uint16_t                 num_channels);
 } clap_host_midici_profiles_t;
 
