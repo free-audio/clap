@@ -17,17 +17,14 @@
 //   port profiles: channel is 255, num_channels is 0
 
 // enumerating profiles
-// clap_plugin_midici_profiles.count()/get() return a list of clap_profile_t structs. Both enabled and available profiles are listed.
-// All enabled profiles are listed. Multiple entries will appear if a channel or group profile is enabled on multiple channels or groups. 
-// If a profile isn't enabled at least one CLAP_MIDICI_PROFILES_DISABLED entry appears in the list, so the host can detect the profile is supported.
-// In case of a channel or group profile the host can try to enable it on any channel or group, and the plugin can reject this if it isn't possible.
-// In detail:
-//   enabled single channel profiles: one entry per enabled channel. At least one CLAP_MIDICI_PROFILES_DISABLED entry if the profile isn't enabled for any channel.
-//   enabled multi channel profiles: one entry per enabled block of channels. At least one CLAP_MIDICI_PROFILES_DISABLED entry if the profile isn't enabled for any channel.
-//   enabled group profiles: one entry per enabled group. At least one CLAP_MIDICI_PROFILES_DISABLED entry if the profile isn't enabled for any group.
-//   port profiles: one entry.
+// clap_plugin_midici_profiles.count()/get() return a list of clap_profile_t structs. Both enabled and disabled profiles are listed.
+// All profiles which can potentially be enabled for a destination must be in the list, even if they're mutually exclusive.
+// If a conflict occurs clap_plugin_midici_profiles.enable() will return the conflicting profile_index,
+// and the host can disable this profile and try again.
+// The list doesn't change when profiles are enabled or disabled. The plugin can change the list (if it switches to a different instrument,
+// for example). In this case the plugin calls clap_host_midici_profiles.changed().
 
-// Plugins can typically use a simple fixed list. For example: in case of a single-channel profile and 16 channels, clap_plugin_midici_profiles.count() can always return 16.
+// Plugin implementations can be quite simple. For example: in case of a single-channel profile and 16 channels, clap_plugin_midici_profiles.count() can always return 16.
 // get() uses the current enabled state for each channel.
 
 // A host will typically proceed in this order:
