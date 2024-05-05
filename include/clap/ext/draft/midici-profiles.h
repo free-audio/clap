@@ -85,14 +85,15 @@ typedef struct clap_plugin_midici_profiles {
                        uint32_t               profile_index,
                        profile_t             *profile);
 
-   // Get profile details for the specified inquiry_target.
+   // Get profile details from profile at channel/num_channels for the specified inquiry_target.
    // Returns true if data is written to stream correctly.
    // Returns false if there's no data available for this inquiry_target.
    // channel and num-channels: see "destination addressing" paragraph at top of file.
-   // The profile targeted by channel/num_channels should generally be enabled before calling this function.
-   // In some cases profile detals like available channels are needed before enabling a profile. Plugins should make sure this is handled correctly.
    // inquiry_target is 0..127. CLAP_MIDICI_PROFILE_INQUIRY_TARGET_DATA can be used to get Profile Specific Data from the plugin.
    // Multiple Profile Specific Data Messages can be written to stream. Each one starts with 0xF0, followed by the actual Profile Specific Data, and ends with 0xF7.
+   // Example: MPE Channel Response Type Notification would be F0 01 F7
+   // The profile targeted by channel/num_channels should generally be enabled before calling this function.
+   // In some cases profile detals like available channels are needed before enabling a profile. Plugins should make sure this is handled correctly.
    // [main-thread]
    bool(CLAP_ABI *get_details)(const clap_plugin_t    *plugin,
                                uint16_t                port_index,
@@ -102,9 +103,10 @@ typedef struct clap_plugin_midici_profiles {
                                uint8_t                 inquiry_target,
                                const clap_ostream_t   *stream);
 
-   // Send Profile Specific Data to plugin.
+   // Send Profile Specific Data to profile at channel/num_channels.
    // Returns true if data was accepted
    // Multiple Profile Specific Data Messages can be passed in buffer. Each one starts with 0xF0, followed by the actual Profile Specific Data, and ends with 0xF7.
+   // Example: MPE Channel Response Type Notification would be F0 01 F7
    // A profile may specify multiple data messages. It's recommended to send the complete 'state' in a single set_data() call.
    // [main-thread]
    bool(CLAP_ABI *set_data)(const clap_plugin_t   *plugin,
@@ -115,7 +117,7 @@ typedef struct clap_plugin_midici_profiles {
                             const uint8_t         *buffer,
                             uint32_t               buffer_size);
 
-   // Enables a profile, so the plugin knows the host will use it.
+   // Enables a profile at channel/num_channels.
    // Returns true if the profile is enabled at channel/num_channels when the function returns.
    // Can be called multiple times to enabled a profile for multiple channels or groups.
    // channel and num-channels: see "destination addressing" paragraph at top of file.
@@ -128,14 +130,16 @@ typedef struct clap_plugin_midici_profiles {
                           byte_t                 channel,
                           uint16_t               num_channels);
 
-   // Disables all instances of a profile.
-   // Returns true if all instances of the profile are disabled when the function returns.
+   // Disables a profile at channel/num_channels.
+   // Returns true if the profile isn't enabled at channel/num_channels when the function returns.
    // Note for hosts: after calling this function count()/get() may have changed !!
    // Note for plugins: do not call clap_host_midici_profiles.changed.
    // [main-thread]
    bool(CLAP_ABI *disable)(const clap_plugin_t   *plugin,
                            uint16_t               port_index,
-                           const profile_id_t     profile);
+                           const profile_id_t     profile,
+                           byte_t                 channel,
+                           uint16_t               num_channels);
 } clap_plugin_midici_profiles_t;
 
 typedef struct clap_host_midici_profiles {
