@@ -56,20 +56,20 @@ enum {
    CLAP_MIDICI_PROFILE_INQUIRY_TARGET_DATA = 255
 };
 
-typedef struct profile_id_t {
+typedef struct profile_id {
    uint8_t id;
    uint8_t bank;
    uint8_t number;
    uint8_t version;
    uint8_t level;
-};
+} profile_id_t;
 
-typedef struct profile_t {
+typedef struct profile {
    profile_id_t id;
    uint8_t      channel;        // see "destination addressing" paragraph at top of file.
    uint16_t     num_channels;   // see "destination addressing" paragraph at top of file.
    uint8_t      enabled;        // CLAP_MIDICI_PROFILE_*
-};
+} profile_t;
 
 typedef struct clap_plugin_midici_profiles {
    // Returns the number of profile_t entries available.
