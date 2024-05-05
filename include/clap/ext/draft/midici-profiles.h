@@ -83,7 +83,7 @@ typedef struct clap_plugin_midici_profiles {
    bool(CLAP_ABI *get)(const clap_plugin_t    *plugin,
                        uint16_t                port_index,
                        uint32_t                profile_index,
-                       const struct profile_t *profile);
+                       const struct profile   *profile);
 
    // Get profile details from profile at channel/num_channels for the specified inquiry_target.
    // Returns true if data is written to stream correctly.
@@ -97,7 +97,7 @@ typedef struct clap_plugin_midici_profiles {
    // [main-thread]
    bool(CLAP_ABI *get_details)(const clap_plugin_t      *plugin,
                                uint16_t                  port_index,
-                               const struct profile_id_t profile,
+                               const struct profile_id  profile,
                                uint8_t                   channel,
                                uint16_t                  num_channels,
                                uint8_t                   inquiry_target,
