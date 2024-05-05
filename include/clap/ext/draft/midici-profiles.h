@@ -56,6 +56,11 @@ enum {
    CLAP_MIDICI_PROFILES_INQUIRY_TARGET_DATA = 255
 };
 
+enum {
+   CLAP_MIDICI_PROFILES_ENABLE_SUCCES = -1,
+   CLAP_MIDICI_PROFILES_ENABLE_FAILED = -2
+};
+
 typedef struct clap_profile_id {
    uint8_t id;
    uint8_t bank;
@@ -118,17 +123,20 @@ typedef struct clap_plugin_midici_profiles {
                             uint32_t                   buffer_size);
 
    // Enables a profile at channel/num_channels.
-   // Returns true if the profile is enabled at channel/num_channels when the function returns.
+   // Returns CLAP_MIDICI_PROFILES_ENABLE_SUCCES if the profile is enabled at channel/num_channels when the function returns.
+   // Result >= 0 indicates a conflict with an existing enabled profile.
+   // The host can call get(.., .., Result, ..), disable this profile and try again.
+   // Returns CLAP_MIDICI_PROFILES_ENABLE_FAILED if an error other than a conflict occured.
    // Can be called multiple times to enabled a profile for multiple channels or groups.
    // channel and num-channels: see "destination addressing" paragraph at top of file.
    // Note for hosts: after calling this function count()/get() may have changed !!
-   // Note for plugins: do not call clap_host_midici_profiles.changed.
+   // Note for plugins: do not call clap_host_midici_profiles.changed. Do not disable profiles.
    // [main-thread]
-   bool(CLAP_ABI *enable)(const clap_plugin_t       *plugin,
-                          uint32_t                   port_index,
-                          const clap_profile_id_t   *profile_id,
-                          uint8_t                    channel,
-                          uint16_t                   num_channels);
+   int32_t(CLAP_ABI *enable)(const clap_plugin_t       *plugin,
+                             uint32_t                   port_index,
+                             const clap_profile_id_t   *profile_id,
+                             uint8_t                    channel,
+                             uint16_t                   num_channels);
 
    // Disables a profile at channel/num_channels.
    // Returns true if the profile isn't enabled at channel/num_channels when the function returns.
