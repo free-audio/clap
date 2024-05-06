@@ -46,6 +46,7 @@ typedef struct clap_track_info {
    // see audio-ports.h, struct clap_audio_port_info to learn how to use channel count and port type
    int32_t     audio_channel_count;
    const char *audio_port_type;
+
 } clap_track_info_t;
 
 typedef struct clap_plugin_track_info {
