@@ -87,28 +87,29 @@ typedef struct clap_plugin_midici_profiles {
                        uint32_t               profile_index,
                        clap_profile_t        *profile);
 
-   // Get profile details from profile at channel/num_channels for the specified inquiry_target.
+   // inquiry_target is 0..127: get profile details from profile at channel/num_channels for the specified inquiry_target.
+   // inquiry_target is CLAP_MIDICI_PROFILES_INQUIRY_TARGET_DATA: get Profile Specific Data from profile at channel/num_channels.
    // Returns true if data is written to stream correctly.
    // Returns false if there's no data available for this inquiry_target.
    // channel and num-channels: see "destination addressing" paragraph at top of file.
-   // inquiry_target is 0..127. CLAP_MIDICI_PROFILES_INQUIRY_TARGET_DATA can be used to get Profile Specific Data from the plugin.
-   // Multiple Profile Specific Data Messages can be written to stream. Each one starts with 0xF0, followed by the actual Profile Specific Data, and ends with 0xF7.
-   // Example: MPE Channel Response Type Notification would be F0 01 F7
    // The profile targeted by channel/num_channels should generally be enabled before calling this function.
-   // In some cases profile detals like available channels are needed before enabling a profile. Plugins should make sure this is handled correctly.
+   // In some cases profile details may be needed before enabling a profile. Plugins should make sure this is handled correctly.
+   // CLAP_MIDICI_PROFILES_INQUIRY_TARGET_DATA: Multiple Profile Specific Data Messages can be written to stream. Each one starts with 0xF0,
+   // followed by the actual Profile Specific Data, and ends with 0xF7. Example: MPE Channel Response Type Notification would be F0 01 F7.
    // [main-thread]
-   bool(CLAP_ABI *get_details)(const clap_plugin_t       *plugin,
-                               uint32_t                   port_index,
-                               const clap_profile_id_t   *profile_id,
-                               uint8_t                    channel,
-                               uint16_t                   num_channels,
-                               uint8_t                    inquiry_target,
-                               const clap_ostream_t      *stream);
+   bool(CLAP_ABI *get_data)(const clap_plugin_t       *plugin,
+                            uint32_t                   port_index,
+                            const clap_profile_id_t   *profile_id,
+                            uint8_t                    channel,
+                            uint16_t                   num_channels,
+                            uint8_t                    inquiry_target,
+                            const clap_ostream_t      *stream);
 
-   // Send Profile Specific Data to profile at channel/num_channels.
+   // inquiry_target is 0..127: Send profile details to profile at channel/num_channels for the specified inquiry_target.
+   // inquiry_target is CLAP_MIDICI_PROFILES_INQUIRY_TARGET_DATA: Send Profile Specific Data to profile at channel/num_channels.
    // Returns true if data was accepted
-   // Multiple Profile Specific Data Messages can be passed in buffer. Each one starts with 0xF0, followed by the actual Profile Specific Data, and ends with 0xF7.
-   // Example: MPE Channel Response Type Notification would be F0 01 F7
+   // CLAP_MIDICI_PROFILES_INQUIRY_TARGET_DATA: Multiple Profile Specific Data Messages can be passed in buffer. Each one starts with 0xF0,
+   // followed by the actual Profile Specific Data, and ends with 0xF7. Example: MPE Channel Response Type Notification would be F0 01 F7.
    // A profile may specify multiple data messages. It's recommended to send the complete 'state' in a single set_data() call.
    // [main-thread]
    bool(CLAP_ABI *set_data)(const clap_plugin_t       *plugin,
@@ -116,6 +117,7 @@ typedef struct clap_plugin_midici_profiles {
                             const clap_profile_id_t   *profile_id,
                             uint8_t                    channel,
                             uint16_t                   num_channels,
+                            uint8_t                    inquiry_target,
                             const uint8_t             *buffer,
                             uint32_t                   buffer_size);
 
@@ -153,7 +155,7 @@ typedef struct clap_host_midici_profiles {
    void(CLAP_ABI *changed)(const clap_host_t *host);
 
    // Plugins calls this if host needs to read Profile Specific Data Messages again.
-   // Host calls get_details(.., port_index, profile, channel, num_channels, CLAP_MIDICI_PROFILES_INQUIRY_TARGET_DATA, ..).
+   // Host calls get_data(.., port_index, profile, channel, num_channels, CLAP_MIDICI_PROFILES_INQUIRY_TARGET_DATA, ..).
    // [main-thread]
    void(CLAP_ABI *datachanged)(const clap_host_t         *host,
                                uint32_t                   port_index,
