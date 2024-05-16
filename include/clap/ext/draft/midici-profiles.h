@@ -154,8 +154,8 @@ typedef struct clap_host_midici_profiles {
    // [main-thread]
    void(CLAP_ABI *changed)(const clap_host_t *host);
 
-   // Plugins calls this if host needs to read Profile Specific Data Messages again.
-   // Host calls get_data(.., port_index, profile, channel, num_channels, CLAP_MIDICI_PROFILES_INQUIRY_TARGET_DATA, ..).
+   // Plugins calls this if host needs to read profile details or Profile Specific Data Messages again.
+   // Host calls get_data(.., port_index, profile, channel, num_channels, .., ..) for the inquiry targets it's interested in.
    // [main-thread]
    void(CLAP_ABI *datachanged)(const clap_host_t         *host,
                                uint32_t                   port_index,
