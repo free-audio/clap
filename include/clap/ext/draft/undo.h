@@ -2,7 +2,7 @@
 
 #include "../../plugin.h"
 
-static CLAP_CONSTEXPR const char CLAP_EXT_UNDO[] = "clap.undo/2";
+static CLAP_CONSTEXPR const char CLAP_EXT_UNDO[] = "clap.undo/3";
 
 #ifdef __cplusplus
 extern "C" {
@@ -41,26 +41,16 @@ extern "C" {
 /// and maybe an easier experience for the user because there's a single undo context versus one
 /// for the host and one for each plugin instance.
 
-enum clap_undo_context_flags {
-   // While the host is within a change, it is impossible to perform undo or redo.
-   CLAP_UNDO_IS_WITHIN_CHANGE = 1 << 0,
-};
-
-enum clap_undo_delta_properties_flags {
-   // If not set, then all clap_undo_delta_properties's attributes become irrelevant.
+typedef struct clap_undo_delta_properties {
+   // If false, then all clap_undo_delta_properties's attributes become irrelevant.
    // If set, then the plugin will provide deltas in host->change_made().
-   CLAP_UNDO_DELTA_PROPERTIES_HAS_DELTA = 1 << 0,
+   bool has_delta;
 
    // If set, then the delta will be reusable in the future as long as the plugin is
    // compatible with the given format_version.
-   CLAP_UNDO_DELTA_PROPERTIES_IS_PERSISTENT = 1 << 1,
-};
+   bool are_deltas_persistent;
 
-typedef struct clap_undo_delta_properties {
-   // Bitmask of clap_undo_delta_properties_flags
-   uint64_t flags;
-
-   // This represents the delta format version that the plugin is using.
+   // This represents the delta format version that the plugin is currently using.
    uint32_t format_version;
 } clap_undo_delta_properties_t;
 
@@ -76,23 +66,36 @@ typedef struct clap_plugin_undo {
    bool(CLAP_ABI *can_use_delta_format_version)(const clap_plugin_t *plugin,
                                                 clap_id              format_version);
 
-   // Applies synchronously a delta.
+   // Undo using the delta.
    // Returns true on success.
    //
    // [main-thread]
-   bool(CLAP_ABI *apply_delta)(const clap_plugin_t *plugin,
-                               clap_id              format_version,
-                               const void          *delta,
-                               size_t               delta_size);
+   bool(CLAP_ABI *undo)(const clap_plugin_t *plugin,
+                        clap_id              format_version,
+                        const void          *delta,
+                        size_t               delta_size);
 
-   // Sets the undo context.
-   // flags: bitmask of clap_undo_context_flags values
-   // names: null terminated string if an redo/undo step exists, null otherwise.
+   // Redo using the delta.
+   // Returns true on success.
+   //
    // [main-thread]
-   void(CLAP_ABI *set_context_info)(const clap_plugin_t *plugin,
-                                    uint64_t             flags,
-                                    const char          *undo_name,
-                                    const char          *redo_name);
+   bool(CLAP_ABI *redo)(const clap_plugin_t *plugin,
+                        clap_id              format_version,
+                        const void          *delta,
+                        size_t               delta_size);
+
+   // Indicate if it is currently possible to perform a redo or undo operation.
+   // if can_* is false then it invalidates the corresponding name.
+   // [main-thread]
+   void (CLAP_ABI *set_can_undo)(const clap_plugin_t *plugin, bool can_undo);
+   void (CLAP_ABI *set_can_redo)(const clap_plugin_t *plugin, bool can_redo);
+
+   // Sets the name of the next undo or redo step.
+   // name: null terminated string if an redo/undo step exists, null otherwise.
+   // [main-thread]
+   void (CLAP_ABI *set_undo_name)(const clap_plugin_t *plugin, const char *name);
+   void (CLAP_ABI *set_redo_name)(const clap_plugin_t *plugin, const char *name);
+
 } clap_plugin_undo_t;
 
 typedef struct clap_host_undo {
@@ -112,8 +115,10 @@ typedef struct clap_host_undo {
    //
    // name: mandatory null terminated string describing the change, this is displayed to the user
    //
-   // deltas: optional, they are binary blobs used to perform the undo and redo. When not available
+   // delta: optional, it is a binary blobs used to perform the undo and redo. When not available
    // the host will save the plugin state and use state->load() to perform undo and redo.
+   // The plugin must be able to perform a redo operation using the delta, though the undo operation
+   // is only possible if delta_can_undo is true.
    //
    // Note: the provided delta may be used for incremental state saving and crash recovery. The
    // plugin can indicate a format version id and the validity lifetime for the binary blobs.
@@ -128,19 +133,14 @@ typedef struct clap_host_undo {
    // [main-thread]
    void(CLAP_ABI *change_made)(const clap_host_t *host,
                                const char        *name,
-                               const void        *redo_delta,
-                               size_t             redo_delta_size,
-                               const void        *undo_delta,
-                               size_t             undo_delta_size);
+                               const void        *delta,
+                               size_t             delta_size,
+                               bool               delta_can_undo);
 
-   // Asks the host to perform the next undo step.
-   // This operation may be asynchronous.
+   // Asks the host to perform the next undo or redo step.
+   // This operation may be asynchronous and isn't available while the host is within a change.
    // [main-thread]
    void(CLAP_ABI *undo)(const clap_host_t *host);
-
-   // Asks the host to perform the next redo step.
-   // This operation may be asynchronous.
-   // [main-thread]
    void(CLAP_ABI *redo)(const clap_host_t *host);
 
    // Subscribes to or unsubscribes from undo context info.
@@ -155,7 +155,7 @@ typedef struct clap_host_undo {
    // is_subscribed: set to true to receive context info
    //
    // [main-thread]
-   void(CLAP_ABI *set_context_info_subscription)(const clap_host_t *host, bool is_subscribed);
+   void(CLAP_ABI *set_wants_context_updates)(const clap_host_t *host, bool is_subscribed);
 } clap_host_undo_t;
 
 #ifdef __cplusplus
