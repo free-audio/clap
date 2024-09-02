@@ -1,3 +1,12 @@
+# Changes in 1.2.2
+
+* [thread-check.h](include/clap/ext/thread-check.h): expand the thread-doc to clarify and expand realtime
+* [latency.h](include/clap/ext/latency.h): adjust latency extension requirements
+* [undo.h](include/clap/ext/draft/undo.h): re-design the interface
+  * the plugin interfaces have been separated into 2 independent ones
+  * the plugin interfaces are optional
+  * simplification of the design
+
 # Changes in 1.2.1
 
 ## New draft extensions
