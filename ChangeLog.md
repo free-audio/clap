@@ -1,3 +1,9 @@
+# Changes in 1.2.2
+
+* [thread-check.h](include/clap/ext/thread-check.h): expand the thread-doc to clarify and expand realtime
+* [latency.h](include/clap/ext/latency.h): adjust latency extension requirements
+* [undo.h](include/clap/ext/draft/undo.h): have a single delta for both undo and redo and other simplications
+
 # Changes in 1.2.1
 
 ## New draft extensions
