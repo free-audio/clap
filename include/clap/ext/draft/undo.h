@@ -2,7 +2,7 @@
 
 #include "../../plugin.h"
 
-static CLAP_CONSTEXPR const char CLAP_EXT_UNDO[] = "clap.undo/2";
+static CLAP_CONSTEXPR const char CLAP_EXT_UNDO[] = "clap.undo/3";
 
 #ifdef __cplusplus
 extern "C" {
@@ -76,14 +76,23 @@ typedef struct clap_plugin_undo {
    bool(CLAP_ABI *can_use_delta_format_version)(const clap_plugin_t *plugin,
                                                 clap_id              format_version);
 
-   // Applies synchronously a delta.
+   // Undo using the delta.
    // Returns true on success.
    //
    // [main-thread]
-   bool(CLAP_ABI *apply_delta)(const clap_plugin_t *plugin,
-                               clap_id              format_version,
-                               const void          *delta,
-                               size_t               delta_size);
+   bool(CLAP_ABI *undo)(const clap_plugin_t *plugin,
+                        clap_id              format_version,
+                        const void          *delta,
+                        size_t               delta_size);
+
+   // Redo using the delta.
+   // Returns true on success.
+   //
+   // [main-thread]
+   bool(CLAP_ABI *redo)(const clap_plugin_t *plugin,
+                        clap_id              format_version,
+                        const void          *delta,
+                        size_t               delta_size);
 
    // Sets the undo context.
    // flags: bitmask of clap_undo_context_flags values
@@ -112,7 +121,7 @@ typedef struct clap_host_undo {
    //
    // name: mandatory null terminated string describing the change, this is displayed to the user
    //
-   // deltas: optional, they are binary blobs used to perform the undo and redo. When not available
+   // delta: optional, it is a binary blobs used to perform the undo and redo. When not available
    // the host will save the plugin state and use state->load() to perform undo and redo.
    //
    // Note: the provided delta may be used for incremental state saving and crash recovery. The
@@ -128,18 +137,16 @@ typedef struct clap_host_undo {
    // [main-thread]
    void(CLAP_ABI *change_made)(const clap_host_t *host,
                                const char        *name,
-                               const void        *redo_delta,
-                               size_t             redo_delta_size,
-                               const void        *undo_delta,
-                               size_t             undo_delta_size);
+                               const void        *delta,
+                               size_t             delta_size);
 
    // Asks the host to perform the next undo step.
-   // This operation may be asynchronous.
+   // This operation may be asynchronous and isn't available while the host is within a change.
    // [main-thread]
    void(CLAP_ABI *undo)(const clap_host_t *host);
 
    // Asks the host to perform the next redo step.
-   // This operation may be asynchronous.
+   // This operation may be asynchronous and isn't available while the host is within a change.
    // [main-thread]
    void(CLAP_ABI *redo)(const clap_host_t *host);
 
