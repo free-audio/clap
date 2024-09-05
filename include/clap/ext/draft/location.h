@@ -13,6 +13,7 @@ extern "C" {
 #endif
 
 enum {
+   CLAP_PLUGIN_LOCATION_PROJECT,
    CLAP_PLUGIN_LOCATION_TRACK,
    CLAP_PLUGIN_LOCATION_TRACK_GROUP,
    CLAP_PLUGIN_LOCATION_DEVICE
@@ -21,7 +22,10 @@ enum {
 };
 
 typedef struct clap_plugin_location_element {
-   // Name of the element.
+   // Internal ID of the element. This is not intended for display to the user, 
+   // but rather to give the host a potential quick way for lookups.
+   const char *id;
+   // User friendly name of the element.
    const char *name;
    // Kind of the element, must be one of the CLAP_PLUGIN_LOCATION_* values.
    int kind;
