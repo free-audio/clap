@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../plugin.h"
+#include "../../color.h"
 
 // This extension allows a host to tell the plugin more about its position 
 // within a project or session. 
@@ -29,6 +30,9 @@ typedef struct clap_plugin_location_element {
    // Index of the element in a global context. When sorting elements by this index, 
    // the order should mirror the order as it is displayed in the host. 
    uint32_t global_index;
+   // Color for this element, should be 0x00000000 if no color is used for this 
+   // element. 
+   clap_color_t color;
 } clap_plugin_location_element_t;
 
 
