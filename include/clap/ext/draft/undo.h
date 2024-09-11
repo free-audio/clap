@@ -162,7 +162,7 @@ typedef struct clap_host_undo {
    // is_subscribed: set to true to receive context info
    //
    // [main-thread]
-   void(CLAP_ABI *set_context_info_subscription)(const clap_host_t *host, bool is_subscribed);
+   void(CLAP_ABI *set_wants_context_updates)(const clap_host_t *host, bool is_subscribed);
 } clap_host_undo_t;
 
 #ifdef __cplusplus
