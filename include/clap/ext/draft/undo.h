@@ -56,6 +56,14 @@ enum clap_undo_delta_properties_flags {
    CLAP_UNDO_DELTA_PROPERTIES_IS_PERSISTENT = 1 << 1,
 };
 
+enum clap_undo_change_flags {
+   // When set, the delta can be used for undo
+   CLAP_UNDO_CHANGE_DELTA_CAN_UNDO = 1 << 0,
+
+   // When set, the delta can be used for redo
+   CLAP_UNDO_CHANGE_DELTA_CAN_REDO = 1 << 1,
+};
+
 typedef struct clap_undo_delta_properties {
    // Bitmask of clap_undo_delta_properties_flags
    uint64_t flags;
@@ -138,7 +146,8 @@ typedef struct clap_host_undo {
    void(CLAP_ABI *change_made)(const clap_host_t *host,
                                const char        *name,
                                const void        *delta,
-                               size_t             delta_size);
+                               size_t             delta_size,
+                               uint32_t           change_flags);
 
    // Asks the host to perform the next undo step.
    // This operation may be asynchronous and isn't available while the host is within a change.
