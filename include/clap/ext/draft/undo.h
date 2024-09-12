@@ -124,7 +124,7 @@ typedef struct clap_host_undo {
    // delta: optional, it is a binary blobs used to perform the undo and redo. When not available
    // the host will save the plugin state and use state->load() to perform undo and redo.
    // The plugin must be able to perform a redo operation using the delta, though the undo operation
-   // is only possible if can_undo is true.
+   // is only possible if delta_can_undo is true.
    //
    // Note: the provided delta may be used for incremental state saving and crash recovery. The
    // plugin can indicate a format version id and the validity lifetime for the binary blobs.
