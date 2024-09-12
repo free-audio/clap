@@ -141,7 +141,7 @@ typedef struct clap_host_undo {
                                const char        *name,
                                const void        *delta,
                                size_t             delta_size,
-                               bool               can_undo);
+                               bool               delta_can_undo);
 
    // Asks the host to perform the next undo step.
    // This operation may be asynchronous and isn't available while the host is within a change.
