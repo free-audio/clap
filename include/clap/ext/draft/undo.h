@@ -56,14 +56,6 @@ enum clap_undo_delta_properties_flags {
    CLAP_UNDO_DELTA_PROPERTIES_IS_PERSISTENT = 1 << 1,
 };
 
-enum clap_undo_change_flags {
-   // When set, the delta can be used for undo
-   CLAP_UNDO_CHANGE_DELTA_CAN_UNDO = 1 << 0,
-
-   // When set, the delta can be used for redo
-   CLAP_UNDO_CHANGE_DELTA_CAN_REDO = 1 << 1,
-};
-
 typedef struct clap_undo_delta_properties {
    // Bitmask of clap_undo_delta_properties_flags
    uint64_t flags;
@@ -131,6 +123,8 @@ typedef struct clap_host_undo {
    //
    // delta: optional, it is a binary blobs used to perform the undo and redo. When not available
    // the host will save the plugin state and use state->load() to perform undo and redo.
+   // The plugin must be able to perform a redo operation using the delta, though the undo operation
+   // is only possible if can_undo is true.
    //
    // Note: the provided delta may be used for incremental state saving and crash recovery. The
    // plugin can indicate a format version id and the validity lifetime for the binary blobs.
@@ -147,7 +141,7 @@ typedef struct clap_host_undo {
                                const char        *name,
                                const void        *delta,
                                size_t             delta_size,
-                               uint32_t           change_flags);
+                               bool               can_undo);
 
    // Asks the host to perform the next undo step.
    // This operation may be asynchronous and isn't available while the host is within a change.
