@@ -41,21 +41,16 @@ extern "C" {
 /// and maybe an easier experience for the user because there's a single undo context versus one
 /// for the host and one for each plugin instance.
 
-enum clap_undo_delta_properties_flags {
-   // If not set, then all clap_undo_delta_properties's attributes become irrelevant.
+typedef struct clap_undo_delta_properties {
+   // If false, then all clap_undo_delta_properties's attributes become irrelevant.
    // If set, then the plugin will provide deltas in host->change_made().
-   CLAP_UNDO_DELTA_PROPERTIES_HAS_DELTA = 1 << 0,
+   bool has_delta;
 
    // If set, then the delta will be reusable in the future as long as the plugin is
    // compatible with the given format_version.
-   CLAP_UNDO_DELTA_PROPERTIES_IS_PERSISTENT = 1 << 1,
-};
+   bool are_delta_persistant;
 
-typedef struct clap_undo_delta_properties {
-   // Bitmask of clap_undo_delta_properties_flags
-   uint64_t flags;
-
-   // This represents the delta format version that the plugin is using.
+   // This represents the delta format version that the plugin is currently using.
    uint32_t format_version;
 } clap_undo_delta_properties_t;
 
@@ -89,20 +84,13 @@ typedef struct clap_plugin_undo {
                         const void          *delta,
                         size_t               delta_size);
 
-   // Sets the undo context.
-   // flags: bitmask of clap_undo_context_flags values
-   // names: null terminated string if an redo/undo step exists, null otherwise.
-   // [main-thread]
-   void(CLAP_ABI *set_context_info)(const clap_plugin_t *plugin,
-                                    uint64_t             flags,
-                                    const char          *undo_name,
-                                    const char          *redo_name);
-
+   // Indicate if it is currently possible to perform a redo or undo operation.
    // if can_* is false then it invalidates the corresponding name.
    // [main-thread]
    void (CLAP_ABI *set_can_undo)(const clap_plugin_t *plugin, bool can_undo);
    void (CLAP_ABI *set_can_redo)(const clap_plugin_t *plugin, bool can_redo);
 
+   // Sets the name of the next undo or redo step.
    // name: null terminated string if an redo/undo step exists, null otherwise.
    // [main-thread]
    void (CLAP_ABI *set_undo_name)(const clap_plugin_t *plugin, const char *name);
@@ -149,14 +137,10 @@ typedef struct clap_host_undo {
                                size_t             delta_size,
                                bool               delta_can_undo);
 
-   // Asks the host to perform the next undo step.
+   // Asks the host to perform the next undo or redo step.
    // This operation may be asynchronous and isn't available while the host is within a change.
    // [main-thread]
    void(CLAP_ABI *undo)(const clap_host_t *host);
-
-   // Asks the host to perform the next redo step.
-   // This operation may be asynchronous and isn't available while the host is within a change.
-   // [main-thread]
    void(CLAP_ABI *redo)(const clap_host_t *host);
 
    // Subscribes to or unsubscribes from undo context info.
