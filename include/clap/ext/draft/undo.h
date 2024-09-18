@@ -117,7 +117,7 @@ typedef struct clap_plugin_undo_state {
    // Returns true if the state was correctly restored.
    // [main-thread]
    bool(CLAP_ABI *load)(const clap_plugin_t *plugin, const clap_istream_t *stream);
-} clap_plugin_state_t;
+} clap_plugin_undo_state_t;
 
 // Use CLAP_EXT_UNDO_CONTEXT
 // This is an optional interface, that the plugin can implement in order to know about
