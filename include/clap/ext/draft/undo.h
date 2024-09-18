@@ -50,6 +50,9 @@ extern "C" {
 /// The plugin interfaces are all optional, and the plugin can for a minimal implementation,
 /// just use the host interface and call host->change_made() without providing a delta.
 /// This is enough for the host to know that it can capture a plugin state for the undo step.
+///
+/// Note: if a plugin is producing a lot of changes within a small amount of time, the host
+/// may merge them into a single undo step.
 
 typedef struct clap_undo_delta_properties {
    // If false, then all clap_undo_delta_properties's attributes become irrelevant.
@@ -150,6 +153,10 @@ typedef struct clap_host_undo {
    //
    // Note: if the plugin asked for this interface, then host_state->mark_dirty() will not create an
    // implicit undo step.
+   //
+   // Note: if the plugin did load a preset or did something that leads to a large delta,
+   // it may consider not producing a delta (pass null) and let the host make a state snapshot
+   // instead.
    //
    // [main-thread]
    void(CLAP_ABI *change_made)(const clap_host_t *host,
