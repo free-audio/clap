@@ -1,8 +1,12 @@
 #pragma once
 
 #include "../../plugin.h"
+#include "../../stream.h"
 
 static CLAP_CONSTEXPR const char CLAP_EXT_UNDO[] = "clap.undo/3";
+static CLAP_CONSTEXPR const char CLAP_EXT_UNDO_CONTEXT[] = "clap.undo_context/3";
+static CLAP_CONSTEXPR const char CLAP_EXT_UNDO_DELTA[] = "clap.undo_delta/3";
+static CLAP_CONSTEXPR const char CLAP_EXT_UNDO_STATE[] = "clap.undo_state/3";
 
 #ifdef __cplusplus
 extern "C" {
@@ -40,6 +44,13 @@ extern "C" {
 /// history. This simplifies the host implementation, leading to less bugs, a more robust design
 /// and maybe an easier experience for the user because there's a single undo context versus one
 /// for the host and one for each plugin instance.
+///
+/// The goal for this extension is to make it as easy as possible for the plugin to hook into
+/// the host undo and make it efficient when possible by using deltas.
+///
+/// The plugin interfaces are all optional, and the plugin can for a minimal implementation,
+/// just use the host interface and call host->change_made() without providing a delta.
+/// This is enough for the host to know that it can capture a plugin state for the undo step.
 
 typedef struct clap_undo_delta_properties {
    // If false, then all clap_undo_delta_properties's attributes become irrelevant.
@@ -54,7 +65,9 @@ typedef struct clap_undo_delta_properties {
    uint32_t format_version;
 } clap_undo_delta_properties_t;
 
-typedef struct clap_plugin_undo {
+// Use CLAP_EXT_UNDO_DELTA
+// This is an optional interface, using deltas is an optimization versus making state snapshot.
+typedef struct clap_plugin_undo_delta {
    // Asks the plugin the delta properties.
    // [main-thread]
    void(CLAP_ABI *get_delta_properties)(const clap_plugin_t          *plugin,
@@ -83,21 +96,47 @@ typedef struct clap_plugin_undo {
                         clap_id              format_version,
                         const void          *delta,
                         size_t               delta_size);
+} clap_plugin_undo_delta_t;
 
+// Use CLAP_EXT_UNDO_STATE
+// This is an optional interface.
+// When the plugin didn't provide a delta, then the host will perform a plugin state snapshot.
+// This interface should only be implemented if the plugin can provide a lighter state for the undo
+// history.
+// A state saved using this interface must be restored using this interface.
+//
+// TODO: give precise assumptions that can be made by the plugin in order to make its state smaller.
+// TODO: give an example
+typedef struct clap_plugin_undo_state {
+   // Saves the plugin state into stream.
+   // Returns true if the state was correctly saved.
+   // [main-thread]
+   bool(CLAP_ABI *save)(const clap_plugin_t *plugin, const clap_ostream_t *stream);
+
+   // Loads the plugin state from stream.
+   // Returns true if the state was correctly restored.
+   // [main-thread]
+   bool(CLAP_ABI *load)(const clap_plugin_t *plugin, const clap_istream_t *stream);
+} clap_plugin_state_t;
+
+// Use CLAP_EXT_UNDO_CONTEXT
+// This is an optional interface, that the plugin can implement in order to know about
+// the current undo context.
+typedef struct clap_plugin_undo_context {
    // Indicate if it is currently possible to perform a redo or undo operation.
    // if can_* is false then it invalidates the corresponding name.
    // [main-thread]
-   void (CLAP_ABI *set_can_undo)(const clap_plugin_t *plugin, bool can_undo);
-   void (CLAP_ABI *set_can_redo)(const clap_plugin_t *plugin, bool can_redo);
+   void(CLAP_ABI *set_can_undo)(const clap_plugin_t *plugin, bool can_undo);
+   void(CLAP_ABI *set_can_redo)(const clap_plugin_t *plugin, bool can_redo);
 
    // Sets the name of the next undo or redo step.
    // name: null terminated string if an redo/undo step exists, null otherwise.
    // [main-thread]
-   void (CLAP_ABI *set_undo_name)(const clap_plugin_t *plugin, const char *name);
-   void (CLAP_ABI *set_redo_name)(const clap_plugin_t *plugin, const char *name);
+   void(CLAP_ABI *set_undo_name)(const clap_plugin_t *plugin, const char *name);
+   void(CLAP_ABI *set_redo_name)(const clap_plugin_t *plugin, const char *name);
+} clap_plugin_undo_context_t;
 
-} clap_plugin_undo_t;
-
+// Use CLAP_EXT_UNDO
 typedef struct clap_host_undo {
    // Begins a long running change.
    // The plugin must not call this twice: there must be either a call to cancel_change() or
@@ -124,11 +163,15 @@ typedef struct clap_host_undo {
    // plugin can indicate a format version id and the validity lifetime for the binary blobs.
    // The host can use these to verify the compatibility before applying the delta.
    // If the plugin is unable to use a delta, a notification should be provided to the user and
-   // the crash recovery should perform a best effort job, at least restoring the latest saved state.
+   // the crash recovery should perform a best effort job, at least restoring the latest saved
+   // state.
    //
    // Special case: for objects with shared and synchronized state, changes shouldn't be reported
    // as the host already knows about it.
    // For example, plugin parameter changes shouldn't produce a call to change_made().
+   //
+   // Note: if the plugin asked for this interface, then host_state->mark_dirty() will not create an
+   // implicit undo step.
    //
    // [main-thread]
    void(CLAP_ABI *change_made)(const clap_host_t *host,
@@ -153,6 +196,8 @@ typedef struct clap_host_undo {
    // Initial state is unsubscribed.
    //
    // is_subscribed: set to true to receive context info
+   //
+   // It is mandatory for the plugin to implement CLAP_EXT_UNDO_CONTEXT when using this method.
    //
    // [main-thread]
    void(CLAP_ABI *set_wants_context_updates)(const clap_host_t *host, bool is_subscribed);
