@@ -108,7 +108,7 @@ typedef struct clap_plugin_undo_context {
    void(CLAP_ABI *set_can_redo)(const clap_plugin_t *plugin, bool can_redo);
 
    // Sets the name of the next undo or redo step.
-   // name: null terminated string if an redo/undo step exists, null otherwise.
+   // name: null terminated string.
    // [main-thread]
    void(CLAP_ABI *set_undo_name)(const clap_plugin_t *plugin, const char *name);
    void(CLAP_ABI *set_redo_name)(const clap_plugin_t *plugin, const char *name);
