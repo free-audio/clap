@@ -3,9 +3,9 @@
 #include "../../plugin.h"
 #include "../../stream.h"
 
-static CLAP_CONSTEXPR const char CLAP_EXT_UNDO[] = "clap.undo/3";
-static CLAP_CONSTEXPR const char CLAP_EXT_UNDO_CONTEXT[] = "clap.undo_context/3";
-static CLAP_CONSTEXPR const char CLAP_EXT_UNDO_DELTA[] = "clap.undo_delta/3";
+static CLAP_CONSTEXPR const char CLAP_EXT_UNDO[] = "clap.undo/4";
+static CLAP_CONSTEXPR const char CLAP_EXT_UNDO_CONTEXT[] = "clap.undo_context/4";
+static CLAP_CONSTEXPR const char CLAP_EXT_UNDO_DELTA[] = "clap.undo_delta/4";
 
 #ifdef __cplusplus
 extern "C" {
