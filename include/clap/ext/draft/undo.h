@@ -18,7 +18,7 @@ extern "C" {
 ///
 /// Calling host->undo() or host->redo() is equivalent to clicking undo/redo within the host's GUI.
 ///
-/// If the plugin implements this interface then its undo and redo should be entirely delegated to
+/// If the plugin uses this interface then its undo and redo should be entirely delegated to
 /// the host; clicking in the plugin's UI undo or redo is equivalent to clicking undo or redo in the
 /// host's UI.
 ///
@@ -44,15 +44,11 @@ extern "C" {
 /// and maybe an easier experience for the user because there's a single undo context versus one
 /// for the host and one for each plugin instance.
 ///
-/// The goal for this extension is to make it as easy as possible for the plugin to hook into
-/// the host undo and make it efficient when possible by using deltas.
-///
-/// The plugin interfaces are all optional, and the plugin can for a minimal implementation,
-/// just use the host interface and call host->change_made() without providing a delta.
-/// This is enough for the host to know that it can capture a plugin state for the undo step.
-///
-/// Note: if a plugin is producing a lot of changes within a small amount of time, the host
-/// may merge them into a single undo step.
+/// This extension tries to make it as easy as possible for the plugin to hook into the host undo
+/// and make it efficient when possible by using deltas. The plugin interfaces are all optional, and
+/// the plugin can for a minimal implementation, just use the host interface and call
+/// host->change_made() without providing a delta. This is enough for the host to know that it can
+/// capture a plugin state for the undo step.
 
 typedef struct clap_undo_delta_properties {
    // If false, then all clap_undo_delta_properties's attributes become irrelevant.
@@ -157,6 +153,9 @@ typedef struct clap_host_undo {
    // Note: if the plugin did load a preset or did something that leads to a large delta,
    // it may consider not producing a delta (pass null) and let the host make a state snapshot
    // instead.
+   //
+   // Note: if a plugin is producing a lot of changes within a small amount of time, the host
+   // may merge them into a single undo step.
    //
    // [main-thread]
    void(CLAP_ABI *change_made)(const clap_host_t *host,
