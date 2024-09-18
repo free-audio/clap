@@ -6,7 +6,6 @@
 static CLAP_CONSTEXPR const char CLAP_EXT_UNDO[] = "clap.undo/3";
 static CLAP_CONSTEXPR const char CLAP_EXT_UNDO_CONTEXT[] = "clap.undo_context/3";
 static CLAP_CONSTEXPR const char CLAP_EXT_UNDO_DELTA[] = "clap.undo_delta/3";
-static CLAP_CONSTEXPR const char CLAP_EXT_UNDO_STATE[] = "clap.undo_state/3";
 
 #ifdef __cplusplus
 extern "C" {
@@ -97,27 +96,6 @@ typedef struct clap_plugin_undo_delta {
                         const void          *delta,
                         size_t               delta_size);
 } clap_plugin_undo_delta_t;
-
-// Use CLAP_EXT_UNDO_STATE
-// This is an optional interface.
-// When the plugin didn't provide a delta, then the host will perform a plugin state snapshot.
-// This interface should only be implemented if the plugin can provide a lighter state for the undo
-// history.
-// A state saved using this interface must be restored using this interface.
-//
-// TODO: give precise assumptions that can be made by the plugin in order to make its state smaller.
-// TODO: give an example
-typedef struct clap_plugin_undo_state {
-   // Saves the plugin state into stream.
-   // Returns true if the state was correctly saved.
-   // [main-thread]
-   bool(CLAP_ABI *save)(const clap_plugin_t *plugin, const clap_ostream_t *stream);
-
-   // Loads the plugin state from stream.
-   // Returns true if the state was correctly restored.
-   // [main-thread]
-   bool(CLAP_ABI *load)(const clap_plugin_t *plugin, const clap_istream_t *stream);
-} clap_plugin_undo_state_t;
 
 // Use CLAP_EXT_UNDO_CONTEXT
 // This is an optional interface, that the plugin can implement in order to know about
