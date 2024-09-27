@@ -38,7 +38,9 @@ typedef struct clap_host {
    // This callback should be called as soon as practicable, usually in the host application's next
    // available main thread time slice. Typically callbacks occur at least in the 10s-to-50s-of-milliseconds
    // or 30-120hz timeslice range. Plugins should not make assumptions about the exactness of timing for
-   // a main thread callback but hosts should endeavour to be prompt.
+   // a main thread callback but hosts should endeavour to be prompt. However in high load situations
+   // the host may starve the gui/main thread in favor of audio processing, leading to substantially
+   // longer latencies for the callback than the indicative times given here.
    // [thread-safe]
    void(CLAP_ABI *request_callback)(const struct clap_host *host);
 } clap_host_t;
