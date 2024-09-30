@@ -35,6 +35,13 @@ typedef struct clap_host {
    void(CLAP_ABI *request_process)(const struct clap_host *host);
 
    // Request the host to schedule a call to plugin->on_main_thread(plugin) on the main thread.
+   // This callback should be called as soon as practicable, usually in the host application's next
+   // available main thread time slice. Typically callbacks occur within 33ms / 30hz.
+   // Despite this guidance, plugins should not make assumptions about the exactness of timing for
+   // a main thread callback, but hosts should endeavour to be prompt. For example, in high load
+   // situations the environment may starve the gui/main thread in favor of audio processing,
+   // leading to substantially longer latencies for the callback than the indicative times given
+   // here.
    // [thread-safe]
    void(CLAP_ABI *request_callback)(const struct clap_host *host);
 } clap_host_t;
