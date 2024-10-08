@@ -11,3 +11,4 @@
 #include "ext/draft/triggers.h"
 #include "ext/draft/tuning.h"
 #include "ext/draft/undo.h"
+#include "ext/draft/scratch-memory.h"
