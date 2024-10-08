@@ -16,8 +16,13 @@ typedef struct clap_host_scratch_memory {
    // Asks the host for certain amount of scratch memory.
    // If the host is unable to provide the memory, it should
    // return "false".
+   //
+   // Note that any memory the host allocates to satisfy
+   // the requested scratch size can be de-allocated
+   // when the plugin is de-activated.
+   //
    // [main-thread & being-activated]
-   bool(CLAP_ABI *request_scratch_size)(const clap_host_t *host, size_t scratch_size_bytes);
+   bool(CLAP_ABI *request_size)(const clap_host_t *host, size_t scratch_size_bytes);
 
    // Asks the host for the previously requested scratch memory.
    // If the host returned "true" when scratch memory was requested,
@@ -30,7 +35,7 @@ typedef struct clap_host_scratch_memory {
    // want to "zero" the memory before using it.
    //
    // [audio-thread]
-   void*(CLAP_ABI *access_scratch)(const clap_host_t *host);
+   void*(CLAP_ABI *access)(const clap_host_t *host);
 };
 
 #ifdef __cplusplus
