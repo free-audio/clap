@@ -36,7 +36,7 @@ typedef struct clap_host_scratch_memory {
    //
    // [audio-thread]
    void*(CLAP_ABI *access)(const clap_host_t *host);
-};
+} clap_host_scratch_memory_t;
 
 #ifdef __cplusplus
 }
