@@ -55,6 +55,14 @@ typedef struct clap_host_scratch_memory {
    // when scratch memory was requested then this method should return
    // null.
    //
+   // This method may only be called by the plugin from the audio thread,
+   // (i.e. during the process() or thread_pool.exec() callback), and
+   // the provided memory is only valid until the plugin returns from
+   // that callback. The plugin must not hold any references to data
+   // that lives in the scratch memory after returning from the callback,
+   // as that data will likely be over-written by another plugin using
+   // the same scratch memory.
+   //
    // The provided memory is not initialized, and may have been used
    // by other plugin instances, so the plugin must correctly initialize
    // the memory when using it.
