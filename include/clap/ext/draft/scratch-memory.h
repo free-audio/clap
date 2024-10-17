@@ -37,8 +37,16 @@ typedef struct clap_host_scratch_memory {
    // the requested scratch size can be de-allocated by the
    // host when the plugin is de-activated.
    //
+   // In the context of plugins and hosts that implement
+   // the "thread-pool" extension, scratch memory is assumed
+   // to be "thread-local". The plugin should request the maximum
+   // amount of scratch memory that it will need on a single
+   // thread. Accordingly, the host must ensure that each
+   // thread can independently provide the requested amount
+   // of scratch memory.
+   //
    // [main-thread & being-activated]
-   bool(CLAP_ABI *pre_reserve)(const clap_host_t *host, size_t scratch_size_bytes);
+   bool(CLAP_ABI *reserve)(const clap_host_t *host, uint32_t scratch_size_bytes);
 
    // Asks the host for the previously requested scratch memory.
    // If the host returned "true" when scratch memory was requested,
