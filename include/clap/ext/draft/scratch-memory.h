@@ -33,6 +33,15 @@ typedef struct clap_host_scratch_memory {
    // If the host is unable to provide the memory, it should
    // return "false".
    //
+   // The plugin may call this method multiple times (for
+   // example, gradually decreasing the amount of scratch
+   // being asked for until the host returns true), however,
+   // the plugin should avoid calling this method un-neccesarily
+   // since the host implementation may be relatively expensive.
+   // If the plugin calls this method multiple times, then the
+   // final call determines the actual amount of scratch memory
+   // that will be available to the plugin.
+   //
    // Note that any memory the host allocates to satisfy
    // the requested scratch size can be de-allocated by the
    // host when the plugin is de-activated.
