@@ -48,12 +48,12 @@ typedef struct clap_host_scratch_memory {
    // [main-thread & being-activated]
    bool(CLAP_ABI *reserve)(const clap_host_t *host, uint32_t scratch_size_bytes);
 
-   // Asks the host for the previously requested scratch memory.
+   // Asks the host for the previously reserved scratch memory.
    // If the host returned "true" when scratch memory was requested,
    // then this method must return a pointer to a memory block at least
-   // as large as the requested size. If the host returned "false"
-   // when scratch memory was requested then this method should return
-   // null.
+   // as large as the reserved size. If the host returned "false"
+   // when scratch memory was requested, then this method must not
+   // be called.
    //
    // This method may only be called by the plugin from the audio thread,
    // (i.e. during the process() or thread_pool.exec() callback), and
