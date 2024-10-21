@@ -38,9 +38,11 @@ typedef struct clap_host_scratch_memory {
    // being asked for until the host returns true), however,
    // the plugin should avoid calling this method un-neccesarily
    // since the host implementation may be relatively expensive.
-   // If the plugin calls this method multiple times, then the
+   // If the plugin calls `reserve()` multiple times, then the
    // final call determines the actual amount of scratch memory
-   // that will be available to the plugin.
+   // that will be available to the plugin. If the final call
+   // returns false then no scratch memory will be provided,
+   // regardless of any previous calls to `reserve()`.
    //
    // Note that any memory the host allocates to satisfy
    // the requested scratch size can be de-allocated by the
