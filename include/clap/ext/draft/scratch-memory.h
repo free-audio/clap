@@ -4,7 +4,8 @@
 
 // This extension lets the plugin request "scratch" memory
 // from the host. Scratch memory can be accessed during the
-// `process()` callback, but is not persistent between callbacks.
+// `process()` callback, but its content not persistent
+// between callbacks.
 //
 // The motivation for this extension is to allow the plugin host
 // to "share" a single scratch buffer across multiple plugin
@@ -18,9 +19,8 @@
 // allocate a single 10K scratch buffer, and make it available to all
 // three plugins.
 //
-// On memory-constrained platforms, this optimization may allow for
-// more plugins to be used simultaneously. On platforms with lots
-// of memory, this optimization may improve CPU cache usage.
+// This optimization may allow for reduced memory usage and improved
+// CPU cache usage.
 
 static CLAP_CONSTEXPR const char CLAP_EXT_SCRATCH_MEMORY[] = "clap.scratch-memory/1";
 
@@ -64,7 +64,7 @@ typedef struct clap_host_scratch_memory {
    // then this method must return a pointer to a memory block at least
    // as large as the reserved size. If the host returned "false"
    // when scratch memory was requested, then this method must not
-   // be called.
+   // be called, and will return NULL.
    //
    // This method may only be called by the plugin from the audio thread,
    // (i.e. during the process() or thread_pool.exec() callback), and
