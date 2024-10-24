@@ -419,7 +419,7 @@ static void entry_deinit_guard(void) {
 #endif
 
    const int cnt = --g_entry_init_counter;
-   assert(cnt > 0);
+   assert(cnt >= 0);
 
    bool succeed = true;
    if (cnt == 0)
