@@ -13,3 +13,4 @@
 #include "ext/draft/tuning.h"
 #include "ext/draft/undo.h"
 #include "ext/draft/scratch-memory.h"
+#include "ext/draft/web.h"
