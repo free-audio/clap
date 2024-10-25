@@ -44,9 +44,10 @@ typedef struct clap_host_scratch_memory {
    // returns false then no scratch memory will be provided,
    // regardless of any previous calls to `reserve()`.
    //
-   // Note that any memory the host allocates to satisfy
-   // the requested scratch size can be de-allocated by the
-   // host when the plugin is de-activated.
+   // When the plugin is de-activated, the scratch memory
+   // is invalidated, and the host may free the memory if
+   // appropriate. The plugin will need to reserve scratch
+   // memory again the next time it is activated.
    //
    // In the context of plugins and hosts that implement
    // the "thread-pool" extension, scratch memory is assumed
