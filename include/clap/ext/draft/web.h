@@ -17,9 +17,10 @@ extern "C" {
 
 typedef struct clap_plugin_web {
    // Returns the URL for the webview's initial navigation, as a null-terminated UTF-8 string.
-   // If this URL is relative, it is resolved relative to the plugin (bundle) directory, and
-   // cannot be outside it.  The host may use any protocol to serve this content, and the page
-   // must not assume that the root of the domain is the root of the bundle. The URL may also be
+   // If this URL is relative, it is resolved relative to the plugin (bundle) resource directory.
+   // The host may assume that no resources outside of that directory are used, and may use any
+   // protocol to provide this content, following HTTP-like relative URL resolution. The page must
+   // not assume that the root path of the domain is the root of the bundle. The URL may also be
    // absolute, including a `file://` URL.
    // Returns true on success.
    // [main-thread]
