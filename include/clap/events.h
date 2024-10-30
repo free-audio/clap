@@ -310,7 +310,7 @@ typedef struct clap_event_midi {
 // sysex buffer to memory owned by the plugin.
 //
 // As a result, the data structure pointed to by the sysex buffer
-// must be contiguous and copyably with `memcpy` of `size` bytes.
+// must be contiguous and copyable with `memcpy` of `size` bytes.
 typedef struct clap_event_midi_sysex {
    clap_event_header_t header;
 
