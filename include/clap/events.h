@@ -302,14 +302,16 @@ typedef struct clap_event_midi {
 // call in which the event is delivered or (from plugin->host) only the
 // duration of a try_push call.
 //
-// Since `clap_output_events.try_push` requires you to make a copy of
-// an event, host implementers receiving sysex messages from plugin need
+// Since `clap_output_events.try_push` requires hosts to make a copy of
+// an event, host implementers receiving sysex messages from plugins need
 // to take care to both copy the event (so header, size, etc...) but
-// also allocate and memcpy the sysex pointer. Similarly plugins retaining
-// the sysex outside the lifetime of a single process call must copy the
-// sysex buffer to memory owned by the plugin.
+// also memcpy the contents of the sysex pointer to host-owned memory, and
+// not just copy the data pointer.
 //
-// As a result, the data structure pointed to by the sysex buffer
+// Similarly plugins retaining the sysex outside the lifetime of a single
+// process call must copy the sysex buffer to plugin-owned memory.
+//
+// As a consequence, the data structure pointed to by the sysex buffer
 // must be contiguous and copyable with `memcpy` of `size` bytes.
 typedef struct clap_event_midi_sysex {
    clap_event_header_t header;
