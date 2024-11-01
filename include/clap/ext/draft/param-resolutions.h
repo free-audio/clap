@@ -8,7 +8,7 @@ static CLAP_CONSTEXPR const char CLAP_EXT_PARAM_RESOLUTIONS[] = "clap.param-reso
 extern "C" {
 #endif
 
-/// This extension allows a plugin to provides descrete value resolutions for parameters.
+/// This extension allows a plugin to provides discrete value resolutions for parameters.
 ///
 /// The host can use the parameter resolution for example for
 /// - incrementing/decrementing the parameter value in discrete steps
