@@ -1,3 +1,20 @@
+# Changes in 1.2.3
+
+## New draft extensions
+
+* [scratch-memory](include/clap/ext/draft/scratch-memory.h): host provided scratch memory within the process call
+* [location](include/clap/ext/draft/location.h): better info about the plugin location within the project
+
+## Documention
+
+* [events.h](include/clap/events.h): clarify sysex lifetime
+* [host.h](include/clap/host.h): clarify `request_callback()`
+* [ambisonic.h](include/clap/ext/ambisonic.h): remove bad comment
+
+## Fixes
+
+* [plugin-template.c](src/plugin-template.c): fix bad assertion
+
 # Changes in 1.2.2
 
 * [thread-check.h](include/clap/ext/thread-check.h): expand the thread-doc to clarify and expand realtime
