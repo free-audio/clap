@@ -31,11 +31,8 @@ typedef struct clap_plugin_location_element {
    int kind;
    // Index within the parent element. 
    uint32_t index_in_group;
-   // Index of the element in a global context. When sorting elements by this index, 
-   // the order should mirror the order as it is displayed in the host. 
-   uint32_t global_index;
-   // Color for this element, should be 0x00000000 if no color is used for this 
-   // element. 
+   // Color for this element, should be CLAP_COLOR_TRANSPARENT if no color is 
+   // used for this element. 
    clap_color_t color;
 } clap_plugin_location_element_t;
 
