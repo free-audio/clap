@@ -13,6 +13,9 @@
 /// Embedding the window gives more control to the host, and feels more integrated.
 /// Floating window are sometimes the only option due to technical limitations.
 ///
+/// The Embedding protocol is by far the most common, supported by all hosts to date,
+/// and a plugin author should support at least that case.
+///
 /// Showing the GUI works as follow:
 ///  1. clap_plugin_gui->is_api_supported(), check what can work
 ///  2. clap_plugin_gui->create(), allocates gui resources
@@ -85,7 +88,10 @@ typedef struct clap_gui_resize_hints {
    bool can_resize_horizontally;
    bool can_resize_vertically;
 
-   // only if can resize horizontally and vertically
+   // if both horizontal and vertical resize are available, do we preserve the
+   // aspect ratio, and if so, what is the width x height aspect ratio to preserve.
+   // These flags are unused if can_resize_horizontally or vertically are false,
+   // and ratios are unused if preserve is false.
    bool     preserve_aspect_ratio;
    uint32_t aspect_ratio_width;
    uint32_t aspect_ratio_height;
@@ -94,7 +100,8 @@ typedef struct clap_gui_resize_hints {
 // Size (width, height) is in pixels; the corresponding windowing system extension is
 // responsible for defining if it is physical pixels or logical pixels.
 typedef struct clap_plugin_gui {
-   // Returns true if the requested gui api is supported
+   // Returns true if the requested gui api is supported, either in floating (plugin-created)
+   // or non-floating (embedded) mode.
    // [main-thread]
    bool(CLAP_ABI *is_api_supported)(const clap_plugin_t *plugin, const char *api, bool is_floating);
 
