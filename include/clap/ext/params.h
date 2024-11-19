@@ -246,9 +246,9 @@ typedef struct clap_param_info {
    // '/' will be used as a separator to show a tree-like structure.
    char module[CLAP_PATH_SIZE];
 
-   double min_value;     // Minimum plain value
-   double max_value;     // Maximum plain value
-   double default_value; // Default plain value
+   double min_value;     // Minimum plain value. Must be finite (`std::isfinite` true)
+   double max_value;     // Maximum plain value. Must be finite
+   double default_value; // Default plain value. Must be in [min, max] range.
 } clap_param_info_t;
 
 typedef struct clap_plugin_params {
