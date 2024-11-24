@@ -1,12 +1,12 @@
 #pragma once
 
-static CLAP_CONSTEXPR const char CLAP_EXT_WEB[] = "clap.web/1";
+static CLAP_CONSTEXPR const char CLAP_EXT_WEBVIEW[] = "clap.webview/1";
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/// @page Web
+/// @page Webview
 ///
 /// This extension enables the plugin to provide the start-page for a webview UI, and exchange
 /// messages back and forth.
@@ -15,7 +15,7 @@ extern "C" {
 /// ArrayBuffer. They are posted back to the plugin using window.parent.postMessage(), with the
 /// data in an ArrayBuffer or TypedArray.
 
-typedef struct clap_plugin_web {
+typedef struct clap_plugin_webview {
    // Returns the URL for the webview's initial navigation, as a null-terminated UTF-8 string.
    // If this URL is relative, it is resolved relative to the plugin (bundle) resource directory.
    // The host may assume that no resources outside of that directory are used, and may use any
@@ -33,9 +33,9 @@ typedef struct clap_plugin_web {
    // [main-thread]
    bool(CLAP_ABI *receive)(const clap_plugin_t *plugin, const void *buffer, uint32_t size);
 
-} clap_plugin_web_t;
+} clap_plugin_webview_t;
 
-typedef struct clap_host_web {
+typedef struct clap_host_webview {
    // Checks whether the webview is open (and ready to receive messages)
    // [thread-safe]
    bool(CLAP_ABI *is_open)(const clap_host_t *host);
@@ -46,7 +46,7 @@ typedef struct clap_host_web {
    // [thread-safe]
    bool(CLAP_ABI *send)(const clap_host_t *host, const void *buffer, uint32_t size);
 
-} clap_host_web_t;
+} clap_host_webview_t;
 
 #ifdef __cplusplus
 }
