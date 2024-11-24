@@ -2,6 +2,10 @@
 
 static CLAP_CONSTEXPR const char CLAP_EXT_WEBVIEW[] = "clap.webview/1";
 
+// clap.gui API constant. The pointer in clap_window must be NULL, but sizing methods are useful.
+// uses logical size, don't call clap_plugin_gui->set_scale()
+static const CLAP_CONSTEXPR char CLAP_WINDOW_API_WEBVIEW[] = "webview";
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -17,6 +21,7 @@ extern "C" {
 
 typedef struct clap_plugin_webview {
    // Returns the URL for the webview's initial navigation, as a null-terminated UTF-8 string.
+   // This must be called at least once before any messages are sent (or accepted by the host).
    // If this URL is relative, it is resolved relative to the plugin (bundle) resource directory.
    // The host may assume that no resources outside of that directory are used, and may use any
    // protocol to provide this content, following HTTP-like relative URL resolution. The page must
@@ -24,11 +29,11 @@ typedef struct clap_plugin_webview {
    // absolute, including a `file://` URL.
    // Returns true on success.
    // [main-thread]
-   bool(CLAP_ABI *get_start)(const clap_plugin_t *plugin,
+   bool(CLAP_ABI *provide_starting_uri)(const clap_plugin_t *plugin,
                              char                *out_buffer,
                              uint32_t            out_buffer_capacity);
 
-   // Receives a single message from the webview.
+   // Receives a single message from the webview, which must be open and ready to receive replies.
    // Returns true on success.
    // [main-thread]
    bool(CLAP_ABI *receive)(const clap_plugin_t *plugin, const void *buffer, uint32_t size);
@@ -36,14 +41,15 @@ typedef struct clap_plugin_webview {
 } clap_plugin_webview_t;
 
 typedef struct clap_host_webview {
-   // Checks whether the webview is open (and ready to receive messages)
+   // Checks whether the webview is open and likely to receive messages.
+   // This may be called at any time and is a hint for non-essential work, such as being able to
+   // skip metering calculations.
    // [thread-safe]
    bool(CLAP_ABI *is_open)(const clap_host_t *host);
 
    // Sends a single message to the webview.
-   // It must not allocate or block if called from the audio thread.
-   // Returns true on success.
-   // [thread-safe]
+   // Returns true on success. It must fail (false) if the webview is not open.
+   // [main-thread]
    bool(CLAP_ABI *send)(const clap_host_t *host, const void *buffer, uint32_t size);
 
 } clap_host_webview_t;
