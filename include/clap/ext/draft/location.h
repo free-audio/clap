@@ -28,7 +28,7 @@ enum {
    CLAP_PLUGIN_LOCATION_TRACK = 3,
 
    // Represents a single device.
-   // It contains other nested device chains.
+   // It can contain other nested device chains.
    CLAP_PLUGIN_LOCATION_DEVICE = 4,
 
    // Represents a nested device chain (serial).
