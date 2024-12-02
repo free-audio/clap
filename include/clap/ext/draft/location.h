@@ -18,7 +18,7 @@ enum {
    CLAP_PLUGIN_LOCATION_PROJECT = 1,
 
    // Represents a group of tracks.
-   // It can contain both track groups, tracks and devices (post processing).
+   // It can contain track groups, tracks, and devices (post processing).
    // The first device within a track group has the index of
    // the last track or track group within this group + 1.
    CLAP_PLUGIN_LOCATION_TRACK_GROUP = 2,
