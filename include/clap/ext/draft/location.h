@@ -23,7 +23,8 @@ enum {
    // the last track or track group within this group + 1.
    CLAP_PLUGIN_LOCATION_TRACK_GROUP = 2,
 
-   // Represents a single tracks. It contains devices (serial).
+   // Represents a single track.
+   // It contains devices (serial).
    CLAP_PLUGIN_LOCATION_TRACK = 3,
 
    // Represents a single device.
