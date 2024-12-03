@@ -53,12 +53,27 @@ typedef struct clap_host_scratch_memory {
    // the "thread-pool" extension, scratch memory is assumed
    // to be "thread-local". The plugin should request the maximum
    // amount of scratch memory that it will need on a single
-   // thread. Accordingly, the host must ensure that each
-   // thread can independently provide the requested amount
-   // of scratch memory.
+   // thread.
+   //
+   // The `num_concurrent_buffers` allows the host to ensure it can
+   // provide the requested amount of scratch memory when the
+   // `thread-pool` extension is used by indicating the maximum number
+   // of tasks that the plugin expects to run in parallel, and
+   // therefore how many different "thread-local" scratch buffers are
+   // required.
+   //
+   // - If `num_concurrent_buffers` = 0, then thread pool tasks do not
+   // require access to scratch memory, and calls to `access()` in a
+   // `thread_pool.exec()` context may return NULL.
+   // - If `num_concurrent_buffers` = N > 0, then the host must ensure
+   // that up to N thread-pool tasks can subsequently call `access()`
+   // to receive a thread-local scratch buffer during a
+   // `thread_pool.exec()` context.
    //
    // [main-thread & being-activated]
-   bool(CLAP_ABI *reserve)(const clap_host_t *host, uint32_t scratch_size_bytes);
+   bool(CLAP_ABI *reserve)(const clap_host_t *host,
+                           uint32_t           scratch_size_bytes,
+                           uint32_t           num_concurrent_buffers);
 
    // Asks the host for the previously reserved scratch memory.
    // If the host returned "true" when scratch memory was requested,
@@ -66,6 +81,25 @@ typedef struct clap_host_scratch_memory {
    // as large as the reserved size. If the host returned "false"
    // when scratch memory was requested, then this method must not
    // be called, and will return NULL.
+   //
+   // If this method is called from the `thread_pool.exec()` callback, then:
+   // - if the `num_concurrent_buffers` parameter passed to
+   // `reserve()` was zero, then this method may return NULL.
+   // - if the `task_index` of the current task is greater than or
+   // equal to the value passed to `num_concurrent_buffers`, then this
+   // method may return NULL.
+   //
+   // When called from the `thread_pool.exec()` callback, the returned
+   // scratch buffer is "thread-local", that is, no two concurrent
+   // executions of this method from different tasks will return the
+   // same non-NULL pointer. Non-concurrent executions on different
+   // tasks may return the same non-NULL pointer.
+   //
+   // The buffer returned in the `thread_pool.exec()` callback context
+   // might not be the same one as returned in the `process()` context;
+   // if a plugin wishes to uses the same scratch buffer everywhere,
+   // call `access()` in the `process()` context and share the returned
+   // pointer with the thread pool tasks.
    //
    // This method may only be called by the plugin from the audio thread,
    // (i.e. during the process() or thread_pool.exec() callback), and
