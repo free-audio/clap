@@ -9,7 +9,12 @@ extern "C" {
 #endif
 
 // event header
-// must be the first attribute of the event
+// All clap events start with an event header to determine the overall
+// size of the event and its type and space (a namespacing for types).
+// clap_event objects are contiguous regions of memory which can be copied
+// with a memcpy of `size` bytes starting at the top of the header. As
+// such, be very careful when desiginig clap events with internal pointers
+// and other non-value-types to consider the lifetime of those members.
 typedef struct clap_event_header {
    uint32_t size;     // event size including this header, eg: sizeof (clap_event_note)
    uint32_t time;     // sample offset within the buffer for this event
@@ -266,6 +271,12 @@ enum clap_transport_flags {
    CLAP_TRANSPORT_IS_WITHIN_PRE_ROLL = 1 << 7,
 };
 
+// clap_event_transport provides song position, tempo, and similar information
+// from the host to the plugin. There are two ways a host communicates these values.
+// In the `clap_process` structure sent to each processing block, the host must
+// provide a transport structure which indicates the available information at the
+// start of the block. If the host provides sample-accurate tempo or transport changes,
+// it can also provide subsequent inter-block transport updates by delivering a new event.
 typedef struct clap_event_transport {
    clap_event_header_t header;
 
@@ -297,11 +308,27 @@ typedef struct clap_event_midi {
    uint8_t  data[3];
 } clap_event_midi_t;
 
+// clap_event_midi_sysex contains a pointer to a sysex contents buffer.
+// The lifetime of this buffer is (from host->plugin) only the process
+// call in which the event is delivered or (from plugin->host) only the
+// duration of a try_push call.
+//
+// Since `clap_output_events.try_push` requires hosts to make a copy of
+// an event, host implementers receiving sysex messages from plugins need
+// to take care to both copy the event (so header, size, etc...) but
+// also memcpy the contents of the sysex pointer to host-owned memory, and
+// not just copy the data pointer.
+//
+// Similarly plugins retaining the sysex outside the lifetime of a single
+// process call must copy the sysex buffer to plugin-owned memory.
+//
+// As a consequence, the data structure pointed to by the sysex buffer
+// must be contiguous and copyable with `memcpy` of `size` bytes.
 typedef struct clap_event_midi_sysex {
    clap_event_header_t header;
 
    uint16_t       port_index;
-   const uint8_t *buffer; // midi buffer
+   const uint8_t *buffer; // midi buffer. See lifetime comment above.
    uint32_t       size;
 } clap_event_midi_sysex_t;
 

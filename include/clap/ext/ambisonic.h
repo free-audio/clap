@@ -43,9 +43,6 @@ typedef struct clap_plugin_ambisonic {
                                        const clap_ambisonic_config_t *config);
 
    // Returns true on success
-   //
-   // config_id: the configuration id, see clap_plugin_audio_ports_config.
-   // If config_id is CLAP_INVALID_ID, then this function queries the current port info.
    // [main-thread]
    bool(CLAP_ABI *get_config)(const clap_plugin_t     *plugin,
                               bool                     is_input,
