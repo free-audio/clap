@@ -13,10 +13,8 @@ extern "C" {
 typedef struct clap_plugin_gain_reduction {
   // Returns the current gain reduction in dB. The value is intended
   // for informational display, for example in a host meter or tooltip.
-  //
-  // The function should be called on the audio thread to ensure consistency
-  // with processing time, although the host will likely use the value on
-  // the main thread.
+  // The returned value represents the gain reduction that the plugin
+  // applied to the last sample in the most recently processed block.
   //
   // The returned value is in dB. Zero means the plugin is applying no gain
   // reduction, or is not processing. A negative value means the plugin is
