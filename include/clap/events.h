@@ -13,7 +13,7 @@ extern "C" {
 // size of the event and its type and space (a namespacing for types).
 // clap_event objects are contiguous regions of memory which can be copied
 // with a memcpy of `size` bytes starting at the top of the header. As
-// such, be very careful when desiginig clap events with internal pointers
+// such, be very careful when designing clap events with internal pointers
 // and other non-value-types to consider the lifetime of those members.
 typedef struct clap_event_header {
    uint32_t size;     // event size including this header, eg: sizeof (clap_event_note)
