@@ -2,18 +2,19 @@
 
 #include "../../plugin.h"
 
-// This extension lets the plugin report the current gain reduction to the host.
+// This extension lets the plugin report the current gain adjustment
+// (typically, gain reduction) to the host.
 
-static CLAP_CONSTEXPR const char CLAP_EXT_GAIN_REDUCTION[] = "clap.gain-reduction/0";
+static CLAP_CONSTEXPR const char CLAP_EXT_GAIN_ADJUSTMENT_DISPLAY[] = "clap.gain-adjustment-display/0";
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef struct clap_plugin_gain_reduction {
-  // Returns the current gain reduction in dB. The value is intended
+typedef struct clap_plugin_gain_adjustment_display {
+  // Returns the current gain adjustment in dB. The value is intended
   // for informational display, for example in a host meter or tooltip.
-  // The returned value represents the gain reduction that the plugin
+  // The returned value represents the gain adjustment that the plugin
   // applied to the last sample in the most recently processed block.
   //
   // The returned value is in dB. Zero means the plugin is applying no gain
@@ -26,7 +27,7 @@ typedef struct clap_plugin_gain_reduction {
   //
   // [audio-thread]
   double(CLAP_ABI *get)(const clap_plugin_t *plugin);
-} clap_plugin_gain_reduction_t;
+} clap_plugin_gain_adjustment_display_t;
 
 #ifdef __cplusplus
 }
