@@ -273,7 +273,7 @@ enum clap_transport_flags {
 
 // clap_event_transport provides song position, tempo, and similar information
 // from the host to the plugin. There are two ways a host communicates these values.
-// In the `clap_process` structure sent to each processing block, the host must
+// In the `clap_process` structure sent to each processing block, the host may
 // provide a transport structure which indicates the available information at the
 // start of the block. If the host provides sample-accurate tempo or transport changes,
 // it can also provide subsequent inter-block transport updates by delivering a new event.
