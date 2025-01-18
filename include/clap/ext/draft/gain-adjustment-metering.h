@@ -5,13 +5,13 @@
 // This extension lets the plugin report the current gain adjustment
 // (typically, gain reduction) to the host.
 
-static CLAP_CONSTEXPR const char CLAP_EXT_GAIN_ADJUSTMENT_DISPLAY[] = "clap.gain-adjustment-display/0";
+static CLAP_CONSTEXPR const char CLAP_EXT_GAIN_ADJUSTMENT_METERING[] = "clap.gain-adjustment-metering/0";
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef struct clap_plugin_gain_adjustment_display {
+typedef struct clap_plugin_gain_adjustment_metering {
   // Returns the current gain adjustment in dB. The value is intended
   // for informational display, for example in a host meter or tooltip.
   // The returned value represents the gain adjustment that the plugin
@@ -27,7 +27,7 @@ typedef struct clap_plugin_gain_adjustment_display {
   //
   // [audio-thread]
   double(CLAP_ABI *get)(const clap_plugin_t *plugin);
-} clap_plugin_gain_adjustment_display_t;
+} clap_plugin_gain_adjustment_metering_t;
 
 #ifdef __cplusplus
 }
