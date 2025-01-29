@@ -68,26 +68,30 @@ typedef struct clap_plugin_state_converter {
 
    // Gets the maximum number of target parameters a source parameter can map to.
    // [thread-safe]
-   uint32_t (*get_max_target_parameter)(struct clap_plugin_state_converter *converter,
-                                        clap_id                             src_param_id);
+   uint32_t (*get_max_target_parameters)(struct clap_plugin_state_converter *converter);
 
    // Converts a normalized value.
    // src is a single parameter value.
    // dsts is an array of parameter values.
    // dsts_size is the size of the dsts array.
-   // See get_max_target_parameter
-
-   // Returns true on success
+   // See get_max_target_parameters() and the struct's note.
+   //
+   // Returns the number of converted parameters, or -1 on error.
    // [thread-safe]
-   bool(CLAP_ABI *convert_normalized_value)(struct clap_plugin_state_converter        *converter,
-                                            clap_plugin_state_converter_param_value_t *src,
-                                            clap_plugin_state_converter_param_value_t *dsts,
-                                            size_t                                     dsts_size);
+   int32_t(CLAP_ABI *convert_normalized_value)(struct clap_plugin_state_converter        *converter,
+                                               clap_plugin_state_converter_param_value_t *src,
+                                               clap_plugin_state_converter_param_value_t *dsts,
+                                               size_t dsts_size);
 
    // Converts a plain value.
-   // Returns true on success.
+   // src is a single parameter value.
+   // dsts is an array of parameter values.
+   // dsts_size is the size of the dsts array.
+   // See get_max_target_parameters() and the struct's note.
+   //
+   // Returns the number of converted parameters, or -1 on error.
    // [thread-safe]
-   bool(CLAP_ABI *convert_plain_value)(struct clap_plugin_state_converter        *converter,
+   int32_t(CLAP_ABI *convert_plain_value)(struct clap_plugin_state_converter        *converter,
                                        clap_plugin_state_converter_param_value_t *src,
                                        clap_plugin_state_converter_param_value_t *dsts,
                                        size_t                                     dsts_size);
