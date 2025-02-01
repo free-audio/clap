@@ -55,6 +55,8 @@ enum {
    CLAP_SURROUND_TBL = 15, // Rear Left Height
    CLAP_SURROUND_TBC = 16, // Rear Center Height
    CLAP_SURROUND_TBR = 17, // Rear Right Height
+   CLAP_SURROUND_TSL = 18, // Side Left Height
+   CLAP_SURROUND_TSR = 19, // Side Right Height
 };
 
 typedef struct clap_plugin_surround {
