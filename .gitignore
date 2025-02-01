@@ -60,3 +60,7 @@ cmake-build*/
 ignore/*
 
 .DS_Store
+
+# Meson
+.meson-subproject*
+
