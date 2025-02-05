@@ -1,3 +1,10 @@
+# Changes in 1.2.4
+
+* [mini-curve-display.h](include/clap/ext/draft/mini-curve-display.h): new extension to let the plugin render a mini murve to be displayed in the host's mixer, eg: EQ frequency response
+* [project-location.h](include/clap/ext/draft/project-location.h): rename the extension and second iteration on the interface
+* [surround.h](include/clap/ext/surround.h): add `CLAP_SURROUND_TSL`, `CLAP_SURROUND_TSR`, and improve documentation
+* [thread-check.h](include/clap/ext/thread-check.h): adjust documentation
+
 # Changes in 1.2.3
 
 ## New draft extensions
