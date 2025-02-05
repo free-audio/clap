@@ -1,3 +1,7 @@
+# Changes in 1.2.4
+
+* [project-location](include/clap/ext/draft/project-location.h): rename the extension and second iteration on the interface
+
 # Changes in 1.2.3
 
 ## New draft extensions
