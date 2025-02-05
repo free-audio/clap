@@ -7,7 +7,7 @@
 
 #include "ext/draft/extensible-audio-ports.h"
 #include "ext/draft/gain-adjustment-metering.h"
-#include "ext/draft/location.h"
+#include "ext/draft/project-location.h"
 #include "ext/draft/resource-directory.h"
 #include "ext/draft/scratch-memory.h"
 #include "ext/draft/transport-control.h"
