@@ -21,6 +21,10 @@ typedef struct clap_plugin_mini_curve_display {
 
    // Tells the plugin if the curve is currently observed or not.
    // When it isn't observed render() can't be called.
+   //
+   // When is_obseverd becomes true, the curve content is implicitely invalidated. So the plugin
+   // don't need to call host->changed.
+   //
    // [main-thread]
    void(CLAP_ABI *set_observed)(clap_plugin_t *plugin, bool is_observed);
 } clap_plugin_mini_curve_display_t;
