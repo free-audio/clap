@@ -52,9 +52,7 @@ extern "C" {
 ///
 ///  Clap also tags some functions as [thread-safe]. Functions tagged as [thread-safe] can be called
 ///  from any thread unless explicitly counter-indicated (for instance [thread-safe, !audio-thread])
-///  and may be called concurrently. Since a [thread-safe] function may be called from the
-///  [audio-thread] unless explicitly counter-indicated, it must also meet the realtime constraints
-///  as describes above.
+///  and may be called concurrently.
 
 // This interface is useful to do runtime checks and make
 // sure that the functions are called on the correct threads.
