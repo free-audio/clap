@@ -86,7 +86,7 @@ typedef struct clap_project_location_element {
    // Color for this element.
    // Only usable if CLAP_PROJECT_LOCATION_HAS_COLOR is set in flags.
    clap_color_t color;
-} clap_plugin_location_element_t;
+} clap_project_location_element_t;
 
 typedef struct clap_plugin_project_location {
    // Called by the host when the location of the plugin instance changes.
@@ -99,7 +99,7 @@ typedef struct clap_plugin_project_location {
    //
    // [main-thread]
    void(CLAP_ABI *set)(const clap_plugin_t                  *plugin,
-                       const clap_plugin_location_element_t *path,
+                       const clap_project_location_element_t *path,
                        uint32_t                              num_elements);
 } clap_plugin_project_location_t;
 
