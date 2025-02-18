@@ -1,3 +1,8 @@
+# Changes in 1.2.5
+
+* [mini-curve-display.h](include/clap/ext/draft/mini-curve-display.h): second iteration, remove `host->cuve_changed()` and improve documentation
+* [project-location.h](include/clap/ext/draft/project-location.h): fix typo
+
 # Changes in 1.2.4
 
 * [mini-curve-display.h](include/clap/ext/draft/mini-curve-display.h): new extension to let the plugin render a mini murve to be displayed in the host's mixer, eg: EQ frequency response
