@@ -5,7 +5,7 @@
 // This extension allows a host to render a small curve provided by the plugin.
 // A useful application is to render an EQ frequency response in the DAW mixer view.
 
-static CLAP_CONSTEXPR const char CLAP_EXT_MINI_CURVE_DISPLAY[] = "clap.mini-curve-display/1";
+static CLAP_CONSTEXPR const char CLAP_EXT_MINI_CURVE_DISPLAY[] = "clap.mini-curve-display/2";
 
 #ifdef __cplusplus
 extern "C" {
@@ -17,7 +17,7 @@ typedef struct clap_plugin_mini_curve_display {
    // The value at index 0 will be the leftmost and the value at index data_size -1 will be the
    // rightmost.
    // [main-thread]
-   bool(CLAP_ABI *render)(clap_plugin_t *plugin, uint16_t *data, uint32_t data_size);
+   bool(CLAP_ABI *render)(const clap_plugin_t *plugin, uint16_t *data, uint32_t data_size);
 
    // Tells the plugin if the curve is currently observed or not.
    // When it isn't observed render() can't be called.
@@ -26,15 +26,16 @@ typedef struct clap_plugin_mini_curve_display {
    // the plugin don't need to call host->changed.
    //
    // [main-thread]
-   void(CLAP_ABI *set_observed)(clap_plugin_t *plugin, bool is_observed);
+   void(CLAP_ABI *set_observed)(const clap_plugin_t *plugin, bool is_observed);
 
-   // Retriev the axis name.
+   // Retrives the axis name.
+   // x_name and y_name must not to be null.
    // Returns true on success, if the name capacity was sufficient.
    // [main-thread]
-   bool(CLAP_ABI *get_axis_name)(clap_plugin_t *plugin,
-                                 char          *x_name,
-                                 char          *y_name,
-                                 uint32_t       name_capacity);
+   bool(CLAP_ABI *get_axis_name)(const clap_plugin_t *plugin,
+                                 char                *x_name,
+                                 char                *y_name,
+                                 uint32_t             name_capacity);
 } clap_plugin_mini_curve_display_t;
 
 enum clap_mini_curve_display_change_flags {
@@ -57,16 +58,11 @@ typedef struct clap_host_mini_curve_display {
    // periodically re-render.
    //
    // [main-thread]
-   void(CLAP_ABI *set_dynamic)(clap_host_t *host, bool is_dynamic);
-
-   // Informs the host that the curve content changed.
-   // Can only be called if the curve is observed and is static.
-   // [main-thread]
-   void(CLAP_ABI *curve_changed)(clap_host_t *host);
+   void(CLAP_ABI *set_dynamic)(const clap_host_t *host, bool is_dynamic);
 
    // See clap_mini_curve_display_change_flags
    // [main-thread]
-   void(CLAP_ABI *changed)(clap_host_t *host, uint32_t flags);
+   void(CLAP_ABI *changed)(const clap_host_t *host, uint32_t flags);
 } clap_host_mini_curve_display_t;
 
 #ifdef __cplusplus
