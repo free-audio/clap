@@ -37,7 +37,7 @@ extern "C" {
 //
 // Rationale:
 //
-//    The intent of the init() and deinit() functions is to provide a "normal" initialization patterh
+//    The intent of the init() and deinit() functions is to provide a "normal" initialization pattern
 //    which occurs when the shared object is loaded or unloaded. As such, hosts will call each once and
 //    in matched pairs. In CLAP specifications prior to 1.2.0, this single-call was documented as a
 //    requirement.
