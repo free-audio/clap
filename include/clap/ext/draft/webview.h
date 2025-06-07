@@ -41,12 +41,6 @@ typedef struct clap_plugin_webview {
 } clap_plugin_webview_t;
 
 typedef struct clap_host_webview {
-   // Checks whether the webview is open and likely to receive messages.
-   // This may be called at any time and is a hint for non-essential work, such as being able to
-   // skip metering calculations.
-   // [thread-safe]
-   bool(CLAP_ABI *is_open)(const clap_host_t *host);
-
    // Sends a single message to the webview.
    // Returns true on success. It must fail (false) if the webview is not open.
    // [main-thread]
