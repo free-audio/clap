@@ -20,9 +20,6 @@ extern "C" {
 /// data in an ArrayBuffer or TypedArray.
 
 typedef struct clap_plugin_webview {
-   // Expected length of the URI, which for compatibility should not exceed 2000 bytes.
-   uint32_t (CLAP_ABI *get_uri_length)(const clap_plugin_t *plugin);
-
    // Returns the URL for the webview's initial navigation, as a null-terminated UTF-8 string.
    // This must be called at least once before any messages are sent (or accepted by the host).
    // Absolute URIs (including `data:`, and `file:` URIs on local systems) are always supported.
@@ -30,10 +27,10 @@ typedef struct clap_plugin_webview {
    // relative to the bundle's resource directory. In this case, the host may use any base URI
    // for this content, and the page must not assume that the root path of the domain is the root
    // of the bundle, nor assume access to files outside that directory.
-   // The capacity must be at least that returned by get_uri_length().
-   // Returns true on success.
+   // Returns the desired length of the URI, or <= 0 for an error. If this is greater than the
+   // capacity, then the result was truncated. If the capacity is 0, `uri` may be a null pointer.
    // [main-thread]
-   bool(CLAP_ABI *get_uri)(const clap_plugin_t *plugin, char *uri, uint32_t *uri_capacity);
+   int32_t (CLAP_ABI *get_uri)(const clap_plugin_t *plugin, char *uri, uint32_t uri_capacity);
 
    // Receives a single message from the webview, which must be open and ready to receive replies.
    // Returns true on success.
