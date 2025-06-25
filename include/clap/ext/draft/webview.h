@@ -1,6 +1,6 @@
 #pragma once
 
-static CLAP_CONSTEXPR const char CLAP_EXT_WEBVIEW[] = "clap.webview/1";
+static CLAP_CONSTEXPR const char CLAP_EXT_WEBVIEW[] = "clap.webview/2";
 
 // clap.gui API constant. The pointer in clap_window must be NULL, but sizing methods are useful.
 // uses logical size, don't call clap_plugin_gui->set_scale()
