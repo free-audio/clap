@@ -24,9 +24,11 @@ typedef struct clap_plugin_webview {
    // This must be called at least once before any messages are sent (or accepted by the host).
    // Absolute URIs (including `data:`, and `file:` URIs on local systems) are always supported.
    // If this CLAP is a bundle with resources, the URL may be relative and must be resolved
-   // relative to the bundle's resource directory. In this case, the host may use any base URI
-   // for this content, and the page must not assume that the root path of the domain is the root
-   // of the bundle, nor assume access to files outside that directory.
+   // relative to a `file:` URI for the bundle's resource directory.
+   // The host may translate `file:` URIs to some other scheme or prefix, to limit access scope
+   // or handle virtual filesystems. Such pages must therefore not assume they has been loaded
+   // from any particular URI scheme, host or path prefix. The host must still preserve the
+   // filename and relative path to any resources within the same directory as that page.
    // Returns the desired length of the URI, or <= 0 for an error. If this is greater than the
    // capacity, then the result was truncated. If the capacity is 0, `uri` may be a null pointer.
    // [main-thread]
