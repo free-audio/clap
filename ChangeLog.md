@@ -1,3 +1,8 @@
+# Changes in 1.2.7
+
+* [webview.h](include/clap/ext/draft/webview.h): new webview draft extensions
+* [plugin-state-converter.h](include/clap/factory/draft/plugin-state-converter.h): add missing `CLAP_ABI`
+
 # Changes in 1.2.6
 
 * [mini-curve-display.h](include/clap/ext/draft/mini-curve-display.h): third iteration, added curve stacking, curve kind and curve hints.
