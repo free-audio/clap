@@ -1,0 +1,21 @@
+# Simple toolchain example that targets wasm32 using emscripten
+# On archlinux:
+#   pacman -S clang emscripten
+# On macOS:
+#   brew install emscripten
+#
+# For other OSes, make a copy of this file and do the necessary adjustments.
+
+set(CMAKE_SYSTEM_NAME "Emscripten")
+set(CMAKE_CROSSCOMPILING TRUE)
+
+if(CMAKE_HOST_SYSTEM_NAME STREQUAL Linux)
+    set(CMAKE_C_COMPILER "/usr/lib/emscripten/emcc")
+    set(CMAKE_CXX_COMPILER "/usr/lib/emscripten/em++")
+elseif(CMAKE_HOST_SYSTEM_NAME STREQUAL Darwin)
+    set(CMAKE_C_COMPILER "/opt/homebrew/bin/emcc")
+    set(CMAKE_CXX_COMPILER "/opt/homebrew/bin/em++")
+else()
+    set(CMAKE_C_COMPILER "emcc")
+    set(CMAKE_CXX_COMPILER "em++")
+endif()

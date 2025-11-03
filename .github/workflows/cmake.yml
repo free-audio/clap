@@ -31,7 +31,7 @@ jobs:
 
       - name: Setup MacOS
         if: startsWith(matrix.os, 'macOS')
-        run: brew install automake autoconf ninja cmake
+        run: brew upgrade && brew install automake autoconf ninja cmake emscripten wasi-libc wasi-runtimes llvm
 
       - name: Setup Ubuntu
         if: startsWith(matrix.os, 'ubuntu')
@@ -41,15 +41,33 @@ jobs:
         uses: lukka/run-cmake@v10
         id: runcmake-ninja
         with:
-          configurePreset: 'ninja'
-          buildPreset: 'ninja-release'
-          testPreset: 'ninja-release'
+          configurePreset: "ninja"
+          buildPreset: "ninja-release"
+          testPreset: "ninja-release"
 
       - name: Run CMake+MSVC+CTest to generate/build/test.
         uses: lukka/run-cmake@v10
         if: startsWith(matrix.os, 'win')
         id: runcmake-msvc
         with:
-          configurePreset: 'msvc'
-          buildPreset: 'msvc-release'
-          testPreset: 'msvc-release'
+          configurePreset: "msvc"
+          buildPreset: "msvc-release"
+          testPreset: "msvc-release"
+
+      - name: Build emscripten plugin template.
+        uses: lukka/run-cmake@v10
+        if: startsWith(matrix.os, 'macOS')
+        id: runcmake-emscripten
+        with:
+          configurePreset: "emscripten"
+          buildPreset: "emscripten-release"
+
+      # TODO: enable it, unfortunately it currently fails (only on github, not my on OS) with:
+      #   clang: error: unable to execute command: posix_spawn failed: No such file or directory
+      # - name: Build wasi plugin template.
+      #   uses: lukka/run-cmake@v10
+      #   if: startsWith(matrix.os, 'macOS')
+      #   id: runcmake-wasi
+      #   with:
+      #     configurePreset: "wasi"
+      #     buildPreset: "wasi-release"

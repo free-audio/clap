@@ -39,6 +39,42 @@
           "value": true
         }
       }
+    },
+    {
+      "name": "wasi",
+      "displayName": "Ninja Clang WASM32/WASI",
+      "description": "Configure and generate Ninja project files for all configurations, using clang and targetting wasm32 and wasi",
+      "binaryDir": "${sourceDir}/builds/${presetName}",
+      "generator": "Ninja Multi-Config",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": {
+          "type": "boolean",
+          "value": true
+        },
+        "CLAP_BUILD_TESTS": {
+          "type": "boolean",
+          "value": true
+        },
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/clang-wasm32-wasi.cmake"
+      }
+    },
+    {
+      "name": "emscripten",
+      "displayName": "emscripten",
+      "description": "Configure and generate Ninja project files for all configurations, using emscripten",
+      "binaryDir": "${sourceDir}/builds/${presetName}",
+      "generator": "Ninja Multi-Config",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": {
+          "type": "boolean",
+          "value": true
+        },
+        "CLAP_BUILD_TESTS": {
+          "type": "boolean",
+          "value": true
+        },
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/emscripten.cmake"
+      }
     }
   ],
   "buildPresets": [
@@ -48,7 +84,7 @@
       "displayName": "Build ninja-release",
       "description": "Build ninja Release configuration",
       "configuration": "RelWithDebInfo",
-      "targets": ["clap-tests"]
+      "targets": ["clap-tests", "clap-plugin-template"]
     },
     {
       "name": "msvc-release",
@@ -56,7 +92,23 @@
       "displayName": "Build msvc-release",
       "description": "Build msvc Release configuration",
       "configuration": "RelWithDebInfo",
-      "targets": ["clap-tests"]
+      "targets": ["clap-tests", "clap-plugin-template"]
+    },
+    {
+      "name": "wasi-release",
+      "configurePreset": "wasi",
+      "displayName": "Build wasi-release",
+      "description": "Build wasi Release configuration",
+      "configuration": "RelWithDebInfo",
+      "targets": ["clap-tests", "clap-plugin-template"]
+    },
+    {
+      "name": "emscripten-release",
+      "configurePreset": "emscripten",
+      "displayName": "Build emscripten-release",
+      "description": "Build emscripten Release configuration",
+      "configuration": "RelWithDebInfo",
+      "targets": ["clap-tests", "clap-plugin-template"]
     }
   ],
   "testPresets": [
