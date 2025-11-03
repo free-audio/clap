@@ -50,7 +50,7 @@ add_custom_target(clap-tests)
 
 if (${CLAP_BUILD_TESTS})
     message(STATUS "Including CLAP tests, compile tests, and versions")
-    include(CheckIncludeFile)
+    include(CheckSourceCompiles)
 
     macro(clap_compile_cpp SUFFIX EXT STDC STDCPP)
         add_executable(clap-compile-${SUFFIX} EXCLUDE_FROM_ALL src/main.${EXT})
@@ -78,16 +78,37 @@ if (${CLAP_BUILD_TESTS})
     clap_compile_cpp(cpp11 cc 11 11)
     clap_compile_cpp(cpp14 cc 11 14)
     if(${CMAKE_VERSION} VERSION_LESS "3.21")
-       message(STATUS "Skipping C17 tests due to older CMAKE_VERSION ${CMAKE_VERSION}")
+        message(STATUS "Skipping C17 tests due to older CMAKE_VERSION ${CMAKE_VERSION}")
     else()
-      clap_compile_cpp(c17    c 17 17)
+        clap_compile_cpp(c17    c 17 17)
     endif()
     clap_compile_cpp(cpp17 cc 17 17)
     clap_compile_cpp(cpp20 cc 17 20)
 
-    check_include_file(threads.h CLAP_HAS_THREADS_H)
+    set(CMAKE_C_STANDARD 11)
+    check_source_compiles(C [[
+#include <threads.h>
+static void dummy(void) {}
+int main(void) {
+    mtx_t lock;
+    once_flag once = ONCE_FLAG_INIT;
 
-    add_library(clap-plugin-template MODULE EXCLUDE_FROM_ALL src/plugin-template.c)
+    mtx_init(&lock, mtx_plain);
+    mtx_lock(&lock);
+    mtx_unlock(&lock);
+    mtx_destroy(&lock);
+    call_once(&once, dummy);
+    return 0;
+}
+]] CLAP_HAS_THREADS_H)
+
+    if(CMAKE_SYSTEM_NAME STREQUAL "WASI")
+        set(CLAP_PLUGIN_TEMPLATE_LIBRARY_TYPE STATIC)
+    else()
+        set(CLAP_PLUGIN_TEMPLATE_LIBRARY_TYPE MODULE)
+    endif()
+
+    add_library(clap-plugin-template ${CLAP_PLUGIN_TEMPLATE_LIBRARY_TYPE} EXCLUDE_FROM_ALL src/plugin-template.c)
     target_link_libraries(clap-plugin-template PRIVATE clap)
     set_target_properties(clap-plugin-template PROPERTIES C_STANDARD 11)
     add_dependencies(clap-tests clap-plugin-template)
@@ -114,5 +135,8 @@ if (${CLAP_BUILD_TESTS})
                     )
     elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
         set_target_properties(clap-plugin-template PROPERTIES SUFFIX ".clap" PREFIX "")
+    elseif(CMAKE_SYSTEM_NAME STREQUAL "WASI" OR CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+        target_link_options(clap-plugin-template PRIVATE --no-entry)
     endif()
+
 endif()
