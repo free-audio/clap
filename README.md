@@ -146,6 +146,7 @@ and use to get a basic plugin experience:
 - [Avendish](https://github.com/celtera/avendish), a reflection-based API for media plug-ins in C++ which supports Clap
 - [NIH-plug](https://github.com/robbert-vdh/nih-plug), an API-agnostic, Rust-based plugin framework aiming to reduce boilerplate without getting in your way
 - [iPlug2](https://iplug2.github.io), a liberally licensed C++ audio plug-in framework that supports Clap
+- [signalsmith-clap-cpp](https://github.com/geraintluff/signalsmith-clap-cpp), C++ example plugins, with cross-platform webview UIs (using the draft [webview extension](include/clap/ext/draft/webview.h), and a [helper](https://github.com/geraintluff/webview-gui?tab=readme-ov-file#clap-helper) for native platforms) and WebAssembly (WCLAP) build instructions.
 
 ## Programming Language Bindings
 
