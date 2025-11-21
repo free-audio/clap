@@ -35,7 +35,7 @@ typedef struct clap_plugin_state_converter {
    void *converter_data;
 
    // Destroy the converter.
-   void (*destroy)(struct clap_plugin_state_converter *converter);
+   void(CLAP_ABI *destroy)(struct clap_plugin_state_converter *converter);
 
    // Converts the input state to a state usable by the destination plugin.
    //
@@ -44,7 +44,7 @@ typedef struct clap_plugin_state_converter {
    //
    // Returns true on success.
    // [thread-safe]
-   bool (*convert_state)(struct clap_plugin_state_converter *converter,
+   bool(CLAP_ABI *convert_state)(struct clap_plugin_state_converter *converter,
                          const clap_istream_t               *src,
                          const clap_ostream_t               *dst,
                          char                               *error_buffer,
@@ -53,7 +53,7 @@ typedef struct clap_plugin_state_converter {
    // Converts a normalized value.
    // Returns true on success.
    // [thread-safe]
-   bool (*convert_normalized_value)(struct clap_plugin_state_converter *converter,
+   bool(CLAP_ABI *convert_normalized_value)(struct clap_plugin_state_converter *converter,
                                     clap_id                             src_param_id,
                                     double                              src_normalized_value,
                                     clap_id                            *dst_param_id,
@@ -62,7 +62,7 @@ typedef struct clap_plugin_state_converter {
    // Converts a plain value.
    // Returns true on success.
    // [thread-safe]
-   bool (*convert_plain_value)(struct clap_plugin_state_converter *converter,
+   bool(CLAP_ABI *convert_plain_value)(struct clap_plugin_state_converter *converter,
                                clap_id                             src_param_id,
                                double                              src_plain_value,
                                clap_id                            *dst_param_id,
@@ -77,20 +77,20 @@ static CLAP_CONSTEXPR const char CLAP_PLUGIN_STATE_CONVERTER_FACTORY_ID[] =
 typedef struct clap_plugin_state_converter_factory {
    // Get the number of converters.
    // [thread-safe]
-   uint32_t (*count)(const struct clap_plugin_state_converter_factory *factory);
+   uint32_t(CLAP_ABI *count)(const struct clap_plugin_state_converter_factory *factory);
 
    // Retrieves a plugin state converter descriptor by its index.
    // Returns null in case of error.
    // The descriptor must not be freed.
    // [thread-safe]
-   const clap_plugin_state_converter_descriptor_t *(*get_descriptor)(
+   const clap_plugin_state_converter_descriptor_t *(CLAP_ABI *get_descriptor)(
       const struct clap_plugin_state_converter_factory *factory, uint32_t index);
 
    // Create a plugin state converter by its converter_id.
    // The returned pointer must be freed by calling converter->destroy(converter);
    // Returns null in case of error.
    // [thread-safe]
-   clap_plugin_state_converter_t *(*create)(
+   clap_plugin_state_converter_t *(CLAP_ABI *create)(
       const struct clap_plugin_state_converter_factory *factory, const char *converter_id);
 } clap_plugin_state_converter_factory_t;
 
