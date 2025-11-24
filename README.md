@@ -89,7 +89,7 @@ and use to get a basic plugin experience:
 - [note-ports](include/clap/ext/note-ports.h), define the note ports
 - [audio-ports](include/clap/ext/audio-ports.h), define the audio ports
   - [surround](include/clap/ext/surround.h), inspect surround channel mapping
-  - [ambisonic](include/clap/ext/draft/ambisonic.h), inspect ambisonic channel mapping
+  - [ambisonic](include/clap/ext/ambisonic.h), inspect ambisonic channel mapping
   - [configurable-audio-ports](include/clap/ext/configurable-audio-ports.h), request the plugin to apply a given configuration
   - [audio-ports-config](include/clap/ext/audio-ports-config.h), simple list of pre-defined audio ports configurations, meant to be exposed to the user
   - [audio-ports-activation](include/clap/ext/audio-ports-activation.h), activate and deactivate a given audio port
