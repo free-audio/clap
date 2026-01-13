@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_EXT_TRANSPORT_CONTROL_H
+#define CLAP_EXT_TRANSPORT_CONTROL_H
 
 #include "../../plugin.h"
 
@@ -64,3 +66,4 @@ typedef struct clap_host_transport_control {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_EXT_TRANSPORT_CONTROL_H

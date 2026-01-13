@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_EXT_SURROUND_H
+#define CLAP_EXT_SURROUND_H
 
 #include "../plugin.h"
 
@@ -87,3 +89,4 @@ typedef struct clap_host_surround {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_EXT_SURROUND_H

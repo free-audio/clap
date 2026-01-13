@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_EXT_TAIL_H
+#define CLAP_EXT_TAIL_H
 
 #include "../plugin.h"
 
@@ -24,3 +26,4 @@ typedef struct clap_host_tail {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_EXT_TAIL_H

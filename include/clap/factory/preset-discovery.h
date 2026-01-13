@@ -40,6 +40,8 @@
 */
 
 #pragma once
+#ifndef CLAP_PRESET_DISCOVERY_H
+#define CLAP_PRESET_DISCOVERY_H
 
 #include "../private/std.h"
 #include "../private/macros.h"
@@ -311,3 +313,4 @@ typedef struct clap_preset_discovery_factory {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_PRESET_DISCOVERY_H

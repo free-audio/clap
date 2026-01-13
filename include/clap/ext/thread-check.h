@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_EXT_THREAD_CHECK_H
+#define CLAP_EXT_THREAD_CHECK_H
 
 #include "../plugin.h"
 
@@ -70,3 +72,4 @@ typedef struct clap_host_thread_check {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_EXT_THREAD_CHECK_H

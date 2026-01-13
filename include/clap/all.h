@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_ALL_H
+#define CLAP_ALL_H
 
 #include "clap.h"
 
@@ -16,3 +18,5 @@
 #include "ext/draft/tuning.h"
 #include "ext/draft/undo.h"
 #include "ext/draft/webview.h"
+
+#endif // CLAP_ALL_H

@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_EXT_SCRATCH_MEMORY_H
+#define CLAP_EXT_SCRATCH_MEMORY_H
 
 #include "../../plugin.h"
 
@@ -88,3 +90,4 @@ typedef struct clap_host_scratch_memory {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_EXT_SCRATCH_MEMORY_H

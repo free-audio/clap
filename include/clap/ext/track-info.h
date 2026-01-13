@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_EXT_TRACK_INFO_H
+#define CLAP_EXT_TRACK_INFO_H
 
 #include "../plugin.h"
 #include "../color.h"
@@ -64,3 +66,4 @@ typedef struct clap_host_track_info {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_EXT_TRACK_INFO_H

@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_PLUGIN_FACTORY_H
+#define CLAP_PLUGIN_FACTORY_H
 
 #include "../plugin.h"
 
@@ -40,3 +42,4 @@ typedef struct clap_plugin_factory {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_PLUGIN_FACTORY_H
