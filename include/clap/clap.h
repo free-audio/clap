@@ -34,6 +34,7 @@
 #include "plugin-features.h"
 #include "host.h"
 #include "universal-plugin-id.h"
+#include "preloader.h"
 
 #include "ext/ambisonic.h"
 #include "ext/audio-ports-activation.h"

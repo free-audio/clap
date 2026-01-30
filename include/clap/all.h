@@ -4,10 +4,13 @@
 
 #include "factory/draft/plugin-invalidation.h"
 #include "factory/draft/plugin-state-converter.h"
+#include "factory/draft/preloader-factory.h"
 
 #include "ext/draft/extensible-audio-ports.h"
 #include "ext/draft/gain-adjustment-metering.h"
 #include "ext/draft/mini-curve-display.h"
+#include "ext/draft/preloader.h"
+#include "ext/draft/preloader-activate.h"
 #include "ext/draft/project-location.h"
 #include "ext/draft/resource-directory.h"
 #include "ext/draft/scratch-memory.h"

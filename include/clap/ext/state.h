@@ -2,6 +2,7 @@
 
 #include "../plugin.h"
 #include "../stream.h"
+#include "../preloader.h"
 
 /// @page State
 /// @brief state management
@@ -16,6 +17,7 @@
 /// then consider implementing CLAP_EXT_STATE_CONTEXT in addition to CLAP_EXT_STATE.
 
 static CLAP_CONSTEXPR const char CLAP_EXT_STATE[] = "clap.state";
+static CLAP_CONSTEXPR const char CLAP_EXT_PRELOADER_STATE[] = "clap.state";
 
 #ifdef __cplusplus
 extern "C" {
@@ -39,6 +41,20 @@ typedef struct clap_host_state {
    // [main-thread]
    void(CLAP_ABI *mark_dirty)(const clap_host_t *host);
 } clap_host_state_t;
+
+typedef struct clap_plugin_preloader_state {
+   // Saves the Preloader's state into stream.
+   // Returns true if the state was correctly saved.
+   // [preloader-thread]
+   bool(CLAP_ABI *save)(const clap_preloader_t *plugin, const clap_ostream_t *stream);
+
+   // Loads the plugin state from `stream` into `preloader`.
+   // If this returns true, the load was successful, and the loaded state will be applied to the
+   // plugin instance on commit.
+   //
+   // [preloader-thread]
+   bool(CLAP_ABI *load)(const clap_preloader_t *preloader, const clap_istream_t *stream);
+} clap_plugin_preloader_state_t;
 
 #ifdef __cplusplus
 }
