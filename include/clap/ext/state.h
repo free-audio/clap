@@ -43,10 +43,10 @@ typedef struct clap_host_state {
 } clap_host_state_t;
 
 typedef struct clap_plugin_preloader_state {
-   // Saves the Preloader's state into stream.
+   // Saves the given `preloader`'s state into `stream`.
    // Returns true if the state was correctly saved.
    // [preloader-thread]
-   bool(CLAP_ABI *save)(const clap_preloader_t *plugin, const clap_ostream_t *stream);
+   bool(CLAP_ABI *save)(const clap_preloader_t *preloader, const clap_ostream_t *stream);
 
    // Loads the plugin state from `stream` into `preloader`.
    // If this returns true, the load was successful, and the loaded state will be applied to the
