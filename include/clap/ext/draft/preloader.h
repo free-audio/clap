@@ -29,11 +29,17 @@ typedef struct clap_plugin_preloader {
 
    /// Snapshots a plugin's state to an existing Preloader instance.
    ///
+   /// This function must *not* be called concurrently to any other function using the same
+   /// `clap_preloader` instance, including (but not limited to) any [preloader-thread] function.
+   ///
    /// Returns `true` if the Snapshot operation succeeded, or `false` otherwise.
    // [main-thread]
    bool(CLAP_ABI *snapshot)(const clap_plugin_t *plugin, const clap_preloader_t *preloader);
 
    /// Commits a Preloader's state into this plugin instance.
+   ///
+   /// This function must *not* be called concurrently to any other function using the same
+   /// `clap_preloader` instance, including (but not limited to) any [preloader-thread] function.
    ///
    /// Returns `true` if the Snapshot operation succeeded, or `false` otherwise.
    // [main-thread]

@@ -10,7 +10,7 @@ extern "C" {
 
 /// @page thread-check
 ///
-/// CLAP defines two symbolic threads:
+/// CLAP defines three symbolic threads:
 ///
 /// main-thread:
 ///    This is the thread in which most of the interaction between the plugin and host happens.
