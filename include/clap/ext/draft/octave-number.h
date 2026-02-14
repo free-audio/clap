@@ -8,7 +8,7 @@
 // host displays and plugin displays often mismatch absent this information
 // being shared.
 
-static CLAP_CONSTEXPR const char CLAP_EXT_PROJECT_LOCATION[] = "clap.octave-number/1";
+static CLAP_CONSTEXPR const char CLAP_EXT_OCTAVE_NUMBER[] = "clap.octave-number/1";
 
 #ifdef __cplusplus
 extern "C" {
@@ -22,7 +22,7 @@ typedef struct clap_plugin_octave_number {
    // if using CDEFGAB note names across a 12 note display.
    // [main-thread]
    void(CLAP_ABI *set_note60_octave)(const clap_plugin_t                  *plugin,
-                                     int octaveNumber);
+                                     int8_t                                octaveNumber);
 } clap_plugin_octave_number_t;
 
 #ifdef __cplusplus
