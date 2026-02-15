@@ -21,8 +21,8 @@ typedef struct clap_plugin_octave_number {
    // the plugin that the consistent name for note 60 is "C3", for 72 is "C4" etc...
    // if using CDEFGAB note names across a 12 note display.
    // [main-thread]
-   void(CLAP_ABI *set_note60_octave)(const clap_plugin_t                  *plugin,
-                                     int8_t                                octaveNumber);
+   void(CLAP_ABI *set_note60_octave)(const clap_plugin_t *plugin,
+                                     int8_t               octave_number);
 } clap_plugin_octave_number_t;
 
 #ifdef __cplusplus
