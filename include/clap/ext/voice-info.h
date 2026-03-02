@@ -41,7 +41,7 @@ typedef struct clap_voice_info {
 
 typedef struct clap_plugin_voice_info {
    // gets the voice info, returns true on success
-   // [main-thread && active]
+   // [main-thread & active]
    bool(CLAP_ABI *get)(const clap_plugin_t *plugin, clap_voice_info_t *info);
 } clap_plugin_voice_info_t;
 

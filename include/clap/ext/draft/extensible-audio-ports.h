@@ -15,7 +15,7 @@ typedef struct clap_plugin_extensible_audio_ports {
    // port_type: see clap_audio_port_info.port_type for interpretation.
    // port_details: see clap_audio_port_configuration_request.port_details for interpretation.
    // Returns true on success.
-   // [main-thread && !is_active]
+   // [main-thread & !active]
    bool(CLAP_ABI *add_port)(const clap_plugin_t *plugin,
                             bool                 is_input,
                             uint32_t             channel_count,
@@ -24,7 +24,7 @@ typedef struct clap_plugin_extensible_audio_ports {
 
    // Asks the plugin to remove a port.
    // Returns true on success.
-   // [main-thread && !is_active]
+   // [main-thread & !active]
    bool(CLAP_ABI *remove_port)(const clap_plugin_t *plugin, bool is_input, uint32_t index);
 } clap_plugin_extensible_audio_ports_t;
 

@@ -38,7 +38,7 @@ typedef struct clap_audio_port_configuration_request {
 
 typedef struct clap_plugin_configurable_audio_ports {
    // Returns true if the given configurations can be applied using apply_configuration().
-   // [main-thread && !active]
+   // [main-thread & !active]
    bool(CLAP_ABI *can_apply_configuration)(
       const clap_plugin_t                                *plugin,
       const struct clap_audio_port_configuration_request *requests,
@@ -52,7 +52,7 @@ typedef struct clap_plugin_configurable_audio_ports {
    // audio ports.
    //
    // Returns true if applied.
-   // [main-thread && !active]
+   // [main-thread & !active]
    bool(CLAP_ABI *apply_configuration)(const clap_plugin_t                                *plugin,
                                        const struct clap_audio_port_configuration_request *requests,
                                        uint32_t request_count);
