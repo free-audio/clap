@@ -22,8 +22,8 @@
 /// {
 ///    ...
 ///    bool didComputeVoices = false;
-///    if (host_thread_pool && host_thread_pool.exec)
-///       didComputeVoices = host_thread_pool.request_exec(host, plugin, N);
+///    if (host_thread_pool && host_thread_pool->request_exec)
+///       didComputeVoices = host_thread_pool->request_exec(host, N);
 ///
 ///    if (!didComputeVoices)
 ///       for (uint32_t i = 0; i < N; ++i)
