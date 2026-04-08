@@ -46,7 +46,7 @@ typedef struct clap_plugin {
    // Must be called after creating the plugin.
    // If init returns false, the host must destroy the plugin instance.
    // If init returns true, then the plugin is initialized and in the deactivated state.
-   // Unlike in `plugin-factory::create_plugin`, in init you have complete access to the host 
+   // Unlike in `plugin-factory::create_plugin`, in init you have complete access to the host
    // and host extensions, so clap related setup activities should be done here rather than in
    // create_plugin.
    // [main-thread]
@@ -96,8 +96,8 @@ typedef struct clap_plugin {
    clap_process_status(CLAP_ABI *process)(const struct clap_plugin *plugin,
                                           const clap_process_t     *process);
 
-   // Query an extension.
-   // The returned pointer is owned by the plugin.
+   // Query an extension, returns null if not supported.
+   // The returned pointer is owned by the plugin and is valid until the call to plugin->destroy().
    // It is forbidden to call it before plugin->init().
    // You can call it within plugin->init() call, and after.
    // [thread-safe]
