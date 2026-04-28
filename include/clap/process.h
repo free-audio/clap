@@ -20,7 +20,8 @@ enum {
    CLAP_PROCESS_CONTINUE_IF_NOT_QUIET = 2,
 
    // Rely upon the plugin's tail to determine if the plugin should continue to process:
-   // - it is safe to stop processing if the last variation (see CLAP_PROCESS_SLEEP) has occurred no later than clap_plugin_tail.get samples ago
+   // - it is safe to stop processing if the last input event/variation (see CLAP_PROCESS_SLEEP for resume conditions) 
+   //   has occurred at least clap_plugin_tail.get samples ago
    // - a tail of 0 is equivalent to CLAP_PROCESS_SLEEP
    // - an infinite tail is equivalent to CLAP_PROCESS_CONTINUE
    // 

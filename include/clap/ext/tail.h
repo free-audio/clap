@@ -5,15 +5,13 @@
 /// @page tail
 ///
 /// This extension allows a plugin to specify its tail length,
-/// which is defined as the time it takes for a plugin to stop producing non-silent output after
-/// receiving no non-silent input and no events.
+/// which is defined as the time in samples it takes for a plugin to stop producing non-silent
+/// output after receiving no non-silent input and no events (see CLAP_PROCESS_SLEEP for resume
+/// conditions).
 ///
 /// A host can use this information to determine when it is safe to stop processing without causing
 /// a significant truncation of the audio output (see CLAP_PROCESS_TAIL), or to determine the total
 /// length of a track including reverb and delay tails.
-///
-/// Reported tail length is latency-unaware: if a plugin reports a non-zero latency, then the tail
-/// length must also include that latency (otherwise the host may truncate the output early).
 
 static CLAP_CONSTEXPR const char CLAP_EXT_TAIL[] = "clap.tail";
 
