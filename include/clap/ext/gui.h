@@ -56,6 +56,9 @@ static const CLAP_CONSTEXPR char CLAP_WINDOW_API_WIN32[] = "win32";
 // uses logical size, don't call clap_plugin_gui->set_scale()
 static const CLAP_CONSTEXPR char CLAP_WINDOW_API_COCOA[] = "cocoa";
 
+// uses logical size, don't call clap_plugin_gui->set_scale()
+static const CLAP_CONSTEXPR char CLAP_WINDOW_API_UIKIT[] = "uikit";
+
 // uses physical size
 // embed using https://specifications.freedesktop.org/xembed-spec/xembed-spec-latest.html
 static const CLAP_CONSTEXPR char CLAP_WINDOW_API_X11[] = "x11";
@@ -70,6 +73,7 @@ extern "C" {
 
 typedef void         *clap_hwnd;
 typedef void         *clap_nsview;
+typedef void         *clap_uiview;
 typedef unsigned long clap_xwnd;
 
 // Represent a window reference.
@@ -77,6 +81,7 @@ typedef struct clap_window {
    const char *api; // one of CLAP_WINDOW_API_XXX
    union {
       clap_nsview cocoa;
+      clap_uiview uikit;
       clap_xwnd   x11;
       clap_hwnd   win32;
       void       *ptr; // for anything defined outside of clap
