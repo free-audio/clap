@@ -33,7 +33,7 @@ jobs:
         if: startsWith(matrix.os, 'macOS')
         run: |
           brew upgrade
-          brew install automake autoconf ninja cmake emscripten wasi-libc wasi-runtimes llvm
+          brew install automake autoconf ninja cmake emscripten wasi-libc wasi-runtimes llvm lld
           echo "$(brew --prefix llvm@18)/bin" >> "$GITHUB_PATH"
 
       - name: Setup Ubuntu
