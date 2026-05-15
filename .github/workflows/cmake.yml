@@ -65,9 +65,12 @@ jobs:
           configurePreset: "emscripten"
           buildPreset: "emscripten-release"
 
+      # Disable the wasi step for now as it fails on github workflows.
+      # The issue isn't reproducible locally for me (abique):
+      #       wasm-ld: error: /opt/homebrew/share/wasi-sysroot/lib/wasm32-wasip1-threads/libc.a(dlmalloc.c.obj): undefined symbol: __wasm_first_page_end
       - name: Build wasi plugin template.
         uses: lukka/run-cmake@v10
-        if: startsWith(matrix.os, 'macOS')
+        if: false && startsWith(matrix.os, 'macOS')
         id: runcmake-wasi
         with:
           configurePreset: "wasi"
