@@ -19,18 +19,15 @@ enum {
    // (a reasonable implementation could check if the output volume is less than a threshold for an extended period of time)
    CLAP_PROCESS_CONTINUE_IF_NOT_QUIET = 2,
 
-   // Rely upon the plugin's tail to determine if the plugin should continue to process:
-   // - it is safe to stop processing if the last input event/variation (see CLAP_PROCESS_SLEEP for resume conditions) 
-   //   has occurred at least clap_plugin_tail.get samples ago
-   // - it is safe to stop processing if no input events/variations have occurred 
-   //   since the last call to plugin->reset() or plugin->activate()
-   // - a tail of 0 is equivalent to CLAP_PROCESS_SLEEP
-   // - an infinite tail is equivalent to CLAP_PROCESS_CONTINUE
-   // 
-   // If either host or plugin do not implement the tail extension, this status is equivalent to CLAP_PROCESS_CONTINUE.
+   // Rely upon the plugin's tail to determine if the host should continue to call process.
+   //
+   // Stopping processing after at least [clap_plugin_tail.get] samples of quiet input and no events is expected to not cause significant truncation of the audio output.
+   // Calling plugin->reset() or plugin->activate() resets the tail and the plugin is expected to produce silence until the next event or variation in audio input.
+   //
+   // If the host does not support the tail extension, it is up to host to determine if it should continue processing or not.
    CLAP_PROCESS_TAIL = 3,
 
-   // Processing succeeded, it is safe to stop processing without causing a significant truncation of the audio output.
+   // Processing succeeded, stopping processing at this point is expected to not cause significant truncation of the audio output.
    //
    // Processing can be resumed by either:
    //  - a next event (note, parameter change, etc.)

@@ -6,10 +6,9 @@
 ///
 /// This extension allows a plugin to specify its tail length,
 /// which is defined as the time in samples it takes for a plugin to stop producing non-silent
-/// output after receiving no non-silent input and no events (see CLAP_PROCESS_SLEEP for resume
-/// conditions).
+/// output after receiving only quiet input samples and no events.
 ///
-/// A host can use this information to determine when it is safe to stop processing without causing
+/// A host can use this information to determine when it can stop processing without causing
 /// a significant truncation of the audio output (see CLAP_PROCESS_TAIL), or to determine the total
 /// length of a track including reverb and delay tails.
 
