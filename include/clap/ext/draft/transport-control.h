@@ -6,7 +6,7 @@
 // The host has no obligation to execute these requests, so the interface may be
 // partially working.
 
-static CLAP_CONSTEXPR const char CLAP_EXT_TRANSPORT_CONTROL[] = "clap.transport-control/1";
+static CLAP_CONSTEXPR const char CLAP_EXT_TRANSPORT_CONTROL[] = "clap.transport-control/2";
 
 #ifdef __cplusplus
 extern "C" {
@@ -59,6 +59,15 @@ typedef struct clap_host_transport_control {
    // Toggles recording
    // [main-thread]
    void(CLAP_ABI *request_toggle_record)(const clap_host_t *host);
+
+   // Sets tempo
+   // [main-thread]
+   void(CLAP_ABI *request_tempo)(const clap_host_t *host, double tempo);
+
+   // Sets time signature, same format as in clap_event_transport_t.
+   // [main-thread]
+   void(CLAP_ABI *request_time_signature)(const clap_host_t *host, uint16_t tsig_num, uint16_t tsig_denom);
+
 } clap_host_transport_control_t;
 
 #ifdef __cplusplus

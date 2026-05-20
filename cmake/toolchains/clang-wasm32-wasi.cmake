@@ -1,8 +1,8 @@
 # Simple toolchain example that targets wasm32 using wasi
 # On archlinux:
-#   pacman -S clang wasi-compiler-rt wasi-libc wasi-libc++ wasi-libc++abi
+#   pacman -S clang lld wasi-compiler-rt wasi-libc wasi-libc++ wasi-libc++abi
 # On macOS:
-#   homebrew install wasi-libc wasi-runtimes llvm
+#   homebrew install wasi-libc wasi-runtimes llvm lld
 #
 # For other OSes, make a copy of this file and do the necessary adjustments.
 
@@ -19,6 +19,7 @@ elseif(CMAKE_HOST_SYSTEM_NAME STREQUAL Darwin)
     set(CMAKE_C_COMPILER "/opt/homebrew/opt/llvm/bin/clang")
     set(CMAKE_CXX_COMPILER "/opt/homebrew/opt/llvm/bin/clang++")
     set(CMAKE_RANLIB "/opt/homebrew/opt/llvm/bin/llvm-ranlib")
+    set(CMAKE_LINKER "/opt/homebrew/opt/lld/bin/lld")
 endif()
 
 # -nostdlib

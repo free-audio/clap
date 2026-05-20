@@ -1,3 +1,10 @@
+# Changes in 1.2.8
+
+* [octave-number.h](include/clap/ext/draft/octave-number.h): new extension to share octave number of MIDI note 60 from host to plugin
+* [gui.h](include/clap/ext/gui.h): add Apple's UIKit support
+* [surround.h](include/clap/ext/surround.h): documentation fix
+* [thread-pool.h](include/clap/ext/thread-pool.h): documentation fix
+
 # Changes in 1.2.7
 
 * [webview.h](include/clap/ext/draft/webview.h): new webview draft extensions

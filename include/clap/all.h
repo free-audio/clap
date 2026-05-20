@@ -8,7 +8,11 @@
 #include "ext/draft/extensible-audio-ports.h"
 #include "ext/draft/gain-adjustment-metering.h"
 #include "ext/draft/mini-curve-display.h"
+<<<<<<< param-origin
 #include "ext/draft/param-origin.h"
+=======
+#include "ext/draft/octave-number.h"
+>>>>>>> next
 #include "ext/draft/project-location.h"
 #include "ext/draft/resource-directory.h"
 #include "ext/draft/scratch-memory.h"
