@@ -1,3 +1,16 @@
+# Changes in 1.2.9
+
+* [param-origin.h](include/clap/ext/draft/param-origin.h): new extension to provides an optional value per parameter that lets the host draw a visual indication for the parameter's origin
+* [transport-control.h](include/clap/ext/draft/transport-control.h): draft iteration, adds `request_tempo()` and `request_time_signature()`
+* [flush-events.h](include/clap/ext/draft/flush-events.h): generic interface to flush events.
+* various documentation cleanups
+
+## Background operations
+
+* [background-activation.h](include/clap/ext/draft/background-activation.h): activate and deactivate from a background thread
+* [background-state-context.h](include/clap/ext/draft/background-state-context.h): load and save the state from a background thread
+* [background-progress.h](include/clap/ext/draft/background-progress.h): report progress and check for cancelation from a background thread
+
 # Changes in 1.2.8
 
 * [octave-number.h](include/clap/ext/draft/octave-number.h): new extension to share octave number of MIDI note 60 from host to plugin
