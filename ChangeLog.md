@@ -1,6 +1,15 @@
+# Changes in 1.2.9
+
+* [param-origin.h](include/clap/ext/draft/param-origin.h): new extension to provides an optional value per parameter that lets the host draw a visual indication for the parameter's origin
+* [transport-control.h](include/clap/ext/draft/transport-control.h): draft iteration, adds `request_tempo()` and `request_time_signature()`
+* various documentation cleanups
+
 # Changes in 1.2.8
 
-* [octave-number.h](include/clap/ext/draft/octave-number.h): new extension to share octave number of MIDI note 60 from host to plugin.
+* [octave-number.h](include/clap/ext/draft/octave-number.h): new extension to share octave number of MIDI note 60 from host to plugin
+* [gui.h](include/clap/ext/gui.h): add Apple's UIKit support
+* [surround.h](include/clap/ext/surround.h): documentation fix
+* [thread-pool.h](include/clap/ext/thread-pool.h): documentation fix
 
 # Changes in 1.2.7
 

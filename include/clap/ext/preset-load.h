@@ -24,7 +24,7 @@ typedef struct clap_plugin_preset_load {
 } clap_plugin_preset_load_t;
 
 typedef struct clap_host_preset_load {
-   // Called if clap_plugin_preset_load.load() failed.
+   // Called if clap_plugin_preset_load.from_location() failed.
    // os_error: the operating system error, if applicable. If not applicable set it to a non-error
    // value, eg: 0 on unix and Windows.
    //

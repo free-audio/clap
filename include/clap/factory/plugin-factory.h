@@ -21,14 +21,15 @@ typedef struct clap_plugin_factory {
    uint32_t(CLAP_ABI *get_plugin_count)(const struct clap_plugin_factory *factory);
 
    // Retrieves a plugin descriptor by its index.
+   // The descriptor is owned by the plugin and is valid until the call to clap_plugin_entry->deinit()
    // Returns null in case of error.
-   // The descriptor must not be freed.
    // [thread-safe]
    const clap_plugin_descriptor_t *(CLAP_ABI *get_plugin_descriptor)(
       const struct clap_plugin_factory *factory, uint32_t index);
 
    // Create a clap_plugin by its plugin_id.
-   // The returned pointer must be freed by calling plugin->destroy(plugin);
+   // The clap_host pointer must be valid until after the call to plugin->destroy(plugin).
+   // The returned pointer is owned by the plugin and must be freed by calling plugin->destroy(plugin);
    // The plugin is not allowed to use the host callbacks in the create method.
    // Returns null in case of error.
    // [thread-safe]

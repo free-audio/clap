@@ -22,7 +22,7 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
         with:
           submodules: true
 
@@ -33,7 +33,7 @@ jobs:
         if: startsWith(matrix.os, 'macOS')
         run: |
           brew upgrade
-          brew install automake autoconf ninja cmake emscripten wasi-libc wasi-runtimes llvm
+          brew install automake autoconf ninja cmake emscripten wasi-libc wasi-runtimes llvm lld
           echo "$(brew --prefix llvm@18)/bin" >> "$GITHUB_PATH"
 
       - name: Setup Ubuntu
@@ -65,9 +65,12 @@ jobs:
           configurePreset: "emscripten"
           buildPreset: "emscripten-release"
 
+      # Disable the wasi step for now as it fails on github workflows.
+      # The issue isn't reproducible locally for me (abique):
+      #       wasm-ld: error: /opt/homebrew/share/wasi-sysroot/lib/wasm32-wasip1-threads/libc.a(dlmalloc.c.obj): undefined symbol: __wasm_first_page_end
       - name: Build wasi plugin template.
         uses: lukka/run-cmake@v10
-        if: startsWith(matrix.os, 'macOS')
+        if: false && startsWith(matrix.os, 'macOS')
         id: runcmake-wasi
         with:
           configurePreset: "wasi"
