@@ -5,6 +5,9 @@
 #include "factory/draft/plugin-invalidation.h"
 #include "factory/draft/plugin-state-converter.h"
 
+#include "ext/draft/background-activation.h"
+#include "ext/draft/background-progress.h"
+#include "ext/draft/background-state-context.h"
 #include "ext/draft/extensible-audio-ports.h"
 #include "ext/draft/gain-adjustment-metering.h"
 #include "ext/draft/mini-curve-display.h"

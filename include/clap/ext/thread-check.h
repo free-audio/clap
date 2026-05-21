@@ -50,6 +50,17 @@ extern "C" {
 ///    provide [audio-thread] functions outside these conditions may experience inconsistent or
 ///    inaccurate rendering.
 ///
+/// background-thread:
+///    This thread is created by the host to run some heavy operation without blocking the
+///    main-thread.
+///
+///    Only a few extensions use the background thread and in a very explicit way. If
+///    the plugin implement a background interfaces, it must take the necessary thread-safety
+///    precautions.
+///
+///    It is the host's responsiblity to execute background operations in a way that guarentee
+///    a race-free and deterministic execution.
+///
 ///  Clap also tags some functions as [thread-safe]. Functions tagged as [thread-safe] can be called
 ///  from any thread unless explicitly counter-indicated (for instance [thread-safe, !audio-thread])
 ///  and may be called concurrently.
