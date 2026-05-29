@@ -10,7 +10,7 @@ extern "C" {
 
 /// @page thread-check
 ///
-/// CLAP defines two symbolic threads:
+/// CLAP defines three symbolic threads:
 ///
 /// main-thread:
 ///    This is the thread in which most of the interaction between the plugin and host happens.
@@ -49,6 +49,31 @@ extern "C" {
 ///    advertise a hard realtime constraint or don't implement the render extension. Hosts which
 ///    provide [audio-thread] functions outside these conditions may experience inconsistent or
 ///    inaccurate rendering.
+///
+///  preloader-thread:
+///    This thread is used by Preloaders (see preloader.h) to perform long-running, background
+///    operations that are directly requested by the host (such as state loading, saving, etc.).
+///
+///    This thread is not realtime, and unlike the main-thread it also doesn't need to remain
+///    responsive enough for user interaction, making it suitable for long-running tasks such as
+///    asset loading or blocking I/O.
+///
+///    Just like the audio-thread, this thread is symbolic. There is no one OS thread that remains
+///    the preloader-thread for either the plugin's lifetime or the Preloader's lifetime.
+///    A host may opt to have a preloader thread pool and schedule [preloader-thread] method calls
+///    on different OS threads over time.
+///    However, there cannot be two different preloader-threads for a given preloader instance at
+///    the same time, and the host must guarantee it.
+///
+///    In other words, a given preloader instance always "belongs" to a single OS thread at a time,
+///    but the host may elect to "send" that instance to any other thread (including the main
+///    thread) any time it wishes.
+///
+///    Moreover, just like with [audio-thread], functions marked with [preloader-thread] **ARE NOT
+///    CONCURRENT** for a given preloader instance. The host may mark any OS thread, including the
+///    main-thread as the preloader-thread, as long as it can guarantee that only one OS thread is
+///    the preloader-thread at a time in a preloader instance. The preloader-thread can be seen as a
+///    concurrency guard for all functions marked with [preloader-thread].
 ///
 ///  Clap also tags some functions as [thread-safe]. Functions tagged as [thread-safe] can be called
 ///  from any thread unless explicitly counter-indicated (for instance [thread-safe, !audio-thread])
