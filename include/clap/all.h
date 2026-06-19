@@ -14,7 +14,7 @@
 #include "ext/draft/mini-curve-display.h"
 #include "ext/draft/octave-number.h"
 #include "ext/draft/params-origin.h"
-#include "ext/draft/param-hovered.h"
+#include "ext/draft/param-focused.h"
 #include "ext/draft/project-location.h"
 #include "ext/draft/resource-directory.h"
 #include "ext/draft/scratch-memory.h"
