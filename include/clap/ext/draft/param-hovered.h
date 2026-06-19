@@ -5,7 +5,7 @@
 // This extension lets a plugin report to the host the parameter's clap_id of its last hovered UI
 // control and whether it is currently hovered by a pointer device.
 
-static CLAP_CONSTEXPR const char CLAP_EXT_PARAM_HOVERED[] = "clap.param-hovered/0";
+static CLAP_CONSTEXPR const char CLAP_EXT_PARAM_HOVERED[] = "clap.param-hovered/1";
 
 #ifdef __cplusplus
 extern "C" {
