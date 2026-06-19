@@ -5,7 +5,7 @@
 // This extension lets a plugin report to the host the parameter's clap_id of its last focused UI
 // control and whether it is currently focused (usually hovered by pointer device).
 
-static CLAP_CONSTEXPR const char CLAP_EXT_PARAM_FOCUSED[] = "clap.param-hovered/1";
+static CLAP_CONSTEXPR const char CLAP_EXT_PARAM_FOCUSED[] = "clap.param-focused/1";
 
 #ifdef __cplusplus
 extern "C" {
