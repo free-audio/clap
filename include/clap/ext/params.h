@@ -147,8 +147,12 @@ enum {
 
    // This parameter is used to merge the plugin and host bypass button.
    // It implies that the parameter is stepped.
+   // Only zero or one bypass parameter is allowed per plugin.
    // min: 0 -> bypass off
    // max: 1 -> bypass on
+   // The value of this parameter should not influence whether the host calls plugin->process() or
+   // not. If a plugin wants to save CPU cycles during bypass, the plugin will implement that in its
+   // process() routine, possibly returning CLAP_PROCESS_SLEEP at some point.
    CLAP_PARAM_IS_BYPASS = 1 << 4,
 
    // When set:
