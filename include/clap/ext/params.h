@@ -147,6 +147,7 @@ enum {
 
    // This parameter is used to merge the plugin and host bypass button.
    // It implies that the parameter is stepped.
+   // Only zero or one bypass parameter is allowed per plugin.
    // min: 0 -> bypass off
    // max: 1 -> bypass on
    CLAP_PARAM_IS_BYPASS = 1 << 4,
