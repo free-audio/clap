@@ -28,7 +28,7 @@
       "displayName": "MSVC",
       "description": "Configure and generate MSVC project files for all configurations",
       "binaryDir": "${sourceDir}/builds/${presetName}",
-      "generator": "Visual Studio 17 2022",
+      "generator": "Visual Studio 18 2026",
       "cacheVariables": {
         "CMAKE_EXPORT_COMPILE_COMMANDS": {
           "type": "boolean",
