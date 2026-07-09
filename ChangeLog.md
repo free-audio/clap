@@ -1,3 +1,8 @@
+# Changes in 1.2.10
+
+* [param-hovered.h](include/clap/ext/draft/param-hovered.h): new extension to tell the host when a parameter is mouse hovered within the plugin's GUI.
+* [params.h](include/clap/ext/params.h): clarify `CLAP_PARAM_IS_BYPASS`.
+
 # Changes in 1.2.9
 
 * [param-origin.h](include/clap/ext/draft/param-origin.h): new extension to provides an optional value per parameter that lets the host draw a visual indication for the parameter's origin
