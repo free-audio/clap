@@ -8,7 +8,7 @@
 /// Some plugin needs to perform complex computation or even I/O during state loading or saving and
 /// this blocks the main thread.
 ///
-/// This extension is here to offer an alternative way to load or save the plugin plugin from a
+/// This extension is here to offer an alternative way to load or save the plugin from a
 /// background thread, to keep the main-thread running.
 ///
 /// Background save and load must not be concurrent to main-thread save and load.
