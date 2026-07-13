@@ -2,6 +2,16 @@
 
 #include "../plugin.h"
 
+/// @page tail
+///
+/// This extension allows a plugin to specify its tail length,
+/// which is defined as the time in samples it takes for a plugin to stop producing non-silent
+/// output after receiving only quiet input samples and no events.
+///
+/// A host can use this information to determine when it can stop processing without causing
+/// a significant truncation of the audio output (see CLAP_PROCESS_TAIL), or to determine the total
+/// length of a track including reverb and delay tails.
+
 static CLAP_CONSTEXPR const char CLAP_EXT_TAIL[] = "clap.tail";
 
 #ifdef __cplusplus

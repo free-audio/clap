@@ -15,14 +15,24 @@ enum {
    CLAP_PROCESS_CONTINUE = 1,
 
    // Processing succeeded, keep processing if the output is not quiet.
+   // It is entirely up to host to determine what "quiet" means 
+   // (a reasonable implementation could check if the output volume is less than a threshold for an extended period of time)
    CLAP_PROCESS_CONTINUE_IF_NOT_QUIET = 2,
 
-   // Rely upon the plugin's tail to determine if the plugin should continue to process.
-   // see clap_plugin_tail
+   // Rely upon the plugin's tail to determine if the host should continue to call process.
+   //
+   // Stopping processing after at least [clap_plugin_tail.get] samples of quiet input and no events is expected to not cause significant truncation of the audio output.
+   // Calling plugin->reset() or plugin->activate() resets the tail and the plugin is expected to produce silence until the next event or variation in audio input.
+   //
+   // If the host does not support the tail extension, it is up to host to determine if it should continue processing or not.
    CLAP_PROCESS_TAIL = 3,
 
-   // Processing succeeded, but no more processing is required,
-   // until the next event or variation in audio input.
+   // Processing succeeded, stopping processing at this point is expected to not cause significant truncation of the audio output.
+   //
+   // Processing can be resumed by either:
+   //  - a next event (note, parameter change, etc.)
+   //  - a variation in audio input (a non-constant buffer or a constant buffer with a different sample value)
+   //  - a call to clap_host.request_process()
    CLAP_PROCESS_SLEEP = 4,
 };
 typedef int32_t clap_process_status;
