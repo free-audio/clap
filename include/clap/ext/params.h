@@ -300,6 +300,13 @@ typedef struct clap_plugin_params {
    // that the plugin may use the sample offset in process(), while this information would be
    // lost within flush().
    //
+   // When the plugin is active, flush() must be called from the audio-thread, and the host
+   // must ensure the audio thread is not concurrently in process() when doing so. This holds
+   // even when the audio engine is idle (e.g. processing is stopped): the host must not substitute
+   // the main-thread for the audio-thread simply because process() is not currently running.
+   // If the host cannot guarantee an available audio-thread context, it must defer the flush
+   // until the next process() call, which will deliver the parameter changes instead.
+   //
    // [active ? audio-thread : main-thread]
    void(CLAP_ABI *flush)(const clap_plugin_t        *plugin,
                          const clap_input_events_t  *in,
@@ -374,8 +381,16 @@ typedef struct clap_host_params {
    // - clap_plugin.process()
    // - clap_plugin_params.flush()
    //
-   // This function is always safe to use and should not be called from an [audio-thread] as the
-   // plugin would already be within process() or flush().
+   // This function must not be called from the [audio-thread]. The [audio-thread] constraint
+   // exists because the plugin is, by definition, already able to send and receive parameter
+   // changes through the in-progress process() or flush() call; a redundant request_flush()
+   // from that same context is unnecessary and risks re-entrancy.
+   //
+   // Note: when the plugin is active but the audio engine is idle (e.g. processing is stopped),
+   // the audio thread is still the required dispatch thread for flush(). The host must not
+   // dispatch flush() from the main-thread as a convenience when the audio thread is sleeping.
+   // Doing so violates the flush/process non-concurrency invariant if the transport is started
+   // before the main-thread flush completes. Defer to the next process() call instead.
    //
    // [thread-safe,!audio-thread]
    void(CLAP_ABI *request_flush)(const clap_host_t *host);
