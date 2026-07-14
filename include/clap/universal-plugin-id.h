@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_UNIVERSAL_PLUGIN_ID_H
+#define CLAP_UNIVERSAL_PLUGIN_ID_H
 
 // Pair of plugin ABI and plugin identifier.
 //
@@ -24,3 +26,4 @@ typedef struct clap_universal_plugin_id {
    //   eg: "123e4567-e89b-12d3-a456-426614174000"
    const char *id;
 } clap_universal_plugin_id_t;
+#endif // CLAP_UNIVERSAL_PLUGIN_ID_H

@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_TIMESTAMP_H
+#define CLAP_TIMESTAMP_H
 
 #include "private/std.h"
 #include "private/macros.h"
@@ -9,3 +11,4 @@ typedef uint64_t clap_timestamp;
 
 // Value for unknown timestamp.
 static const CLAP_CONSTEXPR clap_timestamp CLAP_TIMESTAMP_UNKNOWN = 0;
+#endif // CLAP_TIMESTAMP_H

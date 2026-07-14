@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_EXT_UNDO_H
+#define CLAP_EXT_UNDO_H
 
 #include "../../plugin.h"
 #include "../../stream.h"
@@ -199,3 +201,4 @@ typedef struct clap_host_undo {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_EXT_UNDO_H

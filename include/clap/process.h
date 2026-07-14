@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_PROCESS_H
+#define CLAP_PROCESS_H
 
 #include "events.h"
 #include "audio-buffer.h"
@@ -64,3 +66,4 @@ typedef struct clap_process {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_PROCESS_H

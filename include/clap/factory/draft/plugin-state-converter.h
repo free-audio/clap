@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_PLUGIN_STATE_CONVERTER_H
+#define CLAP_PLUGIN_STATE_CONVERTER_H
 
 #include "../../id.h"
 #include "../../universal-plugin-id.h"
@@ -97,3 +99,4 @@ typedef struct clap_plugin_state_converter_factory {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_PLUGIN_STATE_CONVERTER_H

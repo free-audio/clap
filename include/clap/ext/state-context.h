@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_EXT_STATE_CONTEXT_H
+#define CLAP_EXT_STATE_CONTEXT_H
 
 #include "../plugin.h"
 #include "../stream.h"
@@ -70,3 +72,4 @@ typedef struct clap_plugin_state_context {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_EXT_STATE_CONTEXT_H
