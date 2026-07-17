@@ -105,6 +105,9 @@ enum {
    // In case of a concurrent global value/modulation versus a polyphonic one,
    // the voice should only use the polyphonic one and the polyphonic modulation
    // amount will already include the monophonic signal.
+   //
+   // See the section titled "Voice addressing" below for more information about
+   // the behaviour of parameter values and modulations.
    CLAP_EVENT_PARAM_VALUE = 5,
    CLAP_EVENT_PARAM_MOD = 6,
 
@@ -121,42 +124,86 @@ enum {
    CLAP_EVENT_MIDI2 = 12,      // raw midi 2 event; clap_event_midi2
 };
 
+// Voice addressing
+//
+// Clap addresses notes and voices using the 4-value tuple (port, channel, key,
+// note_id), or "PCKN". Values in a note and voice address are either >= 0 if
+// they are specified, or -1 to indicate a wildcard. A wildcard means a voice
+// with any value in that part of the tuple matches the message.
+//
+// For instance, a PCKN of (0, 3, -1, -1) will match all voices on channel 3 of
+// port 0. And a PCKN of (-1, 0, 60, -1) will match all channel 0 key 60
+// voices, independent of port or note id.
+//
+// Normally, where an event includes a PCKN tuple, that event only applies to
+// active voices that match the address of the event. There is an exception to
+// this rule for PCKN addresses that are all wildcards; see below. As a
+// concrete example, consider the scenario where the host starts a voice, sends
+// an event that targets that voice, ends the voice, and then starts a new
+// voice. The previous event should not be taken into account when computing
+// the state of the new voice, even if it (for example) is a wildcard event
+// targeting all voices on a specific channel, and the new voice starts on that
+// same channel. To indicate that the new voice should start with a specific
+// state, the host should send a subsequent event to update the state of the
+// new voice, with the same sample position as the event that started that
+// voice.
+//
+// Parameter values and modulations have PCKN addresses, but it's valid for the
+// tuple to contain only wildcards, indicating that the event applies to all
+// voices. In this special case, the event updates the global state of the
+// parameter value or modulation. This state must persist across voices. When a
+// new voice starts, it defaults to using the most recently-received global
+// parameter value/modulation state. If the host wishes to supply overridden
+// parameter values/modulation to individual voices, it should send separate
+// events updating the state of that voice, after the voice has started,
+// potentially with the same sample position as the event that started the
+// voice. If a voice receives an event with any non-wildcard field in its PCKN,
+// it should retain that state until the voice ends, and ignore any subsequent
+// all-wildcard event that targets the same state.
+//
+// A PCKN with any non-wildcard field has higher precedence than a PCKN with
+// all wildcard fields. However, there is no other order of precedence between
+// PCKNs with non-wildcard fields. A voice must match a PCKN with any
+// non-wildcard field if possible. As a concrete example, if an active voice on
+// channel 0 and note_id 5 receives an parameter value event for parameter P
+// addressed to note_id 5, and then a subsequent parameter value event for P
+// addressed to all voices on channel 0, the voice should respond to both
+// events. If the host then sends a parameter value event for parameter P with
+// an all-wildcard PCKN, the voice should ignore this event, since it has
+// already received a non-wildcard override for that parameter value.
+//
+// Parameter and modulation events with non-wildcard PCKN addresses do not
+// update the state of the plugin, as represented by the clap_plugin_state
+// extension. Global (all-wildcard) events from the host should update the
+// plugin's logical state; after restoring such a state, the host is not
+// expected to send further all-wildcard events to restore the global parameter
+// states. However, the plugin should not attempt to save any voice-specific
+// state. The host *must* (re)send any voice-specific state it wishes to apply
+// after loading a new state or starting any new voice in the plugin.
+
 // Note on, off, end and choke events.
 //
-// Clap addresses notes and voices using the 4-value tuple
-// (port, channel, key, note_id). Note on/off/end/choke
-// events and parameter modulation messages are delivered with
-// these values populated.
+// Note on/off/end/choke events are always delivered with at least one
+// non-wildcard field in the PCKN address. Parameter modulation messages may be
+// addressed using a non-wildcard PCKN, or may use an all-wildcard address to
+// apply modulation globally.
 //
-// Values in a note and voice address are either >= 0 if they
-// are specified, or -1 to indicate a wildcard. A wildcard
-// means a voice with any value in that part of the tuple
-// matches the message.
+// Especially in the case of note-on note-off pairs, and in the absence of
+// voice stacking or polyphonic modulation, a host may choose to issue a note
+// id only at note on. So you may see a message stream like
 //
-// For instance, a (PCKN) of (0, 3, -1, -1) will match all voices
-// on channel 3 of port 0. And a PCKN of (-1, 0, 60, -1) will match
-// all channel 0 key 60 voices, independent of port or note id.
+// CLAP_EVENT_NOTE_ON  [0,0,60,184] CLAP_EVENT_NOTE_OFF [0,0,60,-1]
 //
-// Especially in the case of note-on note-off pairs, and in the
-// absence of voice stacking or polyphonic modulation, a host may
-// choose to issue a note id only at note on. So you may see a
-// message stream like
+// and the host will expect the first voice to be released. Well constructed
+// plugins will search for voices and notes using the entire tuple.
 //
-// CLAP_EVENT_NOTE_ON  [0,0,60,184]
-// CLAP_EVENT_NOTE_OFF [0,0,60,-1]
-//
-// and the host will expect the first voice to be released.
-// Well constructed plugins will search for voices and notes using
-// the entire tuple.
-//
-// In the case of note on events:
-// - The port, channel and key must be specified with a value >= 0
-// - A note-on event with a '-1' for port, channel or key is invalid and
-//   can be rejected or ignored by a plugin or host.
-// - A host which does not support note ids should set the note id to -1.
+// In the case of note on events: - The port, channel and key must be specified
+// with a value >= 0 - A note-on event with a '-1' for port, channel or key is
+// invalid and can be rejected or ignored by a plugin or host. - A host which
+// does not support note ids should set the note id to -1.
 //
 // In the case of note choke or end events:
-// - the velocity is ignored.
+// - the velocity is ignored
 // - key and channel are used to match active notes
 // - note_id is optionally provided by the host
 typedef struct clap_event_note {
