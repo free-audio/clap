@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_PLUGIN_H
+#define CLAP_PLUGIN_H
 
 #include "private/macros.h"
 #include "host.h"
@@ -112,3 +114,4 @@ typedef struct clap_plugin {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_PLUGIN_H

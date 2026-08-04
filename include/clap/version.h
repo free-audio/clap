@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_VERSION_H
+#define CLAP_VERSION_H
 
 #include "private/macros.h"
 #include "private/std.h"
@@ -40,3 +42,4 @@ clap_version_is_compatible(const clap_version_t v) {
    // versions 0.x.y were used during development stage and aren't compatible
    return v.major >= 1;
 }
+#endif // CLAP_VERSION_H

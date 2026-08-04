@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_EXT_RENDER_H
+#define CLAP_EXT_RENDER_H
 
 #include "../plugin.h"
 
@@ -37,3 +39,4 @@ typedef struct clap_plugin_render {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_EXT_RENDER_H

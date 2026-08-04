@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_EXT_TIMER_SUPPORT_H
+#define CLAP_EXT_TIMER_SUPPORT_H
 
 #include "../plugin.h"
 
@@ -29,3 +31,4 @@ typedef struct clap_host_timer_support {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_EXT_TIMER_SUPPORT_H

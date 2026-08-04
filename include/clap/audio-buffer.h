@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_AUDIO_BUFFER_H
+#define CLAP_AUDIO_BUFFER_H
 
 #include "private/std.h"
 
@@ -35,3 +37,4 @@ typedef struct clap_audio_buffer {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_AUDIO_BUFFER_H

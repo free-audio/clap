@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_EVENTS_H
+#define CLAP_EVENTS_H
 
 #include "private/std.h"
 #include "fixedpoint.h"
@@ -365,3 +367,4 @@ typedef struct clap_output_events {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_EVENTS_H

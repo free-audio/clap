@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_PRIVATE_STD_H
+#define CLAP_PRIVATE_STD_H
 
 #include "macros.h"
 
@@ -14,3 +16,4 @@
 #   include <stddef.h>
 #   include <stdbool.h>
 #endif
+#endif // CLAP_PRIVATE_STD_H

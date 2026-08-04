@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_EXT_PARAM_INDICATION_H
+#define CLAP_EXT_PARAM_INDICATION_H
 
 #include "params.h"
 #include "../color.h"
@@ -75,3 +77,4 @@ typedef struct clap_plugin_param_indication {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_EXT_PARAM_INDICATION_H

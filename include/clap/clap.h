@@ -24,6 +24,8 @@
  */
 
 #pragma once
+#ifndef CLAP_CLAP_H
+#define CLAP_CLAP_H
 
 #include "entry.h"
 
@@ -62,3 +64,5 @@
 #include "ext/timer-support.h"
 #include "ext/track-info.h"
 #include "ext/voice-info.h"
+
+#endif // CLAP_CLAP_H

@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_PLUGIN_INVALIDATION_H
+#define CLAP_PLUGIN_INVALIDATION_H
 
 #include "../../private/std.h"
 #include "../../private/macros.h"
@@ -45,3 +47,4 @@ typedef struct clap_plugin_invalidation_factory {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_PLUGIN_INVALIDATION_H

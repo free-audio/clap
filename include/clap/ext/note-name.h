@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_EXT_NOTE_NAME_H
+#define CLAP_EXT_NOTE_NAME_H
 
 #include "../plugin.h"
 #include "../string-sizes.h"
@@ -35,3 +37,4 @@ typedef struct clap_host_note_name {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_EXT_NOTE_NAME_H

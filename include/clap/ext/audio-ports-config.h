@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_EXT_AUDIO_PORTS_CONFIG_H
+#define CLAP_EXT_AUDIO_PORTS_CONFIG_H
 
 #include "../string-sizes.h"
 #include "../plugin.h"
@@ -107,3 +109,4 @@ typedef struct clap_host_audio_ports_config {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_EXT_AUDIO_PORTS_CONFIG_H

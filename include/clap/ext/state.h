@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_EXT_STATE_H
+#define CLAP_EXT_STATE_H
 
 #include "../plugin.h"
 #include "../stream.h"
@@ -43,3 +45,4 @@ typedef struct clap_host_state {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_EXT_STATE_H

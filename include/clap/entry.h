@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_ENTRY_H
+#define CLAP_ENTRY_H
 
 #include "version.h"
 #include "private/macros.h"
@@ -134,3 +136,4 @@ CLAP_EXPORT extern const clap_plugin_entry_t clap_entry;
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_ENTRY_H

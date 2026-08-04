@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_STRING_SIZES_H
+#define CLAP_STRING_SIZES_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -19,3 +21,4 @@ enum {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_STRING_SIZES_H

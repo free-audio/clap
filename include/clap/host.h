@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_HOST_H
+#define CLAP_HOST_H
 
 #include "version.h"
 
@@ -49,3 +51,4 @@ typedef struct clap_host {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_HOST_H

@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_EXT_EXTENSIBLE_AUDIO_PORTS_H
+#define CLAP_EXT_EXTENSIBLE_AUDIO_PORTS_H
 
 #include "../audio-ports.h"
 
@@ -31,3 +33,4 @@ typedef struct clap_plugin_extensible_audio_ports {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_EXT_EXTENSIBLE_AUDIO_PORTS_H

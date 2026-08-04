@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_EXT_MINI_CURVE_DISPLAY_H
+#define CLAP_EXT_MINI_CURVE_DISPLAY_H
 
 #include "../../plugin.h"
 
@@ -151,3 +153,4 @@ typedef struct clap_host_mini_curve_display {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_EXT_MINI_CURVE_DISPLAY_H

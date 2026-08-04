@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_EXT_CONTEXT_MENU_H
+#define CLAP_EXT_CONTEXT_MENU_H
 
 #include "../plugin.h"
 
@@ -165,3 +167,4 @@ typedef struct clap_host_context_menu {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_EXT_CONTEXT_MENU_H

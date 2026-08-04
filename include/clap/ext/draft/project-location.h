@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_EXT_PROJECT_LOCATION_H
+#define CLAP_EXT_PROJECT_LOCATION_H
 
 #include "../../color.h"
 #include "../../plugin.h"
@@ -106,3 +108,4 @@ typedef struct clap_plugin_project_location {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_EXT_PROJECT_LOCATION_H

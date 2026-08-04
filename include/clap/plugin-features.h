@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_PLUGIN_FEATURES_H
+#define CLAP_PLUGIN_FEATURES_H
 
 // This file provides a set of standard plugin features meant to be used
 // within clap_plugin_descriptor.features.
@@ -77,3 +79,4 @@
 #define CLAP_PLUGIN_FEATURE_STEREO "stereo"
 #define CLAP_PLUGIN_FEATURE_SURROUND "surround"
 #define CLAP_PLUGIN_FEATURE_AMBISONIC "ambisonic"
+#endif // CLAP_PLUGIN_FEATURES_H

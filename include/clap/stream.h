@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_STREAM_H
+#define CLAP_STREAM_H
 
 #include "private/std.h"
 #include "private/macros.h"
@@ -36,3 +38,4 @@ typedef struct clap_ostream {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_STREAM_H

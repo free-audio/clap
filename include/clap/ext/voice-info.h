@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_EXT_VOICE_INFO_H
+#define CLAP_EXT_VOICE_INFO_H
 
 #include "../plugin.h"
 
@@ -54,3 +56,4 @@ typedef struct clap_host_voice_info {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_EXT_VOICE_INFO_H

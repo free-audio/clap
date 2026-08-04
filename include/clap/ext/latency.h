@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_EXT_LATENCY_H
+#define CLAP_EXT_LATENCY_H
 
 #include "../plugin.h"
 
@@ -25,3 +27,4 @@ typedef struct clap_host_latency {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_EXT_LATENCY_H

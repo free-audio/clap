@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CLAP_EXT_GAIN_ADJUSTMENT_METERING_H
+#define CLAP_EXT_GAIN_ADJUSTMENT_METERING_H
 
 #include "../../plugin.h"
 
@@ -32,3 +34,4 @@ typedef struct clap_plugin_gain_adjustment_metering {
 #ifdef __cplusplus
 }
 #endif
+#endif // CLAP_EXT_GAIN_ADJUSTMENT_METERING_H
