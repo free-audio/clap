@@ -42,6 +42,18 @@ typedef struct clap_host {
    // situations the environment may starve the gui/main thread in favor of audio processing,
    // leading to substantially longer latencies for the callback than the indicative times given
    // here.
+   //
+   // Warning: when request_callback() is called on the main-thread, the host has two valid options:
+   // 1. execute the callback immediately (reentrant)
+   // 2. queue the callback
+   //
+   // Option 2. is the preferred implementation because:
+   // - it is less likely to trigger bugs
+   // - if the plugin wants to be called immediately, it can check the current thread and bypass
+   //   the request_callback() call
+   //
+   // Though, be aware that both 1. and 2. are valid host behavior.
+   //
    // [thread-safe]
    void(CLAP_ABI *request_callback)(const struct clap_host *host);
 } clap_host_t;
