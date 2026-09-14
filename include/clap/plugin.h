@@ -62,7 +62,16 @@ typedef struct clap_plugin {
    // call. The process's sample rate will be constant and process's frame count will included in
    // the [min, max] range, which is bounded by [1, INT32_MAX].
    // In this call the plugin may call host-provided methods marked [being-activated].
-   // Once activated the latency and port configuration must remain constant, until deactivation.
+   // Once activate successfully returns:
+   //  - the plugin is "active && !processing"
+   //    - note: the processing state is only relevant while activated
+   //  - the latency and port configuration must remain constant, until deactivation
+   //
+   // Deactivation should preferrably happen while the plugin is "!processing",
+   // though this isn't a requirement.
+   //
+   // Activation and deactivation **MUST NEVER** race or overlap with "audio-thread" functions.
+   //
    // Returns true on success.
    // [main-thread & !active]
    bool(CLAP_ABI *activate)(const struct clap_plugin *plugin,
@@ -73,6 +82,11 @@ typedef struct clap_plugin {
    void(CLAP_ABI *deactivate)(const struct clap_plugin *plugin);
 
    // Call start processing before processing.
+   //
+   // Warning, both start and stop processing are called from the audio-thread directly.
+   // They should be very fast and perform the minimum amount of tasks to recover from sleep.
+   // They should not perform memory allocation, I/O, start threads, ...
+   //
    // Returns true on success.
    // [audio-thread & active & !processing]
    bool(CLAP_ABI *start_processing)(const struct clap_plugin *plugin);
