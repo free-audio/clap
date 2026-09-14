@@ -67,10 +67,8 @@ typedef struct clap_plugin {
    //    - note: the processing state is only relevant while activated
    //  - the latency and port configuration must remain constant, until deactivation
    //
-   // Deactivation should preferrably happen while the plugin is "!processing",
-   // though this isn't a requirement.
-   //
    // Activation and deactivation **MUST NEVER** race or overlap with "audio-thread" functions.
+   // Deactivation can happen regardless of the "processing" state.
    //
    // Returns true on success.
    // [main-thread & !active]
