@@ -1,3 +1,8 @@
+# Changes in 1.2.11
+
+* [plugin.h](include/clap/plugin.h): clarify activate/deactivate and start/stop processing
+* [host.h](include/clap/host.h): clarify request_callback() when called from the main-thread
+
 # Changes in 1.2.10
 
 * [param-hovered.h](include/clap/ext/draft/param-hovered.h): new extension to tell the host when a parameter is mouse hovered within the plugin's GUI.
