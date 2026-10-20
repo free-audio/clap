@@ -2,6 +2,7 @@
 
 * [plugin.h](include/clap/plugin.h): clarify activate/deactivate and start/stop processing
 * [host.h](include/clap/host.h): clarify request_callback() when called from the main-thread
+* [meters.h](include/clap/ext/draft/meters.h): new extension to let the plugin expose its meters (gain reduction, levels, ...) to the host, readable from any thread.
 
 # Changes in 1.2.10
 

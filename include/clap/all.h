@@ -11,6 +11,7 @@
 #include "ext/draft/extensible-audio-ports.h"
 #include "ext/draft/flush-events.h"
 #include "ext/draft/gain-adjustment-metering.h"
+#include "ext/draft/meters.h"
 #include "ext/draft/mini-curve-display.h"
 #include "ext/draft/octave-number.h"
 #include "ext/draft/params-origin.h"
