@@ -15,6 +15,7 @@
 #include "ext/draft/octave-number.h"
 #include "ext/draft/params-origin.h"
 #include "ext/draft/param-hovered.h"
+#include "ext/draft/param-units.h"
 #include "ext/draft/project-location.h"
 #include "ext/draft/resource-directory.h"
 #include "ext/draft/scratch-memory.h"
