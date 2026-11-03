@@ -2,6 +2,7 @@
 
 * [plugin.h](include/clap/plugin.h): clarify activate/deactivate and start/stop processing
 * [host.h](include/clap/host.h): clarify request_callback() when called from the main-thread
+* [file-paths.h](include/clap/ext/draft/file-paths.h): new draft extension to let a host without the plugin's GUI list, read and set the file paths a plugin loads, such as an impulse response or a sample.
 
 # Changes in 1.2.10
 
