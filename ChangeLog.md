@@ -2,6 +2,7 @@
 
 * [plugin.h](include/clap/plugin.h): clarify activate/deactivate and start/stop processing
 * [host.h](include/clap/host.h): clarify request_callback() when called from the main-thread
+* [param-units.h](include/clap/ext/draft/param-units.h): new draft extension to give, per parameter, a unit and a stable symbol that a host without the plugin's GUI can read as data.
 
 # Changes in 1.2.10
 
