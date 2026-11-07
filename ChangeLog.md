@@ -3,6 +3,10 @@
 * [plugin.h](include/clap/plugin.h): clarify activate/deactivate and start/stop processing
 * [host.h](include/clap/host.h): clarify request_callback() when called from the main-thread
 
+## Draft extensions
+
+* [embedded-hardware.h](include/clap/ext/draft/embedded-hardware.h): new extension for plugins running inside hardware: describes the device, its panels and physical controls, delivers their input events and lets the plugin drive leds, rumble motors and displays.
+
 # Changes in 1.2.10
 
 * [param-hovered.h](include/clap/ext/draft/param-hovered.h): new extension to tell the host when a parameter is mouse hovered within the plugin's GUI.

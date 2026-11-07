@@ -8,6 +8,7 @@
 #include "ext/draft/background-activation.h"
 #include "ext/draft/background-progress.h"
 #include "ext/draft/background-state-context.h"
+#include "ext/draft/embedded-hardware.h"
 #include "ext/draft/extensible-audio-ports.h"
 #include "ext/draft/flush-events.h"
 #include "ext/draft/gain-adjustment-metering.h"
