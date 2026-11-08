@@ -186,8 +186,10 @@
   output, keeps the latest state of its lights and displays (never rumble, see
   -- Output --) and shows it when focus returns, so a plugin which skipped updates
   sends what changed then, and requests a frame for its displays.
-  Focus is about outputs only: a host which also takes a panel's inputs for its menu
-  sends a RESET for the panel when it gives them back.
+  Focus is about outputs only. A host which also takes a panel's inputs for its menu
+  sends a RESET for the panel both when it takes them, so that nothing the plugin
+  holds stays pressed while the menu is open, and when it gives them back, followed
+  by their current state.
 
   A panel has focus when delivery starts. FOCUS goes, like RESET, to process() and,
   for a plugin with the plugin side, to process_main_thread(), whatever the routing,
@@ -231,11 +233,11 @@
   pixels/1: the plugin draws XRGB8888 into the host's buffer, frame.surface.pixels,
   and the host converts to what the display can show, as display_format says, so a
   1-bit OLED is drawn in two colours. config.surface is null. Drawing is pull based:
-  the plugin calls request_frame() for a surface when it
+  the plugin calls display_request_frame() for a surface when it
   has something new to show, and the host calls display_render() for it at most once
   per refresh; apart from one display_render() after each display_set_visible(true)
   the host never renders without a request, so an idle plugin costs nothing. To
-  animate, call request_frame() from display_render().
+  animate, call display_request_frame() from display_render().
 
   -- Lifecycle --
 
@@ -248,16 +250,18 @@
   request_quit() asks the host to end the plugin, back to a launcher or off.
 
   Threading: host functions are [main-thread] except request_process_main_thread,
-  request_frame and get_time_ns, which are [thread-safe] and wait-free. The plugin's
-  functions are all [main-thread]; display_render() and process_main_thread() may run
-  concurrently with process().
+  display_request_frame and get_time_ns, which are [thread-safe] and wait-free. The
+  plugin's functions are all [main-thread]; display_render() and process_main_thread()
+  may run concurrently with process().
 
   Structs: every event, and every struct but the three which carry pointers, has no
   padding and the same layout on 32 and 64-bit ABIs, with uint32_t in place of bool, so
   header.size and every offset are the same everywhere and no uninitialised byte is
   copied with an event. display_config, frame and pixels_surface are only ever passed
   by pointer, never copied, and follow the ABI's pointer size, as CLAP's own structs
-  do. Reserved fields are 0.
+  do. A padding field only aligns what follows it; every info and config struct ends
+  in a reserved block, so it can grow without a new id. Padding and reserved fields
+  are 0.
 
   Not covered: a panel the plugin declares for the host to bind physical
   controls to (keys, encoders, legends);
@@ -311,6 +315,8 @@ typedef struct clap_embedded_hardware_device_info {
    // Free form, "" if unknown
    char hardware_revision[CLAP_NAME_SIZE];
    char firmware_version[CLAP_NAME_SIZE];
+
+   uint32_t reserved[4];
 } clap_embedded_hardware_device_info_t;
 
 /* -- Panels -- */
@@ -348,7 +354,7 @@ typedef struct clap_embedded_hardware_panel_info {
    // clap_embedded_hardware_face
    uint32_t face;
 
-   uint32_t reserved;
+   uint32_t padding;
 
    // For display, e.g. "Main", "Shoulder buttons", "Expander", "8BitDo SN30 Pro".
    char name[CLAP_NAME_SIZE];
@@ -361,6 +367,8 @@ typedef struct clap_embedded_hardware_panel_info {
    // orientation as the panel's own coordinates.
    double x_mm;
    double y_mm;
+
+   uint32_t reserved[4];
 } clap_embedded_hardware_panel_info_t;
 
 /* -- Elements -- */
@@ -369,56 +377,56 @@ enum clap_embedded_hardware_element_kind {
    // Inputs
 
    // A push button; see MOMENTARY/LATCHING, VELOCITY, PRESSURE, ANALOG. Sends BUTTON.
-   CLAP_EMBEDDED_HARDWARE_BUTTON = 0,
+   CLAP_EMBEDDED_HARDWARE_KIND_BUTTON = 0,
 
    // A switch with `steps` fixed positions, 2 for a toggle, a lid or a headphone jack.
    // Sends POSITION.
-   CLAP_EMBEDDED_HARDWARE_SWITCH = 1,
+   CLAP_EMBEDDED_HARDWARE_KIND_SWITCH = 1,
 
    // An absolute rotary control, a potentiometer. Sends VALUE.
-   CLAP_EMBEDDED_HARDWARE_POT = 2,
+   CLAP_EMBEDDED_HARDWARE_KIND_POT = 2,
 
    // An absolute linear control. Sends VALUE
-   CLAP_EMBEDDED_HARDWARE_FADER = 3,
+   CLAP_EMBEDDED_HARDWARE_KIND_FADER = 3,
 
    // An endless relative rotary control. Sends DELTA; its push switch, if PUSHABLE, is a
    // BUTTON whose parent is the encoder.
-   CLAP_EMBEDDED_HARDWARE_ENCODER = 4,
+   CLAP_EMBEDDED_HARDWARE_KIND_ENCODER = 4,
 
    // A touch sensitive strip, one finger; sends VALUE for the position and TOUCH.
-   CLAP_EMBEDDED_HARDWARE_TOUCH_STRIP = 5,
+   CLAP_EMBEDDED_HARDWARE_KIND_TOUCH_STRIP = 5,
 
    // An expression pedal, usually through a jack. Sends VALUE.
-   CLAP_EMBEDDED_HARDWARE_PEDAL = 6,
+   CLAP_EMBEDDED_HARDWARE_KIND_PEDAL = 6,
 
    // An analog stick, axis_count axes, springing back to its centre. Sends AXIS; its
    // click is a BUTTON whose parent is the stick.
-   CLAP_EMBEDDED_HARDWARE_STICK = 7,
+   CLAP_EMBEDDED_HARDWARE_KIND_STICK = 7,
 
    // A touch screen or pad, up to max_touch_points fingers. Sends TOUCH_POINT. One laid
    // over a display has that display as its parent.
-   CLAP_EMBEDDED_HARDWARE_TOUCH_SURFACE = 8,
+   CLAP_EMBEDDED_HARDWARE_KIND_TOUCH_SURFACE = 8,
 
    // An accelerometer or gyroscope, see its role; axis_count axes. Sends MOTION.
-   CLAP_EMBEDDED_HARDWARE_MOTION = 9,
+   CLAP_EMBEDDED_HARDWARE_KIND_MOTION = 9,
 
    // Outputs
 
    // A single LED
-   CLAP_EMBEDDED_HARDWARE_LED = 64,
+   CLAP_EMBEDDED_HARDWARE_KIND_LED = 64,
 
    // pixel_count LEDs on an arc, see arc_start_deg and arc_sweep_deg.
-   CLAP_EMBEDDED_HARDWARE_LED_RING = 65,
+   CLAP_EMBEDDED_HARDWARE_KIND_LED_RING = 65,
 
    // pixel_count LEDs on a line through the element's centre, along its width and
    // turned by rotation_deg. Pixel 0 is at the left end before rotation.
-   CLAP_EMBEDDED_HARDWARE_LED_STRIP = 66,
+   CLAP_EMBEDDED_HARDWARE_KIND_LED_STRIP = 66,
 
    // A display, see display_kind
-   CLAP_EMBEDDED_HARDWARE_DISPLAY = 67,
+   CLAP_EMBEDDED_HARDWARE_KIND_DISPLAY = 67,
 
    // A vibration motor. Takes RUMBLE
-   CLAP_EMBEDDED_HARDWARE_RUMBLE = 68,
+   CLAP_EMBEDDED_HARDWARE_KIND_RUMBLE = 68,
 };
 
 enum clap_embedded_hardware_shape {
@@ -430,51 +438,51 @@ enum clap_embedded_hardware_shape {
 
 enum clap_embedded_hardware_element_flags {
    // BUTTON: pressed for as long as it is held. The default.
-   CLAP_EMBEDDED_HARDWARE_MOMENTARY = 1 << 0,
+   CLAP_EMBEDDED_HARDWARE_FLAG_MOMENTARY = 1 << 0,
 
    // BUTTON: mechanically stays down until pressed again
-   CLAP_EMBEDDED_HARDWARE_LATCHING = 1 << 1,
+   CLAP_EMBEDDED_HARDWARE_FLAG_LATCHING = 1 << 1,
 
    // BUTTON: velocity in BUTTON events is meaningful
-   CLAP_EMBEDDED_HARDWARE_VELOCITY = 1 << 2,
+   CLAP_EMBEDDED_HARDWARE_FLAG_VELOCITY = 1 << 2,
 
    // BUTTON: the element reports pressure while held, as VALUE events.
-   CLAP_EMBEDDED_HARDWARE_PRESSURE = 1 << 3,
+   CLAP_EMBEDDED_HARDWARE_FLAG_PRESSURE = 1 << 3,
 
    // Any input: the element senses a finger on it and sends TOUCH, e.g. a
    // capacitive knob.
-   CLAP_EMBEDDED_HARDWARE_TOUCH_SENSE = 1 << 4,
+   CLAP_EMBEDDED_HARDWARE_FLAG_TOUCH_SENSE = 1 << 4,
 
    // POT, FADER: the device can move it. There is no way to ask it to; the flag tells
    // the plugin that the control may move under its own power.
-   CLAP_EMBEDDED_HARDWARE_MOTORIZED = 1 << 5,
+   CLAP_EMBEDDED_HARDWARE_FLAG_MOTORIZED = 1 << 5,
 
    // POT, ENCODER: clicks into `steps` detents per travel or revolution.
-   CLAP_EMBEDDED_HARDWARE_DETENTED = 1 << 6,
+   CLAP_EMBEDDED_HARDWARE_FLAG_DETENTED = 1 << 6,
 
    // POT, FADER: has a single notch in the centre of its travel, which the user feels,
    // near VALUE 0.5. The host reports the raw reading, as for a stick: it does not snap
    // values in the notch to 0.5, and a plugin which wants a dead zone applies its own.
-   CLAP_EMBEDDED_HARDWARE_CENTER_NOTCH = 1 << 7,
+   CLAP_EMBEDDED_HARDWARE_FLAG_CENTER_NOTCH = 1 << 7,
 
    // BUTTON: an analog trigger. Sends VALUE, 0 released to 1 fully pulled, over its
    // whole travel, and BUTTON press and release at a threshold the host chooses.
-   CLAP_EMBEDDED_HARDWARE_ANALOG = 1 << 8,
+   CLAP_EMBEDDED_HARDWARE_FLAG_ANALOG = 1 << 8,
 
    // Any element: the host also acts on it, e.g. menu + volume for brightness, a
    // charging light. Inputs are still delivered and outputs still taken, but the host
    // may override an output, and a plugin should not bind critical actions to an input.
-   CLAP_EMBEDDED_HARDWARE_HOST_SHARED = 1 << 9,
+   CLAP_EMBEDDED_HARDWARE_FLAG_HOST_SHARED = 1 << 9,
 
    // Any element: its position is unknown, see PANEL_NO_GEOMETRY; x, y, width,
    // height and rotation are 0.
-   CLAP_EMBEDDED_HARDWARE_NO_GEOMETRY = 1 << 10,
+   CLAP_EMBEDDED_HARDWARE_FLAG_NO_GEOMETRY = 1 << 10,
 
    // ENCODER, POT, STICK: the control can be pushed. The push switch is a BUTTON element
    // of its own with this element as parent_id, which has the id and sends the events;
    // the flag says it is there without searching the list. A host sets the flag exactly
    // when it lists that BUTTON.
-   CLAP_EMBEDDED_HARDWARE_PUSHABLE = 1 << 11,
+   CLAP_EMBEDDED_HARDWARE_FLAG_PUSHABLE = 1 << 11,
 };
 
 enum clap_embedded_hardware_color_model {
@@ -603,7 +611,7 @@ typedef struct clap_embedded_hardware_element_info {
    // LED: 1. LED_RING, LED_STRIP: the number of LEDs.
    uint32_t pixel_count;
 
-   uint32_t reserved0;
+   uint32_t padding;
 
    // LED_RING: where pixel 0 sits, in degrees clockwise from 12 o'clock, and how far
    // the ring runs, clockwise, to the centre of the last pixel. A full ring of n
@@ -622,7 +630,7 @@ typedef struct clap_embedded_hardware_element_info {
    // DISPLAY: clap_embedded_hardware_display_format
    uint32_t display_format;
 
-   uint32_t reserved1[4];
+   uint32_t reserved[4];
 } clap_embedded_hardware_element_info_t;
 
 typedef struct clap_embedded_hardware_input_state {
@@ -635,7 +643,7 @@ typedef struct clap_embedded_hardware_input_state {
    // SWITCH: the position, 0..steps-1
    uint32_t position;
 
-   uint32_t reserved;
+   uint32_t padding;
 
    // POT, FADER, PEDAL, TOUCH_STRIP: the position, 0..1. BUTTON with PRESSURE or
    // ANALOG: the pressure or pull.
@@ -643,6 +651,8 @@ typedef struct clap_embedded_hardware_input_state {
 
    // STICK, MOTION: the latest values, as AXIS and MOTION carry them.
    double axes[3];
+
+   uint32_t reserved[4];
 } clap_embedded_hardware_input_state_t;
 
 /* -- Roles -- */
@@ -815,7 +825,7 @@ typedef struct clap_embedded_hardware_event_value {
    clap_event_header_t header;
 
    clap_id  element_id;
-   uint32_t reserved;
+   uint32_t padding;
    uint64_t timestamp_ns;
 
    // 0..1: the left or bottom end of the travel is 0, a pot fully anti-clockwise is
@@ -888,7 +898,7 @@ typedef struct clap_embedded_hardware_event_touch_point {
 
    // clap_embedded_hardware_touch_phase
    uint32_t phase;
-   uint32_t reserved;
+   uint32_t padding;
 
    double x;
    double y;
@@ -902,7 +912,7 @@ typedef struct clap_embedded_hardware_event_reset {
    // longer in the lists has been removed.
    clap_id panel_id;
 
-   uint32_t reserved;
+   uint32_t padding;
    uint64_t timestamp_ns;
 } clap_embedded_hardware_event_reset_t;
 
@@ -1008,7 +1018,7 @@ typedef struct clap_embedded_hardware_pixels_surface {
    // 0: the contents are undefined, draw everything. n: the buffer holds the frame
    // presented n frames ago, so only what changed since needs redrawing.
    uint32_t buffer_age;
-   uint32_t reserved;
+   uint32_t reserved[3];
 } clap_embedded_hardware_pixels_surface_t;
 
 typedef struct clap_embedded_hardware_display_config {
@@ -1103,7 +1113,9 @@ typedef struct clap_host_embedded_hardware {
 
    // Now, on the monotonic clock timestamp_ns and present_time_ns use, in nanoseconds:
    // CLOCK_MONOTONIC on Linux, the performance counter on Windows, Mach absolute time
-   // on macOS. Wait-free.
+   // on macOS. The clock does not advance while the device is suspended, so timestamps
+   // and present_time_ns do not jump across a resume; a host whose platform clock does
+   // advance subtracts the time spent suspended. Wait-free.
    // [thread-safe]
    uint64_t(CLAP_ABI *get_time_ns)(const clap_host_t *host);
 
@@ -1122,7 +1134,7 @@ typedef struct clap_host_embedded_hardware {
    // refresh, for an API which renders on request, as pixels/1 does; calls before that
    // coalesce. Wait-free, so a meter can ask from the audio thread.
    // [thread-safe]
-   void(CLAP_ABI *request_frame)(const clap_host_t *host, clap_id display_id);
+   void(CLAP_ABI *display_request_frame)(const clap_host_t *host, clap_id display_id);
 
    // Asks the host to end the plugin: back to a launcher, or off. The host tears the
    // plugin down through the usual CLAP lifecycle and may ask the user first, so the
