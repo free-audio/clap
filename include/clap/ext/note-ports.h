@@ -30,7 +30,9 @@ enum clap_note_dialect {
 };
 
 typedef struct clap_note_port_info {
-   clap_id  id;                   // stable identifier
+   // id identifies a port and must be stable.
+   // id may overlap between input and output ports.
+   clap_id  id;
    uint32_t supported_dialects;   // bitfield, see clap_note_dialect
    uint32_t preferred_dialect;    // one value of clap_note_dialect
    char     name[CLAP_NAME_SIZE]; // displayable name, i18n?
@@ -38,16 +40,17 @@ typedef struct clap_note_port_info {
 
 // The note ports scan has to be done while the plugin is deactivated.
 typedef struct clap_plugin_note_ports {
-   // number of ports, for either input or output
+   // Number of ports, for either input or output.
    // [main-thread]
-   uint32_t (*count)(const clap_plugin_t *plugin, bool is_input);
+   uint32_t(CLAP_ABI *count)(const clap_plugin_t *plugin, bool is_input);
 
-   // get info about about a note port.
+   // Get info about a note port.
+   // Returns true on success and stores the result into info.
    // [main-thread]
-   bool (*get)(const clap_plugin_t   *plugin,
-               uint32_t               index,
-               bool                   is_input,
-               clap_note_port_info_t *info);
+   bool(CLAP_ABI *get)(const clap_plugin_t   *plugin,
+                       uint32_t               index,
+                       bool                   is_input,
+                       clap_note_port_info_t *info);
 } clap_plugin_note_ports_t;
 
 enum {
@@ -64,11 +67,11 @@ enum {
 typedef struct clap_host_note_ports {
    // Query which dialects the host supports
    // [main-thread]
-   uint32_t (*supported_dialects)(const clap_host_t *host);
+   uint32_t(CLAP_ABI *supported_dialects)(const clap_host_t *host);
 
    // Rescan the full list of note ports according to the flags.
    // [main-thread]
-   void (*rescan)(const clap_host_t *host, uint32_t flags);
+   void(CLAP_ABI *rescan)(const clap_host_t *host, uint32_t flags);
 } clap_host_note_ports_t;
 
 #ifdef __cplusplus

@@ -11,18 +11,18 @@ enum {
    // Processing failed. The output buffer must be discarded.
    CLAP_PROCESS_ERROR = 0,
 
-   // Processing succeed, keep processing.
+   // Processing succeeded, keep processing.
    CLAP_PROCESS_CONTINUE = 1,
 
-   // Processing succeed, keep processing if the output is not quiet.
+   // Processing succeeded, keep processing if the output is not quiet.
    CLAP_PROCESS_CONTINUE_IF_NOT_QUIET = 2,
 
    // Rely upon the plugin's tail to determine if the plugin should continue to process.
    // see clap_plugin_tail
    CLAP_PROCESS_TAIL = 3,
 
-   // Processing succeed, but no more processing is required,
-   // until next event or variation in audio input.
+   // Processing succeeded, but no more processing is required,
+   // until the next event or variation in audio input.
    CLAP_PROCESS_SLEEP = 4,
 };
 typedef int32_t clap_process_status;
@@ -37,7 +37,7 @@ typedef struct clap_process {
    // and must be increased by at least `frames_count` for the next call to process.
    int64_t steady_time;
 
-   // Number of frame to process
+   // Number of frames to process
    uint32_t frames_count;
 
    // time info at sample 0
@@ -45,18 +45,19 @@ typedef struct clap_process {
    const clap_event_transport_t *transport;
 
    // Audio buffers, they must have the same count as specified
-   // by clap_plugin_audio_ports->get_count().
-   // The index maps to clap_plugin_audio_ports->get_info().
+   // by clap_plugin_audio_ports->count().
+   // The index maps to clap_plugin_audio_ports->get().
+   // Input buffer and its contents are read-only.
    const clap_audio_buffer_t *audio_inputs;
    clap_audio_buffer_t       *audio_outputs;
    uint32_t                   audio_inputs_count;
    uint32_t                   audio_outputs_count;
 
-   // Input and output events.
-   //
-   // Events must be sorted by time.
    // The input event list can't be modified.
+   // Input read-only event list. The host will deliver these sorted in sample order.
    const clap_input_events_t  *in_events;
+
+   // Output event list. The plugin must insert events in sample sorted order when inserting events
    const clap_output_events_t *out_events;
 } clap_process_t;
 

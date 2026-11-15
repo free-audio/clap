@@ -1,14 +1,12 @@
 #pragma once
 
-#include "private/macros.h"
-
-// This files provides a set of standard plugin features meant to be use
+// This file provides a set of standard plugin features meant to be used
 // within clap_plugin_descriptor.features.
 //
 // For practical reasons we'll avoid spaces and use `-` instead to facilitate
 // scripts that generate the feature array.
 //
-// Non standard feature should be formated as follow: "$namespace:$feature"
+// Non-standard features should be formatted as follow: "$namespace:$feature"
 
 /////////////////////
 // Plugin category //
@@ -22,6 +20,9 @@
 
 // Add this feature if your plugin is a note effect or a note generator/sequencer
 #define CLAP_PLUGIN_FEATURE_NOTE_EFFECT "note-effect"
+
+// Add this feature if your plugin converts audio to notes
+#define CLAP_PLUGIN_FEATURE_NOTE_DETECTOR "note-detector"
 
 // Add this feature if your plugin is an analyzer
 #define CLAP_PLUGIN_FEATURE_ANALYZER "analyzer"
@@ -47,6 +48,8 @@
 #define CLAP_PLUGIN_FEATURE_DISTORTION "distortion"
 #define CLAP_PLUGIN_FEATURE_TRANSIENT_SHAPER "transient-shaper"
 #define CLAP_PLUGIN_FEATURE_COMPRESSOR "compressor"
+#define CLAP_PLUGIN_FEATURE_EXPANDER "expander"
+#define CLAP_PLUGIN_FEATURE_GATE "gate"
 #define CLAP_PLUGIN_FEATURE_LIMITER "limiter"
 
 #define CLAP_PLUGIN_FEATURE_FLANGER "flanger"

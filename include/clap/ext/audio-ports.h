@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "../plugin.h"
 #include "../string-sizes.h"
@@ -27,32 +27,33 @@ enum {
    // Main port must be at index 0.
    CLAP_AUDIO_PORT_IS_MAIN = 1 << 0,
 
-   // The port can be used with 64 bits audio
+   // This port can be used with 64 bits audio
    CLAP_AUDIO_PORT_SUPPORTS_64BITS = 1 << 1,
 
    // 64 bits audio is preferred with this port
    CLAP_AUDIO_PORT_PREFERS_64BITS = 1 << 2,
 
-   // This port must be used with the same sample size as all the other ports which have this flags.
-   // In other words if all ports have this flags then the plugin may either be used entirely with
+   // This port must be used with the same sample size as all the other ports which have this flag.
+   // In other words if all ports have this flag then the plugin may either be used entirely with
    // 64 bits audio or 32 bits audio, but it can't be mixed.
    CLAP_AUDIO_PORT_REQUIRES_COMMON_SAMPLE_SIZE = 1 << 3,
 };
 
 typedef struct clap_audio_port_info {
-   clap_id id;                   // stable identifier
+   // id identifies a port and must be stable.
+   // id may overlap between input and output ports.
+   clap_id id;
    char    name[CLAP_NAME_SIZE]; // displayable name
 
    uint32_t flags;
    uint32_t channel_count;
 
    // If null or empty then it is unspecified (arbitrary audio).
-   // This filed can be compared against:
+   // This field can be compared against:
    // - CLAP_PORT_MONO
    // - CLAP_PORT_STEREO
    // - CLAP_PORT_SURROUND (defined in the surround extension)
    // - CLAP_PORT_AMBISONIC (defined in the ambisonic extension)
-   // - CLAP_PORT_CV (defined in the cv extension)
    //
    // An extension can provide its own port type and way to inspect the channels.
    const char *port_type;
@@ -65,16 +66,17 @@ typedef struct clap_audio_port_info {
 
 // The audio ports scan has to be done while the plugin is deactivated.
 typedef struct clap_plugin_audio_ports {
-   // number of ports, for either input or output
+   // Number of ports, for either input or output
    // [main-thread]
-   uint32_t (*count)(const clap_plugin_t *plugin, bool is_input);
+   uint32_t(CLAP_ABI *count)(const clap_plugin_t *plugin, bool is_input);
 
-   // get info about about an audio port.
+   // Get info about an audio port.
+   // Returns true on success and stores the result into info.
    // [main-thread]
-   bool (*get)(const clap_plugin_t    *plugin,
-               uint32_t                index,
-               bool                    is_input,
-               clap_audio_port_info_t *info);
+   bool(CLAP_ABI *get)(const clap_plugin_t    *plugin,
+                       uint32_t                index,
+                       bool                    is_input,
+                       clap_audio_port_info_t *info);
 } clap_plugin_audio_ports_t;
 
 enum {
@@ -100,13 +102,13 @@ enum {
 typedef struct clap_host_audio_ports {
    // Checks if the host allows a plugin to change a given aspect of the audio ports definition.
    // [main-thread]
-   bool (*is_rescan_flag_supported)(const clap_host_t *host, uint32_t flag);
+   bool(CLAP_ABI *is_rescan_flag_supported)(const clap_host_t *host, uint32_t flag);
 
    // Rescan the full list of audio ports according to the flags.
    // It is illegal to ask the host to rescan with a flag that is not supported.
    // Certain flags require the plugin to be de-activated.
    // [main-thread]
-   void (*rescan)(const clap_host_t *host, uint32_t flags);
+   void(CLAP_ABI *rescan)(const clap_host_t *host, uint32_t flags);
 } clap_host_audio_ports_t;
 
 #ifdef __cplusplus

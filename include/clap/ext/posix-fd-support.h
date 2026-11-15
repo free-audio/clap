@@ -24,21 +24,24 @@ typedef struct clap_plugin_posix_fd_support {
    // This callback is "level-triggered".
    // It means that a writable fd will continuously produce "on_fd()" events;
    // don't forget using modify_fd() to remove the write notification once you're
-   // done writting.
+   // done writing.
    //
    // [main-thread]
-   void (*on_fd)(const clap_plugin_t *plugin, int fd, clap_posix_fd_flags_t flags);
+   void(CLAP_ABI *on_fd)(const clap_plugin_t *plugin, int fd, clap_posix_fd_flags_t flags);
 } clap_plugin_posix_fd_support_t;
 
 typedef struct clap_host_posix_fd_support {
+   // Returns true on success.
    // [main-thread]
-   bool (*register_fd)(const clap_host_t *host, int fd, clap_posix_fd_flags_t flags);
+   bool(CLAP_ABI *register_fd)(const clap_host_t *host, int fd, clap_posix_fd_flags_t flags);
 
+   // Returns true on success.
    // [main-thread]
-   bool (*modify_fd)(const clap_host_t *host, int fd, clap_posix_fd_flags_t flags);
+   bool(CLAP_ABI *modify_fd)(const clap_host_t *host, int fd, clap_posix_fd_flags_t flags);
 
+   // Returns true on success.
    // [main-thread]
-   bool (*unregister_fd)(const clap_host_t *host, int fd);
+   bool(CLAP_ABI *unregister_fd)(const clap_host_t *host, int fd);
 } clap_host_posix_fd_support_t;
 
 #ifdef __cplusplus
